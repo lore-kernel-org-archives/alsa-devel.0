@@ -4,176 +4,145 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60F2BC5DF94
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2026 07:59:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A132EC61DB6
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2026 09:05:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09C6A602A8;
-	Tue, 25 Aug 2026 09:59:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09C6A602A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 483E4602A0;
+	Tue, 25 Aug 2026 11:05:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 483E4602A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1787644791;
-	bh=xWtaWC64IcHuC0Wkm7oh+alVlvSwds1BSDMSukgILW4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=UIqoC9EmHFpwdxpkOHKn77K36fLsNGXEVTqGJ8X//NkCy3L1ghdYXTKvURiB04r3X
-	 QFeoULRgTgTKxIEseIKg06kSCO3ACoMHi1c9zfnBkY7Zbv1HXZczkhsH9W9VXdzYq1
-	 bzlAqgwJuinCWukthAHRtEkC4cNLK5xhB0+FZtfs=
+	s=default; t=1787648722;
+	bh=jfD/BelKkpziNPeDi93EK8r0hgZBtNL1HOMaQR+WNdg=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=BffP9kFO6cyDHsuoFvJ0/Y7a8Ees/hjEcMUKh5H4w86x6QR6PkGoJoYUc3LQjCF2f
+	 rUJ2RilNDQ0iadVa+Gn7qEYhs8Za9nGxcEIRXGd15ZInxNyLQDNxybPuNtKkiMH0Jx
+	 /X9dhYwt7esh18Zcn+SPoaJc1SupPhgjAp7ZZ3fQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 432C6F805FF; Tue, 25 Aug 2026 09:59:13 +0200 (CEST)
+	id 22689F805FF; Tue, 25 Aug 2026 11:04:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 735C9F805F6;
-	Tue, 25 Aug 2026 09:59:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8BE3AF80600;
+	Tue, 25 Aug 2026 11:04:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3BA45F8027B; Tue, 25 Aug 2026 09:59:06 +0200 (CEST)
+	id 72FB1F8027B; Tue, 25 Aug 2026 11:04:36 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.131
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1787644742;
-	b=AeImMGwwZpe8niqeWgt2XCFR7HsmrzSCo+Neg+BqK5l/hGFrSv2/2dAPR01beUS6IiOr
-	 CPch4DQMUi27dH/HciH2laUfXDhLyoJo+dAeU0/z68JWcWAETRoNsfDzwBoo48oAH5mJr
-	 LgId1s0O5iMKRaveO3cNZK/0PfsRRMHzI5AZZiy7kBJZHa1P06tuTD18JUVrmeHGDGIUU
-	 TCTAfPHR4i190UKQQdiFtye19F7WPzpi27u8rCh2gO8u9Am0vMtShrqao/RGmc+u+ZWwL
-	 mg64J6tT2NZRGpczdBXh43sldUndRJbJoocZkeQELK4ei5UlRtVraKidXFmRwgFQglw==
-ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1787644742;
-	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
-	 Message-ID:From:To:Subject:MIME-Version;
-	bh=xWtaWC64IcHuC0Wkm7oh+alVlvSwds1BSDMSukgILW4=;
-	b=Xdckr5HDlqnqSsIxaluG5u1AvVd8J8H0wbePse6gdNZLqrZKR81P1dOnkyb/ZS3If2uw
-	 4EOe79noG4/QmOiRNPNRVm1+0jGE3aKCx5gfLjayiz8VvccdSW2uyy3W6kX6UChz96p8R
-	 JySH3U1NLwPFF1oibPZON03sUFAt5LqTkf2k8quN+AZmYAIfCZ201DiiVTZDUnYDCtjPO
-	 44E1X1MIzPvSU8RbBEolRYiFJErE+IhG4PIterQO1fgLvTeC5Y6IcTMVDiP9da7Y/tfCt
-	 9nqyv11jryIFt0epfr7hB7S64Mxe6WWcKYhirrpsLGbpnQGpUo2dz4EndBoZlaoFcGA==
-ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=dzlCQ3Gz;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b="/epkEQOs";
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=Vsteqs7j;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=QtJxQguN;
-	arc=none smtp.remote-ip=195.135.223.131
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.210.53
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1787648675;
+	b=oCYR2w1XHBXy2QoZn95NSA+CHMED4dGMySAcGtKkRkfonVYF5mk2jLdZajIEcw8y7X/V
+	 d06liAZvjEDiEQWRO/ybO55MvQ0F/SUXnne+tj6cp2L7NQYR7wECnjJKMe2QdKKeamvWH
+	 XQfjazrYri2oNkHxpLzOo0HYOZ5ymKU+C7eL1Yuulrv7YCoZrtZqVu+02MvvT1ENj7dKW
+	 WSD/C0d2QM78YrC52Rc4Lq715sTq1z4l0dul5kyLNmGwVvlKqhF07NN3NSQFfuByCBK+3
+	 cuRNk1Z1NnZCG3YRUPjToUywXles1S+D0D/r3emQx00l7i7HjwV4pp1O8jTrgDZEfEw==
+ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1787648675;
+	h=DKIM-Signature:MIME-Version:From:Date:Message-ID:Subject:To;
+	bh=jfD/BelKkpziNPeDi93EK8r0hgZBtNL1HOMaQR+WNdg=;
+	b=GgvDOXbBpjdXfh9eBIM4yvpmyf47Q9B+e3i6zxDKZ6AjvvEU9PHsgh6TWnwWBv64gzzQ
+	 7tz2k+tgfsWHZCVMzArDEOLNi1ZQBMotwdhxZ2KQcd0vb7uP2infL1XsNUnI98vmcNlGZ
+	 P0JXMiNNA3yBpSMi7DCpcJisAFv5uuhMyaQ1JQdShtpGUtmGNkexgJEaJW9j4CfgkB3sr
+	 M6cqDvOuRgVex5gHWldjjVEpt+AjAczXMjPHC171FFXYtKYD/eQQsgYwMXCjncUrUU8vG
+	 c1yAcEEZmyH0O0xEkZnR/xur9YhkKQVM5znx0sB6KZUwSeTnF6EJ4QMcME7YtVahNsg==
+ARC-Authentication-Results: i=2; alsa1.perex.cz;
+ dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=QTqAINFj;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.210.53
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com
+ [209.85.210.53])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F19AAF800B6
-	for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2026 09:58:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F19AAF800B6
+	by alsa1.perex.cz (Postfix) with ESMTPS id 283B4F80075
+	for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2026 11:04:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 283B4F80075
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=dzlCQ3Gz;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=/epkEQOs;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=Vsteqs7j;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=QtJxQguN
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 348CC1F78B;
-	Tue, 25 Aug 2026 07:58:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1787644735;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=09YSDPPs+gAAsXa+RQimZvLD5+OxnKfd8Qhwhzr3pPc=;
-	b=dzlCQ3GzVZwBWe4ZGNG9b3CrUQwVP9VhbkalRaZFI61ilfUYW0FZwjxaWf3VUtxvLHVryO
-	Ts3XB9aQXI9PG7TQRXRl5sC9KCj4UxbFh/y8qI0F6oLyqb2aCb3l7BghCxk/OCTminT80U
-	5QS5VXMmcAu6hEdI2l3E8YpQb5lGr8w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1787644735;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=09YSDPPs+gAAsXa+RQimZvLD5+OxnKfd8Qhwhzr3pPc=;
-	b=/epkEQOsWONv69lzDOwTRCo4ntvi2SeAUtjnw9Wlt8m1eczFU47o7b99AU83vKNhdWxEZc
-	N0HLBWJ3rMlFO5DA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1787644731;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=09YSDPPs+gAAsXa+RQimZvLD5+OxnKfd8Qhwhzr3pPc=;
-	b=Vsteqs7jhGnRZHnlMYf0ggDvkYL6cEeldJUdqd0lU4VeKMvYRwdaZrINkCsZJsrizyLwPT
-	W3W4D+rVbH4KXOgQj87WV2QjIJ1t5cbVOe29zfSH5+VZ33Z5xNbwRt5ix1f4/DDfkOalHo
-	wQh9yH73hRHdk07OzzZaNrqicZWbY5M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1787644731;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=09YSDPPs+gAAsXa+RQimZvLD5+OxnKfd8Qhwhzr3pPc=;
-	b=QtJxQguN/BpzfkrR4eTZ1w4wiC4SeeQB1ZUKinJvv7canoToLGt9VPF3r+XAUfF7HJuKY3
-	czv/9FhTx9/n+gDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EABF913332;
-	Tue, 25 Aug 2026 07:58:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id SNjpNjpLjWrHbwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 25 Aug 2026 07:58:50 +0000
-Date: Tue, 25 Aug 2026 09:58:50 +0200
-Message-ID: <87jypetyv9.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: =?ISO-8859-1?Q?=22Habil_Eren_T=FCrker=22?= <habilerenturker@gmail.com>
-Cc: perex@perex.cz,	tiwai@suse.com,	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,	Habil Eren =?ISO-8859-1?Q?T=FCrker?=
- <habilerenturker@hotmail.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Fix speaker mute LED for HP Laptop
- 15-fd0039nt
-In-Reply-To: <20260824094256.3758-1-habilerenturker@hotmail.com>
-References: <20260824094256.3758-1-habilerenturker@hotmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.993];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com,hotmail.com];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_CC(0.00)[perex.cz,suse.com,alsa-project.org,vger.kernel.org,hotmail.com];
-	RCPT_COUNT_FIVE(0.00)[6];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,imap1.dmz-prg2.suse.org:helo]
-Message-ID-Hash: C2NTH6FPPQDWN3UT274WYLGABFBXT75Y
-X-Message-ID-Hash: C2NTH6FPPQDWN3UT274WYLGABFBXT75Y
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=QTqAINFj
+Received: by mail-ot1-f53.google.com with SMTP id
+ 46e09a7af769-7f3f52143cdso4315377a34.2
+        for <alsa-devel@alsa-project.org>;
+ Tue, 25 Aug 2026 02:04:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1787648672; cv=none;
+        d=google.com; s=arc-20260327;
+        b=fQv4ANdRgG+2FYAwgla078hOLS5IERnGBq6LnCj4da/zbV0jjxDg28VRpmAQi7kpHg
+         jUgHbP7hVQFhzuXOXgs9v5Loe98vymlHm8Nt32LPSwrto6JgknaM8M/buVzSDcaJZ66k
+         4qFDtuhCEiqPIRymWANofU9kzYxOr5O1PZ3pJGe5M2EjmkAcBIQ/LxFcTSYD+KTa3w9l
+         HVisp/uBiVazW+hXWLXtdeaoTpIJS/ud/Dsf7iQjzzeqakLw//EBrAUnxxLx+QRgBeG5
+         F/fIuGcyvnCkc0mkscKpAjIvaq7c/x+6sjaeuHE6rDWqoPNmg3cXyMmwOz8S5F4/1kzu
+         OXTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20260327;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=jfD/BelKkpziNPeDi93EK8r0hgZBtNL1HOMaQR+WNdg=;
+        fh=msFQX9NJ3oPmqWLZvu+hmzfKks7q+f2dFW2fk/Lo7cY=;
+        b=SoZKdT7Hg5q67pjTAvQ4p9dtkOT+ZIG05sBzoblcit+gemacVk3m62t52avEm6D1kg
+         KcfBFSxYI794pZASlNSRVYm4bQgtuqAIrlJvzOlcFDNhleIDCBjcevfxri1xEKrqYcHT
+         1GlnKev24tGPSGE8CZIwh3Qta8Hdi1DSDCUxSzWAa9YexNbQBnH4HHV7AQRIBMNuzl/C
+         WLLMNyKyMtWmWPK5CZ4HvFyM4grGKIV+0vPvFqdtXUAGgb1mPmRqgrNWthVlSqXFQt4U
+         x614Hlgp+JKLIecG6BKrgbyZqdES494aA69ttgqQTnTZ2xHhXJMPv6OfJL0Li6xr46kM
+         /Lmg==;
+        darn=alsa-project.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1787648672; x=1788253472;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:content-type:to:subject:message-id:date
+         :from:in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=jfD/BelKkpziNPeDi93EK8r0hgZBtNL1HOMaQR+WNdg=;
+        b=QTqAINFjKI+LZ3k4D7AS3KwlYlQNcvzHCizuZe2d4stTVaQnY1EGAGIeTcp+v/3Y5C
+         5kC6MmYawVSpIj28sEn+22ddzHfgfSfxA99G/lK3T7e/uZboE7EioS3zawgQ5Zc2Y4Eq
+         BaPxvF5uZzMLG12JyYb118koUFhKileECWQWYyNKNu/4jjKkjXcGwwhif/aOvlKzB4JX
+         TJVo+N3O1GEoyB5lHmsX8HwTXGL8nU8aqhIcV5bOg8AHIpsiF2vPzVWz/zs+Lf0r7vLQ
+         eE5wc2V8sY7Bg2H3fimxEPIq/F2pgsEoZxgl69ANXZouMqT0S+UEOOb7aB3Z0fiwMLpc
+         SIpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787648672; x=1788253472;
+        h=content-transfer-encoding:content-type:to:subject:message-id:date
+         :from:in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=jfD/BelKkpziNPeDi93EK8r0hgZBtNL1HOMaQR+WNdg=;
+        b=Ak4rxDZDnABnI+dWiuvEv66gx6D+qsrAyoQ5TtBumrfmIG09HGk0z2uDbQHsNINnna
+         z7lE8Wz0xb2XGXvMhM25PxjjyING1NbidNOF1MZs+l3xhIfF0VFh8biSRMuYVUeBwbOd
+         ioT6zGt/wGNIqTHDBomla0ZTUD762D8jkktFvCmmf780sVxAh8zSXhK4+dm9waX8Vp91
+         oAjKTz5PFx6V1iZEGdA6QR5bfbek2Uj3RobqkTSPAqKI7uUNObtl/kwFfI5pHBhQcPyq
+         Uoijw/NDzNdlXUAtSRVPgvlRKt8oKzdIE8tShMVZSNxKc/5dG2CKC3km6OdY2trC6FaI
+         2PNQ==
+X-Gm-Message-State: AFuF++msLAUbuvvxw2oYw9qkeCbmmKH8/mwEwf1cK4ni3xw9W20PVtU0
+	lVvXw5s8Cv6F70um/DcwG2wZhIMR816zzqXSYnACVBb/SXDi+II78GcWMAa/WFtGJjhrRg8cFUw
+	DLYErV2tvGwhY7AICulHwUoW6ceba+iDUzrEcfzijQUDF
+X-Gm-Gg: AR+sD13g2Kr36Sg88kSzCuDL1b/oS2eTwDkNHC4f/PItPJgm24GanlSUVqn5j843yf3
+	a6Q4QwRah0G+U/OlLUI87vybWQmnfCaAVB4RkPDzyplPTreFMsqH9ey4jO/PYoCtn+h9czbFylU
+	m/Qs6zJJvyBc7XSBAYeROaBLRnq1sUCw3axVnc+lXJBME7SI2zRx3VkOWXjwTsIEJ3l7q1Crjkn
+	zQLoarBAQcD5CcvH2XukXMGMYIvYQL+0diXAK6cuVa6RSyHV8lbw77rlUrO7IDFHfSOWZElTzHW
+	420K7ayjJ/BOPGP15k1Y6BrgP23VB/hnQmEWI2WE6+gfpzA1S2TsIvaU/RiinH7R/ir74Pjup3J
+	3h3h9kwE8YoVrp0/Szv92MJ3OnqMugg==
+X-Received: by 2002:a05:6820:161f:b0:6b1:3ec0:6090 with SMTP id
+ 006d021491bc7-6b19038590dmr3795761eaf.11.1787648671468; Tue, 25 Aug 2026
+ 02:04:31 -0700 (PDT)
+MIME-Version: 1.0
+References: 
+ <CABXGCsMuopDFyQ88+00wECHTON7tQLAkoGOQvquqpAg+92vDcA@mail.gmail.com>
+In-Reply-To: 
+ <CABXGCsMuopDFyQ88+00wECHTON7tQLAkoGOQvquqpAg+92vDcA@mail.gmail.com>
+From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date: Tue, 25 Aug 2026 14:04:20 +0500
+X-Gm-Features: AcwNN1XHtvfphvaPOLib8SWCP0VBAXeD9JRv-TawA1H2d04rPCJI6h4yfkc9q-s
+Message-ID: 
+ <CABXGCsPczShK2QY7vv_Au0LR757fKap4w318h7jwGAsZ6eRYeA@mail.gmail.com>
+Subject: Re: UCM: is there a way to act when a device becomes the active one?
+To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: 3VFFKOC3LNOSVKKR7DKQOKQDOHWLVUCR
+X-Message-ID-Hash: 3VFFKOC3LNOSVKKR7DKQOKQDOHWLVUCR
+X-MailFrom: mikhail.v.gavrilov@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -184,7 +153,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C2NTH6FPPQDWN3UT274WYLGABFBXT75Y/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3VFFKOC3LNOSVKKR7DKQOKQDOHWLVUCR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -193,54 +162,98 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 24 Aug 2026 11:42:28 +0200,
-Habil Eren Türker wrote:
-> 
-> HP Laptop 15-fd0039nt (SSID 103c:8bb6) needs a quirk to control the
-> speaker mute LED via VREF100 on NID 0x1a (active-high).
-> 
-> This patch replaces the previous ALC236_FIXUP_HP_MICMUTE_LED_ONLY
-> with ALC236_FIXUP_HP_15_FD0XXX, which covers both mic mute (GPIO0)
-> and speaker mute (NID 0x1a) LEDs.
-> 
-> Use spec->no_shutup_pins instead of a custom shutup hook, as suggested
-> by Takashi Iwai.
-> 
-> Fixes: e711ebfadc9a ("ALSA: hda/realtek: Add quirk for HP Laptop 15-fd0039nt")
-> Tested-by: Habil Eren Türker <habilerenturker@hotmail.com>
-> Signed-off-by: Habil Eren Türker <habilerenturker@hotmail.com>
-> ---
->  sound/hda/codecs/realtek/alc269.c | 51 ++++++++++++++++++++++++++-----
->  1 file changed, 43 insertions(+), 8 deletions(-)
-> 
-> diff --git a/sound/hda/codecs/realtek/alc269.c b/sound/hda/codecs/realtek/alc269.c
-> index 01b87267f..a2a3341c3 100644
-> --- a/sound/hda/codecs/realtek/alc269.c
-> +++ b/sound/hda/codecs/realtek/alc269.c
-> @@ -1364,14 +1364,49 @@ static void alc269_fixup_hp_gpio_led(struct hda_codec *codec,
->  	alc_fixup_hp_gpio_led(codec, action, 0x08, 0x10);
->  }
->  
-> -static void alc236_fixup_hp_micmute_led_only(struct hda_codec *codec,
-> -				const struct hda_fixup *fix, int action)
-> +/* Patch for HP 15-fd0xxx (8BB6) Speaker Mute LED & Mic-Mute LED */
-> +
-> +static unsigned int hp_8bb6_power_filter(struct hda_codec *codec,
-> +					  hda_nid_t nid,
-> +					  unsigned int power_state)
-> +{
-> +	if (nid == 0x1a)
-> +		return AC_PWRST_D0;
-> +	return snd_hda_gen_path_power_filter(codec, nid, power_state);
-> +}
+On Sat, Aug 22, 2026 at 6:01=E2=80=AFAM Mikhail Gavrilov
+<mikhail.v.gavrilov@gmail.com> wrote:
+>
+> Hi,
+>
+> Two problems from one card, and I suspect one missing piece behind
+> both.
+>
+> The card is a USB interface with ten playback channels and two
+> physical outputs, headphones and a phone jack. A UCM profile splits
+> the ten channels into five stereo outputs, and the desktop shows five,
+> which is right: they are five independent pairs and different
+> applications can go to different ones.
+>
+> The first problem is that they all sound the same. Each physical
+> output listens to ONE source chosen inside the card -- an internal mix
+> or a single playback bus -- and that choice is made in the vendor's
+> control application, which exists for Windows and macOS only. So you
+> pick "Playback 3/4" in the sound settings, the audio goes into bus
+> 3/4, and you hear whatever the output was last pointed at. Nothing on
+> the system says why.
+>
+> A kernel driver for the card's vendor protocol publishes that selector
+> as an ordinary enumerated control, so the host can set it now. My plan
+> was to have each of the five outputs point the headphone stage at its
+> own bus from that device's EnableSequence, so that choosing an output
+> would mean hearing it.
+>
+> It does not work, and I think the reason is structural. WirePlumber
+> enables every device of the verb at once, so all five sequences run at
+> startup and the last one wins. Choosing an output afterwards is a
+> change of default sink, which no UCM sequence observes.
+>
+> The second problem is worse, and it is what makes me write. The card's
+> analogue volume belongs to the physical output, not to the bus, so all
+> five devices name the same mixer element. Each sink then remembers its
+> own volume while the hardware has one: set Playback 1/2 to full, move
+> to Playback 3/4, and the slider shows something else while the control
+> still reads 99. The desktop is showing a number that is not true. I
+> can avoid it by naming the digital per-bus trim instead, but that
+> attenuates before the converter and throws away resolution, which is
+> exactly what the analogue stage exists to avoid.
+>
+> Both come from the same gap, as far as I can see. UCM can say "this
+> device exists" with EnableSequence, and cannot say "this device is now
+> the one being used". With that, the profile would point the output at
+> the right bus and name the analogue element honestly, because only one
+> device would be active at a time.
+>
+> So: is there an existing way to express this that I have missed? A
+> modifier, a property, something on the PipeWire or PulseAudio side
+> rather than in UCM? I know ports are the usual answer to "choosing an
+> output switches hardware", but ports come from devices sharing a
+> mapping, and in alsa-ucm.c the mapping name is built per device, so
+> five split PCMs are five sinks by construction.
+>
+> If there is no way, would a per-device sequence that runs on
+> activation be a reasonable thing to propose? The shape is not specific
+> to this card: any interface whose outputs are fed from an internal
+> matrix has it.
 
-Better to give a bit more comment about this power filter, as it's not
-clear why keeping the power of NID 0x1a.
+A follow-up, since your answer in the other thread bears on this one.
 
-Also, the patch contained trailing whitespaces.
-Please run scripts/checkpatch.pl before resubmission.
+You suggested multiple verbs there, and for that case it is the right
+answer. I tried it here too, and it does work: five verbs, one per
+output, would make the outputs mutually exclusive, so each one's
+EnableSequence would run when its verb is selected and the routing
+would follow.
 
+But that costs the very thing the split is for. The five outputs are
+five independent stereo buses; a user can send one application to one
+and another to another, and that is the point of describing the card
+this way. Making them mutually exclusive to gain the routing gives up
+the simultaneity to buy it.
 
-thanks,
+Since I wrote, the kernel side has been through review and is at v7 on
+linux-sound, so the control is no longer hypothetical: the selector is
+an ordinary enumerated control. What is still missing is only the
+moment to write it.
 
-Takashi
+The other half of the problem has not moved either. The card's analogue
+output volume belongs to the physical output, not to the bus, so all
+five devices name the same mixer element and each sink remembers its
+own value; set one to full, move to another, and the slider shows a
+number the hardware does not hold. Naming the digital per-bus trim
+instead avoids that and throws away resolution before the converter.
+
+Both would be answered by a per-device sequence that runs on
+activation, since only one device would be active at a time. If that is
+not the right shape, I would rather hear what is than keep guessing at
+it.
+
+--=20
+Thanks,
+Mikhail Gavrilov.
