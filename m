@@ -4,101 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87DF9C61DD3
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2026 14:51:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0E10C624D0
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2026 18:21:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A08E601D5;
-	Tue,  1 Sep 2026 16:51:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A08E601D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B26F601D7;
+	Tue,  1 Sep 2026 20:21:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B26F601D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1788274278;
-	bh=w1KbPKIAy6qO1MAuelDPup4sUlGJOp2VkNUs82O4x1M=;
-	h=From:Date:Cc:To:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=JXEGRJc0mVc/WTKFkX5FXiYnPxRr/iYmgcLvABe3EKVU1PgbONAaamO+ZpYESeOWG
-	 9+ruwyk65qfYHWWthM2bMn5z7TZy9n3NCzNCuej7uBbdnptCddGwf1VUZUZDp8LG+I
-	 KYuDg+EXRhjlcDMZQYjv6G9SjFXFuq8Gnre/6X/o=
+	s=default; t=1788286910;
+	bh=dsSrzlawcTjVN2geYOpqAWRil+tOQyfB58l5vWcfDaA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=FfNdiSA2bFus5MI90YRxB5812HBbiytEzJc1+MPRds2QbKhxf33KzuuqHz8BxVBae
+	 KStlV2I3CLIjnW9RNa/3fCF0HmzyggMUNL47ZazArjQ2wju9qw0X1p/dWN3NBi0cB8
+	 FDpsTN5sw+Way+ijwoK5p7AgaaMBt7KZOXVyUG/0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 459EAF805B2; Tue,  1 Sep 2026 16:50:41 +0200 (CEST)
+	id 87A16F805FF; Tue,  1 Sep 2026 20:21:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69CECF80601;
-	Tue,  1 Sep 2026 16:50:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EDDA3F80602;
+	Tue,  1 Sep 2026 20:21:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 83408F804CC; Tue,  1 Sep 2026 16:50:35 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=103.89.5.43
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788274231;
-	b=jdlioxkBJQkGkw+l6mFN7Qqk7P8vVYTY76/0lLZ603xZs1mgg7AGQOva99CXOil/PSu+
-	 KnEDtZocAtRMbVFiq2fmlADkn6Mxg/+k77Kx1rQEXtV7X9W5WKJR+F5TQXUjDvzyCI63X
-	 i/DFzVuBiEj1iTdybD5EzG9r3EcVSFRzKvheSeg28xxfP25wDJ0l9IA0oElHgw7FaX4vJ
-	 Y6R+edRi3mgHG2/UDNiPBgtywBrvlB7O+34k8a/FCTQLRFt23kcPjmiTmMobvx6QmPrkr
-	 UyiwYoln/eyW5ouGy4G1LChu/jn5z52T3JIdKBEdLzml7uz8rQ3wodJ/lvkuBr0HbbA==
+	id 73DF4F804CC; Tue,  1 Sep 2026 20:21:05 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788286864;
+	b=gr7nZtevRVIEMC4hi+yaecMVRzUptUM+Twek6VMmSP7kWt2IlRQghC7QbUTVamS/hPYU
+	 TRKH2nddqIqzi1gZqTXYrvaSYKnKQZEn9QKLIAKGarj+mHS6uHydsURIpJ64LzU9ifTiJ
+	 Wio414djmHVI9T7+J1T+Clz8IsfKBPuB8N5+uw2eyXqjlIMKimmPU4O+IG48zmcGlgFPC
+	 ia4eHdAzUyXTHOS0Jn1/WTmkV3sARTJuv8DoVE94j3N2jZkFBgLKbthSwtZ1wdw0ftj0u
+	 H31Y13WuOF37+dsFZs4c7nRQYCok7uLyiTD978R6iFiiW2ctGwgctU7fI0hqX18s4Mw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1788274231;
-	h=DKIM-Signature:From:Date:To:MIME-Version:Message-ID:Subject;
-	bh=x7gKXq/ksmgzDxLJvl5gU8n+ePWclYehWfaz/nnhvxo=;
-	b=H5dBJJbttqC0a3lzZ/Wchz5Hm5rumLebGZ2GcaexS8m08QvYewUSMj2t4ep5SV77NMEw
-	 WDohQhIRRmVMuLMTpylwB7mTKagf7DxDm1opRvLxQgQZXJeQSJTWw51wscAPYpimo1t6l
-	 ZR4xiTaZWxQSLNHHEfwjxzLDlhnqcuqlOquTtwZteqX8cVUFh8cbXQ6m6rCAz24ArwgBE
-	 wq+uFo7WUUjRkZLKRV4BTQDRZxenwUPdcB7NTTGsZlid/Wqrz4dd6ch1Ozl2PZ9M8YEQK
-	 oLMMVIeXAPBmqxLO33jjsLGtLrWPyCAyuTLOJBycUmUw17y0v/2niGBacDxch7PjCmg==
+	c=relaxed/simple; t=1788286864;
+	h=DKIM-Signature:From:To:Subject:Message-Id:Date:MIME-Version;
+	bh=dsSrzlawcTjVN2geYOpqAWRil+tOQyfB58l5vWcfDaA=;
+	b=YPkGWGXn2T6LqTYaYm4YQnYnV+awarOuCvtFxbabZios2wBv9miK+D4vCrMyQBoOsAZr
+	 bfIx9Il+uJ3ahp22bGkeoIougdasrKaa+HBqcNOMivvuIgWBz8gv0nS18HyRFuZvbyDiA
+	 MVkOWHpNXwSE/VrCAlmMm7a7+FMpKD3Ut3vB6IfXhlo43rtI/WIKrUy8lyvTC/VsoNAjQ
+	 qBuyykT5zm74JFx9MgZOK33y+PX/2mZye/lwDHibGW/fekqijyg9uQVbTKZLytvlucoJ1
+	 UHYX1+/HX68KKbYIlYaRE8Jg41RxpvgxVuW8orlWmxjybVfT0ZN0FKeWLH3Mj6ZCxcA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=n0th1ng.my.id header.i=@n0th1ng.my.id header.a=rsa-sha256
- header.s=dkim header.b=S9QGxO87;
-	arc=none smtp.remote-ip=103.89.5.43
-Received: from mail.n0th1ng.my.id (mail.n0th1ng.my.id [103.89.5.43])
+ dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b="F2Kee/je";
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5E6BBF801F5
-	for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2026 16:50:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E6BBF801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 806FCF80246
+	for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2026 20:21:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 806FCF80246
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=n0th1ng.my.id header.i=@n0th1ng.my.id
- header.a=rsa-sha256 header.s=dkim header.b=S9QGxO87
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon)
- with ESMTPA id 4799180724;
-	Tue, 01 Sep 2026 21:50:09 +0700 (WIB)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=n0th1ng.my.id;
-	s=dkim; t=1788274212;
-	h=from:subject:date:message-id:to:cc:mime-version:content-type;
-	bh=x7gKXq/ksmgzDxLJvl5gU8n+ePWclYehWfaz/nnhvxo=;
-	b=S9QGxO87cQZ3YX7xpPy6LXETXRwPbEdPtdohYYn1jrQ8CHVhG9JYvHoBzCPbxBlhShNPYj
-	3jl07LL+PgFsUL14M1mSLAGZU5K77qY05HZpVbn0Q+n62f8GwwSPK2q0yDdWg8CMqXzqct
-	yh0fF4LSsbGlPZxHFNIS6UxoQ1RKTY1Ho25DxHBZP4vATctehv2a4nE1BiIxjuIPwY13Zl
-	MIaZ45aqu7osIjMRFy+Kcda8JkKIW0yZoCTBcP2h4ApLFBHtyJnOTlk44vlKpxPNt1FzeU
-	SqeLHBQ5xvsbg78ZxuTZtf3nRCSUjSEqqYjMFO9kPwEgfa0OwDy6Ot+kLVyJjg==
-From: "epreinhad" <epreinhad@n0th1ng.my.id>
-Date: Tue, 01 Sep 2026 21:50:09 +0700
-Cc: linux-usb@vger.kernel.org
-To: alsa-devel@alsa-project.org
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=F2Kee/je
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 2B993600D2;
+	Tue,  1 Sep 2026 18:21:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC3BD1F000E9;
+	Tue,  1 Sep 2026 18:20:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788286860;
+	bh=0aquq+0zmJJq1Jw5/6+wicqtQs66ywHtJeJMa69OFkM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date;
+	b=F2Kee/jeLUNuQFnfBmN2R14jZ5PGwRibMLtzwAFU2hauiBuE4KvoO9aClpFDA29PZ
+	 3zsdfWyeVqHLH0h9iAseMBTvllkBu1DTKmAeW2O4EX9BtNm/4dI1NIsW8rHjAtYKXP
+	 s0eHDWZqx+/PUaasxXLXJWQWjit0YMZPoab6PBYkumpbEMVwppYeQCvIEFAM4ofbF1
+	 7mPMgkaJ6XorZoUsF1UWuLHQUXaFz3PEoCt9wL5X+El/gPpvb0Uqg29RF4PB0+/37i
+	 2U+4sRF+suW8fNJ/qJj5AAaog54ULGvOAEv4N96sycGiTLlp4HjwW4dtg0A0jHQE9G
+	 mgRDWPIvpjdSQ==
+From: Mark Brown <broonie@kernel.org>
+To: Neo Chang <YLCHANG2@nuvoton.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, robh@kernel.org,
+ krzk+dt@kernel.org, linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, neo.chang70@gmail.com, kchsu0@nuvoton.com,
+ sjlin0@nuvoton.com
+In-Reply-To: <20260825021644.1203076-1-YLCHANG2@nuvoton.com>
+References: <20260825021644.1203076-1-YLCHANG2@nuvoton.com>
+Subject: Re: [PATCH v10 0/2] ASoC: codecs: Add Nuvoton NAU83G60 audio codec
+ driver
+Message-Id: <178813028184.13461.14517335323075054558.b4-ty@b4>
+Date: Sun, 30 Aug 2026 23:51:21 +0100
 MIME-Version: 1.0
-Message-ID: <28694f1b-93b7-5606-7fc9-0411c28d23a3@n0th1ng.my.id>
-Subject: [Bug Report] snd-usb-audio playback stuttering on Realtek USB Audio
- =?utf-8?q?(0bda=3A483e)?=
-User-Agent: SOGoMail 5.12.9
-X-Last-TLS-Session-Version: None
-Message-ID-Hash: DHFKMHRFSEDGUJBRKMDBYXWOODDPXUF6
-X-Message-ID-Hash: DHFKMHRFSEDGUJBRKMDBYXWOODDPXUF6
-X-MailFrom: epreinhad@n0th1ng.my.id
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.17-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1575; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=dsSrzlawcTjVN2geYOpqAWRil+tOQyfB58l5vWcfDaA=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBqlxeI0QbnnuzssYZuy2YP/z2l0mos9U0eQfhHH
+ seOHw3DRtKJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCapcXiAAKCRAk1otyXVSH
+ 0Bj0B/96v4pK3IaBuoH2rTWrK1i/wCW4nCkHpONulByjXFv9Rf6HACa9whmCDfm8zB0UEcHjVqr
+ i5liq7wNqcRJdY2sPz93vxPjKqDi8B9CfqxEbAcyEz9YYdcsQRlXi5wc1cNtPn/2tGYlDqwpP/a
+ aSyegolAA0TLa80YJGTCIBlrpwAB4B3ccBbajOwVAIy40FXwt6bdndZM+7xEdNCT9vvCE0MkMQ5
+ 6uOxBHSpSrS3iibBhNlSBaA2srZ0dU7drM5O9LCYdn1I3s0fs2I+ZCzefqaPqWG+nIgRF95iUKa
+ IDVEgdhUDBt3JYxqvC7yDa6WKwlMqX/rHwwAyAhiMZU/mFjk
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Message-ID-Hash: 27EGF62EGS65UG6PXBJ7TNJU6HJH4EEP
+X-Message-ID-Hash: 27EGF62EGS65UG6PXBJ7TNJU6HJH4EEP
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
  nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
  news-moderation; no-subject; digests; suspicious-header
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=utf-8
-X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DHFKMHRFSEDGUJBRKMDBYXWOODDPXUF6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/27EGF62EGS65UG6PXBJ7TNJU6HJH4EEP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,30 +125,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-DQpEZWFyIEFMU0EgYW5kIEtlcm5lbCBEZXZlbG9wZXJzLA0KSSBhbSB3cml0aW5nIHRvIHJlcG9y
-dCBhIHBlcnNpc3RlbnQgYXVkaW8gc3R1dHRlcmluZyBhbmQgYnVmZmVyIHVuZGVycnVuIGlzc3Vl
-IG9jY3VycmluZyB3aXRoIGEgUmVhbHRlayBVU0IgQXVkaW8gZGV2aWNlIChWSUQ6IDBiZGEsIFBJ
-RDogNDgzZSwgU2FkZXMgRGlhYmxvIGdhbWluZyBoZWFkc2V0KSBhY3Jvc3MgbXVsdGlwbGUgTGlu
-dXggZGlzdHJpYnV0aW9ucyAoaW5jbHVkaW5nIENhY2h5T1MpIGFuZCBBbmRyb2lkLiBUaGUgZGV2
-aWNlIHdvcmtzIGNvbXBsZXRlbHkgYXMgZXhwZWN0ZWQgb24gV2luZG93cy4NClN5c3RlbSBFbnZp
-cm9ubWVudDoNCiAqIA0KT1M6IENhY2h5T1MgKEFyY2ggTGludXggYmFzZWQpIC8gQW5kcm9pZCAq
-IA0KS2VybmVsOiA3LjIuMi0xLWNhY2h5b3MgKiANCkFyY2hpdGVjdHVyZTogeDg2XzY0DQpQcm9i
-bGVtIERlc2NyaXB0aW9uOiBEdXJpbmcgc3RhbmRhcmQgcGxheWJhY2ssIHRoZSBkZXZpY2UgZXhw
-ZXJpZW5jZXMgY29uc2lzdGVudCBhdWRpbyBzdHV0dGVyaW5nLiBEaXJlY3QgQUxTQSB0ZXN0aW5n
-IHVzaW5nIHNwZWFrZXItdGVzdCAtRCBodzoyLDAgLWMgMiAtciA0ODAwMCAtRiBTMTZfTEUgb2Nj
-YXNpb25hbGx5IHRocm93cyBhIC01IElucHV0L291dHB1dCBlcnJvci4gSG93ZXZlciwgZG1lc2cg
-c2hvd3Mgbm8geEhDSSBob3N0IGVycm9ycywgVVNCIGRpc2Nvbm5lY3RzLCBvciBkcm9wcGVkIFVS
-QnMgZHVyaW5nIHRoZXNlIGRyb3BvdXRzLiBUaGlzIHBvaW50cyB0byBhIHByb3RvY29sIGNvbXBs
-aWFuY2UgaXNzdWUgb3IgYW4gaXNvY2hyb25vdXMgYWRhcHRpdmUgZW5kcG9pbnQgc3luY2hyb25p
-emF0aW9uIHF1aXJrIGluIHRoZSBkZXZpY2UgZmlybXdhcmUgdGhhdCBXaW5kb3dzIHRvbGVyYXRl
-cywgYnV0IHNuZC11c2ItYXVkaW8gZG9lcyBub3QuDQpUcm91Ymxlc2hvb3RpbmcgUGVyZm9ybWVk
-Og0KICogDQpEaXNhYmxlZCBVU0IgYXV0b3N1c3BlbmQgKHVzYmNvcmUuYXV0b3N1c3BlbmQ9LTEp
-LiAqIA0KVGVzdGVkIHNuZC11c2ItYXVkaW8gcGFyYW1ldGVyIGltcGxpY2l0X2ZiPTAuICogDQpC
-eXBhc3NlZCBQaXBlV2lyZS9QdWxzZUF1ZGlvIHRvIHRlc3QgcmF3IEFMU0EgaGFyZHdhcmUuICog
-DQpTd2l0Y2hlZCBwaHlzaWNhbCBwb3J0cyBiZXR3ZWVuIFVTQiAyLjAgYW5kIFVTQiAzLnggY29u
-dHJvbGxlcnMuDQpEaWFnbm9zdGljIExvZ3M6DQogKiANCkFMU0EgSW5mb3JtYXRpb24gU2NyaXB0
-IG91dHB1dDogaHR0cHM6Ly9hbHNhLXByb2plY3Qub3JnL2RiLz9mPWM1MGUxMjAyYjM3MzA5ZjQ2
-M2FlMzEwZDJlYWZjYjMyZjI3YTQxZjNodHRwczovL2Fsc2EtcHJvamVjdC5vcmcvZGIvP2Y9YzUw
-ZTEyMDJiMzczMDlmNDYzYWUzMTBkMmVhZmNiMzJmMjdhNDFmMw0KUGxlYXNlIGxldCBtZSBrbm93
-IGlmIGFueSBhZGRpdGlvbmFsIGxvZ3Mgb3IgdGVzdHMgYXJlIHJlcXVpcmVkIHRvIGFkZHJlc3Mg
-dGhpcyBjb21wYXRpYmlsaXR5IGlzc3VlLg0KQmVzdCByZWdhcmRzLA0KZXByZWluaGFkDQrCoA0K
+On Tue, 25 Aug 2026 10:16:42 +0800, Neo Chang wrote:
+> ASoC: codecs: Add Nuvoton NAU83G60 audio codec driver
+> 
+> This patch series adds support for the Nuvoton NAU83G60 audio codec.
+> 
+> The NAU83G60 is a stereo Class-D amplifier with an integrated DSP and
+> I/V-sense capabilities. The driver supports I2C register access through
+> regmap, DAPM widgets and routes, TDM interface configuration, and DSP
+> firmware loading.
+> 
+> [...]
+
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-7.4
+
+Thanks!
+
+[1/2] ASoC: dt-bindings: nuvoton,nau8360: Add NAU83G60
+      https://git.kernel.org/broonie/sound/c/384a0f7b5adb
+[2/2] ASoC: codecs: nau8360: Add support for NAU83G60 amplifier
+      https://git.kernel.org/broonie/sound/c/be88847a8bb1
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
