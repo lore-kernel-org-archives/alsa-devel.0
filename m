@@ -4,160 +4,182 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7967CC624CF
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2026 10:24:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A915C61DD3
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2026 14:08:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B821601DE;
-	Tue,  1 Sep 2026 12:24:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B821601DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 74CE3601AB;
+	Tue,  1 Sep 2026 16:08:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74CE3601AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1788258276;
-	bh=8qdCKpSYEqyK3CR4mlD1IKDbMPyFGCq9QQGWvL2vR1s=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=GCOJbsjsAr5ypOYDRwXrUnKdm+VVX/qoeuXyoJOB7JlMuB94OkCTGUsj5erYTSwFh
-	 0NJhdIXsmEDHsb+f82jOcOQcoOPWNsGzq69wysuuNIS/Hffn3EJwYhXxWFxexqKO6T
-	 5rSdS6CNNu+/wnKwUWif3vL0XK3ru45cgHCS1oCY=
+	s=default; t=1788271711;
+	bh=9lbHYxaaUFdbyd42U/p4bqizcqzmLOiW9yG7pN6nJ1Q=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=EyvJe6REgmqtODEmpnJl/9tFiOsgYW05ixnYfV/FIOw2YDODGJX9zjvZzX4jixRTm
+	 tcywNlzKzZG4wTncVFMdw8+5IgvWlkuIVJjCFnVTOnf7Y+kkfC5SoxjVoXr0f2avv9
+	 nsFvG1S3vvpvYwfHCJhn0OormtJasbzjdlNKiOvA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 415B5F805F5; Tue,  1 Sep 2026 12:24:00 +0200 (CEST)
+	id 26BBFF805F6; Tue,  1 Sep 2026 16:07:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC55CF805FA;
-	Tue,  1 Sep 2026 12:23:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E68F9F805FF;
+	Tue,  1 Sep 2026 16:07:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 86D55F804CC; Tue,  1 Sep 2026 12:23:52 +0200 (CEST)
+	id 66C54F804CC; Tue,  1 Sep 2026 16:07:49 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz;
- arc=pass header.oldest-pass=0 smtp.remote-ip=40.107.201.56
-ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1788258231;
-	b=gGZH9CLX+dRErLMADvWNTH+TlNfOmPjsLuJG78wRA8D9igst60KtiJ2UkGVntlcbDuBF
-	 BwXHWXdKfcqHwvRA7UI7nYcD/IB7wu9enSmP84ERtEV/GMoW9X1yn3AYkJwuf0L8Zfh4f
-	 uhMlrcz8R0yBXTItD81CC/i2Mjzkkh9MFrtEymVv5buVPRfbOW3M9G3y01kVTPEbdp0Dk
-	 j2VTvG6aDZz3G6GrTHWUJ+aC3/9YLaCgL4dbZrIEP1ejKAwS5HaewINyXcOj5c/Yam9Nt
-	 jHzUWqURlnhHqDZCF4fXQ6+MpDRLmHoOwLUed/sUjU3VhIpu2Vl2l2LoC89shtIV/2A==
-ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1788258231;
-	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=8qdCKpSYEqyK3CR4mlD1IKDbMPyFGCq9QQGWvL2vR1s=;
-	b=rYbMTq26WEPQJUvMRhk7kCRF/rOhmNtoyoesJeAOK/xfJdx6+zj93PRc2bLtdhH4Ry4Q
-	 +J2YRF4Nfk0PFgSBS6KTkWDWJQpUVCEbJB6c08BXjN1AKchuUJyDDERKQaiZwn+E5MX9i
-	 2quIsrapl1R/5u6XYcd6ryGY9i3/eSFYi6PcDejRLRcYrAcQaKvI1DjxrrG22xpi19Sgk
-	 PE4oepHc5xXmrDw9qq0bD7p2q79GfU5G9m2WpzMqUausMjroHBVIT3lehf6mxhNV0EdHC
-	 VFyr1ttqe0YBE7TVDRdwOGYyvbyPpUmpgtLu+jBoZ8Dhu9JBd7jj4BIC4GMCtp/m8pw==
-ARC-Authentication-Results: i=2; alsa1.perex.cz;
- dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=hkAs5N7j;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=40.107.201.56
-Received: from CH4PR04CU002.outbound.protection.outlook.com
- (mail-northcentralusazon11013056.outbound.protection.outlook.com
- [40.107.201.56])
+ arc=none smtp.remote-ip=195.135.223.130
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788271667;
+	b=ipAS/T24m+lJUU3jdrioQ3lBlio7zUKSsASDyNlNqKNs19AnZ8rvKpwgnEn+pET91308
+	 WGiKGivzeVCm7w5IuOiPCgZTOMU8ez7WWLFYvkMlH/fwXDwMT703O6KrDPZYOQ5xIzAgU
+	 YmvVsnBGH7ovJSkFivNMU6rEgFBvXLsIg23UF50SHaTn5Ip5p5mxXlZlAdLBnT85ZGdXN
+	 dwWRhm36yTTIme91oV1wa3n7emxeJIMGO6qLI07X67iuoZLVVs1a08Hr672N3+r49sVQn
+	 KKUWe63yYI4C/aMTO7Oi0iU+ZvgXGNyQmNda12gxt2tkoTwVXMKG/SSQpBaC1PCyWmQ==
+ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1788271667;
+	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
+	 Message-ID:From:To:Subject:MIME-Version;
+	bh=9lbHYxaaUFdbyd42U/p4bqizcqzmLOiW9yG7pN6nJ1Q=;
+	b=Oa9V6KHkEyXrqb4myOw22XHj2tRvnpTrMsvrmQAVbsixsGjZDNi+vQqVhFmnBgQDvgEb
+	 SavecZ3saek0LXb7h7zDaZ+v4nClEsvmBirxY2+mOkadYuBRDjPevdP87weDFapHFv4Cr
+	 dBDUlGrVZaBDpnmbpqihV2lW2KjBzAVdUP0TJRs/tDYiggFjb1PYg8WDI/5G1nYfXEXo4
+	 p1pHbCT7UQF28O5TV+7wpQRipDM7p4QvXrhQ6t9tHfiVHlbJUGNWW5VwHWhc8hqTBf0Qj
+	 xZK4Jo7sZndATm4zoDS/5LwLNdVIm5Sl1ue6sCEgW6bVyy8YR0rn9UeYL1tdv2GMY6Q==
+ARC-Authentication-Results: i=1; alsa1.perex.cz;
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=RipTC9CF;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=B3n4EX97;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=yUwup2bF;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=kXrrKtio;
+	arc=none smtp.remote-ip=195.135.223.130
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8C0A5F80246
-	for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2026 12:23:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C0A5F80246
+	by alsa1.perex.cz (Postfix) with ESMTPS id B259FF801F5
+	for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2026 16:07:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B259FF801F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=hkAs5N7j
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=mqUss/bX1ZSclo3x5P+rwX5lGKGSHmGE2KkJO+bJ/MD0xlY4I5TCXw/ihVXS3Upoor0YqcxcSs0243S5ZxzLRAR+dPlqZxdpGcpP6f1JzJSYNI/6E2XvjeppAaT09XS6zurR6RHOFYe30Hnjmcrf5o8OO+fAiFU9um+OVipCUCaMbxESD5qC9mOgpR6ZPC3UNmSii9KDcl5IlAXCLuSqsNzDJfsTus892tTHTFbvqwzgiKWur4crR336jTOeJSbcfN8h1NGPuLDaxbxRGROHJ6UaqILpgB4rNfXerVtjw/vqhy/pxyXL8R4dMmembD99aCw8pgO+2s9lyVawTP5AVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8wAvgHvAsFSGMmCOH4Y6I42T3RK48q+2JbibJ/wTpOk=;
- b=LKHV6mjAqu1/pdfUFSJS/qnla8gAzVGRDv7sDlKsKttZpyvBwr2Wa+lDXRwn0NrJgFbBJ6aO6wUuit+Yq4EaPZUODtz4WPW1ontKXSPrTaPpRglU1lAwLscGHRoXjzeg8UuRVbwqmfpZpheJtcadrhM30Q4Y+WYbW8ZxyerqGodj71KcB6Msr3uHZltTsUGeEO8TP5EIKfAr+dN3Aif6lxg2jIvfTsht6GC3PITmXW3ZNgHjTAbOGsvxrnhXit/omYJi9N9YvOZRbPBWpbIYTvdMh45WXMQv/RaD9uBNQRF6qeKpDnV4NCxIbRkC+5KVtXLFCMb3zlmUd4wEVmde0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8wAvgHvAsFSGMmCOH4Y6I42T3RK48q+2JbibJ/wTpOk=;
- b=hkAs5N7jTskER8I6vCO6DGJCCeZVEEIJWkbxjhC7vdtE9Wve28LAkWBRAs/MCfAzk2QNC2wkZ9NtFrJgjZoyjWt5be9UNtTR+tOLhAomh8R+pdjB8wrufEbn0s7N2KjDEkPa5pPNNKX1XYqQjxmf7BhnRTkUy1qhRh0C2+wKdCM=
-Received: from SA0PR12CA0030.namprd12.prod.outlook.com (2603:10b6:806:6f::35)
- by DS2PR12MB108293.namprd12.prod.outlook.com (2603:10b6:8:404::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.360.13; Tue, 1 Sep
- 2026 10:23:44 +0000
-Received: from SN1PEPF00036F3D.namprd05.prod.outlook.com
- (2603:10b6:806:6f:cafe::3b) by SA0PR12CA0030.outlook.office365.com
- (2603:10b6:806:6f::35) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.360.13 via Frontend Transport; Tue, 1
- Sep 2026 10:23:44 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
-Received: from satlexmb08.amd.com (165.204.84.17) by
- SN1PEPF00036F3D.mail.protection.outlook.com (10.167.248.21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.382.8 via Frontend Transport; Tue, 1 Sep 2026 10:23:43 +0000
-Received: from satlexmb10.amd.com (10.181.42.219) by satlexmb08.amd.com
- (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.46; Tue, 1 Sep
- 2026 05:23:43 -0500
-Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb10.amd.com
- (10.181.42.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.46; Tue, 1 Sep
- 2026 05:23:42 -0500
-Received: from amd-B550M-DS3H.amd.com (10.180.168.240) by satlexmb08.amd.com
- (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.46 via Frontend
- Transport; Tue, 1 Sep 2026 05:23:39 -0500
-From: Syed Saba Kareem <syed.sabakareem@amd.com>
-To: Mark Brown <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Sunil-kumar Dommati
-	<Sunil-kumar.Dommati@amd.com>, Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-	<eraleexxx@gmail.com>, Venkata Prasad Potturu
-	<venkataprasad.potturu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Zhang Heng
-	<zhangheng@kylinos.cn>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	Tommaso Soncin <soncintommaso@gmail.com>, Gustavo Salvini
-	<guspatagonico@gmail.com>, "open list:AMD ASoC DRIVERS"
-	<linux-sound@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ASoC: amd: yc: Add DMI entry for HP 255R G10 laptop
-Date: Tue, 1 Sep 2026 15:53:26 +0530
-Message-ID: <20260901102338.26403-1-syed.sabakareem@amd.com>
-X-Mailer: git-send-email 2.43.0
-MIME-Version: 1.0
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=RipTC9CF;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=B3n4EX97;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=yUwup2bF;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=kXrrKtio
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id F17952275C;
+	Tue,  1 Sep 2026 14:07:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1788271657;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IsZK4jm0JzBlFSl/aTthADc9TmkYvM4civyL8fU2rLg=;
+	b=RipTC9CF9VARmxgljgYeutYJH7IWx4FNFY6E6RIlwK4iqT7Q7EFMehk0kuYEe8QxGECh4V
+	ETnf1O6N3PcT8r+J6+iyyOfVCN8+7AFPcu4Vh3grXuDltAAzzBseVVttJZ+piCmhbSKWfV
+	IVROxwaDmMU0fYK1SNFP2tikI3msqtE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1788271657;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IsZK4jm0JzBlFSl/aTthADc9TmkYvM4civyL8fU2rLg=;
+	b=B3n4EX97FGS1DEG/w4YZ3J7a+KauSuhjXP+6VkKeNURJYiu3IqcjsG3sLn/PEAP1tAtLpF
+	eo2Z9129D57AzfAw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1788271652;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IsZK4jm0JzBlFSl/aTthADc9TmkYvM4civyL8fU2rLg=;
+	b=yUwup2bFrsUfXCnJfiz2BtA6ADKjaEddwfPEaFMAgYCfcHwdlzkLO8ac7nSL2J4SL6F8Ry
+	+RagxePtdEczgjLVS/vselz8jCbznDxnyfWGJy6CVSI+xjHw0/UIAFxniHzVFEM3pz+/04
+	UBzq+x9HVy1ipaB9MtrHGwDs39MFGFc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1788271652;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IsZK4jm0JzBlFSl/aTthADc9TmkYvM4civyL8fU2rLg=;
+	b=kXrrKtiojBlT1c7oWWUh38aYmJBkR1jQpWlmQEpn1poKiRSnCMs4nEcI9xOdzmPYd7WPg6
+	hwTAyW/eghE+eDAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BB4EC1369E;
+	Tue,  1 Sep 2026 14:07:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id I3wXLSTclmpUXQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Tue, 01 Sep 2026 14:07:32 +0000
+Date: Tue, 01 Sep 2026 16:07:32 +0200
+Message-ID: <878q5lcbff.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: =?ISO-8859-1?Q?Isma=EFl?= Bahloul <i.bahloul01@gmail.com>
+Cc: linux-sound@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	linux-kernel@vger.kernel.org,
+	kernel test robot <lkp@intel.com>
+Subject: Re: [RFC PATCH v2 1/4] ALSA: usb: add RME Babyface Pro FS driver
+ (proprietary mode) =?ISO-2022-JP?B?GyRCIT0bKEI=?= core + PCM
+In-Reply-To: <20260901090635.9208-2-i.bahloul01@gmail.com>
+References: <20260901090635.9208-1-i.bahloul01@gmail.com>
+	<20260901090635.9208-2-i.bahloul01@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF00036F3D:EE_|DS2PR12MB108293:EE_
-X-MS-Office365-Filtering-Correlation-Id: 48070c1a-42b0-46b8-3c46-08df081319ad
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|1800799024|82310400026|36860700016|23010399003|7416014|376014|18002099003|56012099006|11063799006|10067099003;
-X-Microsoft-Antispam-Message-Info: 
-	opM7CyA8zwzAQdEV09548PQGb9WaKEpw9kmK4QHpu0N2wSlIysOLtk3pYY9Pw+NlICNbueQJGtwaDp5aSmFYUYZhwitzECNpUFisMVFMhjThzO27BEZ413eTGmUtRETclp4Coj3PWZhefeJy98hr8GfVs8jDpqAAA+GkvwVAAEnJB5HvLr1xuxsn37uEFQks5hys/KyMwhphl3dYhieb9RX73skTpRvev79jERhHyzUttR27mDayF6bNfpYZkXwxfOe0RoE7Bu+q9V/4lFA1e0PKDLfpSzVfWsdU1zjqnp6kMSLuAk8y0aDOJNf9rkIH9R2c/rFL6ic3Y7E1YmaE18bexY7f/Z68vuMMU4kHOgEx/crfwXCseptwo2ouAR9cIlvZFNxETO9wiemcJeri5Kt/ssENi6VLj9B+aODD/wE7N1yEFkdfiJ3JxATXRSnjs4QRuKBGzqQD4TYZUbil7TupFaMAfxO5+wyFUrJxNVjGfFsrhKa6r4TV0NmfbBSS5h7QDItWM5uaf92EiaVl33oUxfczz/v8svaV84i1q9Iu1B98A59x1Bm6Pd2XjcE8kqc6Ms+JdcB1TXncpaDZRvwzcvLHPmiDnj+nmYY3xtTo22IoQYtTt69pzCEypRGRG4eeBgrsuc2irJQrJnFybqB7EtZsHHre4oNa0W6eJdZ1Fxf1fAn7/jjIvq4hFM8nlGIe1BOHIUkP0k3/S3ih8Q==
-X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700016)(23010399003)(7416014)(376014)(18002099003)(56012099006)(11063799006)(10067099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	HZyujoVh8eL18W5jG35rFF6mzN2XdI4G/Y9sMCZr/Xd+adQJ4zer1C1Ho/CY/YMYXbxCUyxhM2h3EVuPH+JWwRv4tT5FkYbrNlrQcvO67RxHjSkKwI+6uIXFmqYGym5yHDGvfF+0JkGfU4Z7gZskvgUIOU/E/DNhqwZemUOozYufWJnv9LBsKaGHJW2lY9X32A2SGMzJlCM9dwo3TcpvVK6YDHlTEBH2WoX3lfRNC/X+tPcQJf9y3aFQFA9nDP0ao8hfP7af3ZmTpuHmfDxfHmrMOArm4bKSlr3Y7/2PfBG7+x7dcVgWCbgSjl8pM39nYI1o5n5EuIXZ2cacBF6PZRMxN3yyNk8/3PikTeDpH+UvUI9K+2OUTWXFMz9nK0gpiyFBFIDylpdu5erNMPsAzV2HO+khRmLti1VzbUgFg3L4PWs9vnz5Tse4i7CIKO8Q
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2026 10:23:43.7422
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 48070c1a-42b0-46b8-3c46-08df081319ad
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	SN1PEPF00036F3D.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS2PR12MB108293
-Message-ID-Hash: BVEKNN4BIAHCBAUUFJIGWVPXB2CNTQ27
-X-Message-ID-Hash: BVEKNN4BIAHCBAUUFJIGWVPXB2CNTQ27
-X-MailFrom: Syed.SabaKareem@amd.com
+X-Spamd-Result: default: False [-1.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com];
+	ARC_NA(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid,intel.com:email]
+Message-ID-Hash: A2X7FEHBPLFXK2AHQBIJGWHI5V6UM4ZV
+X-Message-ID-Hash: A2X7FEHBPLFXK2AHQBIJGWHI5V6UM4ZV
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -168,7 +190,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BVEKNN4BIAHCBAUUFJIGWVPXB2CNTQ27/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A2X7FEHBPLFXK2AHQBIJGWHI5V6UM4ZV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -177,37 +199,230 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Syed Saba Kareem <Syed.SabaKareem@amd.com>
+On Tue, 01 Sep 2026 11:06:32 +0200,
+Ismaïl Bahloul wrote:
+> 
+> Add the core RME Babyface Pro FS driver (proprietary mode, VID
+> 0x2a39 PID 0x3fc0): USB vendor-request protocol + cold init,
+> interrupt-URB PCM streaming on interface 5, mixer-state persistence
+> across re-probes/resume, and the card lifecycle (probe/disconnect/PM/
+> module entry).
+> 
+> The control surface (mixer, front panel, DSP EQ) is stubbed here so
+> the module links; the follow-up patches in this series implement each
+> part.
+> 
+> Signed-off-by: Ismaïl Bahloul <i.bahloul01@gmail.com>
+> Assisted-by: DeepSeek V4 Flash
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202609010710.w6NVelt4-lkp@intel.com/
 
-The HP 255R G10 laptop has an internal DMIC connected
-to the AMD ACP6x audio coprocessor.
-Add a DMI quirk entry so the internal microphone is
-properly detected on this model.
+You don't have to put Reported-by / Closes tags here.
 
-Reported-by: eraleexxx@gmail.com
-Signed-off-by: Syed Saba Kareem <Syed.SabaKareem@amd.com>
----
- sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+And, above all, please try to give some "big picture" of the design of
+the driver.  It's not clear what the stream_work does and how the
+stream numbers are managed and how they influence on what.
 
-diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-index 3f852393fc99..e4456249958a 100644
---- a/sound/soc/amd/yc/acp6x-mach.c
-+++ b/sound/soc/amd/yc/acp6x-mach.c
-@@ -878,6 +878,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
- 			DMI_MATCH(DMI_BOARD_NAME, "TM2423"),
- 		}
- 	},
-+	{
-+		.driver_data = &acp6x_card,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "Hewlett-Packard"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "HP 255R 15.6 inch G10 Notebook PC"),
-+		}
-+	},
- 	{}
- };
- 
--- 
-2.43.0
 
+> diff --git a/sound/usb/babyfacepro/Makefile b/sound/usb/babyfacepro/Makefile
+> new file mode 100644
+> index 000000000..40badfd14
+> --- /dev/null
+> +++ b/sound/usb/babyfacepro/Makefile
+> @@ -0,0 +1,2 @@
+> +snd-usb-babyface-pro-y := babyfacepro.o babyfacepro-ctl.o
+> +obj-$(CONFIG_SND_USB_BABYFACE_PRO) += snd-usb-babyface-pro.o
+> diff --git a/sound/usb/babyfacepro/babyfacepro-ctl.c b/sound/usb/babyfacepro/babyfacepro-ctl.c
+
+SPDX tag is missing in Makefile?
+
+
+> --- /dev/null
+> +++ b/sound/usb/babyfacepro/babyfacepro-ctl.c
+(snip)
+> +/* Crosspoint-map output order vs the master-map order — HARDWARE-
+> + * VERIFIED 2026-08-24: the block that feeds the Phones is the FIRST
+> + * crosspoint block (0x34), while the Phones master is the SECOND
+> + * (0x03E2/0x0006).  The crosspoint map lists the Phones first (the
+> + * monitor output); the master map lists AN1/2 first.  Control index =
+> + * the canonical order (AN1/2=0, PH3/4=1, ...) so the crosspoint and
+> + * master controls line up; this table maps to the register block.
+> + */
+
+Avoid non-ASCII letters as much as possible.
+LLM tends to put the too fancy letters and comment styles, e.g....
+
+> +const u8 bf_xpoint_block[6] = { 1, 0, 2, 3, 4, 5 };
+> +
+> +/* ── control-surface stubs ──────────────────────────────────────
+
+.... like the above.  Avoid the unneeded separator like this.
+
+> --- /dev/null
+> +++ b/sound/usb/babyfacepro/babyfacepro.c
+(snip)
+> +int bf_vendor_write(struct snd_usb_babyface *chip, u8 req, u16 val, u16 idx)
+> +{
+> +	return usb_control_msg_send(chip->dev, 0, req,
+> +				    USB_DIR_OUT | USB_TYPE_VENDOR |
+> +				    USB_RECIP_DEVICE,
+> +				    val, idx, NULL, 0, 1000, GFP_KERNEL);
+> +}
+> +
+> +int bf_vendor_read(struct snd_usb_babyface *chip, u8 req, u16 idx, u8 *buf)
+> +{
+> +	return usb_control_msg_recv(chip->dev, 0, req,
+> +				    USB_DIR_IN | USB_TYPE_VENDOR |
+> +				    USB_RECIP_DEVICE,
+> +				    0, idx, buf, 4, 1000, GFP_KERNEL);
+> +}
+
+Avoid magic 1000.  It's a timeout for 1000ms, so define it.
+
+> +/* The 0x16 cold-init clear covers only 0x00-0x3D — the "cross"
+> + * registers of a block (L-reg odd / R-reg even of the stereo
+> + * sources) survive from the previous session and would sum L+R into
+> + * BOTH channels of the output (mono).  Zero them explicitly: 10 odd
+> + * L-registers (5,7,…23) + 10 even R-registers (4,6,…22).
+> + */
+> +int bf_crosspoint_clear_cross(struct snd_usb_babyface *chip,
+> +			      unsigned int blk)
+> +{
+> +	int ret, k;
+> +	u16 flag;
+> +
+> +	for (k = 5; k < 24; k += 2) {
+
+Those L and R registers should be defined properly, instead of
+hard-coded magic numbers in the loop condition.
+
+> +		flag = bf_flag_cycle[chip->flag_cnt];
+> +		chip->flag_cnt = (chip->flag_cnt + 1) & 3;
+> +		ret = bf_vendor_write(chip, BF_REQ_CROSSPOINT, 0x0000,
+> +				      (BF_REG_CROSS_BASE_L +
+> +				       BF_REG_CROSS_STRIDE * blk + k) | flag);
+
+This seems to be a quite often seen pattern.  Maybe it should be
+better in a helper, e.g. bf_vendor_write_cycle()?
+
+int bf_vendor_write_cycle(struct snd_usb_babyface *chip, u8 req, u16 val, u16 idx)
+{
+	u16 flag;
+
+	flag = bf_flag_cycle[chip->flag_cnt];
+	chip->flag_cnt = (chip->flag_cnt + 1) & 3;
+	return bf_vendor_write(chip, req, val, idx);
+}
+
+> +/* ── mixer-state persistence across interface re-probes ────────
+> + * A userspace client can claim the proprietary interface via usbfs
+> + * (USBDEVFS_DISCONNECT_CLAIM — seen with PipeWire grabbing the
+> + * device when a stream targets the sink, and with the TuxMix
+> + * user-space daemon's libusb).  That detaches us and the card
+> + * disappears for the duration; on release the interface re-probes.
+> + * The device keeps its registers across the detach, but our cold
+> + * init clears them — so save the mixer state at disconnect and
+> + * restore it at the next probe.
+> + */
+
+Hmm, this could be done by alsactl restore, in general, too?
+
+Though, the state save/restore could be used for the runtime PM, too,
+so it can be useful.  But it's something to be considered later.
+
+> +/* ── stream (interrupt URBs, caiaq-style) ──────────────── */
+> +
+> +static bool babyface_capture_copy(struct snd_usb_babyface *chip,
+> +				  struct snd_pcm_substream *subs,
+> +				  const u8 *data, unsigned int frames)
+> +{
+> +	struct snd_pcm_runtime *rt = subs->runtime;
+> +	unsigned int buf_frames = rt->buffer_size;
+> +	unsigned int words = chip->frame_bytes / 4;
+> +	unsigned int chans = rt->channels;
+> +	unsigned int pos, f, i;
+> +	unsigned long new_period;
+> +	bool crossed = false;
+> +	u8 *dst;
+> +
+> +	spin_lock(&chip->lock);
+> +	pos = chip->hw_ptr[SNDRV_PCM_STREAM_CAPTURE] % buf_frames;
+> +	for (f = 0; f < frames; f++) {
+> +		const __le32 *w = (const __le32 *)(data + f * chip->frame_bytes);
+> +
+> +		dst = rt->dma_area + frames_to_bytes(rt, pos);
+> +		for (i = 0; i < chans; i++) {
+> +			/* Channel map: app ch0-3 = device words 0-3 (AN1-4);
+> +			 * app ch4-9 = words 6-11 (ADAT/SPDIF); app ch10/11 =
+> +			 * words 12/13 = a FIXED-GAIN playback tap (observed
+> +			 * 2026-08-25: the playback echoes there at ~−27 dB,
+> +			 * independent of the output masters — NOT the output
+> +			 * bus; the ADAT/SPDIF range is words 6-11 only).  The
+> +			 * device words 4/5 are a fixed marker, not audio —
+> +			 * skipped.  At 96/192 kHz the frame has fewer words;
+> +			 * missing ones read as zero.
+> +			 */
+> +			static const u8 map[12] = { 0, 1, 2, 3, 6, 7, 8, 9,
+> +						   10, 11, 12, 13 };
+> +			u8 wi = i < 12 ? map[i] : 0xff;
+> +			s32 s = 0;
+> +
+> +			if (wi < words) {
+> +				/* 24-bit sample in bytes 1-3; arithmetic shift
+> +				 * sign-extends from bit 23.  S24_LE container.
+> +				 */
+> +				s = (s32)le32_to_cpu(w[wi]) >> 8;
+> +			}
+> +			put_unaligned_le32((u32)s, dst + i * 4);
+
+Why do you have to convert to S24_LE at all?
+You can use S32_LE with msbits.  That's a far more standard format,
+and even easier for user-space.
+That is, just copy the data as-is.
+
+> +static bool babyface_playback_copy(struct snd_usb_babyface *chip,
+> +				   struct snd_pcm_substream *subs,
+> +				   u8 *data, unsigned int frames)
+> +{
+> +	struct snd_pcm_runtime *rt = subs->runtime;
+> +	unsigned int buf_frames = rt->buffer_size;
+> +	unsigned int words = chip->frame_bytes / 4;
+> +	unsigned int chans = rt->channels;
+> +	unsigned int pos, f, i;
+> +	unsigned long new_period;
+> +	bool crossed = false;
+> +	const u8 *src;
+> +
+> +	spin_lock(&chip->lock);
+> +	/* Clamp to what the app has actually written: the in-flight URBs
+> +	 * (nurbs × frames_per_urb) can exceed the app ring, and without
+> +	 * this the driver advances hw_ptr past appl_ptr — the ALSA core
+> +	 * then flags a spurious XRUN on the next app interaction even
+> +	 * though the app refills on schedule (seen at period 16-128 /
+> +	 * 96-192 kHz with nurbs=16).  The device just repeats the last
+> +	 * frames (stale audio) instead of corrupting the stream state.
+> +	 * NB: subtract the unbounded counters directly — modulo arithmetic
+> +	 * is ambiguous at exact buffer multiples (appl=512, hw=0 → both
+> +	 * wrap to 0).
+> +	 */
+> +	{
+> +		snd_pcm_sframes_t data =
+> +			(snd_pcm_sframes_t)(rt->control->appl_ptr -
+> +					    chip->hw_ptr[SNDRV_PCM_STREAM_PLAYBACK]);
+> +		if (data < 0)
+> +			data = 0;
+> +		if (data > (snd_pcm_sframes_t)buf_frames)
+> +			data = (snd_pcm_sframes_t)buf_frames;
+> +		if ((unsigned int)data < frames)
+> +			frames = (unsigned int)data;
+> +	}
+
+Hmm, this sounds weird.  We can tolerate the XRUN check, but this
+doesn't look good.
+
+I stop at this point for now.
+
+
+thanks,
+
+Takashi
