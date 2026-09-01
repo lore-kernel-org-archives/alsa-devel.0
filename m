@@ -4,100 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4864FC61DD6
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2026 06:29:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D9CCC61DD3
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2026 09:38:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B890C601D7;
-	Tue,  1 Sep 2026 08:29:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B890C601D7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39000601D0;
+	Tue,  1 Sep 2026 11:38:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39000601D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1788244161;
-	bh=+MYnlwNVlutc2ooZ2XYr20uRES4pC/cMbjRJHdsRDcA=;
-	h=Date:From:To:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1788255533;
+	bh=DvzPj6aNhkWMeTNrCeMVZ+XBfNBxU6Uyz+P0kXStCSI=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ZRTzp56suxp2yaU3xJXla7K/zHUvbhNiuSKevT5xtDUeH9mZl8hQqsch6zy8rLi7o
-	 0PK6UcDj5E+TQ/LFQX50vJorhUFQ1YdCi7meXfeTwyKT/gxnMxEtH9zDJJdWIchpf1
-	 0JCjwsseWo7BhuDopJ/k2bfTjKuyDmzCXQJsYSdU=
+	b=u/mH+hOkkyTIqb23Nh334n+zGvP/AaUiJxPPBZliqR4CarfzD+kUgXUYnG37Sec7d
+	 nFokB1IBzNkgSopk+iA/LtFeZK1HbBvNuSDRyYdclaZElpYR2a6zmYdQ5lh4rnCtys
+	 h0XXF35ognEAHaG/sV63Ii4YCxnuMgn02yGB5j/8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 206E5F80601; Tue,  1 Sep 2026 08:28:47 +0200 (CEST)
+	id 0F476F805EF; Tue,  1 Sep 2026 11:38:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 763D0F805FC;
-	Tue,  1 Sep 2026 08:28:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8A00DF80601;
+	Tue,  1 Sep 2026 11:38:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3B12BF804CC; Tue,  1 Sep 2026 02:20:55 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=129.27.2.202
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788222054;
-	b=mSGz97HjNwixBTMyJMDhO86EPAwznMuW9N3tUQuCyN5Nanzii47Odk0XPl+m3GerZw+k
-	 rxPBHD6L90fz4rs7Ib5km3ID01qqMgQikYrIyHkrQw7WBP5caDInBTbGhdO5N7soYFHdK
-	 Kon1dpnVj3JJ9Q3TST+h6KBo7D4n12vxly76xBwIDm5rN8Xnuy1h4A3VW+NlXM2xlGgPe
-	 l6Y4Z0rJYYTQsnK5xtbptYrFfQJSUCxk5bpSW9SfNkYMzBcYGlmiacLmTUeevCMPe9dco
-	 stS1/TjIqnw6HOaJpTIC2KJrp5sEpzl9tKMsk6jlsVA1ScokAv2N5QsLnDXCehUGnKQ==
+	id 60DD7F804CC; Tue,  1 Sep 2026 11:38:11 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=211.75.126.72
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788255486;
+	b=KrD/Qp/nT3ylZnGAcUYSnHU3EcBRNrggWAqF5EkKijwgyj6x8VVytO6OYuUjvV0pM+2d
+	 zqWEHDT+W0wT6nepdj0v75ggSbm3Lh/DzTyfkioNnbsPA6KOCJKAqXcrWO6V5grREsb/f
+	 L6WWQGW/EUYZnz/bIcTo4tFQaAmdsFtDm8r6mwdrkYA6MYcj/sSm4Fe/bTKKgzpqrq7Tl
+	 hk6nIQQw9+z1T6RuftG6Mu+kRoTz40NyFmSEYEuqZPLuEMCOEbhjNbOSnSwl6ZYAVD3NL
+	 TZWwbxb7v7A4sHrbFjvGMjJQnsySRcsR3Zra2ZVpyAWrfYeQG5FY0KSGo/xkjLJYmgw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1788222054;
-	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
-	bh=zKmL37fjm9Ol24k56TMjXFQDChLTASWYPZGyuMX1lp4=;
-	b=eEAQqYKAITkvu3pZW6VO24G14rk9LNVti6zN1ra68lJ4bDHZieUboTSSoubk115pE812
-	 Xmzm8/zCRvo1b168dFNgQY4HQbiC9bg84rhsv3grond1Dq59hKqmqQ7ujYQNSgZ5ynoSh
-	 f1MtpdFqGVXz0DLZR3mnlEJqXmhIUtdh/lvqlHodxiHHM5mk+lFpZERMvOnX1Bq/EpIUZ
-	 TNPUqDgca8mEufaMFh36XSG6ftakV27w9lnIo6MM29Qr6JA/B0sws4gFEjXzHbss6gTz8
-	 uv6RlXyesTIxahbPbqjTGjiDPEV/RORcvstdgyYct1jRQ82KADtYPoFXdVeNYSjZpYQ==
+	c=relaxed/simple; t=1788255486;
+	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=DvzPj6aNhkWMeTNrCeMVZ+XBfNBxU6Uyz+P0kXStCSI=;
+	b=S/uU2zFTKCRj+dXkg7gXaehhOAxdPZlas5o6mw4x4U4VefQvZBrKoeYakS0Q5Ik3VmAP
+	 TNXM1hp80Cebnu8XqBGQZLPXy2FR1d1lQrZCIYOkbKsUzr99uRBivJn/iO7FPUP4fQv5u
+	 ZOourbX3SRqnoF5MKoHMWUjYVGXUeabb1bDMVCuOOGIZVx2FTqi8G+c88R6ocJzGiDG1U
+	 xWs/6IBlFuJHSlJOpiTZ3xivdubGPU9/Aromi2paOdrDUkSoiwXlZBb1P/iusvvS7qk8l
+	 ITcBLoO9R13r3VZlwHd/NqCzYxykqRl+zzEyCxd9thuHyt9kMYgShNQgaSmESu6izTA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=tugraz.at header.i=@tugraz.at header.a=rsa-sha256
- header.s=mailrelay header.b=oPoW0v7n;
-	arc=none smtp.remote-ip=129.27.2.202
-Received: from mailrelay.tugraz.at (mailrelay.tugraz.at [129.27.2.202])
+ dkim=pass header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
+ header.s=dkim header.b="Hec/V9Bn";
+	arc=none smtp.remote-ip=211.75.126.72
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 218ECF80246
-	for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2026 02:20:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 218ECF80246
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9CC43F80071
+	for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2026 11:38:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CC43F80071
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=tugraz.at header.i=@tugraz.at header.a=rsa-sha256
- header.s=mailrelay header.b=oPoW0v7n
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tugraz.at;
-	s=mailrelay; t=1788222039;
-	bh=zKmL37fjm9Ol24k56TMjXFQDChLTASWYPZGyuMX1lp4=;
-	h=Date:From:To:Subject;
-	b=oPoW0v7nFBofRg+b+TmW4/oYMKiwMci/TPim0BAW5z841GjmdfSF6cBJHvWEe721V
-	 jxS95lFM4p6NxqgG8tWFqrtH78n2wfaSbjMsHnjDmDtAjPAXzngEvNTu8OP12lPpvR
-	 zyfpx9ED9P4xyRn5+yoL+E28B0Cz0IumT8n9D8cA=
-Received: from ehlo.thunderbird.net (public.router.steyrer87.ffgraz.net
- [193.33.150.55])
-	by mailrelay.tugraz.at (Postfix) with ESMTPSA id 4hYmjM1YXxz9s0w
-	for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2026 02:20:38 +0200 (CEST)
-Date: Tue, 01 Sep 2026 02:20:39 +0200
-From: Sally Marcher <marcher@student.tugraz.at>
-To: alsa-devel@alsa-project.org
-Subject: MOTU MicroBook II playback issue snd-usb-audio (hacky fix)
-User-Agent: K-9 Mail for Android
-Message-ID: <6690AE3A-5D2A-488D-BB09-1588948491D9@student.tugraz.at>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
+ header.s=dkim header.b=Hec/V9Bn
+X-SpamFilter-By: ArmorX SpamTrap 5.80 with qID 6819brD831591002,
+ This message is accepted by code: ctloc85258
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=realtek.com; s=dkim;
+	t=1788255473; bh=cFuEiTvbGSbGI2hR6tfQRTQoH/Pcc5RRh5Gl68dW0xM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:
+	 Content-Transfer-Encoding:Content-Type;
+	b=Hec/V9BnfJZWZakoHIl1ItUhwjaudZZtyaCBVBuDP6FhAkeFn2dE9cFbCfhGcmTp+
+	 VKyjNx9pioLeKA/KYVTwWqDJ9svln7ws9Nwm7W2tgDOdAR7aBVkP8H1oDBm0scSPMq
+	 5ShTKhKojyxOg1z3h01lg3WhkZi8Arz1qqveV+IX++gwnh5oQi0mBZhk8hDeTy/agT
+	 KqO6Gghx+r7voMrrBvmCPKuFEHIV/dKytFuDPBPTX3PsPi9d34hrEtnGc3hBNjpcxw
+	 aZoxwoBWKbDcBlgxFx5wTw2hLs8XXxWCj5OHHtbMrECK42crV6srkJJiUJvDhTQjyr
+	 2rLyMaXY06hAg==
+Received: from mail.realtek.com (rtkexhmbs02.realtek.com.tw[172.21.6.41])
+	by rtits2.realtek.com.tw (8.15.2/3.29/5.94) with ESMTPS id 6819brD831591002
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 1 Sep 2026 17:37:53 +0800
+Received: from RTKEXHMBS06.realtek.com.tw (10.21.1.56) by
+ RTKEXHMBS02.realtek.com.tw (172.21.6.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.43; Tue, 1 Sep 2026 17:37:54 +0800
+Received: from RTKEXHMBS06.realtek.com.tw (10.21.1.56) by
+ RTKEXHMBS06.realtek.com.tw (10.21.1.56) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.43; Tue, 1 Sep 2026 17:37:53 +0800
+Received: from sw-server.localdomain (172.24.54.4) by
+ RTKEXHMBS06.realtek.com.tw (10.21.1.56) with Microsoft SMTP Server id
+ 15.2.2562.43 via Frontend Transport; Tue, 1 Sep 2026 17:37:53 +0800
+From: <jack.yu@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+CC: <alsa-devel@alsa-project.org>, <lars@metafoo.de>, <flove@realtek.com>,
+	<oder_chiou@realtek.com>, <shumingf@realtek.com>, <derek.fang@realtek.com>,
+	Jack Yu <jack.yu@realtek.com>
+Subject: [PATCH] ASoC: rt721-sdca: Adjust latency control to fix no-sound
+ issue
+Date: Tue, 1 Sep 2026 17:37:51 +0800
+Message-ID: <20260901093751.2962786-1-jack.yu@realtek.com>
+X-Mailer: git-send-email 2.54.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TUG-Backscatter-control: bt4lQm5Tva3SBgCuw0EnZw
-X-Scanned-By: MIMEDefang 2.74 on 129.27.10.117
-X-MailFrom: marcher@student.tugraz.at
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Message-ID-Hash: R6ZCS7CTHVK3OJXZKYT2YPBHWJZDYSIE
+X-Message-ID-Hash: R6ZCS7CTHVK3OJXZKYT2YPBHWJZDYSIE
+X-MailFrom: jack.yu@realtek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: 3ZEK2EMU6Q6GE3FCKGBNX674OXFFKUKB
-X-Message-ID-Hash: 3ZEK2EMU6Q6GE3FCKGBNX674OXFFKUKB
-X-Mailman-Approved-At: Tue, 01 Sep 2026 06:28:41 +0000
-Content-Type: text/plain;
- charset=utf-8
-X-Content-Filtered-By: Mailman/MimeDel 3.3.10
+ header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3ZEK2EMU6Q6GE3FCKGBNX674OXFFKUKB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R6ZCS7CTHVK3OJXZKYT2YPBHWJZDYSIE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,38 +122,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi - quick help wanted:
+From: Jack Yu <jack.yu@realtek.com>
 
-*Issue:*
-MOTU MicroBook 2 produced really crunchy sound on the output with snd-usb-audio driver.
+Adjust latency control in speaker preset to fix no-sound issue.
 
-*hacky Fix:*
-Just setting urb_packs = 8 fixed in usb/endpoint.c (in data_ep_set_params)
+Signed-off-by: Jack Yu <jack.yu@realtek.com>
+---
+ sound/soc/codecs/rt721-sdca.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-*Question:*
-I would love to contribute, but just implementing a quirk that fixes urb_packs at 8 seemed really hacky to me, any recommendations on further things to check / try?
+diff --git a/sound/soc/codecs/rt721-sdca.c b/sound/soc/codecs/rt721-sdca.c
+index 159c35d19dba..b1c3dc060c24 100644
+--- a/sound/soc/codecs/rt721-sdca.c
++++ b/sound/soc/codecs/rt721-sdca.c
+@@ -206,6 +206,7 @@ static void rt721_sdca_amp_preset(struct rt721_sdca_priv *rt721)
+ 	regmap_write(rt721->regmap,
+ 		SDW_SDCA_CTL(FUNC_NUM_AMP, RT721_SDCA_ENT_FU55,
+ 			RT721_SDCA_CTL_FU_MUTE, CH_02), 0x00);
++	regmap_write(rt721->regmap, 0x2f5d, 0x1);
+ }
+ 
+ static void rt721_sdca_jack_preset(struct rt721_sdca_priv *rt721)
+-- 
+2.54.0
 
-*How I figured it out:*
-When I modified the old module https://github.com/manuel-rhdt/snd-microbookii to compile with a modern kernel it worked fine.
-Looking at the usb traffic with WireShark the usb packet size was smaller in case of snd-usb-audio compared to the snd-microbookii driver.
-
-*Kernel (issue also verified on a newer one, on this I did all my debugging / testing):*
-7.1.8-arch1-3 (Arch Linux)
-
-*Relevant dmesg output:*
-[17703.794487] usb 1-2: new high-speed USB device number 40 using xhci_hcd
-[17703.922374] usb 1-2: New USB device found, idVendor=07fd, idProduct=0004, bcdDevice= 0.49
-[17703.922383] usb 1-2: New USB device strings: Mfr=1, Product=2, SerialNumber=0
-[17703.922386] usb 1-2: Product: MicroBookII 
-[17703.922389] usb 1-2: Manufacturer: MOTU
-[17703.926053] usb 1-2: Waiting for MOTU Microbook II to boot up...
-[17703.926874] MicroBookII snd: 00 00 00 00 00 00 0b 14 00 00 00 01
-[17703.927854] MicroBookII rcv: 00 02 00 00 00 00 0b 14
-[…]
-[17707.052011] MicroBookII snd: 00 04 00 00 00 00 0b 18
-[17707.052932] MicroBookII rcv: 00 06 00 00 00 00 0b 18 00 00 00 01
-[17707.052943] usb 1-2: MOTU MicroBook II ready
-[17707.053014] usb 1-2: 0:1 : invalid sync pipe. bmAttributes 03, bLength 7, bSynchAddress 00
-
-Thanks for any help / advice,
-Sally
