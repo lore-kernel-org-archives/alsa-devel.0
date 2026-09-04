@@ -4,77 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBF66C624DE
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2026 07:04:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 565CBC624DE
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2026 07:05:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 28A7960203;
-	Fri,  4 Sep 2026 09:04:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28A7960203
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FBA460217;
+	Fri,  4 Sep 2026 09:04:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FBA460217
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1788505495;
-	bh=m8Vq14wjGEle04nPXsdB4QEY1+8wvsxldq81mjFlg2c=;
+	s=default; t=1788505507;
+	bh=3tUZi3lxjcz/XregwVnnMT850Yc0VvCh330sIoemU6A=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=erVMUtQyJa/WlxerqUWfS7TT6Em3M9QqUVM8g1rZ+Lk9ftVrry5OwbUtrfTtL0y7a
-	 R1Q9c++z9sh8knHO2fv/fzn3GGdf27Vn9faI6aaDO2W3/ZNK+o2mA6upnoCMtfJBNz
-	 yDgjJybosDHmhxn1FFHdji79W8gEslrnG5rY1gaE=
+	b=CeotODF8S5owa2YnIiFMIRlBqxQ4+8wxRhMXPAkc4+KxdEKxN2DCJuC3P4WsFv+Ax
+	 kUlc/35doha2LL4at43SJJyVLdkfK3V6j3nlONCcM+nhhrHLboxXPaQ4IfyjKxLS0F
+	 9CbrsX+ERFcurtGoqp2Bl39B7X1VzPqtLGzgin74=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7033EF805FA; Fri,  4 Sep 2026 09:04:18 +0200 (CEST)
+	id E7722F80618; Fri,  4 Sep 2026 09:04:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3105F805FC;
-	Fri,  4 Sep 2026 09:04:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E8DDF8061F;
+	Fri,  4 Sep 2026 09:04:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26B5EF8049C; Fri,  4 Sep 2026 09:04:11 +0200 (CEST)
+	id 13395F80604; Fri,  4 Sep 2026 09:04:24 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788505450;
-	b=XBfn404/xa26D7hDw/OHIzywppzW0Ck1AqdGoM2TE/FJxI8swE+d08TkJvyTMefd8Rp2
-	 Z0g0W4wRiZpRmmV8fsBYZb3yZkD1dNWlF9QzK3Xgz235ZlOSbMQNHV7+x6t9p/+oV3Dkw
-	 aAJHHYTfRuEGM/w1fJzJjQ+rDF3sN0HghMGh0eNyffBVerZFDTKUWxiz2swGHZHswn/ys
-	 jmPXuvtjn4awv2Gp/HPNwlTyTtHWHkX56sLoAhTpdXA5AfjmVRi863EUsNw8deg1l5A+m
-	 VHtM+mZDYfg9YOlArPpbcwIde3xWnhAwK0J33HO/fd3ih6otj+Bd4K+d73aGhFnAU7g==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788505463;
+	b=X0q53vOnBZTn3vqUCN8syCMwO2S6IkeVcbKytSSu+S2c56MQSrzRtp5Pf5P1hoY+IVVg
+	 /Zr+kchi0krC7t48pg7N482cjRzpg11xlRBF0jZ2cRwVftkSvvx+GP7CJuljyi7E46z+8
+	 VTkC/AOn0dSy+bfj2wyr/y8IgGQNeu3FAgCoafFYKzHylM1S/unXB+IeCpuhAOqNW90DE
+	 Lehy+n6jU8goLCZl6fbGif0J4nCGAbEFwBq4SReQq5zk3UD/Kl+5NNjXxNZwS9oJ/wZI6
+	 LgejQ8JwxKdiumkSxu33NJXGM32ACUOdlfY15pde59JiuVG3e6cwdMxIPLPkoxiMVhg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1788505450;
+	c=relaxed/simple; t=1788505463;
 	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=m8Vq14wjGEle04nPXsdB4QEY1+8wvsxldq81mjFlg2c=;
-	b=mZ0Qb479Cat8L61XzIbzXoMjoY1I+jd3Lvsv4+NgUMfx0r7/mln44INdHohqibmmks/K
-	 uKoLrdjN1yoBVYjex2Ct4yS5jAccGmD/WIg4kxfcf54/AiZlZt16AHAxLUg86G8t6h4Yf
-	 wmSVObUWXYcV1JnJX3hrEEd2SYJXlLAZViruDvw+afMO/IEXCi/XrrlSBa8SMYiVG8U3E
-	 m5wz2twL8mtyHqjMZeGmquqYY1Vz2NwcYgdAouHheh8BEpqDW7mE7AGvUZ0OlxuZQFHNM
-	 uFXQX4aF8AztsnJrLZVXYVmtkN3yvrjZwShTpC1JwBYQC75xDWG2Pj3fXeRaVpM0UEg==
+	bh=3tUZi3lxjcz/XregwVnnMT850Yc0VvCh330sIoemU6A=;
+	b=HCGz38W7dYZ9y4+Fq9QIr2m6xXWKv0uAwbPz3D5LQfsiJc3MJsS6fBe1wRo5gAd4mF+Y
+	 tbuZcdQf2aTMEXmrCjDfT06w1zi8s08q+NAq+RlKiRw9b0gWc+myDdzafTmlOhlpIAex7
+	 ujl7gZWOefmKUFZRHNV5JLU8KlpZ1Zj87OKeihHzRR1jQJKm7zylSkYs1AqtIPQa9U/4y
+	 576qESzIR4fQ/5DK/zviR7h02k2K352jonTEluEDhQZ2Ht8L5q/PxzFPOz2gNM9iSejPo
+	 cQujeCTOrSd7w/LSX5zAMGW3XVmwaMKuU6rAJynhIyrlajO0X61U4CwnD5Vz3FphL2w==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=hSVw5txk;
+ header.s=k20260515 header.b=by47bbpr;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C01FDF8027B
-	for <alsa-devel@alsa-project.org>; Fri,  4 Sep 2026 09:04:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C01FDF8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 097D7F80600
+	for <alsa-devel@alsa-project.org>; Fri,  4 Sep 2026 09:04:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 097D7F80600
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=hSVw5txk
+ header.s=k20260515 header.b=by47bbpr
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id DBA4640F32;
-	Fri,  4 Sep 2026 07:04:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 818231F00A3D;
-	Fri,  4 Sep 2026 07:04:04 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id C5C9341AB5;
+	Fri,  4 Sep 2026 07:04:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 728A81F00A3D;
+	Fri,  4 Sep 2026 07:04:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788505445;
-	bh=iBXF5v1VOSzvxor8PqmVy7xN/iYE8cXe4jVbYbzgvRg=;
+	s=k20260515; t=1788505460;
+	bh=YawR6a3Oqrj+SrZGCK7xg+xT5B3C2EL27I20IxBfIhU=;
 	h=From:To:Cc:Subject:Date;
-	b=hSVw5txkdUb6t10+1fBJEidf3szXKlD/yKG7dT2Yi8chQzFdZW6c8w0EzXCuZprUh
-	 ugfcnZKsfYu9IxxEP3iS4QfJ0+Mg8sHvBn0DLgcxTSOd2ciViKG02KPyizGCaSaCa4
-	 5zoBZkBu18MROvb2MxlPPtHbXJOtyV71euyieULA4wsihrx3F+XR7vSlQGkfm/VzgF
-	 rDdkAMJDzKXJ+V7ifL9s+NyBvFtuVX2V0YnJRB71dIGxlI+O5znRBqBe4U/8uNKnPf
-	 tJbZFWoKTfjXu+uuBILtxJfTLGQnaVGNz0MH0siz9SHUZz/VlWwe8KHmxbflNP0H4o
-	 O9/3AL/gXSBEw==
+	b=by47bbprErNXW9cHG8FaePD4+b3qDeK3qDk/sK4ZNundiQNRqXGbMuPaGfRYTR9/E
+	 JoMdavWDWJjedPuq3Oo3kjg8Xjou3XHJlUS5p830Bsed3FpzpupSbjpOEPMKUILfoj
+	 u55sWxDTkxpAHOCg69EAbrlwRNK5JmOZp48ATYDgcWaBpDGsAuu8zUeqxekUYVOaRM
+	 vpUjAUk4fWDg8hKOEyGS955OUtCi1+P6BfXHYTGWoB8pFsSgjPFuALj05O45lalddu
+	 S0QCM+SKDsMr/bptGN9hVBEfUgxzwK76/crBd/1Q/0FX8I0OyU7m8BMgmutSfWgovU
+	 7mpVcWgSDUyMw==
 From: Tzung-Bi Shih <tzungbi@kernel.org>
 To: Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
@@ -83,15 +82,15 @@ To: Jaroslav Kysela <perex@perex.cz>,
 Cc: tzungbi@kernel.org,
 	alsa-devel@alsa-project.org,
 	stable@vger.kernel.org
-Subject: [PATCH 6.1.y] ALSA: seq: Fix port lock leak in
+Subject: [PATCH 5.15.y] ALSA: seq: Fix port lock leak in
  deliver_to_subscribers()
-Date: Fri,  4 Sep 2026 07:03:49 +0000
-Message-ID: <20260904070349.80497-1-tzungbi@kernel.org>
+Date: Fri,  4 Sep 2026 07:04:09 +0000
+Message-ID: <20260904070409.80648-1-tzungbi@kernel.org>
 X-Mailer: git-send-email 2.55.0.979.g7e5102b832-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: AXHP7DXH4G5CD5MT7XA2ZBBIHPXO5MOL
-X-Message-ID-Hash: AXHP7DXH4G5CD5MT7XA2ZBBIHPXO5MOL
+Message-ID-Hash: LGUQHMRJBH3PB32OTM7FAA7E57O43YGU
+X-Message-ID-Hash: LGUQHMRJBH3PB32OTM7FAA7E57O43YGU
 X-MailFrom: tzungbi@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -103,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AXHP7DXH4G5CD5MT7XA2ZBBIHPXO5MOL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LGUQHMRJBH3PB32OTM7FAA7E57O43YGU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -133,14 +132,14 @@ locking logic into a wrapper function.  However, since the commit
 introduces a new feature and might not be suitable for stable release
 branches, this targeted fix is necessary.
 
-Fixes: d7e2ce72833b ("ALSA: seq: Add UMP support")
+Fixes: 6389f2c13531 ("ALSA: seq: Add UMP support")
 Signed-off-by: Tzung-Bi Shih <tzungbi@kernel.org>
 ---
  sound/core/seq/seq_clientmgr.c | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 9b82fccd959c..37930d74e394 100644
+index f2feeb97765c..bd2d7a9fab5b 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
 @@ -733,6 +733,7 @@ static int deliver_to_subscribers(struct snd_seq_client *client,
