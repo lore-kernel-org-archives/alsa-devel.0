@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63503C61DD3
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2026 06:01:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7D06C79F80
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2026 06:02:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD08560205;
-	Fri,  4 Sep 2026 08:01:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD08560205
+	by alsa0.perex.cz (Postfix) with ESMTPS id E57326021E;
+	Fri,  4 Sep 2026 08:01:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E57326021E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1788501702;
-	bh=Ab9Ybhfd6p5c3pkojHnEjb1vmJdwz8r5ke/5jPZXgGQ=;
+	s=default; t=1788501721;
+	bh=AfViu9stumwa2XyyLEMmtEN8szwvZIkInKJ4zuW9DVI=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=a5lk8zC//e5wifDiLfWdfM5hePjQHWAtpP7Zl/9JUHDSpCXFk6JkTqk87eRFCrxEU
-	 N5XTYXaLkREfPVCK+gkMPmQc8mNg5dKVo5KUR7uByNYydJ4Ztm1ue4yIipNCBhMGtI
-	 HgWlhxiyg8dpWrbOPBx7Kdvc11JboB3vunKx9bFE=
+	b=ZIiPgAgVX32lKmpMvQSwJGx/aGQ9QAv7oQo7bszcPBfbGMYGKCsyyr2Z6/+GBjnUK
+	 6EW0won4zp9++1SJGe6UmscDsa0YTJDuH3F2nBsLWB+kk4KvCOZL15bsqrpI329nUZ
+	 6bRu/ZfSvDnifgYpZ0i4s++c1NqPeV4D4d/K4B8c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E7482F805FC; Fri,  4 Sep 2026 08:01:07 +0200 (CEST)
+	id 3EF3CF8061F; Fri,  4 Sep 2026 08:01:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E655CF80600;
-	Fri,  4 Sep 2026 08:01:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B78EF80618;
+	Fri,  4 Sep 2026 08:01:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B629F8049C; Fri,  4 Sep 2026 08:00:58 +0200 (CEST)
+	id B4FC4F805EF; Fri,  4 Sep 2026 08:01:07 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz;
- arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.127.58
-ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1788501655;
-	b=VRQwZK09lUj9OjhjePGa40vnwtoR/1Dh27uVT8oeJBXTHEXbf3JTUt+EM1opf5RLA+p8
-	 L09bxQ76SrORgLWvSZ49yDknKFPSz30NCnTa+0CJnF9Fo7Sbhj9MpSo7L7JWB6T5j/G+F
-	 7NHLWCsUgO+Hj+W+BOI8PeKcuBpRhl8cbnTHLaowP2aHWWDlOqnpRrqVkOyCHmRpX6x5D
-	 QmgJs5CIcA8K3L/rMegWQ1YynMfha1J+9XH/fEuQdUT/9AzkRnKd/QbhJm5M/3Rzn1m2x
-	 QaI07BCknQxFgwAdyppwwDWWgnEaSGtXWRiLYXsmXPijgXnAHZwxxTO5ggopkawQXmQ==
+ arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.126.30
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1788501665;
+	b=p9ufsyZiO4OdYQElHOFpnDdhuENaxxXDdzZglZTNPlhnaeNyZRorJS5JjBNg1AHBoUI3
+	 z7Wq6TLK3JRuUTP3C8oIQunyDxLcdIuES71PWObraQswwT9JFKZUK5hI0Syqzyd751BMP
+	 W+CNIn9+6N9AUIO4iIUhDcLLXY4JLm8tm5LIP7VCJfhuVt6MW+brKyRgVHvnnFPhSuiDc
+	 xB4D9DsIFa2X5aEzi0rQqhR3/RSIQvSBcB/1QH57GE1YVcrO+xUh32tXTGi9D10nZe5Y5
+	 /ZtvS/2L5AFgSolcqA4IT6eSHncs9duipTVmjz4bTDhF/MpHh27w7gUQsqKzsZ1C/uA==
 ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1788501655;
+	c=relaxed/simple; t=1788501665;
 	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=Ab9Ybhfd6p5c3pkojHnEjb1vmJdwz8r5ke/5jPZXgGQ=;
-	b=Q0HjOYwCcK70E4HPihOIqIvJWjPTJqtODNU+3VBpTmPV4N8JWJQ9oE8NQ9jaPHOTmXTZ
-	 iu31rY4NqpghHDJTz7WtEmr3Akhvv7R/5jdQ+8MQjKUfs0Tl/BOHvq7EWO6cXO28ogq3M
-	 SCZC5vOnYoiKPaLqSM9op7Qs4tYMl2uJ9agkGKlL1oNwYkTpb+EDnoT44ZYbTKQuGwXLZ
-	 a/4AIwesvb4got29pNxfjS8/loQKcMlaF0RsgV2d3/ctElIicLXcxdZqcw+ni9zGjnDrc
-	 uBo4QF9a5W0/8MPf9eF73KmfSEYwg9Za0lYB38rzdm71VWVtWB5P/643oY82/wVcnoQ==
+	bh=AfViu9stumwa2XyyLEMmtEN8szwvZIkInKJ4zuW9DVI=;
+	b=nNFh5l5Au/gq86uvAb2Rpk3Yx9JRRmrb0ISuUI9c4E2uZ1hJEU7eT9jKhBRJoryR284G
+	 84nUevA2G7nw4iO8ddnHfiN3/uhwUZDClF4gYSEVp5Wtb/jcfk9ymgcaZCHcrDtR9dZNE
+	 QsbuLVXUohzncn9OZNHKoEIGfHrZ1v4WZIQGU6pO6oRRB+WtK2QoE8yD0s7SXzzi6wXZH
+	 3qDf4kCj/ONImHfG+SYgOullOse2pJzNHdafNat/7kF4HWmktm02+XsUSNYqUGF057zcM
+	 57fdGfKwC+Y7X/MpEoL81T8o53B0dawmBGfAPkFIfB6pHoLbiQXf+j9S8zb6VQHZEuw==
 ARC-Authentication-Results: i=2; alsa1.perex.cz;
  dkim=pass header.d=nuvoton.com header.i=@nuvoton.com header.a=rsa-sha256
- header.s=selector1 header.b="mc3Ec/DD";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.127.58
-Received: from TYDPR03CU002.outbound.protection.outlook.com
- (mail-japaneastazon11013058.outbound.protection.outlook.com [52.101.127.58])
+ header.s=selector1 header.b=AfmnZoGn;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.126.30
+Received: from TYPPR03CU001.outbound.protection.outlook.com
+ (mail-japaneastazon11012030.outbound.protection.outlook.com [52.101.126.30])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7496FF80185
-	for <alsa-devel@alsa-project.org>; Fri,  4 Sep 2026 08:00:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7496FF80185
+	by alsa1.perex.cz (Postfix) with ESMTPS id E430DF80185
+	for <alsa-devel@alsa-project.org>; Fri,  4 Sep 2026 08:01:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E430DF80185
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=nuvoton.com header.i=@nuvoton.com header.a=rsa-sha256
- header.s=selector1 header.b=mc3Ec/DD
+ header.s=selector1 header.b=AfmnZoGn
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ErH6j3a/uv7Gq2gHag5PUCh9NCTvCeXzjoQd0NesamDsJWd6VkR38kIh0VuWNGFhvX4Amn40MVpTjBgdOmL8W11wzFeTK8xBAC3bQD5bTcEi//MyVR8rOOu+byYs02iVmQHu6H0z1MvaVvP1ML6XwSXv9H0xiZanvnhIfvWmF7KLyyIGdfEXvDi3tjOKxHapXmmABghRQM3IwMXk7VbMB29EtP1UtMZEg+mTAUiwoIzyQWHK9noqojoxxre3/fKSFjuWJ1XT2UiA64j0FykrCB7SJuZEd0JHEJV6B2eenos8LhGdv/IuRZtSk73oBn2Xv1pyf5p9lF8KPP/HXyOQrQ==
+ b=xoe9JuttzQ6aA4IU+4glKX5/MYi6WbDxQ+VPNwy1RhzYZNtS4maac4BzyDuNbjEzcyw/1JlOiabaR4VLJsHnOvGfkOWV5V5CDs7aO743qK8TQSuXyQ9oHGowlUjUel9evYwTwZIShdSZRKSDyes+NQx62FqL+RmWHCosJctdrAhnSkZOcjNIuDh+m9aNQ2chFK0OSPpeOfamE07n8cwFsJDgy5aVoYfPXqWSXUhOxzRb0aY3JR7TQaTfp2dhPQUrciyoV777lZxZGCYjNn/KqXW55NN6YKAmQPbuhNyjK6GhED/5b6HbAe7JzadHd7u3GApl88x2RTnlZZPrBVfg0A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=w4zRgj3kYgLUbfnxg+78pE+x5w/ItG1oXXNnJrN/cdI=;
- b=l52v20bYXBPezKaMDxfsCQzDvtkkhU6Mwi8NDEe2MAxoKJQH6a98AtjE2yG7jvzousL20PGtBmEORqwJvMji+U6O95rDGd7CYtLOSSlvH9yycDrNXTrMz3UPMsmSEKFkzSmh5e35e+CSFVeL4MtaQFQB5hkWeDqXoN+WGx7mfQ8hR3BTy7af0BOWakjPLaghTmCxmSaDLT3KGQY7NG7dwcTVM071ckEecWPFpXB+lhxbi5UJdJIP1x0oS/WyWL/CWwRO9nG82Z0LBdqiK0tDev3mLBowPLKM3oid80mdobjMBsXeWkgMydXQhyA0mfix8XCGpTSwdy1/81P2DKYtOg==
+ bh=wF1gY2bQhq8L3n7lN2KgO7duQxGzKqIvb2OUyhCri1k=;
+ b=oTHPIJvvR2RSro83jb8WwopAnEfHU2Zc9fCw+3GQ2fIgeMNH5Lsyu7C+IVeRmj9NrS4/HwFCk+DTgTHg2nBawuxpxo3UsKP6HmSyqquDaETxmLhtGfaVyzqGsX+tMVvxH3z43nP+g64ERX+t+0mwKkBJRNyi0zVzXwDm6iddNf3NLKYd9iAFCw+Nt8NsFSw/l3b1EFfJVmB8gnJ6dVWZT/tVVSyTUKZkaFKt/zlzovFXCoUOUJCItbry9r82SlZUXNU1HllCd+gKcZV+3AowqWpEmLpdBetIjPZ51iVTw/I91LgAW24IHxTO7T5RruUH9hEaX0L5eOtGMfMOCl3rYQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  175.98.123.7) smtp.rcpttodomain=kernel.org smtp.mailfrom=nuvoton.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
@@ -77,18 +77,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nuvoton.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w4zRgj3kYgLUbfnxg+78pE+x5w/ItG1oXXNnJrN/cdI=;
- b=mc3Ec/DD5wx9nXY1hd488W/3kZCYy6RnDs8FQNt5bUVjtr2LMiQMdFXKA76HktRIBIV00Usfa4UoZmiIRyIyaDZQqQ6PYM0+9a5M3MDMmnj88GXoKmUMtfur69LOeravLSLh0pZZn41L1qQRHdZcauSbXq8cxJSvzWkFWfkft3FtGIIMByl/RdYiL2ov48w6QXYN0DVJ4W+XhOxzgTv0kR/U/iZ8NXu4LyMR9DH1GQH99fTF04knVpQ2iZv17CAqu0puLbjflhWM46jfAzN1kje9GyE3fxFirCTnoPBMeuCQj30/LPrRNoD7wmZl+g/vYadGqy2iCPQhm9sTrv6aGA==
-Received: from PN3PR01CA0052.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:98::17)
- by OS8PR03MB8817.apcprd03.prod.outlook.com (2603:1096:604:289::12) with
+ bh=wF1gY2bQhq8L3n7lN2KgO7duQxGzKqIvb2OUyhCri1k=;
+ b=AfmnZoGnK2tzyh6h2mgjvsEwIa4GOSeIL0f6eldKeikvlj/MaCk5tY9InEtRZCRZgQSVjHkV1RQFGyj+o5Xh+mX0pPjjE5rYaWQMS93jr/srS9S2uvrNlX8BIT97M/egFfUHnOPvyVAqwJwiHfjo2Io8uKokHNz9TmxVSJLiOhkMVO9pamN7X//G9UO4JCdGmZqei+kqXQbZIhEPXVuJcRiWCp1smDWDaKmV7wvBlEZ+X5xMOEsRNpeYz6zt3DoOI8slwN8NHuIZ1NiJ2emKMjGIQFN/bgXos0lmKPIf85U1bstepgRHPDz/tqIHzvsg1ybRas9Vf7qNaKNzawRKeQ==
+Received: from PN3PR01CA0045.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:98::8)
+ by KUZPR03MB9663.apcprd03.prod.outlook.com (2603:1096:d10:64::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.360.13; Fri, 4 Sep
- 2026 06:00:45 +0000
+ 2026 06:00:53 +0000
 Received: from OSA0EPF000000CA.apcprd02.prod.outlook.com
- (2603:1096:c01:98:cafe::9e) by PN3PR01CA0052.outlook.office365.com
- (2603:1096:c01:98::17) with Microsoft SMTP Server (version=TLS1_3,
+ (2603:1096:c01:98:cafe::29) by PN3PR01CA0045.outlook.office365.com
+ (2603:1096:c01:98::8) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.21.382.12 via Frontend Transport; Fri, 4
- Sep 2026 06:00:44 +0000
+ Sep 2026 06:00:52 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 175.98.123.7)
  smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nuvoton.com;
@@ -98,14 +98,18 @@ Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
 Received: from NTHCCAS02.nuvoton.com (175.98.123.7) by
  OSA0EPF000000CA.mail.protection.outlook.com (10.167.240.56) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.382.8 via Frontend Transport; Fri, 4 Sep 2026 06:00:44 +0000
-Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCCAS02.nuvoton.com
+ 15.21.382.8 via Frontend Transport; Fri, 4 Sep 2026 06:00:52 +0000
+Received: from NTHCML01A.nuvoton.com (10.1.8.177) by NTHCCAS02.nuvoton.com
  (10.1.9.121) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.61; Fri, 4 Sep
- 2026 14:00:36 +0800
+ 2026 14:00:38 +0800
+Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCML01A.nuvoton.com
+ (10.1.8.177) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.61; Fri, 4 Sep
+ 2026 14:00:37 +0800
 Received: from localhost.localdomain (10.11.36.27) by NTHCCAS01.nuvoton.com
  (10.1.8.28) with Microsoft SMTP Server id 15.1.2507.61 via Frontend
- Transport; Fri, 4 Sep 2026 14:00:36 +0800
+ Transport; Fri, 4 Sep 2026 14:00:37 +0800
 From: Neo Chang <YLCHANG2@nuvoton.com>
 To: <broonie@kernel.org>
 CC: <lgirdwood@gmail.com>, <perex@perex.cz>, <robh@kernel.org>,
@@ -113,10 +117,10 @@ CC: <lgirdwood@gmail.com>, <perex@perex.cz>, <robh@kernel.org>,
 	<devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
 	<neo.chang70@gmail.com>, <kchsu0@nuvoton.com>, <sjlin0@nuvoton.com>, "Neo
  Chang" <YLCHANG2@nuvoton.com>
-Subject: [PATCH v2 1/2] ASoC: codecs: nau8360: Set DAC path to bypass mode
- when DSP firmware load fails
-Date: Fri, 4 Sep 2026 14:00:34 +0800
-Message-ID: <20260904060035.196399-2-YLCHANG2@nuvoton.com>
+Subject: [PATCH v2 2/2] ASoC: codecs: nau8360: Add default PEQ band number for
+ DSP init
+Date: Fri, 4 Sep 2026 14:00:35 +0800
+Message-ID: <20260904060035.196399-3-YLCHANG2@nuvoton.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20260904060035.196399-1-YLCHANG2@nuvoton.com>
 References: <20260904060035.196399-1-YLCHANG2@nuvoton.com>
@@ -126,24 +130,24 @@ Content-Type: text/plain
 X-NotSetDelaration: True
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: OSA0EPF000000CA:EE_|OS8PR03MB8817:EE_
-X-MS-Office365-Filtering-Correlation-Id: 77056172-edc9-4532-95ef-08df0a49db82
+X-MS-TrafficTypeDiagnostic: OSA0EPF000000CA:EE_|KUZPR03MB9663:EE_
+X-MS-Office365-Filtering-Correlation-Id: ddeaeceb-650e-4ee2-1c9f-08df0a49e05a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|36860700016|376014|82310400026|1800799024|23010399003|10067099003|18002099003|22082099003|11063799006|56012099006|5023799004;
+	BCL:0;ARA:13230040|376014|23010399003|36860700016|82310400026|1800799024|10067099003|6133799003|11063799006|18002099003|22082099003|3023799007|56012099006;
 X-Microsoft-Antispam-Message-Info: 
-	Ob//G9bDGnQwWVmWetQgKezuTwKJv/lC7wAWuvJmd84ux5BfcPHQevC3+fW4E2HzQ0isMSYXyb4HnfMnFoTYlxWYKmrD7QuovSZDWO2oCkSjZo5tuedQLhNE9NJyhLjn3r5GPeAyLd7Bi5Ehzi1OteK5lvo2mJwjd2DW4/u792+3+mFW5xlMyUMV258sNQInHwnHlQRiXyZ0cPqKYCsl0JkRy/RINkz4uA5e2vz1MHBbR6NlOTi1GZu5gruBLN/pkH+1CZAP/nDgHzl9pd3kKyofhvt71aUBdg2Kz3USSZA3uGNpkveIgEZLd3WzLXbrnssEU68l/F7YD8tD2G3kMNrTapfflEFyDBztntdvwA/IPfFuKl4I9E279RnF8hP00WIXO+91sR8fubhUqbmgaq/Fs3Y0pC/pbyfH5mzFkBG8AenyOF9CW5An6J05pypeWQNAoRIzFQlZmlwxsWX31qeyr7pllQ8XcfJhYfJatl/w2d4/U4TSCrqrmpkfGy5VImeZAIbc1S+aF7GASfN185eM3hDrS2CZUh324XxetnfDQ6iBTv/Lf/G27qzDTyhrLJt9XU9BMidQERfzonehxPkWUoyOtLTcx8RArnBDUku6SN0RXXx1URwvJJ36BSbcPARhX5FhX9FIBQ8x2PQqYEzomIJXZB8g8syfhBaVDRrQ6Ca3tIPfWZQuz1ZVwQYs3Ht0y56f3fKSg8KvIYGFmg==
+	TwnQ3I9NUkPsxyTZTWc2yKZjMkn2IV46Ja8ZA+KVUvqvCZOaSGeY3q/DXQIFGM3JLGWuTBQp+w6mXFlvvM+syeywYCAbB5NM77A5tmC+0QKQtowcKmHgYBfTT/yG5voPBODd1SnLVhMATfdsKb1w9cvtY93wG2C+du+RJltZInAZFvav+hlAGJ0mh58cGCKr1J8R3x3iVPP7K0MXccPSEuvVf+Kg7KeqYulQO3At/AY4yJPSsf1bjPDTHZ3G30buu4bf+hW1LVFgXhT56MmBJvYqVha1p1PuOW7MjwnKt0NQEaVgjXxUA8xU1rT9jBhoCUEfGm/MnE0e8jY0LTz+SWpyKS10Ugo6oTQPU9OMJwpfxlPmaJxVYQenAI+0N8lJpYFQ0TfmYTvtkLE9wdl8gUGgBw/hk3QldgxRBdxqrs2qgzxttGHuU+FHWSsniHhg2kv+xVo9WDoVQZ7BAKnQNzvv58EhXT3zgd43XNPBO2jFBKZ+IMul3FuZpq7yJqPbGlXVyDY28aCmnexztF29cj1B92L/9O+6Ta2WC0UhCi9jfEn8pYsqTcQ1/t5D40RSWqEt+6VqyxLoVrz0MlmVUmscJ0uZg9/qoKuhmmiTFxYz4CKLEBak3XHWhiJTrPtpqw7xo/9HFCXnBt7h1U/VFlpbap3Q0vhm13fh2WUhvClFkm5ihJI0LCgb5wZoqD5gjwtfugTs1j7JbrY8E4yO+A==
 X-Forefront-Antispam-Report: 
-	CIP:175.98.123.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS02.nuvoton.com;PTR:175-98-123-7.static.tfn.net.tw;CAT:NONE;SFS:(13230040)(36860700016)(376014)(82310400026)(1800799024)(23010399003)(10067099003)(18002099003)(22082099003)(11063799006)(56012099006)(5023799004);DIR:OUT;SFP:1101;
+	CIP:175.98.123.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS02.nuvoton.com;PTR:175-98-123-7.static.tfn.net.tw;CAT:NONE;SFS:(13230040)(376014)(23010399003)(36860700016)(82310400026)(1800799024)(10067099003)(6133799003)(11063799006)(18002099003)(22082099003)(3023799007)(56012099006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	LidwTmQ4S6+GtKxHPlf/8WQcsGtr/T4E2Bq8MXik5NW8wKYQS0FIpKEpgkAwlc0mLgsRy7MnCX5DFR2uPbIwe6pMoLEY3WlfVcGkE9g8JSLQ3jEiJX0ivuAFU2FfWUAG+buPUfxKiBro3rVEfJvW8Z0DzTqAhWu9hkLtyW9OVmsUM+kIkG6KRyB4jJ/r+Bo2PxKhTxOQMnrCDpZEucj2mmN5euhy12BreyJwNdlGTUCO4G1q7QF5zKuylC7jAOhBlog0wT4wy5o1fLQlbV305rGZO8OXY6UwVeH/E/fSTcGOdm0clcbwRzTmq/o3U4C2cPut+iiwn2h5GqyVbJMKvx/vnVlm1hWQF1qkp369rI1R+t/eYp7LBgUsk2pkPwdds/SFrlWxEtqDw8iYLEtwE/iU+X96rYn2CNPjuwh8tTi8NuPX/4MNqkKKAzh+9nOg
+	0oNUSNI3x5EmewK8wfaiQJl1Z40j7n7x7SVBi7aSothdcNOCQLtYzQSpQe3vAcZzEeLYv/9yAAY1Hv95IqkstGXz6Bnzbuhw02Cvu8FzQK6sqHEVFA8MbgusEd/OEqyYyzoP4wrNA4xfKpjpYujBJ38e/XirLkwGknUyNQiKDva8jsMwDePNNrBbtpy9ZCWmW5LKLU0svSuLVdY6hOqZfkmLirnwpNVTqeFFgk5Gd+tBJWU25Cj+8QSKnol9ustubK/HXbZmbSoiN6pnnsG455ycZkiCw5jKd+qCs/v4z2yKoGaXM75nq5D840pwooJqO6w+RpSaMsS0ke/MbevgfBYQWZLv6ZRxXWhEg6dUEt5qsRhfC0Tvk+/Ukw4DDCwrONdtIauaFT2PZqY9RKgNmCNWKM4LgPqtG4/QaMR6UQjcHtnUOwz6A/7FewKJzRKy
 X-OriginatorOrg: nuvoton.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2026 06:00:44.0360
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2026 06:00:52.1873
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 77056172-edc9-4532-95ef-08df0a49db82
+ ddeaeceb-650e-4ee2-1c9f-08df0a49e05a
 X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
  TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[175.98.123.7];Helo=[NTHCCAS02.nuvoton.com]
@@ -151,9 +155,9 @@ X-MS-Exchange-CrossTenant-AuthSource:
 	OSA0EPF000000CA.apcprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS8PR03MB8817
-Message-ID-Hash: HG73OC7LXAUE2QKEG3UVJTZJPTEKH3JC
-X-Message-ID-Hash: HG73OC7LXAUE2QKEG3UVJTZJPTEKH3JC
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KUZPR03MB9663
+Message-ID-Hash: SWNK6MAFHUNFMRVQ6IC3HU5B3OYZOJ6W
+X-Message-ID-Hash: SWNK6MAFHUNFMRVQ6IC3HU5B3OYZOJ6W
 X-MailFrom: YLCHANG2@nuvoton.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -165,7 +169,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HG73OC7LXAUE2QKEG3UVJTZJPTEKH3JC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SWNK6MAFHUNFMRVQ6IC3HU5B3OYZOJ6W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -174,8 +178,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Automatically route the DAC path to bypass mode if DSP firmware fails
-to load, ensuring basic audio playback remains functional.
+Set a default PEQ band number during DSP initialization to prevent
+invalid state or uninitialized parameters before user configuration
+is applied.
 
 Signed-off-by: Neo Chang <YLCHANG2@nuvoton.com>
 ---
@@ -183,18 +188,18 @@ Signed-off-by: Neo Chang <YLCHANG2@nuvoton.com>
  1 file changed, 2 insertions(+)
 
 diff --git a/sound/soc/codecs/nau8360.c b/sound/soc/codecs/nau8360.c
-index d7af2dffb749..8b75d3b9ebd6 100644
+index 8b75d3b9ebd6..2c4375e81415 100644
 --- a/sound/soc/codecs/nau8360.c
 +++ b/sound/soc/codecs/nau8360.c
-@@ -1702,6 +1702,8 @@ static void nau8360_load_fw_work(struct work_struct *work)
- 	if (ret) {
- 		dev_err(nau8360->dev, "Failed to initialize DSP: %d\n", ret);
- 		nau8360_dsp_enable(nau8360->regmap, false);
-+		snd_soc_component_update_bits(cp, NAU8360_R12_PATH_CTRL,
-+			NAU8360_DAC_SEL_MASK, NAU8360_DAC_SEL_BYP);
- 		return;
+@@ -1602,6 +1602,8 @@ static void nau8360_coeff_set_def(struct nau8360 *nau8360)
+ 			i * NAU8360_TOT_BAND_COE_RANGE, 0x20);
  	}
- 	nau8360->load_fw_done = true;
+ 	nau8360_peq_mem_enable(regmap, false);
++	regmap_update_bits(regmap, NAU8360_R9D_PEQ_CTL, NAU8360_PEQ_BAND_MASK,
++		NAU8360_PEQ_BAND_8 << NAU8360_PEQ_BAND_SFT);
+ 	mutex_unlock(&nau8360->lock);
+ }
+ 
 -- 
 2.25.1
 
