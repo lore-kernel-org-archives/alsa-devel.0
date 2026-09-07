@@ -4,137 +4,140 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5134DC79F99
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2026 18:41:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E9EEC79F82
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2026 18:41:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4DDB60322;
-	Tue,  8 Sep 2026 20:40:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4DDB60322
+	by alsa0.perex.cz (Postfix) with ESMTPS id CAEF760338;
+	Tue,  8 Sep 2026 20:41:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAEF760338
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1788892857;
-	bh=0fZThvsJiB1SVp88p7xvj4Q2ng8o/do0QgwFtcYm9AY=;
-	h=From:To:Cc:Subject:Date:References:List-Id:List-Archive:List-Help:
-	 List-Owner:List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=N8cLsNaGFwAiz4dUdI5Vz5CVRvJFG6Tb0p+xyBvTb+KIuZTibdDvTERbWI1GYc2rB
-	 LQyt8m9bNQEi6HlDwkbymjZ7X4HxrgscNKMFC8cjZ3YohfF+epTiDOROxR+IPdyq9L
-	 JtAiOBp9uGe9Jmwu2pQ0i5nnQdSaguez4Pb0wYS4=
+	s=default; t=1788892875;
+	bh=GOgl2AuYHF4o6a4Lhc4SJicPmu0YSPNh3S5k/cExEnc=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=o3Aq52Q5khwyp1eOc7CbFXXv+Ui2TkXxbA8FQL/uuXKSGSMG9FS8Hzo2nR9nyAZU4
+	 l+P6ULUutilpjNXuNkTV9Hkg7pVRVbD/8agHkk0ve4ztrtpGskMZbkGDcOVVrTaoef
+	 NCVLWxVELv+f6RhR6klQ4TRpEJ4VpXmVFmOBLljA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D8FF4F89701; Tue,  8 Sep 2026 20:36:11 +0200 (CEST)
+	id 74F19F8970F; Tue,  8 Sep 2026 20:36:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 752F4F896F7;
-	Tue,  8 Sep 2026 20:36:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0CA2AF89716;
+	Tue,  8 Sep 2026 20:36:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CC800F804D6; Sun,  6 Sep 2026 09:11:52 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=106.10.244.166
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788678711;
-	b=nrnZK9XMc6E1sv9N2k21Wk4fym5MgZA5/jfb2JCwljVe4EP1O8Z3cvFBL/QB6ZbLBbgu
-	 KnXHnIWn/5qbHSmQ+O2CoOIE5wuDmgB4lP6sScLeY9xw2zxdAbVRj8dYwZJRkmLs3AtNM
-	 5bEUYPghrfJxpQvbV5x2DwiLFnGAmphcE457L2+lStMV8++9WRJYC+tZJYzLIsRnNHbSA
-	 R/PtAY77PCluHVAoFX5KETQINax8EWVxMKE2YcKXXlt+KVDe8Wjscj/L/VFtG9gQBs7j2
-	 jDlKUCY8zMlDulel3e123OWFap12cThk7r32K7oUbZicXlSkqF5SP1a00gu8KzReacQ==
+	id BAA00F80571; Mon,  7 Sep 2026 05:17:44 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=209.85.214.175
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788751063;
+	b=LnAfoIp9x0POLdaZzMwftcFXxGJbxwVnvd0i9dZn+P1HgYyPTSgzWoWcscY426y1oduT
+	 54U+grVxARsjeEwDsBmegfPGIE4Th2597fLONKxh7pp0IQoQ59YNpj7DLu1Kqkkc1448z
+	 L7S9WH46i5U7a/bc7AKyApr5VvnzBMcMrOU/8BVJw4gQ4d9h6+4bog1dXnoZCutDplL/V
+	 ZtF2DzoYo/UOAPVmXyqaJp1MYadorD13QdkM28KS2+x+z/QN+UnBL04ju25U3z1Mu2Hnm
+	 v5HFpDAv+AHBUq6K4HuGv+FD5HT4tj58l0LBo5626IAZ/DvGnOuLrUIDCyXpOrPljdg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1788678711;
-	h=DKIM-Signature:From:To:Subject:Date:Message-ID;
-	bh=0fZThvsJiB1SVp88p7xvj4Q2ng8o/do0QgwFtcYm9AY=;
-	b=UgZEBUGsBxgMFIcB+DyZ0JqEwaCwKWPQ8hyCtkC2darmwEyZijlgrF+6bFilE5RFZ0Lf
-	 s0mqKJlkwGneLtd1KmYmzy0+6yk7FLm9ASLAO2NGw3TtE+2f7bHuVS+rD/Oyiyl1zOaW7
-	 qcM7FGBb8bSjNKu+qf2dz1TLfdSvyyVQtxJrE16qpDvZBXXIb4TzGB6wBPA2VuyhK8yxY
-	 Rp2i05MmOPZa3Jlg+3+0IdeFyPky0NWgkQev1jw+e0Ob1lZ5Rn5AcJZdeiYA7EXojchaW
-	 a8OoqtxLsVlqG/BcAGqbLAfsz6K2xNjM4gtAYovCGARUXanDCKxzbAZ032baw6Msesg==
+	c=relaxed/simple; t=1788751063;
+	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=GOgl2AuYHF4o6a4Lhc4SJicPmu0YSPNh3S5k/cExEnc=;
+	b=HU7O9PfjD0efZbaswgu+I2qv4Hn/GOOkSsZT7cTW7GohiC2sGS48GGjoIi+NahDD57dp
+	 boh1/hMF/fiCkY+/NasPVLHYFAUuuYgfnX383LoNtTWtAE6/nWdlJMLMb1wu0C+IIf8vg
+	 Gq+YHgoMn/FACfLv6Syprlj4z/1Ul+slZqochJ99Moo9QU+Eln4OQQHTEG3TCIC1zEJ7v
+	 rcggmeyfZZyMIX9PcB5MfByI/jE3jyjkR/jPzohkgK5bsNN51UuTeR9L6w4UPLkqxMfhn
+	 Ia9MLyIZtMaHumOSKMLLkzdW05WnWQjw8X5ARd0yVV35rLDJgHdPuFr/YiV5ccWDNIw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=yahoo.com header.i=@yahoo.com header.a=rsa-sha256
- header.s=s2048 header.b=Y8CRXix5;
-	arc=none smtp.remote-ip=106.10.244.166
-Received: from sonic310-46.consmr.mail.sg3.yahoo.com
- (sonic310-46.consmr.mail.sg3.yahoo.com [106.10.244.166])
+ dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=WyWLHM2Q;
+	arc=none smtp.remote-ip=209.85.214.175
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com
+ [209.85.214.175])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BA367F800C1
-	for <alsa-devel@alsa-project.org>; Sun,  6 Sep 2026 09:11:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA367F800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id A57D6F80088
+	for <alsa-devel@alsa-project.org>; Mon,  7 Sep 2026 05:17:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A57D6F80088
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=yahoo.com header.i=@yahoo.com header.a=rsa-sha256
- header.s=s2048 header.b=Y8CRXix5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048;
- t=1788678702; bh=l9zWHxulmZx2cLXTPCewxnXcoi+pUT1U77rBAQVom2w=;
- h=From:To:Cc:Subject:Date:References:From:Subject:Reply-To;
- b=Y8CRXix5LMSe1jbMXZg48IMh8cK3InGIHiGRl9R3gafWspsyRZY2305TCKyMnSAPA9alH3PTVCI9yto4Voh13um2xXcn4GNea+xEAQYxLC0igNWiYKGGUCkPqZu/UY56LNGS+2UuuS4w3dgYEpuqoyxHSyOZ1QN8K3F08vKf1ij9zRDxTAWIeUltng/i6WBilrApVoD4uprvlIUj4c53BnNOGjEH7yAxLFIjdp4d0mg1F4ruJNdHZ9aiV9zT+SicA9X6MA14+R+/4s9vdU0HCldFrERtBUk5GeLmVTEbpwg/7ERETUusAy18mecZ6MHRvR1uWBWPwVojSVuQ++T5dA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048;
- t=1788678702; bh=MmWwPBRmClXDJxBjGEzEnGqvtJHNUeZpnktxMmvAtyd=;
- h=X-Sonic-MF:From:To:Subject:Date:From:Subject;
- b=WoCuODK09jF27B1iOrGliJdqc3QB04R6nx4eoxtQhrdZKaco2cYYqwlobZHF/EsBrAgVkPiDHG7KJwKqv6ctfLy/GCOecggiWAxz+lJ1Vz+frQAY8kB2Sm3gwB/IeX/RRZtDQmcDiN4bpS5df+B7Nl7asymhH4troBkJ0xbKfzNh8oHpvq5fXjdMXknwaIgYKtSAjhHdfruyz0zN6bdXMGI3Z4qS0a9RDu7gRNtlvyY6jC9U3cOBOusIkZsqnw9qbGq0HB47c/zOK18R6TenR8MsKOnluLkG/s0RIxb1kvR7+4JxVh6NeJiDiJDlybYxlOCNbSa7RXUbDT+YIrD+qw==
-X-YMail-OSG: mA.nyxQVM1lBE5sEC5ACsLpO2NOAs8RmCUT0m7NJ3SXVkZLNJMBSsFe6KotsSre
- 2HTJA7RGmJZNW8eUOHztsmnloI2fXjz0uNGMoGZE9LXf1FNjc_gmPZtebPg8jh2YCmYo6CQMlLvy
- 75NzLSEai.9BV.DA3mBhRDIvlt.Zr1G7S5n73Kt_vICd3CFYXZMdoyjAH.xFvsjy2734RSNDpvgS
- wlqQ6bFWTWtGmb13NiU3vVmn6IUFO5p2KJklvuXRljr8NR0IygwLvvCS8IEI0yUBkA2HtB1QRL47
- dfu30mB5IuoglyNOvRF6I59fMtusqGonFECvcbA8KG1fUEHAoWmBdJS9k6q.p5ABMk.eIuyQP2aZ
- w2MB__DMo8DLgrhY2RomgID7yqiik2HNT8RzYnfrTl9gIR_nt1HfyxvsnV6dKlGMlPZ.ApLUBveC
- bkkysr.roHq7cZtvebKOd2A31TBiyCuCZgyCvMHcwbwksf1FpRRt6DOXHrTMFFz0zHfoWHmmAISn
- scXzvIuosL_FiDVSs5Jiv_ZisBtEyRqK1Ie4Z0yBGDLlDlxWuXDg9lOxwWDsHJRr_SKomZpC0HzF
- OQXHwvNPXN6IGcdARYZOc_yt7ITs1VDcIjx2Nm9Nob.877.F.yq59jLR.vp1ha79sDPREJAb4p_R
- dk0SNn0C7XyGjl8nFYlG484TgYz_91nOi3fMrESucNHdv_4ef2P9BrGHMZhf74SZ2CX..TRnTuej
- sM_SrH2Ro83b.l_yCSjefLnZloPa1dWQUPH7JDBxX9wB_PMOHRRlyFNMHa88Sr.GYR6AS.GrVZPh
- YUAZYLU7QNdAaUAizK.fTgUj0s1DKL6u4jG98w60ZPA31YFa2HYrVdy_v.9hCDm0UWcN_sYnDTG8
- junPHsv6DZewBDLGTkhq1H6yO2LFVUjUl01oOBJT_VgZBtdmPQhvWXeB9e53CC_7hGCwqQwM0LJg
- 9XHB61hEP6g8MVCmoxZwaRIaKLsyMUU5UKgt7tBjZeBIg7gv01D5bRsyyk721RFoYcLvt9pzR6AY
- U92X2RSrZYSVqkjqYTfKa8mN70r2ZnQWl_bkhygFWyqNfAVnAe5qsTIGb6WnuDBQAUctQqCOrK2W
- sOPlmTP4i4hO2sdlMTZOd4VO3Z4xvCNvkxWlm9O3XyZOTlYZvXw..UFaOI60aoZ3M6NZE84Vtp9N
- z85HMuve4ScpuWngtDdrPZfgsSKrb_taIcV4DUCPN36Z7hAURONsshehaBdJdE.TWTdNaOHeX4Ep
- nJU4M3iUUhc3acuRJnQcyj76K7uAg1T40U9_zQeNW79Ukp8nP2A8g4MviXcI74RNKVEjeJImWAES
- rlU1CXhDrlWjLiWS45mFIiA3GbiRBZ3loL.yTHyRpj.2G6xyJOhhfXoD5seJopoB.MNK9FcTjPei
- D0cLC5SIBRFWpMq.cdrcf3nHUdxVV2lYGYeUIFJF8SlX4PkmeAZzC89mfgaphgMXyUcssqs8F_2y
- 8EzEv.lbQm7xIJ.zG8bXsYYn_WeerLrGUToaUmtmRLgSQ4JBMX3olkl3iomT_Jhwm9G5saEYa_rr
- yrsbfY.gGjLM9Aob4h79lOF91PcwnX.SQb0ILllWl2Vl0cPnTrnAFy0VyuCL06STlmbpg7GaRuLO
- B19gbb50S7fYfr7rrkqhNu99mGUcBvRSkgK15cH6tvvcyxUsrVGoGZ0An9RbcFH9e4ttm_LPDtmM
- ctvR.5vJPqay7Ykp6LgF3NyeBc2FLANZfL5qXI4hiwtrQ5KirvWYnZ9JvHZjiH_N7di3hVjOJ75v
- OMj7EaZ7irXp9LRHo6ngU1FiEE0HcfsQgpWiMs8GD9faCr9vRlMPt2BbvhBEZTOY4hi1ssrmok5X
- zjrW0hseJyYkCYXY_HHPG8.bW11ml3ptgSJnuAehXMYcd6zDaifmQKykPox4rlB76AKEWl8FCuiF
- 0Fpoxbrd0fUSkGzuRzoRFLeqdGTZsxtow9Ho3Nw0woWWiiXfbFPesvPbc9I9Pr4Er7s2qFLf7BFD
- J3oLb4mHIEX65I7EyfQFQgm2q4e4qP3hCUCdHSiqNjqQVk_fChnUBXKk6oXQGWj4_.gr0Sr5nJ.s
- 34xTteo6JFfjtxN4_QCO6C6IxrxDf8nqXvTAz9LqCE_8ooIiRSKKVUBQEVmuU0cSJfJBflgQyZJ.
- .bFMowCGHBEAy_7jwO7vwT0xZO3v27XMMwVHWOy6lPfDygdHVbHwYCi3qzu.YotYSersM3T8y5BA
- eYprNgJneJZtw0Jd9C5nVflTckHOw91V16IBHJw--
-X-Sonic-MF: <mafiatamilan@yahoo.com>
-X-Sonic-ID: cd298061-56d0-4ae7-9e77-8e3d8b9010fd
-Received: from sonic.gate.mail.ne1.yahoo.com by
- sonic310.consmr.mail.sg3.yahoo.com with HTTP; Sun, 6 Sep 2026 07:11:42 +0000
-Received: by hermes--production-sg3-664647588b-52h4b (Yahoo Inc. Hermes SMTP
- Server) with ESMTPA ID b18fd0aebb47f8ebafacf0df8444bc70;
-          Sun, 06 Sep 2026 07:09:41 +0000 (UTC)
-From: David <mafiatamilan@yahoo.com>
-To: Mark Brown <broonie@kernel.org>,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
- Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- David <mafiatamilan@yahoo.com>
-Subject: [PATCH] ASoC: amd: yc: Fix internal mic for HP board 8C30
-Date: Sun, 06 Sep 2026 12:39:39 +0530
-Message-ID: <178867857905.85694.5014721659216165123@yahoo.com>
-X-Mailer: git-send-email 2.45.0
-Content-Type: text/plain; charset=UTF-8
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=WyWLHM2Q
+Received: by mail-pl1-f175.google.com with SMTP id
+ d9443c01a7336-2cf452def93so33921065ad.1
+        for <alsa-devel@alsa-project.org>;
+ Sun, 06 Sep 2026 20:17:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1788751060; x=1789355860;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=O/1O+V3m/DlTGUY8KpefTzcFfj5+Q1Ib789WR1OBDhI=;
+        b=WyWLHM2QUaBVtETMc8Yi/VUiKOIV8ZNEFxTP6job9esZqKtpSbZcSqspHbQu+oM2qJ
+         H0xB5XJlj3ItW5LebJHcQqyTklLs9MP15rVJi9XWPu+7dTDBqV3qRM72r/WIPk5ike4Q
+         ZQMvrUgKthAmnZSQxApJA4W29e9QpWBYf2m01qJ6qlEDUqJHTfgy3CI3oGp1w7TdiodQ
+         X0g6l9b++8ngAuQgC/RO2mEpG3TDNg44LpFXJgagRIaOMhhNdh3VQmf2AhLXJek5sD2o
+         QgpJKNUXbgQC29EuKqB2WpzdiaCWvd7MP9qKLzQWZOhzeQ8dSUpaDDWARGtdWU12e5Yh
+         MI3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788751060; x=1789355860;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=O/1O+V3m/DlTGUY8KpefTzcFfj5+Q1Ib789WR1OBDhI=;
+        b=OgPTed5CudbKdVfwqUiv6M9qMAtsg5KEwjW3faSjNG/VXORnQnOuz8foKWUwW1THqg
+         xYki+3sSVF/kR5cH4NOEsXYLK3eok4fL3f0xZov7AnuCIjuS4y35XC7flQ4bhMYz7THg
+         6DEULS59BlalphWNozrWncYhB9ptXvZk716zk1WG+vF26ZqjUdIWQ/LwQjtCXk+bTI6S
+         NZrM0UfTGHZU2VMNc+8xvWkaZ4D4vE0uLPqMw4aQ9YhXcwL01pVd0elVmRi4nOWgJ/or
+         hG1oP/jUnX+QqjmYULEFJvnoTGngtrQKGRNEBRVJjlc9i5cYTfJNu5EqrnFQ2icDPa87
+         cfzQ==
+X-Forwarded-Encrypted: i=1;
+ AKwUvBzWc21Bn9M2TRyAp/qbRoE513rfaW6AH4+XChumKlRE/PwaMsAsZfqP4h7FEMe+yEfYHkv9MWLaGHmD@alsa-project.org
+X-Gm-Message-State: AFuF++nChu3BzcHmDHVif8h9qdfF0lwtwVKugQJpICVUTE1bo312kWDm
+	9XZxR6O4xOmb/WQMuRQRF1iPwF/0fVkx9xou5HSv0+f/dhUMohD6Jak=
+X-Gm-Gg: AYBFou2xsYrggjVYtDHzDFo4LhmVGDYQvyWNnX4ABPyz3z3MdXf6H3VjZ+JdA2TWBW/
+	6uNSE3BpJ4WPPV9ctsBygc4sNrgHIkbIwZl82ggYmNrKzaRDxeHSx7kbO409pg+Vdw7P0fLfHkU
+	EfFjHM5Lk0FSfwmd8WTnkTWBPuNgwi6r83o7a1rFHzCWreHP4480v0xiqrzAjYvH6Hj/ZlyCRIz
+	Bh6tey6jz+8qMDz/cfzPI0ex791d2aW/fBzX7wZwsD59WKZePocMVFxrk1sbsJRuWJA2JbXp9x8
+	kA+wm+Y7xxsUZlg4Uvpfj/QptR/EoJET2oZWUYbGXYf7wmtqsq+st+1h38PGlZnHG7q7g2ahXzU
+	q/B7tNcDfyg+JRMVIQytFCoDZL/Y+EqjRu5dygTImrMvPg/VIbgfSdmYAwP6VBKQoV5hfd9qqWx
+	TbkO7Bh9vRqO3wrJZ0EGG9RY8YKf6rGi+4CE7xTbGQwwMjTav8qVkBkFOdCIbF5hFFBEDTYlhEr
+	kZj2pmgtNsdJCtb
+X-Received: by 2002:a17:90b:2ccd:b0:398:baa7:4c2f with SMTP id
+ 98e67ed59e1d1-39b27c442f8mr16208923a91.5.1788751059655;
+        Sun, 06 Sep 2026 20:17:39 -0700 (PDT)
+Received: from Nitro17 (S010660cf843d99e8.mh.shawcable.net. [70.75.72.188])
+        by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-39b2a6cb7c8sm5206120a91.1.2026.09.06.20.17.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Sep 2026 20:17:39 -0700 (PDT)
+From: Aaron Welwood <abwelwood@gmail.com>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+	Mark Brown <broonie@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>,
+	linux-sound@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	Aaron Welwood <abwelwood@gmail.com>
+Subject: [PATCH] ASoC: amd: yc: add quirk for Acer Nitro AN17-41 internal mic
+Date: Sun,  6 Sep 2026 21:17:38 -0600
+Message-ID: <20260907031738.17257-1-abwelwood@gmail.com>
+X-Mailer: git-send-email 2.55.0
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-References: <178867857905.85694.5014721659216165123.ref@yahoo.com>
-X-MailFrom: mafiatamilan@yahoo.com
+X-MailFrom: abwelwood@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: TES5Z4YQRCXL4M5W6AVPIHJT2PCPBATD
-X-Message-ID-Hash: TES5Z4YQRCXL4M5W6AVPIHJT2PCPBATD
-X-Mailman-Approved-At: Tue, 08 Sep 2026 18:35:32 +0000
+Message-ID-Hash: 63SMQOC4YVJERUZCXMSLLNEIWEMXLVUI
+X-Message-ID-Hash: 63SMQOC4YVJERUZCXMSLLNEIWEMXLVUI
+X-Mailman-Approved-At: Tue, 08 Sep 2026 18:35:33 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TES5Z4YQRCXL4M5W6AVPIHJT2PCPBATD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/63SMQOC4YVJERUZCXMSLLNEIWEMXLVUI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -143,39 +146,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The HP laptop with AMD Ryzen 5 7535HS and ACP 6.x coprocessor (PCI ID
-1022:15e2, subsystem 103c:8c30) requires an entry in yc_acp_quirk_table[]
-to enable the internal digital microphone (DMIC).
+The Acer Nitro AN17-41 uses "RB" as its board vendor and has no entry
+in yc_acp_quirk_table, so acp6x_probe() finds no DMI match, registers
+no card, and the internal digital microphone records only silence.
 
-Without this quirk, acp6x_probe() returns -ENODEV and the internal
-microphone remains undetected.
+Add a quirk entry for it so the DMIC is enabled.
 
-Add a DMI quirk matching vendor "HP" and board name "8C30" to enable
-ACP DMIC support.
-
-Signed-off-by: David <mafiatamilan@yahoo.com>
+Signed-off-by: Aaron Welwood <abwelwood@gmail.com>
 ---
+Tested on an Acer Nitro AN17-41 (board Spacia_PEH, BIOS V1.26).
+Without this entry acp6x_probe() returns -ENODEV and the internal
+DMIC records silence; with it the acp6x card registers and the
+microphone captures normally.
+
  sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
  1 file changed, 7 insertions(+)
 
 diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-index 73baa48..0d3304d 100644
+index 21d7ec0..65c4d13 100644
 --- a/sound/soc/amd/yc/acp6x-mach.c
 +++ b/sound/soc/amd/yc/acp6x-mach.c
-@@ -721,6 +721,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
- 		.driver_data = &acp6x_card,
- 		.matches = {
- 			DMI_MATCH(DMI_BOARD_VENDOR, "HP"),
-+			DMI_MATCH(DMI_BOARD_NAME, "8C30"),
-+		}
-+	},
+@@ -388,6 +388,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Nitro ANV15-41"),
+ 		}
+ 	},
 +	{
 +		.driver_data = &acp6x_card,
 +		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "HP"),
- 			DMI_MATCH(DMI_BOARD_NAME, "8EE4"),
- 		}
- 	},
++			DMI_MATCH(DMI_BOARD_VENDOR, "RB"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Nitro AN17-41"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
 -- 
-2.45.0
+2.55.0
 
