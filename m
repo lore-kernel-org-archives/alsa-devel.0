@@ -4,96 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25553C79F9E
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2026 21:32:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AC5DC79F99
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2026 23:15:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 96A95601E6;
-	Mon,  7 Sep 2026 23:32:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96A95601E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F8B1601E5;
+	Tue,  8 Sep 2026 01:15:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F8B1601E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1788816756;
-	bh=4S7fviH+Av5ebG9iaMlURIJ082WOCez5DHKCBEw4a/w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1788822927;
+	bh=oQCnQEN2DfwlFjb0Pze/cADr3Ar+3Xem6XUDSpXlb5Y=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qczaPV3Oz1SmttM7QUf4FK9HM5XHrUMtQbFWZJT/nFJNHlc4Ia7TKvapAqbVlxodb
-	 E3CArFhK/9b8QrKvVYvf/mjIOUDxC1YDQ+ItR2ON/CJcpxjrAgTMNK4OFw6843iNva
-	 VfXF7a2n5ukJf8G2YBp1WUUr5I4jqbNktGyHx6zI=
+	b=KldtgSHN6ZBwO1cqR1HTd/94kScKimbFFqbd+aROHDvF7znH0m0mxOo1XKP+lOCQ+
+	 bMR12JO1ndnNhQxy0+Lxg15h7JrbXUJnruIjivv/xaVPG4MDFcLBwtcmvY6frAQ267
+	 Lo/OCpAO0bZ3FNgfYN0Yv62s4JfAhsn1W4HX8/DY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85832F805FF; Mon,  7 Sep 2026 23:32:02 +0200 (CEST)
+	id 2BB25F805F0; Tue,  8 Sep 2026 01:14:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59B8AF80600;
-	Mon,  7 Sep 2026 23:32:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1758F80601;
+	Tue,  8 Sep 2026 01:14:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6C9C4F80571; Mon,  7 Sep 2026 23:31:57 +0200 (CEST)
+	id 028C6F80518; Tue,  8 Sep 2026 01:14:48 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788816714;
-	b=VQFVS7HEs8GB1c8pvszXimmkkIsmST2GD+MhWsz7dAfqrhpOPT5d/nxXUFRTWSylNg1L
-	 0IEf/M20hvibQYbKj/KLgrA4F5c57M8h54BF+8ZsWy7SXjy+YitAx4rw1Gy1FlLwHhraf
-	 Ejd8zoXmtrlDmBXJHiztiN/ZwOLsNMqdrGx87omMZr0YCL3rHRsivTo66Pdou94WX1amL
-	 xXniqv1827uD6LOlflfRBcIdf++8L6e0lPsidn0W3k3gO97CXYCiwc6GeSSIeyUQ/HxyQ
-	 KLhArtxfxfJaYEnJyhD+SpKw+5uML/3PsHQsLbbUVuN0ZBe0RP//CoQ8PZ9wwZmiT4Q==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788822887;
+	b=oudJTPgT5HkSquTfAwfTKamyxMBMDWyu+AGeg/aaLroclX7mIIXTm1Mc5XOz8OxwIEAW
+	 5vvkNmXrKR3gWrBut7p8EElwf4FV/dMtr8Q/0dZZFTZUXT6K4fXZU8TZkIuZ/rL6BAvzc
+	 Ibmn7bDPw98nnwERctlC4NX6hcPsjwzuFcy1ttqj30bzDRrZ5qWNYu2+7Ut8otCv2d1B7
+	 VWtEtWAyhvyFso7OQzg0rNtZIS68KdpFQfd7E0Muk1R8RNwOKAvqUdxraPegXnj4Iilv6
+	 0inaX4Xi73GhQ2WeELVG8+kbR5FT5fdApJF5f0V1DymjpnjcO05PRDvdDxIznT6eBHQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1788816714;
-	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
-	bh=4S7fviH+Av5ebG9iaMlURIJ082WOCez5DHKCBEw4a/w=;
-	b=AfgMLjx5R4kmqZkOBvsf+e8p/L9YLPYSEV0p8zI/fbK/qf3jRIv+uxgq4u78LLQtsKXb
-	 8xOrR8Z+faGz6aF+LHaQpSP9/EK7yNCu6FK5IypB+ypmWY9myZPa5YXSl1PgjMMxGfJhm
-	 pFy5EwHHRBrj+c/Lhdg8GmCGVmDJKrl8vrXTrxtVEBwxX5tQwkAvRnu0WxA+VzA8QUFil
-	 RA5EZ0ByUFqkkBo+EYamcYWuhzOAoFG71xEegom+tZ/EXzRBEAM7skAB/PMdMjNDBUnM+
-	 1RDF27FIHM0A0DusYAw6+QW3mzE9x/RtJLBAWeptt85jdwRjeoycA6bHmwYX00oE/CQ==
+	c=relaxed/simple; t=1788822887;
+	h=DKIM-Signature:From:To:Subject:Message-Id:Date:MIME-Version;
+	bh=oQCnQEN2DfwlFjb0Pze/cADr3Ar+3Xem6XUDSpXlb5Y=;
+	b=HqAqgCjFoXeQcEF8FsLJagzz541iebD5mpdxN3VbAz38mwL5QuX/dglOMJ+WnnMM70js
+	 yCq9Obxv+NwciT4y3un3N5VmBVC+fQ+5voyAKqvuX2KcYdI+3lOESQAqt5ewv4lWJNQtJ
+	 YMzDqcZ0m0bAytpYctpvUmcFeQiFw2e9gTMjosYBJMV9ePwyAZ2Gmg3t8UB4s9AoTSj5h
+	 kNif6PE5Vmk7CVpYnqqFulAMFiT6a8K2c8nEBQvHeZtsjePsRzEXUiO+bYn5+u+qNfEPf
+	 9B3YYm2J2rd+SJoN2a35XDTe8Bky2JdiRPOsMfmyjsbV253AMu7rLI/3huK3OtrA8hw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b="kQCDB/vG";
+ header.s=k20260515 header.b=RUDD6UY1;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D17E7F80088
-	for <alsa-devel@alsa-project.org>; Mon,  7 Sep 2026 23:31:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D17E7F80088
+	by alsa1.perex.cz (Postfix) with ESMTPS id 345F4F800FA
+	for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2026 01:14:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 345F4F800FA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=kQCDB/vG
+ header.s=k20260515 header.b=RUDD6UY1
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 0D36440DDA;
-	Mon,  7 Sep 2026 21:31:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 275001F00A3A;
-	Mon,  7 Sep 2026 21:31:46 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 6007640274;
+	Mon,  7 Sep 2026 23:14:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2F601F00A3A;
+	Mon,  7 Sep 2026 23:14:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788816708;
-	bh=GuVmcKVUXrbX7V4K/5mlgvKk0J/cmEXGNDsOzISHKQ4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=kQCDB/vGwzgUC651+ncx9fyS+Kfl/uJYhFD32o8BYy3QriMh9j2rzWGY+JGYPWMFX
-	 0C809lHTZTIuWqGMtYB/hMqrjyCa9+S2M4rL7BUbUC5UhaO5cn081W9Cn4seRIoltk
-	 kkNZxnJEUKVDIWFuSFRqG/kVXepMLMJjaZAtkD6LOiw2DwVCGh6rmJOpAmEH1XU+4U
-	 7XbKpD9DQCVEtkkN6VRDUYP88ozjYWaxHPfl7thv1oznQ+lz7dcpPVtxfzrCHVPj50
-	 gBCV8YXbTTq9x8XWbQ/ud2cMq3JfD2CS/XgM5NZjx+oY/SGUJ4XPdCcbZHc0pVKo3J
-	 pEsKHtwJkJaHw==
-Date: Mon, 7 Sep 2026 22:31:44 +0100
+	s=k20260515; t=1788822882;
+	bh=QIqKqWiMn7M+90S1KP8NGtWC+CfwTYwmJbjpL66AuKE=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date;
+	b=RUDD6UY1FnGc7jMdPEOpQZ5CPgJSNClEa9YwWsU/x+yKakpj3mzk7he/HPSzSPXWr
+	 L7XC1vQrfcFbX0H/GHTWE6VwqZhXDTg2ffMsh+FeCImojGDT1YHJvZnIK1aeAZEPk3
+	 FimnmXUIUPXtUTMfh2pRTpxVjl9MZmehZpG9IdlcqXvLksG2zs9ozP/Bu5Wnz81fSm
+	 mDxFHcGHmjniu2KzVwFjaBik73AYmMmlKlxHEl0onSd32UFvHRfkq1GVYvjnoucTpF
+	 mGoOalol1ZTLFX3CKuLMcKYSXwsptbilNt0uWIXxozKhJQsw0PNOUjrDgzxsx/j9Ja
+	 dOoAVOFSnx7ZA==
 From: Mark Brown <broonie@kernel.org>
-To: jack.yu@realtek.com
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, lars@metafoo.de,
-	flove@realtek.com, oder_chiou@realtek.com, shumingf@realtek.com,
-	derek.fang@realtek.com, Trevor.Wu@mediatek.com
-Subject: Re: [PATCH] ASoC: rt712-sdca: reconfigure PLL2 to fix calibration
- time-out
-Message-ID: <9f563c50-e18f-421a-8325-e70e7d482b51@sirena.org.uk>
-References: <20260907064114.435697-1-jack.yu@realtek.com>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Aaron Welwood <abwelwood@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20260907031738.17257-1-abwelwood@gmail.com>
+References: <20260907031738.17257-1-abwelwood@gmail.com>
+Subject: Re: [PATCH] ASoC: amd: yc: add quirk for Acer Nitro AN17-41
+ internal mic
+Message-Id: <178881485689.118202.6975212680087714192.b4-ty@b4>
+Date: Mon, 07 Sep 2026 22:00:56 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="MPlj4J/wTXJXAJ6H"
-Content-Disposition: inline
-In-Reply-To: <20260907064114.435697-1-jack.yu@realtek.com>
-X-Cookie: Who's on first?
-Message-ID-Hash: D63CPAF3NTE5NTTRVVZRM2TKK4466IYR
-X-Message-ID-Hash: D63CPAF3NTE5NTTRVVZRM2TKK4466IYR
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.17-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1139; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=oQCnQEN2DfwlFjb0Pze/cADr3Ar+3Xem6XUDSpXlb5Y=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBqn0Vegs4PfOv+yugdaBfJZzk6+S5RwTdWcJgYe
+ FbtjLWmp/SJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCap9FXgAKCRAk1otyXVSH
+ 0KgYB/40A/VZL6b0uNHjYZwwbSsJ+MPH4Y3QfztLZvhtjwKCNKcKl7h7PwukOeXbton2DdEmNDi
+ 8FdTifqCBQDJ9ovthsgU9hi6BgQDrVSus3J8RWfwYLX7Voze/r+jJ/2a+s/LxxyBTq7XwEdMgXM
+ 0lsDaA0NxCa3bFHIf3YrtKzrSSzNBZcHWPCT9+1JE+K6Jg25IBuOsj3bmfZJ//wlN9ej/BMCxcX
+ Jdo0yemntNE1xzgtSXJo4T+/i2DbAPKHmh3/EgHYk2Pf5LexdHMy58TAP6vpkOE1C/NjUfimpTX
+ vbrbMYU700U3QZ/sPODIrPfC/IeAkkwiUufdAEYIKL0E7DnF
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Message-ID-Hash: 35JHW4KFKDSEYZQN7IIDQX4GANBDHMXI
+X-Message-ID-Hash: 35JHW4KFKDSEYZQN7IIDQX4GANBDHMXI
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -105,7 +115,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D63CPAF3NTE5NTTRVVZRM2TKK4466IYR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/35JHW4KFKDSEYZQN7IIDQX4GANBDHMXI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,51 +124,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Sun, 06 Sep 2026 21:17:38 -0600, Aaron Welwood wrote:
+> ASoC: amd: yc: add quirk for Acer Nitro AN17-41 internal mic
 
---MPlj4J/wTXJXAJ6H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Mon, Sep 07, 2026 at 02:41:14PM +0800, jack.yu@realtek.com wrote:
-> From: Jack Yu <jack.yu@realtek.com>
->=20
-> Add pll2 reconfiguration sequence in order to fix calibration
-> time-out issue and to support 24.576MHz MCLK on specific platforms.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-7.3
 
-> +static void rt712_sdca_clk_patch2(struct rt712_sdca_priv *rt712)
-> +{
+Thanks!
 
+[1/1] ASoC: amd: yc: add quirk for Acer Nitro AN17-41 internal mic
+      https://git.kernel.org/broonie/sound/c/22728415a9cc
 
-> +	regmap_write(rt712->regmap, RT712_SDW_SCALE_CLK0, 0x03);
-> +	regmap_write(rt712->regmap, RT712_SDW_SCALE_CLK1, 0x03);
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-This looks like it collides with sdw_slave_set_frequency()?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> +	if (loop_dc =3D=3D chk_cnt) {
-> +		if (clk_base =3D=3D RT712_CLK_FREQ_24_576MHZ) {
-> +			rt712_sdca_clk_patch(rt712);
-> +			rt712_sdca_clk_patch2(rt712);
-> +		}
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Perhaps the patching should be checking that the scaling registers are
-the ones written above and only kicking in if that's the case, or have
-more cases that work with other scaling setups?  Or restore whatever the
-core set if that's possible?
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---MPlj4J/wTXJXAJ6H
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmqfLT8ACgkQJNaLcl1U
-h9Bt2Qf/fBiy7Y2H0H0kci1NGBxB0ZapgWFDPrRp7MG/JQpZN0xbJ4QRWwr+RkUO
-O/EIGFqUAtBDejDZXZHQI9Q7yNc3unICVsAB4Lw5o64si5OJugiMjHne/pazQ4JB
-DclrJKim32XT63CZz5esLoUPKo0tgWio8NYc9s5xtVi7jOKZQEDnVelZmue2Lu9v
-ya6AsAdKfBHqc6r/179pCeZEUI3IdMMT/wP4gFAi7hsfiCCx3dxSSmbriR0xXWzA
-fyPJSgYMIU7GSMpotgZbXIAwtVqfuNlSYpMUb7+xQ96J+nyVoaXWyp9+iT6xkA7r
-jY1KvFRQMyJk9E3n4fRAbtFGP2kUtA==
-=Nh2k
------END PGP SIGNATURE-----
-
---MPlj4J/wTXJXAJ6H--
