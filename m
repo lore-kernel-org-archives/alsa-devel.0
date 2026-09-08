@@ -4,107 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AC5DC79F99
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2026 23:15:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97137C79F9E
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2026 00:54:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F8B1601E5;
-	Tue,  8 Sep 2026 01:15:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F8B1601E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 87688601E0;
+	Tue,  8 Sep 2026 02:54:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87688601E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1788822927;
-	bh=oQCnQEN2DfwlFjb0Pze/cADr3Ar+3Xem6XUDSpXlb5Y=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1788828893;
+	bh=10Z9qDQvZd1hwBzqX2qRKElNjgu7PAq5CjR7KIo/5e8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KldtgSHN6ZBwO1cqR1HTd/94kScKimbFFqbd+aROHDvF7znH0m0mxOo1XKP+lOCQ+
-	 bMR12JO1ndnNhQxy0+Lxg15h7JrbXUJnruIjivv/xaVPG4MDFcLBwtcmvY6frAQ267
-	 Lo/OCpAO0bZ3FNgfYN0Yv62s4JfAhsn1W4HX8/DY=
+	b=VO76I+7eluzEIYFTfN0F8Z1LjZ990HW8M5JAfwi0hep89yfFg+He4lEUUHVA4SuoD
+	 kLXmTDaO90VrA3Mt6epuo79p6Py19Jp6VkTb3E8nbJgAggjCl9zE3s7zhE21uxTqwZ
+	 /UlebozmQ+uQzX2e2iMY49MjS88PlmLORFHYc6s0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2BB25F805F0; Tue,  8 Sep 2026 01:14:54 +0200 (CEST)
+	id D8839F805FD; Tue,  8 Sep 2026 02:54:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1758F80601;
-	Tue,  8 Sep 2026 01:14:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73210F80602;
+	Tue,  8 Sep 2026 02:54:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 028C6F80518; Tue,  8 Sep 2026 01:14:48 +0200 (CEST)
+	id 2BB1AF80518; Tue,  8 Sep 2026 02:54:13 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788822887;
-	b=oudJTPgT5HkSquTfAwfTKamyxMBMDWyu+AGeg/aaLroclX7mIIXTm1Mc5XOz8OxwIEAW
-	 5vvkNmXrKR3gWrBut7p8EElwf4FV/dMtr8Q/0dZZFTZUXT6K4fXZU8TZkIuZ/rL6BAvzc
-	 Ibmn7bDPw98nnwERctlC4NX6hcPsjwzuFcy1ttqj30bzDRrZ5qWNYu2+7Ut8otCv2d1B7
-	 VWtEtWAyhvyFso7OQzg0rNtZIS68KdpFQfd7E0Muk1R8RNwOKAvqUdxraPegXnj4Iilv6
-	 0inaX4Xi73GhQ2WeELVG8+kbR5FT5fdApJF5f0V1DymjpnjcO05PRDvdDxIznT6eBHQ==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788828852;
+	b=p/U9L95kzyUADaMQnedhCLenY/wgfq43wGsgvvo+0R8k4Q4uN0zkBoy038Ug1RQvFHe5
+	 Q9ZP9tCTgej5P3q20zkLSN2hr/faOvsFsH/Sm7okNmOo2LSBkGrJkXnxgG9q7i5C36bHI
+	 QR+1J4J83f68Cahr1xFnkXdrS0sqdH8JUVccxUBMgYpLWeS798Gm+Ejr5qbLooi+GDyKw
+	 HUhelb69ekZIEdTGwiQArHke/2B1D1zHkTRRHrFLykImET/yfSCSpp1bERGXUyG+9ZWHk
+	 IlYb4RRD8+ZO6GCXMFRSNmJJtu8c8p37NXOvOl6HfQrMD1/9/E5I/UfKAt4u6vaYK8A==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1788822887;
-	h=DKIM-Signature:From:To:Subject:Message-Id:Date:MIME-Version;
-	bh=oQCnQEN2DfwlFjb0Pze/cADr3Ar+3Xem6XUDSpXlb5Y=;
-	b=HqAqgCjFoXeQcEF8FsLJagzz541iebD5mpdxN3VbAz38mwL5QuX/dglOMJ+WnnMM70js
-	 yCq9Obxv+NwciT4y3un3N5VmBVC+fQ+5voyAKqvuX2KcYdI+3lOESQAqt5ewv4lWJNQtJ
-	 YMzDqcZ0m0bAytpYctpvUmcFeQiFw2e9gTMjosYBJMV9ePwyAZ2Gmg3t8UB4s9AoTSj5h
-	 kNif6PE5Vmk7CVpYnqqFulAMFiT6a8K2c8nEBQvHeZtsjePsRzEXUiO+bYn5+u+qNfEPf
-	 9B3YYm2J2rd+SJoN2a35XDTe8Bky2JdiRPOsMfmyjsbV253AMu7rLI/3huK3OtrA8hw==
+	c=relaxed/simple; t=1788828852;
+	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=10Z9qDQvZd1hwBzqX2qRKElNjgu7PAq5CjR7KIo/5e8=;
+	b=caUALjWQmZC7qNsAEl5N9mgE/zl4uziCGY5nosJwRrl+W4I/8C3o5MPxRguPLUzph1uy
+	 SLvJRmtZjgl6QPFI3WBNDHZTDb1gmM2pyV7Lq6BysjuvKPSInFstarl3Q0VENboP3Ue8P
+	 tv5VBbNSN611aGe2lfxCJTrhHAtuTKC1ACOwS/vqP+I8j5S894bQY7ekivc40HSvAM1/T
+	 xYlHgAEJ6kd05ExaZCA4dL9+S7XP+Sgm+KbrX0d6hvHmbmdQeMGZKETlKKi2WQiTiw0tb
+	 Ql6EMOsptBujt/KXrYaIwP878PJa/icMF8oNv5UR/OGZHc0tt6/r8GzKTL13qOjf+yQ==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=RUDD6UY1;
+ header.s=k20260515 header.b=Cn5MA4VX;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 345F4F800FA
-	for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2026 01:14:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 345F4F800FA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4F8C3F800FA
+	for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2026 02:54:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F8C3F800FA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=RUDD6UY1
+ header.s=k20260515 header.b=Cn5MA4VX
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6007640274;
-	Mon,  7 Sep 2026 23:14:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2F601F00A3A;
-	Mon,  7 Sep 2026 23:14:40 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 0A4D644785;
+	Tue,  8 Sep 2026 00:54:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C0C11F00A3D;
+	Tue,  8 Sep 2026 00:54:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788822882;
-	bh=QIqKqWiMn7M+90S1KP8NGtWC+CfwTYwmJbjpL66AuKE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=RUDD6UY1FnGc7jMdPEOpQZ5CPgJSNClEa9YwWsU/x+yKakpj3mzk7he/HPSzSPXWr
-	 L7XC1vQrfcFbX0H/GHTWE6VwqZhXDTg2ffMsh+FeCImojGDT1YHJvZnIK1aeAZEPk3
-	 FimnmXUIUPXtUTMfh2pRTpxVjl9MZmehZpG9IdlcqXvLksG2zs9ozP/Bu5Wnz81fSm
-	 mDxFHcGHmjniu2KzVwFjaBik73AYmMmlKlxHEl0onSd32UFvHRfkq1GVYvjnoucTpF
-	 mGoOalol1ZTLFX3CKuLMcKYSXwsptbilNt0uWIXxozKhJQsw0PNOUjrDgzxsx/j9Ja
-	 dOoAVOFSnx7ZA==
-From: Mark Brown <broonie@kernel.org>
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Aaron Welwood <abwelwood@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20260907031738.17257-1-abwelwood@gmail.com>
-References: <20260907031738.17257-1-abwelwood@gmail.com>
-Subject: Re: [PATCH] ASoC: amd: yc: add quirk for Acer Nitro AN17-41
- internal mic
-Message-Id: <178881485689.118202.6975212680087714192.b4-ty@b4>
-Date: Mon, 07 Sep 2026 22:00:56 +0100
+	s=k20260515; t=1788828847;
+	bh=iqA6aKbFfQjRdOHLLEq2u5yUmf5DtfodLB49uuF3nJI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=Cn5MA4VXLWK4IhMnzgAwBeLNADkthtry0MEIBfMjQcEXOCmvbn08aLWbDdUzRefcs
+	 THIcNR3j2XLoDFg99PWhc3CPoBQ9qHbEzn6o8NJLUWmm6/l7Ooy7g6pYABN33G+FMV
+	 HMC7OEDEoMStyCYu7Si7emMXmdcPQhEC5ish3QpZK0NElCuuEnY5VsAvFge/ZZii86
+	 No9xZuuoVxCWnyYUrPpqGQO+1MkwBVPXbU09q/K9GL1DpQyJuGgMlihZ3qvHAKwdre
+	 Ftcef8UFEb3CmAf5G0/zlQW728RQyLGZokHt+vKEMX9eehrTQiqCnzeacDRRI7shfw
+	 6j9wM6WNxcVNg==
+From: Sasha Levin <sashal@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Sasha Levin <sashal@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	tzungbi@kernel.org,
+	alsa-devel@alsa-project.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH 5.15.y] ALSA: seq: Fix port lock leak in
+ deliver_to_subscribers()
+Date: Mon,  7 Sep 2026 20:53:43 -0400
+Message-ID: <2026-09-07-daily-reply-0004-alsa-seq-5-15@kernel.org>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <87qzj4rhbo.wl-tiwai@suse.de>
+References: <87qzj4rhbo.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1139; i=broonie@kernel.org;
- h=from:subject:message-id; bh=oQCnQEN2DfwlFjb0Pze/cADr3Ar+3Xem6XUDSpXlb5Y=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBqn0Vegs4PfOv+yugdaBfJZzk6+S5RwTdWcJgYe
- FbtjLWmp/SJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCap9FXgAKCRAk1otyXVSH
- 0KgYB/40A/VZL6b0uNHjYZwwbSsJ+MPH4Y3QfztLZvhtjwKCNKcKl7h7PwukOeXbton2DdEmNDi
- 8FdTifqCBQDJ9ovthsgU9hi6BgQDrVSus3J8RWfwYLX7Voze/r+jJ/2a+s/LxxyBTq7XwEdMgXM
- 0lsDaA0NxCa3bFHIf3YrtKzrSSzNBZcHWPCT9+1JE+K6Jg25IBuOsj3bmfZJ//wlN9ej/BMCxcX
- Jdo0yemntNE1xzgtSXJo4T+/i2DbAPKHmh3/EgHYk2Pf5LexdHMy58TAP6vpkOE1C/NjUfimpTX
- vbrbMYU700U3QZ/sPODIrPfC/IeAkkwiUufdAEYIKL0E7DnF
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: 35JHW4KFKDSEYZQN7IIDQX4GANBDHMXI
-X-Message-ID-Hash: 35JHW4KFKDSEYZQN7IIDQX4GANBDHMXI
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: OK64N7Y36QE6VFGYEPADT3GOWDV6FMML
+X-Message-ID-Hash: OK64N7Y36QE6VFGYEPADT3GOWDV6FMML
+X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -115,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/35JHW4KFKDSEYZQN7IIDQX4GANBDHMXI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OK64N7Y36QE6VFGYEPADT3GOWDV6FMML/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,34 +116,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, 06 Sep 2026 21:17:38 -0600, Aaron Welwood wrote:
-> ASoC: amd: yc: add quirk for Acer Nitro AN17-41 internal mic
+> Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
-Applied to
+Thanks for the ack. Queued for 5.15.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-7.3
-
-Thanks!
-
-[1/1] ASoC: amd: yc: add quirk for Acer Nitro AN17-41 internal mic
-      https://git.kernel.org/broonie/sound/c/22728415a9cc
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
+-- 
 Thanks,
-Mark
-
+Sasha
