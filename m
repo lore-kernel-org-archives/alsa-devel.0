@@ -4,117 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A1F8C79F82
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2026 11:10:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A5E9C79F99
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2026 13:32:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C159601E9;
-	Tue,  8 Sep 2026 13:10:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C159601E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0761E601E5;
+	Tue,  8 Sep 2026 15:32:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0761E601E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1788865830;
-	bh=wB6eH7vtX5RELgHdeidW/dLJguhlXy44t3G22lp6S2M=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
+	s=default; t=1788874372;
+	bh=cyG+sSh237EOVnuMFkTK1wpwDyjge8f0jycj9+sSLWI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gaAEpiOErKlzfxxS5NI+x9m9Q/2JGPvb9mT95RSwKy4X6Fiu+b54Q4tnBOL+lnJ24
-	 fCVJJikWHcK0F/nNnsea/40/eBM/qchtXJ+lpTWWBVSLMms+QYYgFnRcCrtpgNud0W
-	 fI6EvJlsGOjvd52BnoGPtmD743b+oNTQ7szEk5Ng=
+	b=pq/MmuYnbNv6UWXrHDSJeyZL9JXrUsqgjiAr5lS6z+fjKmK7bQiPSmjDWTjm01v2I
+	 BtwnkNqva0PlkRgtj59fcSFzUgaYm2aTeFVL/BxYqBdP2aXJ642sn6AdF0C3v+G7bp
+	 ILtspFcprJ9rgH36R1FZY7K+hfpdRT3KaJDY6qLk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9893F805F9; Tue,  8 Sep 2026 13:09:56 +0200 (CEST)
+	id 88B04F80557; Tue,  8 Sep 2026 15:32:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 74298F805F4;
-	Tue,  8 Sep 2026 13:09:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C767F805F2;
+	Tue,  8 Sep 2026 15:32:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B40D7F80518; Tue,  8 Sep 2026 13:09:49 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=211.75.126.72
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788865788;
-	b=r4KsRQqKCisib5YDXKaKU5vu0izQlawDXb1szLoMemFljA1fru1quDdd1jrSvcFiipnZ
-	 xuA5j+FfICfO+ctSBmpbgimcB1T4Cr1P7ommfggeDbS+7jom/Pznc768E6EhjZ4NnmoaX
-	 gm+xSrQ2itGL9aRPxfL0Byh+5QW+9w+oQ7w9n5EMXcEJrgiZy+DSPE/J9AUsyqIWQmF0U
-	 HDN7qcdTx+QFoydmmNpPRxj+5DgkR8t1HQBO276r3rHgLqz5lVa0EUV/zeO9CwpHFCU+d
-	 ICqB3oR8gm2twXiFxHY2XYTueJXMDIeBwgrUWePsspmqMZdzvt99/SI2UFe0jV8LuCg==
+	id A3573F80518; Tue,  8 Sep 2026 15:32:08 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788874328;
+	b=oQvn2+VsS647k/58fy27+8FktPlAMHc2MAq+SfTjGwPcvhjq709+XLNKi1YJsaSv02Zb
+	 ebGQTY+1//DiDIMVfx6+DJMElBLghuyMgmkWLiUEcGb43SU6cCBZ/reDGu0FOFE0Usc4o
+	 31fx0xu7ySHdLJDeQfH/IporneJj4G/yk0yg2cn61xi7xudliNHiZPY4MkeAJ6HF//B/X
+	 qYtyc7mu4FgdjTjdwqmSVbQO0t0AE7aIuXY4ZGO1ikRiZLQWlQJe/OK1GAUoFC5xbSWdF
+	 124Te8QFWlxJp55mgT4UXj586rS8JK70W6o5X6MllCwCV0ZDZMidW+rOWSsQtBRFx4w==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1788865788;
-	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=wB6eH7vtX5RELgHdeidW/dLJguhlXy44t3G22lp6S2M=;
-	b=Mb57qx8Se3uqBUk72zbxSrWAnYE0F0aHdBNe3+I99p3zr1D6GOXTqGY6LVtGgs/jyhKp
-	 9qOzViZOylCVUXG+INiwzBIpCWVND1PNbeIxAj2hlctKyk7szueTRhfJ1FQljVbFWRuvc
-	 BqWgM+ypWv+5yX7GbXNHTHWgNzc4hf9JCm4ywuq8pQk2f5LomrB6BVhYT9s5qiW/SaOPd
-	 FclpufMf1RLCvY3egJwXsv4WYt+lsAC4QBmDJe179bQfpNQJV/YFNK8uc29EPL3NrUnPT
-	 w+vQgvaMv1mXq8clj6qrxYiKUx3DaGeU3R2grLLYVooGEahTlZ8KYRDXUZlwAdlyyPQ==
+	c=relaxed/simple; t=1788874328;
+	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
+	bh=cyG+sSh237EOVnuMFkTK1wpwDyjge8f0jycj9+sSLWI=;
+	b=rBntdevPLzjaw366wABcwj68ZOlEW6JeH8qxLjAYoiz9Ch19IpFkFxsTzC2lyRLlA59H
+	 tOSwU0B0EoCT9UpAfx/woMRfTXCq/njKgGWlsn++8Y1cDSiHBaXmJdgpKKbLc+AgIwiIm
+	 jd731UNDTwvSGOgK0IhjCHX60Xe/duvG0ScSOawgw/v1FsOiNy76v0An2sqyp414EnndD
+	 4McUwlyCZQ+BL6Z59y4XgvUeGGQ1vB+gXLJHOSzGWx43lFkGuYDTUMrXVX+HoqsxT8Mfc
+	 S66qfNLM/7tA3ZSApllgd6lCbTKvNxD/h0LMKs4BSFFIG28U6mLpU4Ih65qIC3zzGtg==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
- header.s=dkim header.b=RYays6rB;
-	arc=none smtp.remote-ip=211.75.126.72
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=dNWapE1f;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 99586F8025A
-	for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2026 13:09:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99586F8025A
+	by alsa1.perex.cz (Postfix) with ESMTPS id B4D3DF8011B
+	for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2026 15:31:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4D3DF8011B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
- header.s=dkim header.b=RYays6rB
-X-SpamFilter-By: ArmorX SpamTrap 5.80 with qID 688B9ZfC43866591,
- This message is accepted by code: ctloc85258
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=realtek.com; s=dkim;
-	t=1788865775; bh=wB6eH7vtX5RELgHdeidW/dLJguhlXy44t3G22lp6S2M=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding:MIME-Version;
-	b=RYays6rB++dAw7xy0+Huy+3cTNJ8vPTdXt4MdqMm75iue17dVp1Pz64tT7DMwNHL2
-	 1PsDvOk81WLGpEy3axUbR+zS/I8vD2pS8KYxBTIjZPxoZ7nXHaMHmMBX7WeyjlbQ4d
-	 DVkClkds0dU5g/LABva77jIJzyL3zPs7p3vHOXaVW4KXjbnLX6WZh0ys4RzhYYAWoT
-	 S3gCQahOxla1ENYfoISDBH+I47o01iY4KtKeMAaPTPrH3ZZfAAed1lRV6Uq7PvtH4p
-	 DVDrIE2FPQ9T1cxXR/i2Uf3LMCEfTQt/QksVdw7ygrGqx5/vrQtS/JgEX7vjILuwz/
-	 MxkxrOD+3ZUUw==
-Received: from mail.realtek.com (rtkexhmbs02.realtek.com.tw[172.21.6.41])
-	by rtits2.realtek.com.tw (8.15.2/3.29/5.94) with ESMTPS id 688B9ZfC43866591
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 8 Sep 2026 19:09:35 +0800
-Received: from RTKEXHMBS06.realtek.com.tw (10.21.1.56) by
- RTKEXHMBS02.realtek.com.tw (172.21.6.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.43; Tue, 8 Sep 2026 19:09:35 +0800
-Received: from RTKEXHMBS04.realtek.com.tw (10.21.1.54) by
- RTKEXHMBS06.realtek.com.tw (10.21.1.56) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.43; Tue, 8 Sep 2026 19:09:35 +0800
-Received: from RTKEXHMBS04.realtek.com.tw ([::1]) by
- RTKEXHMBS04.realtek.com.tw ([fe80::6d7e:80bb:9fcb:1a5e%6]) with mapi id
- 15.02.2562.043; Tue, 8 Sep 2026 19:09:35 +0800
-From: Jack Yu <jack.yu@realtek.com>
-To: Mark Brown <broonie@kernel.org>
-CC: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org"
-	<alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>,
-	"Flove(HsinFu)" <flove@realtek.com>, Oder Chiou <oder_chiou@realtek.com>,
-	=?big5?B?U2h1bWluZyBbrVOu0bvKXQ==?= <shumingf@realtek.com>,
-	=?big5?B?RGVyZWsgW6TovHe4cV0=?= <derek.fang@realtek.com>,
-	"Trevor.Wu@mediatek.com" <Trevor.Wu@mediatek.com>
-Subject: RE: [PATCH] ASoC: rt712-sdca: reconfigure PLL2 to fix calibration
- time-out
-Thread-Topic: [PATCH] ASoC: rt712-sdca: reconfigure PLL2 to fix calibration
- time-out
-Thread-Index: AQHdPpPjPYx1xlY/kkywjF4k6LNwbLbDHUoAgADkgVA=
-Date: Tue, 8 Sep 2026 11:09:35 +0000
-Message-ID: <9a9d58e0fadc44879ae33b0ba2ed1671@realtek.com>
-References: <20260907064114.435697-1-jack.yu@realtek.com>
- <9f563c50-e18f-421a-8325-e70e7d482b51@sirena.org.uk>
-In-Reply-To: <9f563c50-e18f-421a-8325-e70e7d482b51@sirena.org.uk>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.6.42]
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=dNWapE1f
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 4B10E40223;
+	Tue,  8 Sep 2026 13:31:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEDDD1F00A3E;
+	Tue,  8 Sep 2026 13:31:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788874288;
+	bh=MJB6EV6B8H1QkWSKyg6bAxo/dFbrWzrSiPC8c5mTVQA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=dNWapE1fIJQeVp0KKq5Ybi4QjYRKAreXIP/TfSlvMMabSgKtyXMBU2jj924WySLpH
+	 P6GvTI/55RckumCUCJTyvFIe9+MOfxNwq2wH5oEAtcjQtnMVj8EPpj2ZE+2Z/soRlH
+	 S9AT2sGejp2ChMJSTGVXjtUpDfEA1Ej0XbLqutajl7qcYwwqacaIowrLQ162ro7Xqr
+	 BynkAyC6vFNzzhO3OGLKnzPl8FRPEthx85fs6qGvqixknvffMjGt3VX1ADoJt7UCYF
+	 LrIV7xB4FkrDQzj2jAiUd9nvcZSj8PLoVbBFZyzGHDJz2AHNz/HkIl/T/5qA7Lt4Yw
+	 MP8jT6KjNFYgA==
+Date: Tue, 8 Sep 2026 14:31:16 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Neo Chang <YLCHANG2@nuvoton.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, robh@kernel.org,
+	krzk+dt@kernel.org, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+	neo.chang70@gmail.com, kchsu0@nuvoton.com, sjlin0@nuvoton.com
+Subject: Re: [PATCH v3] ASoC: codecs: nau8360: Block DSP path selection when
+ firmware load fails
+Message-ID: <c068db2b-e21c-4891-847d-01a6a201e33e@sirena.org.uk>
+References: <20260908030342.222655-1-YLCHANG2@nuvoton.com>
 MIME-Version: 1.0
-Message-ID-Hash: BUMRSAY7D7CPQKUQ2ICUZ7IUPKSTOFUF
-X-Message-ID-Hash: BUMRSAY7D7CPQKUQ2ICUZ7IUPKSTOFUF
-X-MailFrom: jack.yu@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="PzAFdN8Mc7izNR9I"
+Content-Disposition: inline
+In-Reply-To: <20260908030342.222655-1-YLCHANG2@nuvoton.com>
+X-Cookie: The world is not octal despite DEC.
+Message-ID-Hash: 2Q6LP7YGDPZ76AZFPV2EH6LIVOHBAW7T
+X-Message-ID-Hash: 2Q6LP7YGDPZ76AZFPV2EH6LIVOHBAW7T
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -125,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BUMRSAY7D7CPQKUQ2ICUZ7IUPKSTOFUF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2Q6LP7YGDPZ76AZFPV2EH6LIVOHBAW7T/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,33 +115,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmsgQnJvd24gPGJyb29u
-aWVAa2VybmVsLm9yZz4NCj4gU2VudDogVHVlc2RheSwgU2VwdGVtYmVyIDgsIDIwMjYgNTozMiBB
-TQ0KPiBUbzogSmFjayBZdSA8amFjay55dUByZWFsdGVrLmNvbT4NCj4gQ2M6IGxnaXJkd29vZEBn
-bWFpbC5jb207IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgbGFyc0BtZXRhZm9vLmRlOw0K
-PiBGbG92ZShIc2luRnUpIDxmbG92ZUByZWFsdGVrLmNvbT47IE9kZXIgQ2hpb3UgPG9kZXJfY2hp
-b3VAcmVhbHRlay5jb20+Ow0KPiBTaHVtaW5nIFutU67Ru8pdIDxzaHVtaW5nZkByZWFsdGVrLmNv
-bT47IERlcmVrIFuk6Lx3uHFdDQo+IDxkZXJlay5mYW5nQHJlYWx0ZWsuY29tPjsgVHJldm9yLld1
-QG1lZGlhdGVrLmNvbQ0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBBU29DOiBydDcxMi1zZGNhOiBy
-ZWNvbmZpZ3VyZSBQTEwyIHRvIGZpeCBjYWxpYnJhdGlvbg0KPiB0aW1lLW91dA0KPiANCj4gT24g
-TW9uLCBTZXAgMDcsIDIwMjYgYXQgMDI6NDE6MTRQTSArMDgwMCwgamFjay55dUByZWFsdGVrLmNv
-bSB3cm90ZToNCj4gPiBGcm9tOiBKYWNrIFl1IDxqYWNrLnl1QHJlYWx0ZWsuY29tPg0KPiA+DQo+
-ID4gQWRkIHBsbDIgcmVjb25maWd1cmF0aW9uIHNlcXVlbmNlIGluIG9yZGVyIHRvIGZpeCBjYWxp
-YnJhdGlvbiB0aW1lLW91dA0KPiA+IGlzc3VlIGFuZCB0byBzdXBwb3J0IDI0LjU3Nk1IeiBNQ0xL
-IG9uIHNwZWNpZmljIHBsYXRmb3Jtcy4NCj4gDQo+ID4gK3N0YXRpYyB2b2lkIHJ0NzEyX3NkY2Ff
-Y2xrX3BhdGNoMihzdHJ1Y3QgcnQ3MTJfc2RjYV9wcml2ICpydDcxMikgew0KPiANCj4gDQo+ID4g
-KwlyZWdtYXBfd3JpdGUocnQ3MTItPnJlZ21hcCwgUlQ3MTJfU0RXX1NDQUxFX0NMSzAsIDB4MDMp
-Ow0KPiA+ICsJcmVnbWFwX3dyaXRlKHJ0NzEyLT5yZWdtYXAsIFJUNzEyX1NEV19TQ0FMRV9DTEsx
-LCAweDAzKTsNCj4gDQo+IFRoaXMgbG9va3MgbGlrZSBpdCBjb2xsaWRlcyB3aXRoIHNkd19zbGF2
-ZV9zZXRfZnJlcXVlbmN5KCk/DQoNCkFmdGVyIHRlc3RpbmcsIHRoZXNlIHR3byByZWdpc3RlcnMg
-Y2FuIGJlIHJlbW92ZWQgZnJvbSB0aGUgcGF0Y2ggYW5kIHRoZSBwYXRjaCBjYW4gc3RpbGwgZml4
-IGlzc3VlLg0KSSdsbCB1cGRhdGUgdGhpcyBpbiBWMiBwYXRjaC4NCj4gDQo+ID4gKwlpZiAobG9v
-cF9kYyA9PSBjaGtfY250KSB7DQo+ID4gKwkJaWYgKGNsa19iYXNlID09IFJUNzEyX0NMS19GUkVR
-XzI0XzU3Nk1IWikgew0KPiA+ICsJCQlydDcxMl9zZGNhX2Nsa19wYXRjaChydDcxMik7DQo+ID4g
-KwkJCXJ0NzEyX3NkY2FfY2xrX3BhdGNoMihydDcxMik7DQo+ID4gKwkJfQ0KPiANCj4gUGVyaGFw
-cyB0aGUgcGF0Y2hpbmcgc2hvdWxkIGJlIGNoZWNraW5nIHRoYXQgdGhlIHNjYWxpbmcgcmVnaXN0
-ZXJzIGFyZSB0aGUgb25lcw0KPiB3cml0dGVuIGFib3ZlIGFuZCBvbmx5IGtpY2tpbmcgaW4gaWYg
-dGhhdCdzIHRoZSBjYXNlLCBvciBoYXZlIG1vcmUgY2FzZXMgdGhhdA0KPiB3b3JrIHdpdGggb3Ro
-ZXIgc2NhbGluZyBzZXR1cHM/ICBPciByZXN0b3JlIHdoYXRldmVyIHRoZSBjb3JlIHNldCBpZiB0
-aGF0J3MNCj4gcG9zc2libGU/DQpJJ2xsIHJlbW92ZSB0aG9zZSB0d28gcmVnaXN0ZXJzIG1lbnRp
-b25lZCBhYm92ZSBhbmQgdXBkYXRlIGEgVjIgcGF0Y2guDQo=
+
+--PzAFdN8Mc7izNR9I
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Sep 08, 2026 at 11:03:42AM +0800, Neo Chang wrote:
+> Block the DSP path selection if the firmware fails to load to prevent
+> invalid routing states.
+
+> +++ b/sound/soc/codecs/nau8360.c
+> @@ -719,6 +719,11 @@ static int nau8360_dac_mux_put_enum(struct snd_kcont=
+rol *kcontrol,
+>  		return ret;
+>  	}
+> =20
+> +	if (item[0] =3D=3D NAU8360_DAC_SRC_DSP && !nau8360->load_fw_done) {
+> +		dev_warn(nau8360->dev, "Cannot enable DSP: Firmware not ready or disab=
+led\n");
+> +		return ret;
+
+ret is 0 at this point so this will look like success, you need to
+return an error code (-EBUSY might be good).  I'd also use a _ratelimit
+print here to avoid spamming the logs.
+
+--PzAFdN8Mc7izNR9I
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmqgDiMACgkQJNaLcl1U
+h9CkJwf/el48DUA/0/pug6z/kykTBH6+ujIZlS2GWiEt64HCfjfu8RsIqRbILDpp
+Kcac061HmF8BE77McbqVO0RdR3ce2RMEmpxlarJKAyKqt25EIEITsBffEPasAPCc
+HXZ/CRGEtsEf38ged0aTU4rJm0Hhk1s64S20MzuNWkhzeDv4VAbxRVxJQJCEUTOz
+2ehKtTyJoeYJVWiqnnc6vVqhcEQ48qBKGuVuHoLc8NpPqbdEs4z20tGWWhj9m8ug
+Xik9ujRG7tMPY/oLQML8LjObe9gxP2CNnMZjYpHrkGES9XTcXDFhCmHB6k4PD9C1
+6/vAgi8dZAgzmTpqglUJem2B8+p4Dw==
+=JCPF
+-----END PGP SIGNATURE-----
+
+--PzAFdN8Mc7izNR9I--
