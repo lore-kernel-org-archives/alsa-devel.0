@@ -4,87 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EAFAC79FB7
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2026 13:41:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF18DC79FB7
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2026 13:42:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8192160295;
-	Wed,  9 Sep 2026 15:41:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8192160295
+	by alsa0.perex.cz (Postfix) with ESMTPS id D6894602BB;
+	Wed,  9 Sep 2026 15:41:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6894602BB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1788961300;
-	bh=Oh6LCs69HrQa/5CPiYGxJu2O5OytHwOBnLQZTrlelB8=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1788961329;
+	bh=4ioxSVu29nQizZw2gwRUmxCUlnFwBRNdSeEsQZ8v38k=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=RiekcUoFBCuskyJTY4xyq7xMMZ637zy6OYFa6NMonWdpYD58zABK/Q48UuSeg9n66
-	 etNZrkiBO96aGqO1xNBSbbaNn+/kJC/eDQAV4Z7EoT9rSwdG/rCcgjbdg5O4x/ll5g
-	 N0vNOG8Wpp1bKajxfdfESyyf6NYE8TyY0oL13zPY=
+	b=GVS1iodCpfcFlnIzEbwG5pD6yow3hkmgVOiflxaEvVpWbQXwXb5txcgWjDTd474DE
+	 cEMLBRnrHgx3Vv6QBsv8x6cp56YEKsUNQJgoXZo97qymyLyJI30kkKCrBoacoBLSNc
+	 tjvnmT/dtndM+YhnMuLkNgu4cpFDq1aMwTeBvEiE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53A2AF80692; Wed,  9 Sep 2026 14:25:11 +0200 (CEST)
+	id B153EF80603; Wed,  9 Sep 2026 10:55:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BCDABF80682;
-	Wed,  9 Sep 2026 14:25:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C5F6F805F9;
+	Wed,  9 Sep 2026 10:55:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E56CAF80676; Wed,  9 Sep 2026 14:25:05 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788956704;
-	b=qTP+Vq6CN/MLWs8kJD+thdELsvgEMM0j/pZjKVShVeyvss7TyJCMTkLCepAbA5i0E8I5
-	 khpAaFAczEcLZOITG9wcnJiJgE5STyIsjp3MmhqZe41wQKdaFbFcAMvr2hN6RokCS1ItI
-	 KG0WtuTAI8uFAmcZ4TZKbK60rTZoqAMKlXU6q5hpO1NlmL4uYUGm4RgxNDxUwx0/IALZv
-	 N0O8ESvyQSGZMK6XtsNzTD+wuGcPcuCLuPpzUBK5HM2/6Xd6DQqUcPoU7m3uDnlQBStK+
-	 K0MANHeiPMRm1l2Nau7hKM5ayDY8RuWF/OVqwIFEHwR+63yy4wHI5XYgXzEuH2J7Z+w==
+	id 08B02F805BE; Wed,  9 Sep 2026 10:55:15 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=211.75.126.72
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1788944110;
+	b=A65Jm5fHINqa1OEhCD3Rql0cenDa1LisTm09XCE7f+HMbfC1DEvBO5NIxi+iOy4ica8F
+	 ljWo1Z8J95gEYJ9hMo9FmzYu1Sj2yuu9YinQgEUsD9NWqkheJM32UL+aQBVp9Z4gSsvX4
+	 uW2JPpNFpGOYK3Jm1TWJnGTTbOFvbQArK6aahFSdqjw40mzWoj049ODz34FO+gGQCGo04
+	 nC+iohVx9lipOOTW5v4ri0S3mqapn3zmRKkGcKA9xkymKcGdtgwjMkXtTcEyZaDMOlD9Y
+	 wKSCxrje8cM7YAVD6wDhtwu+0fYJeYB5onDqwiI8rCQfiJDQK8O0iquV1mig+Cz08uw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1788956704;
-	h=DKIM-Signature:Message-ID:From:To:Subject:Date;
-	bh=Oh6LCs69HrQa/5CPiYGxJu2O5OytHwOBnLQZTrlelB8=;
-	b=pq5AZvt+oer1/qkDj2EQAN8YHGi4Gg11PgDrP++8Qj/y4cPlBnsqQzTVPRos3kr487YW
-	 sLgKF2aV6apaW77GHnf5Z3KWc1wqA1StwrmgglMNTs0Y+px+IWKivKCrBZtEahAuEcQmV
-	 jG5LbvR6enrET147mr8ppKvehLx6tQQH+R4L1N+E/h/QlxbCJRct/HUXxZM+7c8Xsry0m
-	 WpK9NS4jsE9bG+y8z6WUcHNIk1WKyo5+guTXD4O2Leue5MxK3fdLdod6isEf5GP7B00JG
-	 ji3ovpaASOOMIWJXWmp3yj4Syhl4r2ihNb9kYovU8Bt/ekEwG4ui86pr1MPxYDW7UYQ==
+	c=relaxed/simple; t=1788944110;
+	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=4ioxSVu29nQizZw2gwRUmxCUlnFwBRNdSeEsQZ8v38k=;
+	b=Qrhl8enpEY/KiStEWsP6Niq1dcXkep2DvKBkFVSmHVaKaYRBh3v0VKdsrCDd9eSJXFmm
+	 PHkXvtD3iTRn3SSY8FRjjmFUVe2+evekENf77so7cMGOgfgGMD761yFrC+uc6Ngx95bVr
+	 WLFSqo/qZfmYrmPZ45fYRoQa/SQSLHcAKDEbFxFL6xhGX9aU24dGEox+9bvxw6bwu0kOU
+	 h6G1gco8lsjJQokOz/UOoyuOQXhgTYqmJBRr2eVoh0zYRMlkw75/yQLnfYpddt8lNsx+j
+	 bPSGOQhl4v6WCL+LNYuapA43+bVzJdHh3sNB5Bb6m9Q+dkRkORL5n1i8EGYQYlWM+lQ==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=YDvOr0NA;
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+ dkim=pass header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
+ header.s=dkim header.b=vS1ju3q1;
+	arc=none smtp.remote-ip=211.75.126.72
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id D32FEF80607
-	for <alsa-devel@alsa-project.org>; Wed,  9 Sep 2026 14:25:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D32FEF80607
+	by alsa1.perex.cz (Postfix) with ESMTPS id 246F5F8055C
+	for <alsa-devel@alsa-project.org>; Wed,  9 Sep 2026 10:55:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 246F5F8055C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=YDvOr0NA
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with UTF8SMTP id 1DFBE60230;
-	Wed,  9 Sep 2026 12:25:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 3AFE11F00A3A;
-	Wed,  9 Sep 2026 12:24:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788956699;
-	bh=lKRybCl3ZB8PHNRXZYkUpM6tYQN9bvZm8Q3Xz0YWvtY=;
-	h=From:To:Cc:Subject:Date;
-	b=YDvOr0NAjhaAWVoMJwuhffZN+cfovm0C++C0SBIk2GcXznzwO5vOZgXvLZBNvjY4D
-	 B6MS+BGBYjvqsaV4TlxNNIU/ufofW3637xsq/3ND0ZGFiT88WLyz/r6sIS4+NsVuli
-	 /C5Eq6zZ1ErF+Y/aO+7FZ5onHZ/Z4C6YkmPZ9fSOUd1YGvb6+kCS3ZdxJiDQPmTM9+
-	 TJr75YX3o8aqK/uK03Rb8CQXkViWxXQX2ap61F6V/YYlWLy0fPfWr5vte1iMMtZiPo
-	 nXqKvtnNANWiMB2ZrXuIMYd3jsE6g8GeXPeh16rho6KS1Lmx4gmvMp8h67Zkh2B1Ho
-	 0STHcgxe8kggA==
-Message-ID: <ef950e391b7a5d9d8054cc53d4f88da1@kernel.org>
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC fixes for v7.3-rc2
-Date: Wed, 09 Sep 2026 13:24:52 +0100
-Message-ID-Hash: 4RGI4V3AITHBYMS4XH33WPHBAP7C7NSL
-X-Message-ID-Hash: 4RGI4V3AITHBYMS4XH33WPHBAP7C7NSL
-X-MailFrom: broonie@kernel.org
+ unprotected) header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
+ header.s=dkim header.b=vS1ju3q1
+X-SpamFilter-By: ArmorX SpamTrap 5.80 with qID 6898st2M3415592,
+ This message is accepted by code: ctloc85258
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=realtek.com; s=dkim;
+	t=1788944096; bh=k0ZqGjOY5Io+1fyy12CIAXXzhHyrPA22Bq6Ppw087nU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:
+	 Content-Transfer-Encoding:Content-Type;
+	b=vS1ju3q1nmrOWsc32aB300fBM7PFzxifeMUgAoFhJTIwWClf16ELFyVVtiwXwEI4J
+	 m7HWtzlFwQhifGEeFqrYpCJkJNH2vi6ZxlghvTm1NyuUsrrP6Ua6SReNLoAjkhBA4g
+	 gIfsESOOPQET2FtpJ/zdcb+2j2V7GwZsFLgxYUAuiYbdIqMKaUhSHsyV13VLali7YX
+	 /BjfDimSJaE1ABwtdBORN+D9HsIPfUzseWHDtqJGMnFEUAnPF28IO85r9uBZ+NXGbV
+	 Al/gjXM/qOVFlTHdG8T3dYtmE8c01/gXyuILu1iGIrca1MnyKd/UFxG+avDZrmcT12
+	 rN4s/S++2SoNg==
+Received: from mail.realtek.com (rtkexhmbs02.realtek.com.tw[172.21.6.41])
+	by rtits2.realtek.com.tw (8.15.2/3.29/5.94) with ESMTPS id 6898st2M3415592
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 9 Sep 2026 16:54:56 +0800
+Received: from RTKEXHMBS06.realtek.com.tw (10.21.1.56) by
+ RTKEXHMBS02.realtek.com.tw (172.21.6.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.43; Wed, 9 Sep 2026 16:54:54 +0800
+Received: from sw-server.localdomain (172.24.54.4) by
+ RTKEXHMBS06.realtek.com.tw (10.21.1.56) with Microsoft SMTP Server id
+ 15.2.2562.43 via Frontend Transport; Wed, 9 Sep 2026 16:54:53 +0800
+From: <jack.yu@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+CC: <alsa-devel@alsa-project.org>, <lars@metafoo.de>, <flove@realtek.com>,
+	<oder_chiou@realtek.com>, <shumingf@realtek.com>, <derek.fang@realtek.com>,
+	<Trevor.Wu@mediatek.com>, Jack Yu <jack.yu@realtek.com>
+Subject: [PATCH v2] ASoC: rt712-sdca: reconfigure PLL2 to fix calibration
+ time-out
+Date: Wed, 9 Sep 2026 16:54:49 +0800
+Message-ID: <20260909085449.862350-1-jack.yu@realtek.com>
+X-Mailer: git-send-email 2.54.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Message-ID-Hash: BCD7PCPDE76K7U455KFNRJELPLR4AUBR
+X-Message-ID-Hash: BCD7PCPDE76K7U455KFNRJELPLR4AUBR
+X-MailFrom: jack.yu@realtek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -95,7 +109,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4RGI4V3AITHBYMS4XH33WPHBAP7C7NSL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BCD7PCPDE76K7U455KFNRJELPLR4AUBR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,158 +118,221 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The following changes since commit cee9395acd8043be0644b25c34bfa86623f2b935:
+From: Jack Yu <jack.yu@realtek.com>
 
-  Linux 7.3-rc1 (2026-08-30 13:34:40 -0700)
+Add pll2 reconfiguration sequence in order to fix calibration
+time-out issue and to support 24.576MHz MCLK on specific platforms.
 
-are available in the Git repository at:
+Signed-off-by: Jack Yu <jack.yu@realtek.com>
+---
+ sound/soc/codecs/rt712-sdca-sdw.c |  8 +++
+ sound/soc/codecs/rt712-sdca.c     | 86 +++++++++++++++++++++++++++++--
+ sound/soc/codecs/rt712-sdca.h     | 18 +++++++
+ 3 files changed, 109 insertions(+), 3 deletions(-)
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v7.3-rc2
+diff --git a/sound/soc/codecs/rt712-sdca-sdw.c b/sound/soc/codecs/rt712-sdca-sdw.c
+index c50e74e20a88..edba0367d9ce 100644
+--- a/sound/soc/codecs/rt712-sdca-sdw.c
++++ b/sound/soc/codecs/rt712-sdca-sdw.c
+@@ -18,12 +18,16 @@
+ static bool rt712_sdca_readable_register(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
++	case 0x004d:
+ 	case 0x201a ... 0x201f:
+ 	case 0x2029 ... 0x202a:
+ 	case 0x202d ... 0x2034:
+ 	case 0x2230 ... 0x2232:
+ 	case 0x2f01 ... 0x2f0a:
+ 	case 0x2f35 ... 0x2f36:
++	case 0x2f3a:
++	case 0x2f3d:
++	case 0x2f41:
+ 	case 0x2f50:
+ 	case 0x2f54:
+ 	case 0x2f58 ... 0x2f5d:
+@@ -48,6 +52,7 @@ static bool rt712_sdca_readable_register(struct device *dev, unsigned int reg)
+ static bool rt712_sdca_volatile_register(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
++	case 0x004d:
+ 	case 0x201b:
+ 	case 0x201c:
+ 	case 0x201d:
+@@ -56,6 +61,9 @@ static bool rt712_sdca_volatile_register(struct device *dev, unsigned int reg)
+ 	case 0x2230:
+ 	case 0x2f01:
+ 	case 0x2f35:
++	case 0x2f3a:
++	case 0x2f3d:
++	case 0x2f41:
+ 	case 0x320c:
+ 	case SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT712_SDCA_ENT_GE49, RT712_SDCA_CTL_DETECTED_MODE, 0):
+ 	case SDW_SDCA_CTL(FUNC_NUM_HID, RT712_SDCA_ENT_HID01, RT712_SDCA_CTL_HIDTX_CURRENT_OWNER, 0) ...
+diff --git a/sound/soc/codecs/rt712-sdca.c b/sound/soc/codecs/rt712-sdca.c
+index eda87eb9ab66..38052cb19790 100644
+--- a/sound/soc/codecs/rt712-sdca.c
++++ b/sound/soc/codecs/rt712-sdca.c
+@@ -73,14 +73,57 @@ static int rt712_sdca_index_update_bits(struct rt712_sdca_priv *rt712,
+ 	return rt712_sdca_index_write(rt712, nid, reg, tmp);
+ }
+ 
++static void rt712_sdca_clk_patch(struct rt712_sdca_priv *rt712)
++{
++	rt712_sdca_index_write(rt712, RT712_VENDOR_REG, 0x65, 0x0000);
++	regmap_write(rt712->regmap, RT712_SDW_ROOT_CLK, 0x03);
++	usleep_range(1000, 1100);
++	regmap_write(rt712->regmap, RT712_SDW_ROOT_CLK, 0x02);
++	usleep_range(1000, 1100);
++	regmap_update_bits(rt712->regmap, RT712_PLL2_CONF2, 0x0080, 0x0000);
++	regmap_update_bits(rt712->regmap, RT712_PLL2_CONF2, 0x001f, 0x0017);
++	regmap_update_bits(rt712->regmap, RT712_PLL2_CONF3, 0x0010, 0x0000);
++	regmap_update_bits(rt712->regmap, RT712_PLL2_CONF1, 0x0081, 0x0001);
++	regmap_write(rt712->regmap, RT712_SDW_ROOT_CLK, 0x03);
++	usleep_range(1000, 1100);
++	regmap_update_bits(rt712->regmap, RT712_PLL2_CONF1, 0x0081, 0x0081);
++	regmap_update_bits(rt712->regmap, RT712_PLL2_CONF2, 0x0080, 0x0080);
++	regmap_update_bits(rt712->regmap, RT712_PLL2_CONF2, 0x001f, 0x0000);
++	regmap_update_bits(rt712->regmap, RT712_PLL2_CONF3, 0x0010, 0x0010);
++	usleep_range(1000, 1100);
++	rt712_sdca_index_write(rt712, RT712_VENDOR_REG, 0x65, 0x0081);
++}
++
++static void rt712_sdca_clk_patch2(struct rt712_sdca_priv *rt712)
++{
++	rt712_sdca_index_update_bits(rt712, RT712_VENDOR_REG, 0x49, 0x0800,
++		0x0000);
++	rt712_sdca_index_update_bits(rt712, RT712_VENDOR_REG, 0x49, 0xf000,
++		0x0000);
++	rt712_sdca_index_write(rt712, RT712_VENDOR_REG, 0x65, 0x0000);
++	rt712_sdca_index_update_bits(rt712, RT712_VENDOR_ANALOG_CTL, 0x0c, 0xc000,
++		0xc000);
++	rt712_sdca_index_update_bits(rt712, RT712_VENDOR_ANALOG_CTL, 0x00, 0xc000,
++		0xc000);
++	rt712_sdca_index_write(rt712, RT712_VENDOR_REG, 0x65, 0x0081);
++	regmap_write(rt712->regmap, RT712_SDW_ROOT_CLK, 0x02);
++	usleep_range(1000, 1100);
++	regmap_write(rt712->regmap, RT712_SDW_ROOT_CLK, 0x03);
++	usleep_range(1000, 1100);
++	rt712_sdca_index_write(rt712, RT712_VENDOR_REG, 0x65, 0x0000);
++}
++
+ static int rt712_sdca_calibration(struct rt712_sdca_priv *rt712)
+ {
+ 	unsigned int val, loop_rc = 0, loop_dc = 0;
+ 	struct device *dev;
+ 	struct regmap *regmap = rt712->regmap;
++	unsigned int clk_base;
+ 	int chk_cnt = 100;
+ 	int ret = 0;
+ 
++	regmap_read(rt712->regmap, RT712_SDW_ROOT_CLK, &clk_base);
++
+ 	mutex_lock(&rt712->calibrate_mutex);
+ 	dev = regmap_get_device(regmap);
+ 
+@@ -109,8 +152,35 @@ static int rt712_sdca_calibration(struct rt712_sdca_priv *rt712)
+ 		if (ret < 0)
+ 			goto _cali_fail_;
+ 	}
+-	if (loop_dc == chk_cnt)
+-		dev_err(dev, "%s, calibration time-out!\n", __func__);
++
++	if (loop_dc == chk_cnt) {
++		if (clk_base == RT712_CLK_FREQ_24_576MHZ) {
++			rt712_sdca_clk_patch(rt712);
++			rt712_sdca_clk_patch2(rt712);
++		}
++		rt712_sdca_index_write(rt712, RT712_VENDOR_REG, RT712_FSM_CTL, 0x4100);
++		rt712_sdca_index_write(rt712, RT712_VENDOR_CALI,
++			RT712_DAC_DC_CALI_CTL1, 0x7883);
++		rt712_sdca_index_write(rt712, RT712_VENDOR_CALI,
++			RT712_DAC_DC_CALI_CTL1, 0xf893);
++		rt712_sdca_index_read(rt712, RT712_VENDOR_CALI,
++			RT712_DAC_DC_CALI_CTL1, &val);
++
++		for (loop_dc = 0; loop_dc < chk_cnt &&
++			(val & RT712_DAC_DC_CALI_TRIGGER); loop_dc++) {
++			usleep_range(10000, 11000);
++			ret = rt712_sdca_index_read(rt712, RT712_VENDOR_CALI,
++					RT712_DAC_DC_CALI_CTL1, &val);
++
++			if (ret < 0)
++				goto _cali_fail_;
++		}
++
++		if (loop_dc == chk_cnt)
++			dev_err(dev, "%s, calibration time-out!\n", __func__);
++		else
++			dev_dbg(dev, "%s, calibration success!\n", __func__);
++	}
+ 
+ 	if (loop_dc == chk_cnt || loop_rc == chk_cnt)
+ 		ret = -ETIMEDOUT;
+@@ -1759,9 +1829,13 @@ static void rt712_sdca_va_io_init(struct rt712_sdca_priv *rt712)
+ 
+ static void rt712_sdca_vb_io_init(struct rt712_sdca_priv *rt712)
+ {
+-	int ret = 0;
+ 	unsigned int jack_func_status, mic_func_status, amp_func_status;
+ 	struct device *dev = &rt712->slave->dev;
++	unsigned int clk_base;
++	int ret = 0;
++
++	regmap_read(rt712->regmap, RT712_SDW_ROOT_CLK, &clk_base);
++	dev_dbg(dev, "%s clk_base=%x", __func__, clk_base);
+ 
+ 	regmap_read(rt712->regmap,
+ 		SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT712_SDCA_ENT0, RT712_SDCA_CTL_FUNC_STATUS, 0), &jack_func_status);
+@@ -1773,6 +1847,12 @@ static void rt712_sdca_vb_io_init(struct rt712_sdca_priv *rt712)
+ 		__func__, jack_func_status, mic_func_status, amp_func_status);
+ 
+ 	rt712_sdca_index_write(rt712, RT712_VENDOR_REG, RT712_JD_CTL3, 0x7778);
++
++	if (clk_base == RT712_CLK_FREQ_24_576MHZ) {
++		rt712_sdca_clk_patch(rt712);
++		rt712_sdca_clk_patch2(rt712);
++	}
++
+ 	/* DMIC */
+ 	if ((mic_func_status & FUNCTION_NEEDS_INITIALIZATION) || (!rt712->first_hw_init)) {
+ 		rt712_sdca_index_write(rt712, RT712_VENDOR_HDA_CTL, RT712_DMIC2_FU_IT_FLOAT_CTL, 0x1526);
+diff --git a/sound/soc/codecs/rt712-sdca.h b/sound/soc/codecs/rt712-sdca.h
+index 46740281a5c1..6229fe341bb5 100644
+--- a/sound/soc/codecs/rt712-sdca.h
++++ b/sound/soc/codecs/rt712-sdca.h
+@@ -162,6 +162,16 @@ struct rt712_dmic_kctrl_priv {
+ #define RT712_EAPD_HIGH				0x2
+ #define RT712_EAPD_LOW				0x0
+ 
++/* SDW clock root frequency */
++#define RT712_SDW_ROOT_CLK		0x004d
++#define RT712_SDW_SCALE_CLK0		0x0062
++#define RT712_SDW_SCALE_CLK1		0x0072
++
++/* PLL2 config */
++#define RT712_PLL2_CONF1		0x2f3a
++#define RT712_PLL2_CONF2		0x2f3d
++#define RT712_PLL2_CONF3		0x2f41
++
+ /* RC Calibration register */
+ #define RT712_RC_CAL			0x3201
+ 
+@@ -254,6 +264,14 @@ enum rt712_sdca_version {
+ 	RT712_VB,
+ };
+ 
++enum {
++	RT712_CLK_FREQ_19_2_MHZ = 1,
++	RT712_CLK_FREQ_24MHZ = 2,
++	RT712_CLK_FREQ_24_576MHZ = 3,
++	RT712_CLK_FREQ_22_5792MHZ = 4,
++};
++
++
+ int rt712_sdca_io_init(struct device *dev, struct sdw_slave *slave);
+ int rt712_sdca_init(struct device *dev, struct regmap *regmap,
+ 			struct regmap *mbq_regmap, struct sdw_slave *slave);
+-- 
+2.54.0
 
-for you to fetch changes up to 7e125889f1705fc6326679a3db3b4159f7a8c87e:
-
-  ASoC: amd: acp-da7219-max98357a: don't bind on Raven/Picasso boards (2026-09-08 15:59:06 +0100)
-
-----------------------------------------------------------------
-ASoC: Fixes for v7.3
-
-An unusually large batch of fixes here, partly due to me not sending a
-pull request last week and partly due to Linus' fixes for the Ericsson
-systems.  I'm fairly sure he's the only user there so it seemed low risk
-to handle as fixes.  We also have a batch of error handling fixes from
-Cezary and issues with uninitialised stream_config->type from Shuming
-both of which had user error reports attached.  Otherwise everything is
-a fairly normal combination of quirks and device specific fixes.
-
-----------------------------------------------------------------
-Aaron Welwood (1):
-      ASoC: amd: yc: add quirk for Acer Nitro AN17-41 internal mic
-
-Antoine Monnet (1):
-      ASoC: tas2783-sdw: split a stereo stream across the two mono amps
-
-Cezary Rojewski (10):
-      ALSA: hda: ext: Clean up links if their initialization fails
-      ALSA: hda: ext: Clean up streams if their initialization fails
-      ASoC: Intel: avs: Clean up the bus when its initialization fails
-      ASoC: Intel: avs: Clean up the bus when fetching ML caps fails
-      ASoC: Intel: avs: Clean up streams if their initialization fails
-      ASoC: Intel: avs: Do not ignore -ENOENT when loading a topology
-      ASoC: Intel: avs: Cancel d0ix_work asynchrounously during recovery
-      ASoC: Intel: avs: Fix unbalanced module reference count
-      ASoC: Intel: avs: Refactor and fix init_config access
-      ASoC: Intel: avs: hda: Constrain MSBs on startup
-
-Jack Yu (1):
-      ASoC: rt721-sdca: Adjust latency control to fix no-sound issue
-
-Jairaj Arava (1):
-      ASoC: Intel: sof_rt5682: Add support for nvl_max98360a_rt5682
-
-Linus Walleij (15):
-      ASoC: ab8500: Reset the audio block before configuring it
-      ASoC: ab8500: Repair the DAPM capture graph
-      ASoC: ab8500: Correct digital interface format setup
-      ASoC: ab8500: Validate and program TDM slots correctly
-      ASoC: ab8500: Remove the nonfunctional sidetone apply control
-      ASoC: ab8500: Skip missing DMIC GPIOs on AB8505
-      ASoC: ux500: Fix MSP stream lifecycle handling
-      ASoC: ux500: Propagate MSP setup errors
-      ASoC: ux500: Correct MSP frame and bit clock setup
-      ASoC: ux500: Validate MSP DAI configuration
-      ASoC: ux500: Deassert the MSP reset during probe
-      ASoC: ux500: Request the MSP MMIO resource
-      ASoC: ux500: Remove obsolete PRCMU QoS calls
-      ASoC: ux500: Allow repeated MSP prepare calls
-      ASoC: ux500: Program the MSP FIFO watermarks
-
-Mark Brown (3):
-      ASoC: ab8500: Fix codec reset, routing and DAI setup
-      ASoC: ux500: Fix MSP lifecycle, clocking and resources
-      ALSA/ASoC: Intel: avs: HDAudio bus and general fixes
-
-Niranjan H Y (1):
-      ASoC: Intel: sof_sdw: add tac5xx2-sdw family
-
-Richard Fitzgerald (3):
-      ASoC: cs35l56: Fix pm_runtime imbalance if suspending before first attach
-      ASoC: cs35l56: Fix probe deadlock waiting for SoundWire enumeration
-      ASoC: cs35l56: Fix race between kexec and snd_soc_register_component()
-
-Runyu Xiao (1):
-      ASoC: sti: initialize IRQ lock before requesting IRQ
-
-Shuming Fan (6):
-      ASoC: rt766: fix uninitialized stream_config->type
-      ASoC: rt712: fix uninitialized stream_config->type
-      ASoC: rt1320: fix uninitialized stream_config->type
-      ASoC: rt1318: fix uninitialized stream_config->type
-      ASoC: rt721: fix uninitialized stream_config->type
-      ASoC: rt722: fix uninitialized stream_config->type
-
-Syed Saba Kareem (1):
-      ASoC: amd: yc: Add DMI entry for HP 255R G10 laptop
-
-Tianchu Chen (1):
-      ASoC: sprd: validate compress buffer sizes against fixed allocations
-
-Yorick Rommers (1):
-      ASoC: amd: acp-da7219-max98357a: don't bind on Raven/Picasso boards
-
-Zhang Yi (2):
-      ASoC: codecs: ES8326: issue about capture pop
-      ASoC: codecs: ES8389: Prevent enable_count underflow in clk_core_disable
-
-hpp.iscas (3):
-      ASoC: bcm: bcm63xx: Publish the OF module aliases
-      ASoC: Intel: SST: Publish the PCI module aliases
-      ASoC: mt6351: Publish the OF module alias
-
-wangdicheng (2):
-      ASoC: amd: renoir: fix disable_pdm_interrupts() to clear mask bits
-      ASoC: amd: yc: fix memory leak in acp6x_pdm_dma_close()
-
-Ștefan Ghețu (1):
-      ASoC: fsl_micfil: balance mclk enable/disable
-
- sound/hda/core/ext/controller.c                   |   4 +-
- sound/hda/core/ext/stream.c                       |   5 +-
- sound/soc/amd/acp-da7219-max98357a.c              |  23 +
- sound/soc/amd/renoir/acp3x-pdm-dma.c              |   2 +-
- sound/soc/amd/yc/acp6x-mach.c                     |  14 +
- sound/soc/amd/yc/acp6x-pdm-dma.c                  |   2 +
- sound/soc/bcm/bcm63xx-i2s-whistler.c              |   1 +
- sound/soc/codecs/ab8500-codec.c                   | 682 +++++++++-------------
- sound/soc/codecs/cs35l56-sdw.c                    |   7 +-
- sound/soc/codecs/cs35l56.c                        | 116 +++-
- sound/soc/codecs/cs35l56.h                        |   2 +
- sound/soc/codecs/es8326.c                         |  19 +-
- sound/soc/codecs/es8389.c                         |  34 +-
- sound/soc/codecs/mt6351.c                         |   1 +
- sound/soc/codecs/rt1318-sdw.c                     |  24 +-
- sound/soc/codecs/rt1320-sdw.c                     |   2 +-
- sound/soc/codecs/rt712-sdca.c                     |  17 +-
- sound/soc/codecs/rt721-sdca.c                     |  17 +-
- sound/soc/codecs/rt722-sdca.c                     |  16 +-
- sound/soc/codecs/rt766-sdca.c                     |   5 +-
- sound/soc/codecs/tas2783-sdw.c                    |  25 +
- sound/soc/fsl/fsl_micfil.c                        |  21 +-
- sound/soc/intel/atom/sst/sst_pci.c                |   1 +
- sound/soc/intel/avs/boards/hdaudio.c              |  17 +
- sound/soc/intel/avs/core.c                        |  59 +-
- sound/soc/intel/avs/debugfs.c                     |  12 +-
- sound/soc/intel/avs/ipc.c                         |   6 +-
- sound/soc/intel/avs/path.c                        |  11 +-
- sound/soc/intel/avs/pcm.c                         |  34 +-
- sound/soc/intel/avs/topology.c                    |  49 +-
- sound/soc/intel/avs/topology.h                    |   5 +-
- sound/soc/intel/boards/Kconfig                    |   4 +-
- sound/soc/intel/boards/sof_rt5682.c               |   8 +
- sound/soc/intel/common/soc-acpi-intel-nvl-match.c |   8 +-
- sound/soc/sprd/sprd-pcm-compress.c                |  15 +-
- sound/soc/sti/uniperif_reader.c                   |   4 +-
- sound/soc/ux500/ux500_msp_dai.c                   | 189 +++---
- sound/soc/ux500/ux500_msp_dai.h                   |  14 +-
- sound/soc/ux500/ux500_msp_i2s.c                   | 264 ++++++---
- sound/soc/ux500/ux500_msp_i2s.h                   |  12 +-
- 40 files changed, 955 insertions(+), 796 deletions(-)
