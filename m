@@ -4,174 +4,141 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E70A0C88E77
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2026 06:30:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88124C88E77
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2026 06:30:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC1006023F;
-	Wed, 16 Sep 2026 08:30:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC1006023F
+	by alsa0.perex.cz (Postfix) with ESMTPS id B50FC6025D;
+	Wed, 16 Sep 2026 08:30:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B50FC6025D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1789540221;
-	bh=kDlMbxzbfpUkEg5KF6YuM5b1sNPU98Tyb41guAP4tRg=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Kz16EaBqero6Ti/YMmKdUAa4Dhb5UndI+cYMNzLzRCJafh0ihZM2flI07E/OmOCJe
-	 ULi7l4ASLr4fA73FJpYHPcwSTU6ZHMwWW7BB8U7frWVBEBbbLulXW1i+RlhbF2NXHp
-	 N3F2l5nLN6ZmRahsRvCYKHMRkPi+TQItBFjy+ieE=
+	s=default; t=1789540238;
+	bh=4oHF2Eat6k72PJTngrCMahrVR9myK7ASkiIuFcNmiZo=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=lVnJAWPQcFV7rIosFRyUl7uhjiHHNEJvkVhvsAjHwKGbvFXL1lYpcIoFw6KeqMJ42
+	 cIZPkgirOLRQk/sra0KCX1iVdTbjjKKmKI/VAicjIqHPRSU/8T2ipYzjSbEEFjVeTA
+	 oouRQA/Ak9F1wx10VSGDYUiCM4VL2h24B5rKvNLo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CE7DCF80654; Wed, 16 Sep 2026 08:29:12 +0200 (CEST)
+	id 5241AF8069F; Wed, 16 Sep 2026 08:29:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B52DF80696;
-	Wed, 16 Sep 2026 08:29:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BCCB9F806A2;
+	Wed, 16 Sep 2026 08:29:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1EC3DF8049C; Mon, 14 Sep 2026 03:57:12 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz;
- arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.126.62
-ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1789351027;
-	b=AlHpm91iAegTjlcX9MoBn0vDaJb3EuTUO6fpmV0JoAmq++Q9T+wvhURdGVWZYNMTH5U0
-	 i6JlLqMqVwTf9ULtsVT9q3nisjSqw6LGq4SUfP0sdg8dUqC3u+uZeFLv7SPSaOJNkPNsY
-	 sFkNmvKpF+V7ybWazz816IngrUn9RITxiDSFkMtWhiR6sNscfpRJQecttBMy5lFLI8Kz3
-	 0wGeiyWQF92X78Nzq08i4wVjy00rLd0VmIEpjJccj616v32s69Wer8t4o/+YtWudAcswN
-	 PQIbtsJnLgAfP4MM5CY7LsXNXzS8/erH2R02vCz5hJolLrlDNvjK74S9aUv6roULgSA==
-ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1789351027;
+	id B9E89F8049C; Mon, 14 Sep 2026 19:23:45 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=74.125.225.76
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1789406624;
+	b=Fjr3sxE1+FhbgHwveeaPjuZAr1nYDY7Msefdh6vFAXuNJ/qMlADF3emxdqsvHD3BcKSo
+	 QXZ9kbeTPg9x59VvPqI4+4voYn3AVe0mlMazigtX/icWc2PDIg09c7lD9yeO3rwF2NIO7
+	 O+AFbvt3k14SsfqpQleT5yVnSZV6NYcqG4STSXvFqTEQE7AJ9SRrQSJ9HoNpi0YlVrKA5
+	 Q1I8Zb3/OG5M2SKHs99S8M10hCXO9LI8eeEuHTxwwqe6A2KaUS8F5oBA2kVBVU2Zq8I1i
+	 nttYrspd9wJ7CKtEOWYoyjWROmbv22f5yf2gGHmofBDe++xQ865Om/c4/aaSP2GR6JQ==
+ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1789406624;
 	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=kDlMbxzbfpUkEg5KF6YuM5b1sNPU98Tyb41guAP4tRg=;
-	b=ijn6Wa+WTRqndVC+JKb7osPy3xnPFC7TeatJssIvm2DBIGcWjHj5BRFIDo6gYXz5Ar/5
-	 9WA8AQQ+ARbbLN0l3q849tfTPLRvidtJIU8SPeRKc4Bxx5Q9qKUarrTvXrmiJtGCAbZx3
-	 QOLCxBKfKBQ8J+J0iqt3VrnjE9Lcv1Y1TyFBCMeAeT7tWem+z1SGra2J85gCVkb9JoBAk
-	 fUjTd9AOXxzGjMQBjvP8GDZnP9gNjT5TkBCYQNFjoozTHxdw9xY8qNfAhtwjQPatzpm+3
-	 bFHGfqiaZ3PFYPWNCeb50/Y3RekupW/PUw3obX6WXc5VyAKZsqltAFpxGW3JPojB8bw==
-ARC-Authentication-Results: i=2; alsa1.perex.cz;
- dkim=pass header.d=nuvoton.com header.i=@nuvoton.com header.a=rsa-sha256
- header.s=selector1 header.b=KaP3Q89B;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.126.62
-Received: from TYPPR03CU001.outbound.protection.outlook.com
- (mail-japaneastazon11012062.outbound.protection.outlook.com [52.101.126.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	bh=4oHF2Eat6k72PJTngrCMahrVR9myK7ASkiIuFcNmiZo=;
+	b=XsAHXaPku0AzsdJhZTpPwddvICau7QNWjrCgzQEvGocQxNloR8I3lb25fo95o/udYaHc
+	 8kG7UY8vYCxnyVcWU65LemU8oifA/EWR7LwbCB8Ot8QVSVj4TppwWyHiPNl0/0j9rnd8n
+	 jAhg903Iz/Y3vE7VdAkUOUgCwgxLi74ew0WbiIvTSEGEEo3mCTs2xoMDHZ5uWfCXXafb7
+	 bIQBDkoLDXl1b47w8i4Bs1HErTXgHK21phtAIzb18WzjD1m/QJwcq+E0VtR74bKk/q10W
+	 cuBNqa8i5tQfuivw10KMGQF30drI2RSkbONNVKRQjnrkz+XFByO2ZqJR9L25UPmht8w==
+ARC-Authentication-Results: i=1; alsa1.perex.cz;
+ dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=g7ajKERq;
+	arc=none smtp.remote-ip=74.125.225.76
+Received: from mail-wr2-f12.google.com (mail-wr2-f12.google.com
+ [74.125.225.76])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 686C7F80217
-	for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2026 03:57:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 686C7F80217
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6FECCF80217
+	for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2026 19:23:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FECCF80217
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=nuvoton.com header.i=@nuvoton.com header.a=rsa-sha256
- header.s=selector1 header.b=KaP3Q89B
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=rZ7dDqZTednqqmkx10BWVlVFdzjebXInVX0WrzfAiau7tR1IFqDSgfiFwRknzhhPSdYFcK/jGQeGwYQEVtdGax1OgSzzaO+ar0/+cVTa5hAGQCVikdbYOFj1R1voAFhKtKSO/TnNIlwld0rPDrZRZeqB2DpIP7tIWzKv+G8tvMjTtX7MRpTZf342g6Cp4CnFQh4C2gGjS8CeH+7AXtU7Zo418AdclTVsPn8q/QZnmT9oERpHFas4s3akIjMxoD3IjiJen5pRL0ivvSXTxyWQiVF+XHBd797EsAr0Hq7C7I+xmBqN4+1XwN+gSn8duwjf5FaN6P/l84Gg9ENvzNwlrg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4ijuNyx63mv5Vtx9n3EuW3O6VvF79aFEO4k2v+o3fJE=;
- b=aKnzMkjrMN65Gp01Vr5Owp84UTAuPGPWHs7OoRE2pYvANC09PFY7N1TyJCRa+rA0cirMr8mv9RWNP5CQfOdCLHBbvjX+fttvVCZjCEvz8r6Sa5CILcC+BQ7QeoG9wP406BQAX3gvUYWVxjxI+k1pV9k6TQ9Uq1VMkZXZ5V6fvwlb6kZ3FH0BbS0tmplS4BB5DPMDnd1wtnfrH+Zaeb8XLO2/ULJdsIq90l6cQTs9jKFND91gzLuU/UPzCXbwSQqWi83IK3gv6xH8VlB1zaV3GT/G8jIjcrr0W1kJGeBI/UjPzHtHeCw82/+Sqe4d3R8OLBlMU5bpo0OwdTY+9cOfyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 175.98.123.7) smtp.rcpttodomain=kernel.org smtp.mailfrom=nuvoton.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nuvoton.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nuvoton.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4ijuNyx63mv5Vtx9n3EuW3O6VvF79aFEO4k2v+o3fJE=;
- b=KaP3Q89BWQVUQnHvhEQzbPKuOyG+O+cee3Y0FGf9VorW0Oz8fLV/ddf5Bogehcr19z2m2sqZwKLP4fMiWpvt6rHjwlAlfWLQ0T5XiIw1NOik/wztR1AtVsbaQp++H2QNnSBKtsH5hBwtz2ECGiufLQDaDrYKmHGdz514wzhHbMFECNldJIoik8yQGGnMweUgWnEEBKpDwu5LvcK0y8n/1aIoRUPNCcU3j/Ab2YH25DixeWwXrbL6HruvbXrAW3yGwgQ60EucuReLnBaZZeXkyPWRwCpolFKzL+RrQDFYghk9uy6kOr67u9ZB6QGT/sQ7AOhHPmmxBoKUcjA+/lmAZQ==
-Received: from OSTP286CA0104.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:219::18)
- by SEYPR03MB7681.apcprd03.prod.outlook.com (2603:1096:101:13d::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.406.12; Mon, 14 Sep
- 2026 01:56:56 +0000
-Received: from OSA0EPF000000C9.apcprd02.prod.outlook.com
- (2603:1096:604:219:cafe::2e) by OSTP286CA0104.outlook.office365.com
- (2603:1096:604:219::18) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.406.12 via Frontend Transport; Mon,
- 14 Sep 2026 01:56:54 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 175.98.123.7)
- smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nuvoton.com;
-Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
- 175.98.123.7 as permitted sender) receiver=protection.outlook.com;
- client-ip=175.98.123.7; helo=NTHCCAS02.nuvoton.com; pr=C
-Received: from NTHCCAS02.nuvoton.com (175.98.123.7) by
- OSA0EPF000000C9.mail.protection.outlook.com (10.167.240.55) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.428.7 via Frontend Transport; Mon, 14 Sep 2026 01:56:54 +0000
-Received: from NTHCML01A.nuvoton.com (10.1.8.177) by NTHCCAS02.nuvoton.com
- (10.1.9.121) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.61; Mon, 14 Sep
- 2026 09:56:52 +0800
-Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCML01A.nuvoton.com
- (10.1.8.177) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.61; Mon, 14 Sep
- 2026 09:56:51 +0800
-Received: from localhost.localdomain (10.11.36.27) by NTHCCAS01.nuvoton.com
- (10.1.8.28) with Microsoft SMTP Server id 15.1.2507.61 via Frontend
- Transport; Mon, 14 Sep 2026 09:56:51 +0800
-From: Neo Chang <YLCHANG2@nuvoton.com>
-To: <broonie@kernel.org>
-CC: <error27@gmail.com>, <lgirdwood@gmail.com>, <perex@perex.cz>,
-	<robh@kernel.org>, <krzk+dt@kernel.org>, <linux-sound@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-	<neo.chang70@gmail.com>, <kchsu0@nuvoton.com>, <sjlin0@nuvoton.com>, "Neo
- Chang" <YLCHANG2@nuvoton.com>, Sashiko AI <sashiko-bot@kernel.org>
-Subject: [PATCH v5 2/2] ASoC: codecs: nau8360: Fix AB-BA deadlock in mux
- update
-Date: Mon, 14 Sep 2026 09:56:48 +0800
-Message-ID: <20260914015648.311986-3-YLCHANG2@nuvoton.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20260914015648.311986-1-YLCHANG2@nuvoton.com>
-References: <20260914015648.311986-1-YLCHANG2@nuvoton.com>
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=g7ajKERq
+Received: by mail-wr2-f12.google.com with SMTP id
+ ffacd0b85a97d-482f6351831so1204464f8f.1
+        for <alsa-devel@alsa-project.org>;
+ Mon, 14 Sep 2026 10:23:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789406622; x=1790011422;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:content-type:mime-version:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=xYF4ZfbMwnUrNRIM8rc7WKTmFbe7IkNY9IAOIcyuFNc=;
+        b=g7ajKERqsyTpGB9FqvAIYuCNh20ubryVcTtCKQNeSBPJgqUoL0twX1WnLKqZ9xoOss
+         piYcirJ1bGKIAWUxYH2viFaxkupeRqeYisuvkv5qG20IzIfYg3YF5LMVSYsfCtcmJcUJ
+         Sb8jQEHl2fkJVbJ61eIwNn0Iq6EKch5Wl+V5qFOOVxEdT7U07mfVLHkyUIRPO23GREgZ
+         qFh7PutEyEzIx9G9pSgmziXvqKlxS0h6k2uuPgXaQrB//wUfuXLlav4iPbjX3E0g4G8X
+         NJXExvbnViVxt0pAF7so5pJdb9ZpYn6m9jDGHqiZEWFp7Pq2fPsWRhU9R7HJZNbumr5N
+         jn+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789406622; x=1790011422;
+        h=content-transfer-encoding:content-type:mime-version:message-id:date
+         :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=xYF4ZfbMwnUrNRIM8rc7WKTmFbe7IkNY9IAOIcyuFNc=;
+        b=bcoShcqUlOaUZ6kGq7KXHF47RcmiEdBUHxsmm/C2JDpdjxvPXYfmChbw1GMyVmslFu
+         Jp19rtFww/mPL7hPBuSi5fiYvrySL2O1daUcHPr0Ud2FiptbgMhwoQWsC2Tp3qxkNQ8C
+         OVnAvQVZq9mHcvxvukOZkXPuCfaOhlHE1r9641pSdb347rwjqioUIocGNH3I58zgpnIB
+         r8g/MUV3jTvic051jACd7At1/fwZywst+x6c9dhrEd2pXoDrbQ2eSncBOyZuyOswFyQ5
+         OcYH1JxOuc4Dn+wv12VDqczWMUnTh5X276KqIPLPFMpJzB+HT73l3+pmf3J6I8rTb1JB
+         aGbQ==
+X-Forwarded-Encrypted: i=1;
+ AKwUvBzxVBF+ninn64Fet8W5h95a+O2eQQMKrLgSL0OVxWWNgiIN4tbtc8KjdKfjaKlilPIq4Pq1/sOTjeAS@alsa-project.org
+X-Gm-Message-State: AFuF++lsCBdApfhOhFGBlQB2/vyVMGP4zrtqNKJm/3VuDdwvmbqDBNFz
+	Pm826CDCgyhxETg5OffHk0rmLVk6sTYd7kHANkon7PR1tTLk33m1k5rN
+X-Gm-Gg: AYBFou0z1SHzX1/ajPfUftK/p6XyWvLaIW0vReVkMtxmL9xZqq3scrPYRZwGMp1k917
+	r+LeW42vtXfa/qiz8AlWnjwhj7I9yPHy7TNaGs13V+hvqvaUOJWuG4d+HDWkumS7e8Ckmt45faj
+	831MhEy/fKBlGRVVwdwokf5gjiI6bsLqD+7fVheAqDkLTeGDE1CHtZ46FY5y2ChtLk3zaCz365z
+	uL+Fi6ZLjsTPa9+qCzpuCRFaxpCD7tjfQhltgcoHFhrdTp52SU3EEUfACCQBVAWaaiK+x/aklvu
+	VAHL2OrUkbKIEml5LID/lATRlCO7/OwOOFQCDUQHSgHVAC3+byhNHAc9OCEr6NxG8C4tuyLgjBm
+	5CWU198+icoDQ7LN+irumn9K1CXqwjzzAl3k6YaF2CeBv6qdw0ixb6O4Ssb+Q5aeUIuyPe0upvh
+	sStvqWp8O+eKSTsNluitt2poCuflaE2Q0me/TljslHf0y4f759f6Eu8OoLOvxG7JaWtoijnTL7k
+	kbwZtYdobnwrcFl322TCSg2BBc=
+X-Received: by 2002:a05:6000:3c8:b0:487:8:1d25 with SMTP id
+ ffacd0b85a97d-48702ab924emr4811637f8f.17.1789406621970;
+        Mon, 14 Sep 2026 10:23:41 -0700 (PDT)
+Received: from cachyos ([41.249.70.189])
+        by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-486eb33ea60sm28064873f8f.17.2026.09.14.10.23.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2026 10:23:41 -0700 (PDT)
+From: =?UTF-8?q?Isma=C3=AFl=20Bahloul?= <i.bahloul01@gmail.com>
+To: linux-sound@vger.kernel.org
+Cc: linux-usb@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v4 0/3] ALSA: usb: add RME Babyface Pro driver
+ (proprietary mode)
+Date: Mon, 14 Sep 2026 18:23:31 +0100
+Message-ID: <20260914172334.49074-1-i.bahloul01@gmail.com>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NotSetDelaration: True
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: OSA0EPF000000C9:EE_|SEYPR03MB7681:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0f18ab0b-f820-4a56-9950-08df120373bf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|23010399003|7416014|376014|1800799024|82310400026|36860700016|22082099003|18002099003|3023799007|10067099003|56012099006|11063799006;
-X-Microsoft-Antispam-Message-Info: 
-	RYJc7Mk494Sz8aAti94ZAFNf0++euf6yCQjJeLp0OfHnbi9kmLroEPZXS8W2Zhh/wkdVq2wZHQtCC0q+MTENVRIgsGN+kwVtG8oD+i0lN/ehjL0+9DDiDBSX7856L2j7ksHRTRIlMbHRgKHf9p9fkursB0hM36xBMkqIUEBCUJ8xa1Dy/YmoVbADpZ6f5V2MyR7To7h2lZSxV+omhKV4QRrI3qDwKHuhpVtezAOV+oe2oUxid/OogUM8qIvvuJ43KcxhJaouj0Gqqm5cKRftqOtKZYoaGzXYTQ0hmeoh76g1c2pNelBJYRJwqTc4VEzD4DfqUfxA9u3l3lQ3jR5IKDUVXB5YGRniW/N7XIin2vhyK1kgoX4PbzRfOn9HTQA5XrY0tZJgtuVJ/63Bh6SooW6YNo7LP75V1TnGKDdYew2T1q5dwhZQv2mP1ejBsB8YeLdLKc7JFQE4DYGsVrOH7iP0dUNgMLBS/SU/krWuW0S8a8EJaSzQpD7tAvBMEf2Vwh4adFNKasHoqkhgy+mDY5E03BuqIhIT2zLG/Xgqjsgy7x554fwlY3v1Nr8z6YpS24fmdjfQpyZwKR59VfGlkOQEDhDIxehbTlyliTDA8Qly+OSY1+Br5XyWq6hiprBdLmwjeZUoxk7Rgk8h+MCiFw==
-X-Forefront-Antispam-Report: 
-	CIP:175.98.123.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS02.nuvoton.com;PTR:175-98-123-7.static.tfn.net.tw;CAT:NONE;SFS:(13230040)(23010399003)(7416014)(376014)(1800799024)(82310400026)(36860700016)(22082099003)(18002099003)(3023799007)(10067099003)(56012099006)(11063799006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	a1M5y28RhkRSe3thHOAfh2hl4RMPErs7roA7PtrAm6r3ZKb0sWLXXDRvPKr7kY2C1YUamjafh+D4e07Kej2svirmZJ4UvSVMOHBSI11T+UFhrQ/9rNApTljMGseUGLiu3BPMx1nMnnMyn2w7xBZMorgQv2XgHf7dYMA2JykXwI9pJHQ/se99Wui3jxASz3xdLwa8ifTqyRT6yYiPdPML/dHNJXCsSNap2O46Kk2vp9l8NWckwle4bU76tAlLq60CAmziEQcI37NrE6TFpdN6i3DuyGzsfmR43uicyfqfjitLDVo1ff7+FPfwqXJRWJuZnyyCFea4DPq0QUqYoiAj/uC5v51qD6StnKsMJriA7+s+nYDP/XuDOaDXGYDAOdNLjvtXaSCKt73RdlIwAfktenGnEpJlRpaPS4Lte+/ashOs9ny8M2+LdIv8f3w4cRhR
-X-OriginatorOrg: nuvoton.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2026 01:56:54.5102
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 0f18ab0b-f820-4a56-9950-08df120373bf
-X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[175.98.123.7];Helo=[NTHCCAS02.nuvoton.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	OSA0EPF000000C9.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR03MB7681
-X-MailFrom: YLCHANG2@nuvoton.com
-X-Mailman-Rule-Hits: implicit-dest
+X-MailFrom: i.bahloul01@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
- nonmember-moderation; administrivia; max-recipients; max-size;
- news-moderation; no-subject; digests; suspicious-header
-Message-ID-Hash: 4E4O5NFCO5QEBLFY5NDVMZFLK3RPLYZG
-X-Message-ID-Hash: 4E4O5NFCO5QEBLFY5NDVMZFLK3RPLYZG
+ header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
+Message-ID-Hash: 2J67XOWWJFRF6Q7HUNWZUSXSEI2TUWBD
+X-Message-ID-Hash: 2J67XOWWJFRF6Q7HUNWZUSXSEI2TUWBD
 X-Mailman-Approved-At: Wed, 16 Sep 2026 06:29:07 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4E4O5NFCO5QEBLFY5NDVMZFLK3RPLYZG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2J67XOWWJFRF6Q7HUNWZUSXSEI2TUWBD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -180,74 +147,159 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-nau8360_dac_mux_put_enum() acquires nau8360->lock before the DAPM mutex,
-causing an AB-BA lock inversion. This deadlocks with concurrent stream
-startups or mixer updates, which acquire locks in the reverse order.
+Hi,
 
-Fix this by replacing nau8360->lock with the DAPM mutex to protect
-pre-checks, releasing it before calling snd_soc_dapm_put_enum_double().
+This is v4 of the RFC for a driver for the RME Babyface Pro in its
+proprietary USB mode (VID 0x2a39, PID 0x3fc0).  In that mode the PCM
+stream runs on interrupt endpoints instead of the class-compliant
+isochronous path, so it cannot be a quirk on top of snd-usb-audio and
+needs a standalone driver, modelled on snd-usb-caiaq.
 
-Reported-by: Sashiko AI <sashiko-bot@kernel.org>
-Link: https://sashiko.dev/#/patchset/20260908030342.222655-1-YLCHANG2@nuvoton.com?part=1
-Signed-off-by: Neo Chang <YLCHANG2@nuvoton.com>
----
- sound/soc/codecs/nau8360.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+Changes since v3:
 
-diff --git a/sound/soc/codecs/nau8360.c b/sound/soc/codecs/nau8360.c
-index f5dee12127cd..f0942739d7ab 100644
---- a/sound/soc/codecs/nau8360.c
-+++ b/sound/soc/codecs/nau8360.c
-@@ -689,6 +689,8 @@ static void nau8360_dsp_switch(struct snd_soc_component *component, bool enable)
- 	struct regmap *regmap = nau8360->regmap;
- 	int value = NAU8360_PEQ_BAND_8;
- 
-+	mutex_lock(&nau8360->lock);
-+
- 	/* If DSP is enabled, unstall HW3 engine and DSP, loading DSP firmware,
- 	 * and configure PEQ after dsp reset.
- 	 */
-@@ -702,6 +704,7 @@ static void nau8360_dsp_switch(struct snd_soc_component *component, bool enable)
- 	regmap_update_bits(regmap, NAU8360_R9D_PEQ_CTL, NAU8360_PEQ_BAND_MASK,
- 		value << NAU8360_PEQ_BAND_SFT);
- 
-+	mutex_unlock(&nau8360->lock);
- }
- 
- static int nau8360_dac_mux_put_enum(struct snd_kcontrol *kcontrol,
-@@ -714,27 +717,26 @@ static int nau8360_dac_mux_put_enum(struct snd_kcontrol *kcontrol,
- 	unsigned int *item = ucontrol->value.enumerated.item;
- 	int ret = 0;
- 
-+	snd_soc_dapm_mutex_lock(dapm);
- 	if (snd_soc_dapm_get_bias_level(dapm) > SND_SOC_BIAS_STANDBY) {
- 		dev_warn_ratelimited(nau8360->dev, "changing path is not allowed during playback");
-+		snd_soc_dapm_mutex_unlock(dapm);
- 		return -EBUSY;
- 	}
- 
- 	if (item[0] == NAU8360_DAC_SRC_DSP && !nau8360->load_fw_done) {
- 		dev_warn_ratelimited(nau8360->dev, "Cannot enable DSP: Firmware not ready or disabled\n");
-+		snd_soc_dapm_mutex_unlock(dapm);
- 		return -EBUSY;
- 	}
--
--	mutex_lock(&nau8360->lock);
-+	snd_soc_dapm_mutex_unlock(dapm);
- 
- 	ret = snd_soc_dapm_put_enum_double(kcontrol, ucontrol);
- 	if (ret <= 0)
--		goto unlock;
-+		return ret;
- 
- 	nau8360_dsp_switch(component, snd_soc_enum_item_to_val(e, item[0]));
- 
--unlock:
--	mutex_unlock(&nau8360->lock);
--
- 	return ret;
- }
- 
+ - A real bug in the crosspoint routing matrix, found while trying to
+   hardware-verify the dB TLV metadata added to the crosspoint faders
+   (below): the AN1/2 output's own crosspoint fader had no audible
+   effect on the signal, for every source, for as long as the matrix
+   has existed - a generated tone swept from off through +6 dB
+   produced no change at all, while the identical control targeting
+   any other output tracked the fader correctly. The vendor software's
+   own capture shows why: for this one output it always writes a
+   second register (the "low map") alongside the usual crosspoint
+   address, at the same value; the driver wrote only the usual
+   address. Three call sites (the live control, the probe-time
+   default, and the reconnect/resume replay) needed the same fix,
+   folded into one exported helper. Verified fixed with the same
+   tone-sweep method that found it, and that a real crosspoint value
+   survives an actual unbind/rebind, both the cached control and the
+   audible level.
+
+ - Two real bugs found, diagnosed and fixed by David Fredman, who also
+   became this driver's second tester, on an original (2015, non-FS)
+   Babyface Pro:
+
+   * The stream URBs were submitted without URB_NO_TRANSFER_DMA_MAP
+     even though their buffers come from usb_alloc_coherent(), so the
+     USB core tried to map them a second time and failed with -EAGAIN
+     on any IOMMU-translated host.  That is the default on current AMD
+     and Intel desktops, which means v3 as posted would not have
+     streamed at all on most machines.  Every other sound/usb driver
+     that allocates coherent buffers sets this flag; this one was the
+     exception.
+
+   * The mic preamp gain register was decoded as a 5-bit value plus a
+     rotating transaction counter.  Bits 5-7 are in fact the fine part
+     of the gain: value = (fine << 5) | coarse, coarse 3 dB per step
+     saturating at 20, fine the 0-2 dB remainder.  The control was
+     therefore reaching 21 of its 66 positions, and because the
+     rotating value landed in those same bits, the gain actually
+     applied depended on where the rotation stood - the same requested
+     setting did not give a repeatable gain.  Measured on hardware
+     before and after: 0.808 dB per dB of control, against 1.000 after
+     the fix.
+
+ - The power-on masters no longer come up at unity, and the -20 dB
+   safety default is scoped to the two analog outputs only.  The
+   routing default sends all 14 sources into every output at unity,
+   and they sum, on every fresh module load before alsa-restore can
+   restore the user's levels; AN1/2 and PH3/4 now come up at -20 dB,
+   the level the hardware's own DIM button writes.  The four digital
+   outputs (AS1/2, ADAT3/4, ADAT5/6, ADAT7/8) keep the vendor
+   software's own 0 dB default instead, since nothing downstream of a
+   digital feed can be damaged by a loud signal the way a speaker or a
+   pair of headphones can - David Fredman flagged that the original
+   six-output default reached those too, for no reason a receiving
+   digital device could infer.
+
+ - The driver is no longer FS-specific.  It runs unmodified on an
+   original (2015) Babyface Pro; the two models share VID:PID,
+   bcdDevice and iProduct shape, and nothing in the descriptors tells
+   them apart.  card->driver, the card id, the shortname and the
+   Kconfig text are model-neutral accordingly.  This seemed worth
+   getting right before the strings are frozen by a release, since
+   card->driver is what alsa-lib configs and UCM profiles match on.
+
+ - The front-panel DIM button acts now instead of only being decoded.
+   SET already toggled phantom from the same poll.  Its scope (Phones
+   only) matches the one vendor capture we have of it; whether that is
+   the only possible target or just the default "Main Out" assignment
+   is an open protocol question, noted rather than guessed at.
+
+ - Added dB TLV information to the preamp gain, trim and crosspoint
+   controls; only the output masters had any before.  Hardware-
+   verifying the crosspoint curve is what surfaced the routing bug
+   above.
+
+ - Fixed a state-restore bug in the input trim: it is one shared
+   register per input pair but two per-channel controls, and the
+   restore replayed the pair from its even index, so a trim set on the
+   odd channel was silently dropped on re-probe.
+
+ - Split into three patches rather than the four of v3.  The v3 split
+   put the mixer in its own patch, which meant earlier patches carried
+   stub control functions that later patches replaced.  The mixer and
+   the core share the device state structure and the whole
+   save/restore path, so that seam was artificial.  The front panel
+   and the DSP EQ are genuinely separable: each of the three patches
+   here contains only final code, nothing a later patch rewrites, and
+   each builds in-tree on its own.
+
+Known limitations, stated up front:
+
+ - USB autosuspend is not supported.  It is explicitly disabled at
+   probe rather than left as an untested path: the panel poll and
+   keepalive work items run continuously and nothing pairs
+   usb_autopm_get/put around the stream.  S3 suspend/resume works and
+   is tested.
+
+ - A few protocol details are not fully pinned down and are documented
+   as open: the preamp readback index semantics, a width
+   strip-ownership edge case, whether DIM's scope is reassignable with
+   TotalMix's Main Out setting, and the exact high-frequency warping
+   of the EQ coefficients against the vendor curve.  None of them
+   affect the shipped controls.
+
+ - The latency profile is chosen at load time through the
+   frames_per_urb and nurbs module parameters; changing it means a
+   module reload.  Runtime reconfiguration is a follow-up.
+
+Validation: a full-duplex sweep across the whole rate x period matrix
+with a signal-integrity tap, 30 start/stop cycles, mixer-state restore
+across an interface unbind/rebind, and a mid-stream disconnect - 40 of
+40 on the current tree.  Each patch was also built in-tree on its own
+against next-20260911.
+
+I am still mainly after feedback on the interrupt-URB PCM design, the
+control naming and topology, and the subdirectory layout.
+
+Disclosure: the reverse-engineering (decoding the USB captures, the
+magic packets and the front-panel behaviour) and substantial portions
+of the kernel implementation were written with heavy assistance from
+AI coding assistants, credited per patch as Assisted-by.  All of it
+was verified by hand on real hardware; the human authors remain
+responsible for the result via Signed-off-by.
+
+Thanks for reading,
+Ismaïl
+
+Ismaïl Bahloul (3):
+  ALSA: usb: add RME Babyface Pro driver (proprietary mode)
+  ALSA: usb: babyfacepro: add the front-panel poll and controls
+  ALSA: usb: babyfacepro: add the hardware DSP EQ
+
+ MAINTAINERS                             |    6 +
+ sound/usb/Kconfig                       |   20 +
+ sound/usb/Makefile                      |    2 +-
+ sound/usb/babyfacepro/Makefile          |    4 +
+ sound/usb/babyfacepro/babyfacepro-ctl.c | 3494 +++++++++++++++++++++++
+ sound/usb/babyfacepro/babyfacepro.c     | 1593 +++++++++++
+ sound/usb/babyfacepro/babyfacepro.h     |  494 ++++
+ 7 files changed, 5612 insertions(+), 1 deletion(-)
+ create mode 100644 sound/usb/babyfacepro/Makefile
+ create mode 100644 sound/usb/babyfacepro/babyfacepro-ctl.c
+ create mode 100644 sound/usb/babyfacepro/babyfacepro.c
+ create mode 100644 sound/usb/babyfacepro/babyfacepro.h
+
 -- 
-2.25.1
+2.55.0
 
