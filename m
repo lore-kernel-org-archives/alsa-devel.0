@@ -4,226 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFFC8C88E77
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2026 06:31:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DF38C88E5C
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2026 06:32:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8468160226;
-	Wed, 16 Sep 2026 08:31:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8468160226
+	by alsa0.perex.cz (Postfix) with ESMTPS id 48CA660299;
+	Wed, 16 Sep 2026 08:32:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48CA660299
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1789540311;
-	bh=La1Ud/NlVlE74xpjFNI5YXZX5eIvV9aTU8q3eUmRAVU=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1789540336;
+	bh=AlsR6h0vKGLwhIkQD66g6AVWzcXn4xX+r9fA5W6cfCI=;
+	h=Date:From:To:CC:Subject:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=U4Yi8CzBe/p2QsQ+dR0PIKkEmi2ojnPW70z1GmXWs1dpiZGhhBB0KHzOndJzZHB2g
-	 lKDzc/Fssew1SITY+7TlJ1teV6/K/FRzRIezNBKKrSDbqiPKARSyeZSGW7NCPmEWHd
-	 9p+t4vX+PAublrUdKmuZm8C12PcG9vfY/5BN2oJA=
+	b=UYfou+ja7ev/W5IyHgED2JhM4pEVft8ZnxGPrTC/RSnG8AGaxlybLaVTF2gCDuPjv
+	 VrWkB3XSkufWOPlLDKtFr3spgQsAfLsf4oUwMF7vzuFNFGEB57bGVIS4s5R+N4FZnK
+	 6UtjfPeu8jOZnxyzLoMVm7gPsHEg/B3AFCTqZX8A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0AA0EF80722; Wed, 16 Sep 2026 08:29:34 +0200 (CEST)
+	id 685F7F8077B; Wed, 16 Sep 2026 08:29:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27876F8072A;
-	Wed, 16 Sep 2026 08:29:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58403F80787;
+	Wed, 16 Sep 2026 08:29:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9EBAFF80588; Tue, 15 Sep 2026 05:52:48 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz;
- arc=pass header.oldest-pass=0 smtp.remote-ip=148.163.150.75
-ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1789444366;
-	b=gu0+t1WpVFgNZGDQx1hcPa/LxmdQKUg6Kn5qVddtWK9xFzEdQDtPqlcnj6vI23ME3IBL
-	 I92NBbDdZtYiL1f4ToH6DA9LWN9A6PLuKvwKLuBIOQkbzrmBXn9Ctsg82ah4CmMpkZPrp
-	 jJfUuvmsFfMgfA0K0puLgfGb11/HoqoDQ2pUuDKMviCvSiuk9PuNFx8au8HccmYwPNUV6
-	 Rz3qRN1CGzkbPsdAqCJ5ribTnsMsxv4WHRFUWYu/UdsiMHE+bPWHWQkdCZT3C5Xe+4J/0
-	 yL59ysn4e4dBLIxNX9HS43vXvqcS20vZekKIrAuj0MROaWKiOjzQq6/pTgxENg368sg==
-ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1789444366;
-	h=DKIM-Signature:DKIM-Signature:From:To:Subject:Date:Message-ID:
-	 MIME-Version;
-	bh=La1Ud/NlVlE74xpjFNI5YXZX5eIvV9aTU8q3eUmRAVU=;
-	b=K4xJ39VAI9O+7zcwyqrHgBbwfj0D4S62TMgntbc5eh331BQfBgYR6jgX2ns2Kh7eY7KP
-	 HU1jIn/iIwZYDXhHaRBiYlkS/YQ6MjRfXKeIgmDc9S5dMvKV00kzTSyrzfB90V5YeRmez
-	 3WPo5lRwpJNGwJRqq2n7EUSVYBFVaYCl8aBcd3lh30y4I4DYqSiV+NyLJ8InlKBm/0VB6
-	 3h4/ADuCJRlUGdWiptW5WT9fqYLIT/B/DO1ro2AMDK1sLUvXG58xKU+zSP+Cd2CTAX7mw
-	 5GkE4cDcOOv5yZ9Si6nXvatI9rpes+KKEf3UpW3cgfejG1A0f/JoR2KpR72TvM6oZMQ==
-ARC-Authentication-Results: i=2; alsa1.perex.cz;
- dkim=pass header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=proofpoint-05-2026 header.b=ZJJE5v6B;
-	dkim=pass header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=selector1 header.b=wcquUylg;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=148.163.150.75
-Received: from mx0a-0002e601.pphosted.com (mx0a-0002e601.pphosted.com
- [148.163.150.75])
+	id 8E219F80588; Tue, 15 Sep 2026 14:10:01 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=80.241.56.152
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1789474199;
+	b=pQ9ZIEsM2w6TSq2XERBJ49eybmsu8XgEeCiGGlNwRFBjhhKd8STgJBllioedogWAOigI
+	 o+ObVAZtbws5mU3i0zSWk8OkLB2kx6enfYtZv6a7GR0exU1Mq5AMYWObNXo7wiMj9Wg3f
+	 UdIJ2t6UCWYiH9l/Hx96ic8vMQ9isLB3TQmdpcVxKfYAUtn8DyEVtWt5UB/VljL9vyETI
+	 /v6q/0mqUk9fJyLruLWsd7EgFSbT+XI7T1FDrKe6YIBG5R1BiFRpalT6EnghkZx+035+r
+	 MYT01lCm+X/MVcIa29YipnkY6k9x6xKnSCjnp77XPpMW1u9KNM+2Lrniyv4zFBf+O7A==
+ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1789474199;
+	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
+	bh=gF6d+5nWY90og3Q7V6zZ/k3Ztzmbow9ZnAMw7MAWQDs=;
+	b=RhXI9pLj5wP5oaawK0N1ZxNU8eyLe1DgFMVqHAOkMjApdTfNx0Znn3Vy9tpOKiIcDxiD
+	 QE8PlxFKyLGJQhvnaaxIZUvYwLqJv+RI72YS24YncHxVi3a6HpddobhWFjN1YjM19moKM
+	 3ljlfEHMm57VsOj91Md6liTAmsNtQByApBIHMqsugXeRxcxu4+jSH6oHbVcbaW1TKZwxf
+	 t0Ig8zLX4dWsCFPh+jLrE8fO+JbUErir9xEk9xE57lxKmPlOBHuOcWv7pmfkXe6Ot9Es+
+	 /XSlovfqD1lXI4FJHBKxdeGzvddz47kSt7r5i2btEvuWQJltsF4E89kGf8p+yn++f7w==
+ARC-Authentication-Results: i=1; alsa1.perex.cz;
+ dkim=pass header.d=haering.me header.i=@haering.me header.a=rsa-sha256
+ header.s=MBO0001 header.b=n9zGMdHz;
+	arc=none smtp.remote-ip=80.241.56.152
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5111BF80217
-	for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2026 05:52:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5111BF80217
+	by alsa1.perex.cz (Postfix) with ESMTPS id A6962F80217
+	for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2026 14:09:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6962F80217
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=proofpoint-05-2026 header.b=ZJJE5v6B;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=selector1 header.b=wcquUylg
-Received: from pps.filterd (m0380145.ppops.net [127.0.0.1])
-	by m0380145.ppops.net (8.18.1.11/8.18.1.11) with ESMTP id 68F2llSL3069168;
-	Mon, 14 Sep 2026 22:52:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=proofpoint-05-2026; bh=GGtCG8jMtK1TE
-	1LGtp/Vkew8AsuG+B0R54pjFAlxKUo=; b=ZJJE5v6B3/Li2XXfpyi3ofSe4lGDo
-	AR4OdC4HGGAG+YpuVFHAIWD807z4dc8fN5aDInPQxREMLxdeCSKsw0FwzSovdLC6
-	kcw+k2sVcqJEvuqOTsDcww8itdqA3dzoRsb4b/faUi1fdhXMTBcwiVDNbxG7IkJe
-	+VVUkywhxiS6ZslvuS2cscAN5SjEkE9rT5622HJh2xCs9WFZKZugLuj37/svUrGh
-	bIxMBiqsl2X7AqTlUfJplcPBE3lRjI9cNJBE0RX//ylGLaObYpigDxoQxd10zx3b
-	sRWl+BzrNpDak6mHoUZWzRmNkj7eCXE1WBAUkUQnejOPyrwN2mR7CnR0g==
-Received: from co1pr03cu002.outbound.protection.outlook.com
- (mail-westus2azon11010021.outbound.protection.outlook.com [52.101.46.21])
-	by m0380145.ppops.net (PPS) with ESMTPS id 4gppxsjcc3-2
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Mon, 14 Sep 2026 22:52:37 -0500 (CDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ZJ8OtAz0jo/3GI/IIYdmJSyMPwMaGobkzYRAEltIrCtMTbVNMUpOIIMteF4DaXO66l5DxV+p8mmFkcxR5fuUtR0W2N69FRARNkjCA6S7cor6IGoSFKGIx4EXEzKx3x1Ob5CXcsTcWWWmHZPdAKFyaGBlZEIabzHJ5sS4OiE5d+2xOkprTBnnHmUHpY+Pj9Nnp/INJL1zuFgMb+b446zW5sFR1T8r5Wvqt+nXBsxvlAX0tVimP3vUCSFbKnsPE1NQjnb+k6nYaz11NWd4j7tSQKivuEmXlb9adTQPFcnHPWAUz8DitylciOKtJDPkC0Q21HdhcEFreHTvdgO2Rql0LQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GGtCG8jMtK1TE1LGtp/Vkew8AsuG+B0R54pjFAlxKUo=;
- b=QeVirwedZZqcTMjw2kV4zSVEXzDAH6sCXOFZGnRBYFgod79VGV5xRPYUhiPOHCc368o8t6yYfy94koow3KC0sHrSy/W2UGOhdKa0BlpbOonko8XdlW02Y9VikfHt1QLmUaiY1IGbjbTTisL+FbmZD14EiWWtbqMI0OdUaSH02YKt8piK7qG4R0OxfCvw0Qbe9k89sxvjUAmJaX1iBeAkYUt7KBA345HTK95g+j1BjD0dF8zdhIzLF4jQwlnBKe/UBIc5pMcG9rkxazxp53jijrLo3WrJQ58lWpHB6mntcp0kyfS7JlG3mF4FmoFPqnujF7uDFx5W2DdeV/BGKXEoIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.23.195) smtp.rcpttodomain=amd.com smtp.mailfrom=ti.com; dmarc=pass
- (p=quarantine sp=none pct=100) action=none header.from=ti.com; dkim=none
- (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GGtCG8jMtK1TE1LGtp/Vkew8AsuG+B0R54pjFAlxKUo=;
- b=wcquUylggotEslYlaCNUhYzg+EqV5GbAj75dzW9DcDtLo9aKmm6/9kCMww9Al1Am8rXp91egxNMd+z/pPQXeuC4gGx0l9Ol3ca/iz0tL8jpymx9T/nbu4tP1VgS3AAmoXnnuzQi8pHlkAZgPj2Z54l2T2YMcHnkR3Gjpe9NmUnM=
-Received: from CH0PR08CA0023.namprd08.prod.outlook.com (2603:10b6:610:33::28)
- by MN6PR10MB7998.namprd10.prod.outlook.com (2603:10b6:208:4fc::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.428.8; Tue, 15 Sep
- 2026 03:52:34 +0000
-Received: from CH2PEPF00000145.namprd02.prod.outlook.com
- (2603:10b6:610:33:cafe::83) by CH0PR08CA0023.outlook.office365.com
- (2603:10b6:610:33::28) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.406.12 via Frontend Transport; Tue,
- 15 Sep 2026 03:52:33 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.23.195)
- smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
- action=none header.from=ti.com;
-Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.23.195 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.23.195; helo=lewvzet201.ext.ti.com; pr=C
-Received: from lewvzet201.ext.ti.com (198.47.23.195) by
- CH2PEPF00000145.mail.protection.outlook.com (10.167.244.102) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.428.7 via Frontend Transport; Tue, 15 Sep 2026 03:52:33 +0000
-Received: from DLEE210.ent.ti.com (157.170.170.112) by lewvzet201.ext.ti.com
- (10.4.14.104) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Mon, 14 Sep
- 2026 22:52:33 -0500
-Received: from DLEE213.ent.ti.com (157.170.170.116) by DLEE210.ent.ti.com
- (157.170.170.112) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Mon, 14 Sep
- 2026 22:52:32 -0500
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DLEE213.ent.ti.com
- (157.170.170.116) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45 via Frontend
- Transport; Mon, 14 Sep 2026 22:52:32 -0500
-Received: from LAPTOP-70RJ5B8Q ([10.250.165.249])
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 68F3qQAd2429245;
-	Mon, 14 Sep 2026 22:52:27 -0500
-From: Baojun Xu <baojun.xu@ti.com>
-To: <broonie@kernel.org>
-CC: <tiwai@suse.de>, <andriy.shevchenko@linux.intel.com>,
-        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
-        <shenghao-ding@ti.com>, <baojun.xu@ti.com>,
-        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <k-yi@ti.com>, <henry.lo@ti.com>, <robinchen@ti.com>,
-        <niranjan.hy@ti.com>, <pin-hao.huang@hp.com>,
-        <Syed.SabaKareem@amd.com>
-Subject: [PATCH v4] ASoC: tas2783-sdw: add firmware download status check
-Date: Tue, 15 Sep 2026 11:52:23 +0800
-Message-ID: <20260915035223.1518-1-baojun.xu@ti.com>
-X-Mailer: git-send-email 2.55.0.windows.3
+ unprotected) header.d=haering.me header.i=@haering.me header.a=rsa-sha256
+ header.s=MBO0001 header.b=n9zGMdHz
+Received: from smtp102.mailbox.org (smtp102.mailbox.org
+ [IPv6:2001:67c:2050:b231:465::102])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4hkgnF75Y3zKp22;
+	Tue, 15 Sep 2026 14:09:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=haering.me; s=MBO0001;
+	t=1789474194;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=GXVlF5fc0vGP0e7E8YmYjpIrL0zikSInwRubEWb49vs=;
+	b=n9zGMdHzKkVesKbAfZjPUi6+of/VDP4UGST83kmqbYlRsqiRSe3t81LqbE4TjUS9+8Yfll
+	DH3TdrxLRJ3k7jOWZXDybazlFXzS4Mr4I0K5k0CqG2OKcTfkxLMRt4FeG/65eqa3Dg+lG7
+	0zGafeMBC5JaxbGkCquq/8q11QYDnhfMY3TIpIEwpR1Fchcug0hPrTUn4Y0IJhOMmOPxla
+	IaLRjxbQga/8DbB7yJW4prBs+/4FMcdkFTSiP+IdcHwSBFjse6rrDfoFGo9mSjeRDl7vvr
+	J73Ce4B4SjWh1DJpalHGfmQq2McDc0PCkBuvaGgqL+q0FVD5UMl4AJpfGQVS+w==
+Authentication-Results: outgoing_mbo_mout;
+	dkim=none;
+	spf=pass (outgoing_mbo_mout: domain of alsa-project@haering.me designates
+ 2001:67c:2050:b231:465::102 as permitted sender)
+ smtp.mailfrom=alsa-project@haering.me
+Date: Tue, 15 Sep 2026 14:09:51 +0200
+From: Marlo <alsa-project@haering.me>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+CC: "tiwai@suse.de" <tiwai@suse.de>
+Subject: =?US-ASCII?Q?Conexant_SN6140=3A_ThinkPad_E14_?=
+ =?US-ASCII?Q?Gen_8_=2817aa=3A513e=29_-_PCM_stream_?=
+ =?US-ASCII?Q?RUNNING_at_correct_rate_but_an?=
+ =?US-ASCII?Q?alog_outputs_silent=2C_HDMI_works?=
+Message-ID: <38B8FF75-CF35-4EDA-87D4-99FABC272213@haering.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PEPF00000145:EE_|MN6PR10MB7998:EE_
-X-MS-Office365-Filtering-Correlation-Id: 370c9f71-2ea5-4d2a-152b-08df12dcc652
-X-LD-Processed: e5b49634-450b-4709-8abb-1e2b19b982b7,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
- BCL:0;ARA:13230040|82310400026|1800799024|23010399003|36860700016|376014|10067099003|6133799003|18002099003|56012099006;
-X-Microsoft-Antispam-Message-Info: 
- OiS467HSRB+znbHeWN4M7nfVk0hBSRfvgS/9yqRJedImyQnlsl/+9/jUltWrplwVr0kRQgLepkf0drKKyigPXmxjJrZNSDI4vs+9NIIrd1+ots/LBmAbSHhFHVCeHA5qiC3iHBfI5PVn42LGbp5V/Q2/TgumkjhqFNBnF1hf4eSv+pbb3+5BcVJt+sjTemo+ooRLmuT1zC3GtwaPPBPctLvp/ONLFYH5J6tIU5q7N93Ww3da8zHEUH0qIK4aCKzUbUYp9q5lQHauDQsdW3/GOHH09oTww4cf1rXffxuazMyuRxYJupmtBf3TZ25yusnkEdE72+NF6AdA92C34pndKs396Yy5OZx0GD5ElBsJXwH2U6e44d+K83tWUqNAGevbbtLVN/P6ErQSJeUj5+ea5XbUTdg0zRdT134zrmyTPb3gbOPUvQChqf2GlWRLZhNpUd9mWSCn7unFAIkD/Ne9NGw+STLV1VCIcuOyhz8swGNX8B7+zungDCqEwBCZu2t4wkRr7/fiWAxr9bjCnovNS5eABMq+z16y+CEmHhvtKpHygPTw7zSYhs1ASL+DSnQkj/BbOqiml5ZI04NQeBHJ043hEBpYCzTDjsyBJoWEk2wyi+QEeyFBaadCVMR8HpLYVHzr17BbSAwvMM2xJPmW56IPo2Ig3UAhE/pyQ/G64pTpy+Oe2XZAYCX+m8AMceEADViYOXo+Vx9yLojkzG/PYA==
-X-Forefront-Antispam-Report: 
- CIP:198.47.23.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:lewvzet201.ext.ti.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(23010399003)(36860700016)(376014)(10067099003)(6133799003)(18002099003)(56012099006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
- 9bvni4g94p7H6jbnhVAJGPeg16VfvkBOzM8WlW1nYqVnG3DRXfZzDS6/DTJkuEPQJNxQxihkDc5OgyLa2An51NEgNpMPFrBShMLURVgcEBqCQKzvIdxlIqwmVUfXtOxvS4bCWQvXzz6fa4rnqsMp+ORruzohF8ui4PHmCoBycH6ftS6ntpcvfFUBph+EUJ7KceMfMN9/MrDDtNYTwfO9v7Zv2TVIODrfQYBhQAChoonEtJsWqOpCAAGo1U7XlmC77rUez+VFKZEbyZ3FPUBSGyAhkqQG0KKHYFGHKS+WwCe7myodPxWrNveItZTSo9u8CWkyoRru7yAnbGZOAS+1ja2eHvH19s505X6Irg8WinxrFeq/mQdXgb61XzpzdS88u0bs+rh7xOU2/YhvYt3C7iu6Ns4Fag6qhSbZg01ih0IAKU/OQFr+20vry3ahY4kp
-X-Exchange-RoutingPolicyChecked: 
-	Zi+3yIlQA82vVkV+VVcYYwb8txgW/CI25kJLWvVWIghyFNMJLAJKXx49c7hrZ1+D62/62FqnTaD1c0LQe+kYM0wdEjIM3UySlPQ+EL+K+LstrABYpi0uzsqBOTURDZFhsOZsV346J3BYYhlc2QpOy8o1Fl9r2dLebu39d4UegLPOwixlHnfuezFHEoCJGG3hjdg3T5JUOlVjN7eIu9Us3u5MLim9ccS+YGUH9ezY09UYXW1x3c51xj+iYuPgXrtoc2hN67sAjHcHLpdUUhBTy1xEzeH6daKxIgAApHS1kj4rPRj1YhuhEcZYvh0E9vhw0m64KyET9IvwLLiRcGvzXg==
-X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2026 03:52:33.8298
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 370c9f71-2ea5-4d2a-152b-08df12dcc652
-X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.23.195];Helo=[lewvzet201.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
- CH2PEPF00000145.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR10MB7998
-X-Proofpoint-GUID: j8LDv4HMsUxNmJQ-UeCvKnVQtHrEpnvI
-X-Proofpoint-ORIG-GUID: j8LDv4HMsUxNmJQ-UeCvKnVQtHrEpnvI
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTE1MDA1MSBTYWx0ZWRfX7irdUw3CBJpb
- LTVG/peL0wEyW2W3kIxEG7yn3ibumLTSumJo0D569iNRId6uWW8ikXQUC6U4YU9lwdun6btpxgE
- 9fYGLv8yy0xDDQbVYbptg6qom2k96yVVIlX7QjuhiBWG8oi8iFWV6X77v/tg6UfpcOmHV5NVoSl
- B5B6yz3TGQHYDApKJinkA+vZxBUkWwHicAqXKHUJAwXueQPYu4FYTyVn7u5aUV301dAak8SumKZ
- F/1J8G5YCsd/1b9H7wnnsbBaR+0E4sHh6ev8wJSzxkKdnpCwgI0km5igN44i0aNi+MxYthxBWW+
- OJUXGoAzYTA1yM3qjm/nI0tZxy/teisMdRcpKj4EtWdM0lMzsqZ/ndDU+UFjftxpJpAiWhiqsYc
- lfcfSMdyQjIlbuILJCWeESYLhhP25HlMWlRZRs6N7Mw1BC1ck0ovJh+xBKdqHwPoO79BUM9aHQ3
- 5OQwSmwTfOKqFANjctA==
-X-Authority-Analysis: v=2.4 cv=bYP+w+PB c=1 sm=1 tr=0 ts=6aa8c105 cx=c_pps
- a=ReLZl+GdXdFt35wSL8r9Ug==:117 a=f+v6EHfkeJbVwR46tk4DMg==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=IkcTkHD0fZMA:10 a=VdqzKS8jKosA:10
- a=s63m1ICgrNkA:10 a=V5UXEbMT0ywA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=Z8NIEmU8O1QQgoT56wFK:22 a=gO1vWkAQAl3rybz1DQOp:22 a=sozttTNsAAAA:8
- a=MsNS4y5GQQOSDfnsN3AA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Info: AW1haW4tMjYwOTE1MDA1MSBTYWx0ZWRfX8Pgg5N6zFqhq
- oRBqI2nAKpiXaQ/EkIQCdfjlWlOBCVD1G9N0H/N1BhNlQvYcHZWg+eDd5phEwNZCECEDvPEGlR+
- EOViZ8u0u6VD03S371Pci+Iv8C7Tc4w=
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-09-15_01,2026-09-14_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 lowpriorityscore=0 priorityscore=1501 impostorscore=0
- adultscore=0 suspectscore=0 phishscore=0 malwarescore=0 bulkscore=0
- spamscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
- adjust=0 reason=mlx scancount=1 engine=8.22.0-2609040000
- definitions=main-2609150051
-X-MailFrom: baojun.xu@ti.com
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 4hkgnF75Y3zKp22
+X-MailFrom: alsa-project@haering.me
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: NBBJ7ZE6YSRGN6RUGESFNB2QVA2ZB5T6
-X-Message-ID-Hash: NBBJ7ZE6YSRGN6RUGESFNB2QVA2ZB5T6
-X-Mailman-Approved-At: Wed, 16 Sep 2026 06:29:17 +0000
+Message-ID-Hash: 5WGZC5QCFUCVTXRQT7COQLX6ZT5L3SIB
+X-Message-ID-Hash: 5WGZC5QCFUCVTXRQT7COQLX6ZT5L3SIB
+X-Mailman-Approved-At: Wed, 16 Sep 2026 06:29:22 +0000
+Content-Type: text/plain;
+ charset=utf-8
+X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NBBJ7ZE6YSRGN6RUGESFNB2QVA2ZB5T6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5WGZC5QCFUCVTXRQT7COQLX6ZT5L3SIB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -232,110 +121,89 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Currently, the firmware download is unnecessarily triggered on every
-system resume from suspend, causing significant wake-up latency. However,
-this step is redundant if the AMP remains powered on.
+Hello ALSA developers,
 
-Signed-off-by: Baojun Xu <baojun.xu@ti.com>
----
-v4:
- - Since first_hw_init is only required for download reduction, remove it
-   when this feature is not enabled.
-v3:
- - Updated description about memory page download reduce.
- - Removed the logic that skips memory page downloads.
-v2:
- - Update register address from 0x07 to 7 and keep the line within the
-   80-character limit.‌
- - ‌Remove stray/unnecessary changes.‌
- - ‌Change variable type to unsigned int to comply with API requirements.‌
- - ‌Replace usleep_range() with fsleep().‌
- - ‌Set idle_bias_on to 0 to enable low-power mode.
- - Reactivate the AMP after resume.
----
- sound/soc/codecs/tas2783-sdw.c | 33 ++++++++++++++++++++-------------
- 1 file changed, 20 insertions(+), 13 deletions(-)
+I would like to report what appears to be the same class of issue recently discussed for the ThinkPad E16 Gen 4 (thread: "Conexant SN6140: ThinkPad E16 Gen 4 (17aa:513f) has no speaker output, wrong PCI SSID fixup selected", 2026-07-17). My hardware has a different but neighboring subsystem ID (513e instead of 513f), and I have gathered some additional data points that hopefully narrow down the root cause further.
 
-diff --git a/sound/soc/codecs/tas2783-sdw.c b/sound/soc/codecs/tas2783-sdw.c
-index 04e10473c705..9519dbfc7299 100644
---- a/sound/soc/codecs/tas2783-sdw.c
-+++ b/sound/soc/codecs/tas2783-sdw.c
-@@ -857,6 +857,7 @@ static void tas2783_fw_ready(const struct firmware *fmw, void *context)
- 		ret = -EINVAL;
- 	} else {
- 		tas2783_update_calibdata(tas_dev);
-+		regmap_write(tas_dev->regmap, TASDEV_REG_SDW(0, 0, 7), 0x22);
- 	}
- 
- out:
-@@ -996,7 +997,7 @@ static s32 tas_sdw_hw_params(struct snd_pcm_substream *substream,
- 							TAS2783_SDCA_POW_STATE_ON);
- 			if (!ret)
- 				break;
--			usleep_range(2000, 2200);
-+			fsleep(2200);
- 		} while (retry--);
- 	}
- 
-@@ -1119,7 +1120,7 @@ static const struct snd_soc_component_driver soc_codec_driver_tasdevice = {
- 	.num_dapm_widgets = ARRAY_SIZE(tas_dapm_widgets),
- 	.dapm_routes = tas_audio_map,
- 	.num_dapm_routes = ARRAY_SIZE(tas_audio_map),
--	.idle_bias_on = 1,
-+	.idle_bias_on = 0,
- 	.endianness = 1,
- };
- 
-@@ -1252,25 +1253,29 @@ static s32 tas_fw_load(struct tas2783_prv *tas_dev, struct sdw_slave *slave)
- static s32 tas_io_init(struct device *dev, struct sdw_slave *slave)
- {
- 	struct tas2783_prv *tas_dev = dev_get_drvdata(dev);
-+	unsigned int val;
- 	s32 ret;
- 
- 	if (tas_dev->hw_init)
- 		return 0;
- 
--	tas_dev->fw_dl_success = false;
-+	regmap_read(tas_dev->regmap, TASDEV_REG_SDW(0, 0, 7), &val);
-+	/* Check if the AMP is in reset status. */
-+	if (val == 0x20) {
-+		tas_dev->fw_dl_success = false;
- 
--	ret = regmap_write(tas_dev->regmap, TAS2783_SW_RESET, 0x1);
--	if (ret) {
--		dev_err(dev, "sw reset failed, err=%d", ret);
--		return ret;
--	}
--	usleep_range(2000, 2200);
-+		ret = regmap_write(tas_dev->regmap, TAS2783_SW_RESET, 0x1);
-+		if (ret) {
-+			dev_err(dev, "sw reset failed, err=%d", ret);
-+			return ret;
-+		}
-+		fsleep(2200);
- 
--	tas_dev->fw_use_fallback = false;
--	ret = tas_fw_load(tas_dev, slave);
--	if (!ret && tas_dev->fw_use_fallback)
-+		tas_dev->fw_use_fallback = false;
- 		ret = tas_fw_load(tas_dev, slave);
--
-+		if (!ret && tas_dev->fw_use_fallback)
-+			ret = tas_fw_load(tas_dev, slave);
-+	}
- 	if (!ret) {
- 		if (tas_dev->sa_func_data)
- 			ret = sdca_regmap_write_init(dev, tas_dev->regmap,
-@@ -1279,6 +1284,8 @@ static s32 tas_io_init(struct device *dev, struct sdw_slave *slave)
- 			ret = regmap_multi_reg_write(tas_dev->regmap, tas2783_init_seq,
- 						     ARRAY_SIZE(tas2783_init_seq));
- 
-+		/* Re-active AMP after resume. */
-+		regmap_write(tas_dev->regmap, TASDEV_REG_SDW(0, 0, 2), 0);
- 		if (ret)
- 			dev_err(tas_dev->dev,
- 				"init writes failed, err=%d", ret);
--- 
-2.25.1
+Hardware
+--------
+Laptop: Lenovo ThinkPad E14 Gen 8
+Product: 21Y6000SGE (Machine Type 21Y6)
+CPU: Intel Core Ultra (Panther Lake)
+Audio controller: Intel HD Audio [8086:e428]
+PCI subsystem: 17aa:513e
+Codec: Conexant SN6140
+Codec-reported Subsystem Id: 0x17aa513e
+BIOS: version 1.02 (no newer version available; fwupdmgr reports no update for System Firmware)
 
+Software
+--------
+Distribution: Fedora 44
+Kernel: 7.2.5-200.fc44.x86_64
+PipeWire: 1.6.8
+
+Problem
+-------
+Both analog outputs are completely silent:
+- Internal speakers (pin 0x17)
+- 3.5mm headphone jack on the laptop itself (pin 0x16)
+
+The following DO work correctly:
+- USB-C connected earbuds (separate USB audio device, as expected)
+- A headphone plugged into an external HDMI monitor (digital HDMI audio path of the same Intel controller)
+
+This suggests the issue affects the entire analog output section of the codec specifically, while the digital HDMI path on the same chip works fine.
+
+During boot:
+
+snd_hda_codec_conexant hdaudioC0D0: SN6140: BIOS auto-probing.
+snd_hda_codec_conexant hdaudioC0D0: SN6140: picked fixup for PCI SSID 17aa:0000
+
+Same symptom as the E16 Gen 4 report: the driver falls back to PCI SSID 17aa:0000 instead of the actual Lenovo subsystem ID (17aa:513e in my case).
+
+Mixer / pin state
+------------------
+Master: 88% (unmuted)
+Speaker: 100% (unmuted), both channels
+Auto-Mute Mode: Disabled
+
+Node 0x17 [Pin Complex] (speaker):
+  Pincap 0x00010010: OUT EAPD
+  EAPD 0x2: EAPD enabled
+  Pin Default 0x91170110: [Fixed] Speaker at Int Rear
+
+Node 0x11 [Audio Output] (Speaker DAC):
+  Speaker Playback Volume / Switch both present, unmuted
+
+GPIO block (from /proc/asound/card0/codec#0):
+  GPIO: io=5, o=0, i=0, unsolicited=1, wake=1
+  IO[0..4]: all enable=0, dir=0, data=0
+
+Stream-level confirmation (the key new data point)
+---------------------------------------------------
+With PipeWire/WirePlumber stopped, running speaker-test directly against plughw:0,0 while inspecting the kernel PCM state twice, 1 second apart:
+
+cat /proc/asound/card0/pcm0p/sub0/status:
+  1st read: state RUNNING, hw_ptr = 144336
+  2nd read (+1s): state RUNNING, hw_ptr = 192616
+
+That is a delta of 48280 samples in ~1 second, matching the configured 48000 Hz rate almost exactly. hw_params for this stream:
+  access: RW_INTERLEAVED, format: S16_LE, channels: 2, rate: 48000, period_size: 12000, buffer_size: 48000
+
+So the PCM stream is correctly opened, configured, and demonstrably running at the correct real-time rate at the kernel/ALSA level - audio data is being delivered to the codec continuously and on time - yet no sound comes out of either analog output. This rules out any PipeWire/ALSA-lib/stream-configuration/timing issue and narrows the problem down firmly to the codec's analog output stage itself (DAC->amp->pin), consistent with the GPIO block being entirely unconfigured (all 5 GPIO pins disabled) as noted above.
+
+Tests already performed without success
+----------------------------------------
+- normal snd_hda_intel path (current default)
+- cold boot / full shutdown+restart cycle
+- checked for a newer BIOS (none available)
+
+I have not yet tried aliasing via the model option with an existing quirk entry's $VENDOR:$DEVICE string as Takashi suggested in the E16 Gen 4 thread - happy to test that or any other patches/instrumentation if pointed in the right direction.
+
+Full diagnostic report (alsa-info.sh):
+https://alsa-project.org/db/?f=5f8598a774edfeba0d09022c694a0014e3022bfc
+
+Thank you very much for your work, and please let me know what further information or testing would help.
+
+Best regards,
+Marlo
