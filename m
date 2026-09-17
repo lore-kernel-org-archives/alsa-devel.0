@@ -4,107 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEAB2C982CF
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2026 11:33:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B31DC88E72
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2026 11:48:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F588601C4;
-	Thu, 17 Sep 2026 13:32:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F588601C4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0DC8360206;
+	Thu, 17 Sep 2026 13:48:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DC8360206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1789644786;
-	bh=bVU8bp4iIHucX65r0y3mUOPDOCm09oiCFmlXLL3OfCg=;
+	s=default; t=1789645696;
+	bh=AI39L+ZGXRClSJlTe0kyuJR2TpQAZ4EaEYHa8Qj/SGo=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RN2GXRFeO2h4DrDH7aCKRJqtTjkQ39YDl3IK5Fzf7pH7EsIwrHtSQuEecNMdCkAfq
-	 LB8A9JfLbq+IpK0Ft6gsNmzA41h/fze1jGjv45pT3Jk7YDCEgHYUvJtPdZ6QMqendc
-	 Nnp/YOxFuCmq8Cm530LsAv3eO9M5W9KWmLfmLr8M=
+	b=hJ6SiPMpfcU6mJZ3yVMKxuh74wu57dD+o3Isi/E4BbXScK9JS1qCGAXefc97vkXxp
+	 r2Nxh6LY4UzNl5wUubfTAHxoeUTS4MM7vM/1y2/Kh3AiJGCs/tq0or50TK9uJqorRI
+	 YSfcrxXjqabu0bKxWlK0mRqRbmR4ibzyJZojvxho=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9B9FBF8060C; Thu, 17 Sep 2026 13:32:40 +0200 (CEST)
+	id 0D2E6F805FA; Thu, 17 Sep 2026 13:47:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4FB9FF80611;
-	Thu, 17 Sep 2026 13:32:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C38AF805FA;
+	Thu, 17 Sep 2026 13:47:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1F407F805F5; Thu, 17 Sep 2026 13:32:35 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1789644754;
-	b=O9gie4TV+asG2JEcHWnJy/gCln7vfASaVi/EPpCpm2O9Y/B4f54r/dzIcoFf/8YoPpIo
-	 +UwI/zyJ2OgW4QQdXa1ay8UP21/mlJEhb3homFxtKnXi5Ax5jNAIS3GYY6Z7DP70qpF0L
-	 tZVuP387QRMN0PGItgb62bqQOn7v3ZDTq5ASRqVxKNGolIFXXtc2szvDEhJtH/+T7KP3m
-	 azqGlo85YhvQCVVr0zui/Oi4l4XJkhKf2V6Sk7bpVxBoKe79dYZRqvRs95WP/btJinOJO
-	 jqRnXfqFK0UVI6njEs9yX3ima8+stfhk1Z2i4QyaLA0F7QD7Q+cRxbyBEkkzX76YFmQ==
+	id 500DFF80537; Thu, 17 Sep 2026 13:47:35 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1789645654;
+	b=bNLpc56dyvNlkXJTI01JndGW4Qg8RBLrpbf56UzkDiCeNez7CxHUsigjZexTueiahQtR
+	 lsP5tmhFJPOnWHe6JPhahl9HboXi8FewOoYkl72MSlMNbxHeNxLOpxy9JX0+nejyAeqOw
+	 mQDFGLGb2YJU0LoZY5DlIF39kQfJTRpdtaq1inGQX2WsVbfO6tufR9jyws+QqGu2un4g7
+	 wh25sl0kRvGQ17ojJ9xpWtgxi4CUzLEMj5hLJHUmrC/GqtH0ilstcQBL+ctj1vfv9XbMk
+	 eDX7VsTgthV+h1jtQBYxp5kX+UjGmNMUGQj+K2rCguBrvEZrREY69HloQTfV3ABkrpw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1789644754;
+	c=relaxed/simple; t=1789645654;
 	h=DKIM-Signature:From:To:Subject:Message-Id:Date:MIME-Version;
-	bh=bVU8bp4iIHucX65r0y3mUOPDOCm09oiCFmlXLL3OfCg=;
-	b=pMTBvp0SpU8kBhsquzKvTOGNre90as5DmmF4kjyE4qC9lXlPmnLMjqTbw3Z/MDa0EAiQ
-	 p7o6FBVertuCc3+xiEaBK8O8Wr3DEeDUz/4agED3qU+awVyI5cmR7gs0bZMLSCQz+jZvq
-	 SUNNQFP6qBPJdA6E7skOieV93bHibFOLu7vyjvHqXEgtIxpTcuwz9gYMByGx64ggUllhE
-	 h51XavdIUv2ts2uiwPDXbjtY73UYKOFARCZHq5rsFMOrrDFClcUrmS2cj7w+Q5ifVKYYR
-	 TwovbnLPm4etPBKd1DbqUvsbCGh1VOXT30BbYS/M+mmbeat7K10neWa3xedAC41MQ9Q==
+	bh=AI39L+ZGXRClSJlTe0kyuJR2TpQAZ4EaEYHa8Qj/SGo=;
+	b=crzW9BaezAsJYX2H//ISEn+9uOjxxil9btGVvoGwyIKd0hX/XJDEgzPcuOc2NsEuPwTQ
+	 eknPeHC7ssl7wEcMqhCOcJIkYoECd5mFZBXByK7YzfSZafFXt264VMe/w9QbGduVYz/7V
+	 KEKTfh7uSPrlwG6w/yWoIw9xVR9qEAlyB5mLZC+437ylIOw+gvY1cebcKgmKUQamTMBgJ
+	 Qs9Jpmb2NVG52xLe5UND7lFxtsSqAKegtlv2unVU0hNI/Tl69MkCJfcW5jTYPruUVp0f3
+	 QT/vAE4oqm+JAQqY5yAEWGWaG9ooUbVa2A1yZgwhb7Qz+aqfE8nKCv9oJHAYVYn1wXA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=NuS3+7HL;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+ header.s=k20260515 header.b=imIZAN0h;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D0204F800C1
-	for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2026 13:32:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0204F800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 27381F8007E
+	for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2026 13:47:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27381F8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=NuS3+7HL
+ header.s=k20260515 header.b=imIZAN0h
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id C786142DCD;
-	Thu, 17 Sep 2026 11:32:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C53611F000FF;
-	Thu, 17 Sep 2026 11:32:27 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 4C426601EF;
+	Thu, 17 Sep 2026 11:47:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD4B31F000FF;
+	Thu, 17 Sep 2026 11:47:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789644749;
-	bh=fQ8wMCWCIy/WlWl+fLkiP1H94HLWJReXNyPVq5dItoo=;
+	s=k20260515; t=1789645650;
+	bh=pG9cjks4k9C8zXZoyyabDPkmF6b29sL50DaD6ZJ/fQM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=NuS3+7HLpz4N6/Ztuf9i7Ky3ytq7Z9wu/t5P2lm0SxvFQGYJ0HNo4fjp2sFmpfk16
-	 CyTOHO0ZblgZeALqV6wSUp+fi1tTii4hKeHTFseS5rw99dQpHnCtTJy93MHTPl7X+Y
-	 oNM0aE0bxIEPomy8SPK37VmJjlr/s7xL9x9xQgT4RmBKGd/meDul3nbMuYDOPD51Y1
-	 Wr2/5ayOqwndR22xiniCSs92lxzpEzGr7oQQVSv+H6SrS/GdJLtgnhyXqhINwk4xaj
-	 MPQlgyYLCepW8mq7dycPAwvjbUW/T4u5G0TAh5PyLBPdJbvBpk8P/+8EC68plFxa6i
-	 1YJmU1sjKgfZQ==
+	b=imIZAN0hmzffNgznzHciVaNnIMdo4L1CRg0bzohczdDonRTNvzgN9xj+oBJzyx/6W
+	 YaGfVZnNve8wBJpxAkVadK0qyhwPIw5JyuiBj5GfZXGz6UBmxNkaaMDNVAY7p20o8v
+	 emWLQInj4/otQcaXpctfPr/d6A4xyro1cH13tmiixbdvsJStXO56sjq+jwRaAe5Dqf
+	 UZmptcuhw7oZlNNoNjPOUV3LfWuRC1AgGsNsvhOOLpge3XDv0L20Iw1ZvxEX9/CBG3
+	 3OGfz+j2Vt2cKBOPvk6oWWbzd0xCZiVDl8UkEoj6vnAvkzPjdOkbZpdrZPLFQOEwHw
+	 0yz6qRHx8dseg==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, linux-sound@vger.kernel.org,
- Neo Chang <YLCHANG2@nuvoton.com>
-Cc: error27@gmail.com, lkp@intel.com, perex@perex.cz,
- krzysztof.kozlowski@oss.qualcomm.com, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, neo.chang70@gmail.com, kchsu0@nuvoton.com
-In-Reply-To: <20260915014940.317403-1-YLCHANG2@nuvoton.com>
-References: <20260915014940.317403-1-YLCHANG2@nuvoton.com>
-Subject: Re: [PATCH] ASoC: codecs: nau8360: Fix misleading return in
- nau8360_message_to_dsp()
-Message-Id: <178958230980.100121.14321855165528287319.b4-ty@b4>
-Date: Wed, 16 Sep 2026 19:11:49 +0100
+To: Neo Chang <YLCHANG2@nuvoton.com>
+Cc: error27@gmail.com, lgirdwood@gmail.com, perex@perex.cz, robh@kernel.org,
+ krzk+dt@kernel.org, linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, neo.chang70@gmail.com, kchsu0@nuvoton.com,
+ sjlin0@nuvoton.com
+In-Reply-To: <20260914015648.311986-1-YLCHANG2@nuvoton.com>
+References: <20260914015648.311986-1-YLCHANG2@nuvoton.com>
+Subject: Re: [PATCH v5 0/2] ASoC: codecs: nau8360: Fix DSP routing and
+ deadlock issues
+Message-Id: <178964562125.162267.11490477756224504460.b4-ty@b4>
+Date: Thu, 17 Sep 2026 12:47:01 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1159; i=broonie@kernel.org;
- h=from:subject:message-id; bh=bVU8bp4iIHucX65r0y3mUOPDOCm09oiCFmlXLL3OfCg=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBqq8/JEsVMvTGGLTsQ5wpJxRFi7tRSlF/4yvbkG
- cZR7bfgMGmJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCaqvPyQAKCRAk1otyXVSH
- 0OHAB/98XV4Ty0RKilnS2YbNh25IeCzJ+hTrZ6pRdhMUzH7MDZCw2sK65DVR8XulEVng9y632qQ
- lsbww3Vr2RsA9SnuI4SCsJl4X87FDhT8MGhuevuXbQqpYZ4fLo7bAndh+t2chVWu+B9WM5U7mAK
- 4p4IK53Q/6ESsmRngWw3F/g72Ldy8wuJTY/xNim3DW9jm5NbJ2XW3WIwNmF3zl4aa4ctJfpjNKW
- nYkJNErAd0qVwEX+/6ls3aPdcHdXr55K0LRzkYZx4m6fCRHjlDEaplB65HPjlvElKCfqVKtbB3z
- wHW60QRXE7BqczEhExcxsG9UG8ElRQRCeLxdwzziqLIz2x4W
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1540; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=AI39L+ZGXRClSJlTe0kyuJR2TpQAZ4EaEYHa8Qj/SGo=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBqq9NNaOWAYvJ6+NpPO/Uc/gSc1YSTJbKKSK3Ry
+ V4GarGP+6GJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCaqvTTQAKCRAk1otyXVSH
+ 0BplB/0W9f9TY0gsc/gKa5Lv6Fg3LKvUnxe7GYFkEcaFzk7QniihDWsqi5EuiM5tUzqiu7fb02o
+ ipmNlt2YnkBifMAJ944mRhwWK9zW+4v9FklbF36zf0jCmtWIey2M5ka/oXrrdbYzk8FNo3rtIK4
+ x4Vllzz5QEB61m7p7CbTFc3IpnM+78xqdp/7U9rGOXmbzXFmBAu68cTlyMF3cVygDJ03lNRfb36
+ CxsJblUyoFc6IM5s6rTRK8ehrhc0sk/K3hRUcohbUfLg5u+HqujPPR2udldYuSEvTzElU5+NASA
+ 4RFKd0kLq9xxcBN7hZg37lnyuwwJPadEV+UTyjlIuFlD//2o
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: FYMV5BOQV73XJNTOZDJFM7U3DZQQK6ZH
-X-Message-ID-Hash: FYMV5BOQV73XJNTOZDJFM7U3DZQQK6ZH
+Message-ID-Hash: FJ2AY3SXWFJMRHTSPWBGWRJIZBMAZRYD
+X-Message-ID-Hash: FJ2AY3SXWFJMRHTSPWBGWRJIZBMAZRYD
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -116,7 +115,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FYMV5BOQV73XJNTOZDJFM7U3DZQQK6ZH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FJ2AY3SXWFJMRHTSPWBGWRJIZBMAZRYD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,8 +124,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 15 Sep 2026 09:49:40 +0800, Neo Chang wrote:
-> ASoC: codecs: nau8360: Fix misleading return in nau8360_message_to_dsp()
+On Mon, 14 Sep 2026 09:56:46 +0800, Neo Chang wrote:
+> ASoC: codecs: nau8360: Fix DSP routing and deadlock issues
+> 
+> This patch series addresses two issues in the nau8360 codec driver
+> regarding the DAC mux control:
+> 
+> 1. An invalid hardware routing state that occurs when the DSP firmware
+>    fails to load but the userspace attempts to switch to the DSP path.
+> 
+> [...]
 
 Applied to
 
@@ -134,8 +141,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: nau8360: Fix misleading return in nau8360_message_to_dsp()
-      https://git.kernel.org/broonie/sound/c/ed7d8ed9a915
+[1/2] ASoC: codecs: nau8360: Block DSP path selection when firmware load fails
+      https://git.kernel.org/broonie/sound/c/eeff736ebf5d
+[2/2] ASoC: codecs: nau8360: Fix AB-BA deadlock in mux update
+      https://git.kernel.org/broonie/sound/c/4862e73eaf08
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
