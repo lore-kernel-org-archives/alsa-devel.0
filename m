@@ -4,160 +4,139 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79670C88E72
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2026 09:09:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B08B0C88E72
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2026 09:52:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A82960236;
-	Thu, 17 Sep 2026 11:08:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A82960236
+	by alsa0.perex.cz (Postfix) with ESMTPS id 203B1601F0;
+	Thu, 17 Sep 2026 11:52:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 203B1601F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1789636142;
-	bh=inmCZD/bAPxwY79dm0Na1075YpZjKLjr0vwhZ0emzxQ=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1789638740;
+	bh=xw8QTQg+KP8KHzgOiL9d1W8Z3pnvqGgEvEe5gvXC02c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hScAlMuEbAPIwLlrgfVah7/cuNC9XnYuOcHeppYrIgr53alMWWzOMr96DBcYI61jh
-	 iiSO69giuYl7zFVwNZ8+yDYeM4f+cBzT5AmcPm2sNUp0GxFIlwpGAu172tcyEzjHAR
-	 Z4aSir1jokeDaX+Z0+xPfh1sI4CW/pkS4FOAe5/0=
+	b=VQg4/GO5p6v0OY7sAaPGtQafTTLIPbI61e8iQktagasIfApBxWssjAS/Kxz+YT5HA
+	 pyXdUuzitzfFglWM9V0X9B7GmebXBkC8Ze25AicL53/zlWE+APTliGqshA06IVwfyF
+	 eFylk3PWmJmzaSc0GkD0gGVdEgy6haG6arCK2uz0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 58DCCF80791; Thu, 17 Sep 2026 11:06:30 +0200 (CEST)
+	id 08D33F805EB; Thu, 17 Sep 2026 11:51:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EDBBDF8076B;
-	Thu, 17 Sep 2026 11:06:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7423AF80600;
+	Thu, 17 Sep 2026 11:51:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3E461F80605; Thu, 17 Sep 2026 11:06:16 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz;
- arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.43.57
-ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1789635971;
-	b=IBTO7exBpKO/T6Gbib0rHvoil0z5h/yyx4skJo3k/dfVx9ZUTtN/eGdlboeePTKXNrXU
-	 xPDXVE6vP72eQPXxDYE9n7Sy+CNhw2qS8qkBgZoBr5s6Hix0CNbE1ze16SXKvF/2glIma
-	 lh9Z6XxxlIyHfXNccGVLLnFj9g+UDBbjmNSYfnLSvbfgcNNNZM8ziVFIp+4u5YSs/4Dqi
-	 QwY5A4zlO5FGKxlnEw3zj6l+sMbAQ1ds8UTUphH0GjzmwhcKI0QW8DDmN4ENMl4zcdiA2
-	 Jj/Sl0qKcTmHW99Ffd1MlyjrHMi7ExSbZ0AXVQlVItiIlyQWSm6tRSAUanUJFm/FQ8Q==
-ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1789635971;
-	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=inmCZD/bAPxwY79dm0Na1075YpZjKLjr0vwhZ0emzxQ=;
-	b=A/+Rq1qBFPisXsOric2rTN7S0ctsha6W7rWEmlgi2PZUelZ6/uGrDQDxC2vFytdks/my
-	 IGjBapVXrYvha72RsQhBB+poGG5sZC1S4TXt+KMc99Hd5uj+1ljf4dq7roHtipyMrRyIB
-	 XibtAUNG2m/JN4go4RK1HSVuvm5+aY97LGq7a8EEv1XwC38EMCblsDMBvQyf3JUZvwtKO
-	 lWWHFo+7E8izxdarWpS6sKAV2j7TBzId6wM8k33LaZsJn0KQV3WmGO1of6GUrm7TdUROc
-	 R4T7Pr7F4DpRNd/WjbSvFQDBqdd9IO+bEFrVfw/YVGtD7lqo4JrjUqIPVMwH7yFRVPQ==
-ARC-Authentication-Results: i=2; alsa1.perex.cz;
- dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=ftnlHa3d;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.43.57
-Received: from SJ2PR03CU001.outbound.protection.outlook.com
- (mail-westusazon11012057.outbound.protection.outlook.com [52.101.43.57])
+	id 3D17DF80537; Thu, 17 Sep 2026 11:51:41 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=182.22.18.210
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1789638698;
+	b=q3ii67WLwHqb+hSyW3cgxYEXf9uV/18cXdK3hlZS8mM7FjgAXGSDMDUI8E5Ta8uyPHKg
+	 DZTgfTcdxkxxarJLwOmcZskQ8+FcfYTDm4Jtax1pIWUCNSt6Zs/Ya1/DTU9VIiHkka28a
+	 SWiQ+MGO1i0Rw8YK+DfCy73bxIwTofselMpPe5XrvnIxOHRlbeVY9m6BSTnwJqt9B4eya
+	 QCfCKFXixNKU2N7nUTFKIRdrAuvKGZnTHSy8MkPdVegRYe+TImKy1NTPrFi4e08Ds1s0S
+	 RBF84DPPOC2nA/1hJf10iiNT1gAY09n4McwUUVUVJvVR5nsxkmRxY3KI1qwwPCrYOoA==
+ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1789638698;
+	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
+	bh=xw8QTQg+KP8KHzgOiL9d1W8Z3pnvqGgEvEe5gvXC02c=;
+	b=NlvI0kbe1WhIGNF+hzaRWavcKUJP3A3NSz5wdU74rDec0aoEEA9BF9E197XIv9Re9OYU
+	 2CG3zJMOeHgnREsmSYemCDrlO98xTuKFYMVKGI5SwQ6/F7tlaDItgTKbD2sEN2ci2ZApU
+	 LqmFpy5rHde5c+OntuwTsjSfFH9FHXXQBCs6sui2WtZVxlD3uqzDYOQeu/Q+K4TJ0//aW
+	 Wg9Scm+38OyiTCoOz27o7zPpvWUOnpi9vsye7KI912mxT/qRUA+Hrf7ovfgj8baxdGp7g
+	 jVN+LN/2Pp4QqxUacsJ8t+zEM5/egzEEHWVj54BUhGC/ecl6qhvMboteeuU6cUB21XA==
+ARC-Authentication-Results: i=1; alsa1.perex.cz;
+ dkim=pass header.d=yahoo.co.jp header.i=@yahoo.co.jp header.a=rsa-sha256
+ header.s=yahoocojp-202506 header.b=SAHK0K8l;
+	arc=none smtp.remote-ip=182.22.18.210
+Received: from omggw0013-vm0.mail.otm.yahoo.co.jp
+ (omggw0013-vm0.mail.otm.yahoo.co.jp [182.22.18.210])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8883EF806AD
-	for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2026 11:06:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8883EF806AD
+	by alsa1.perex.cz (Postfix) with ESMTPS id 87140F8007E
+	for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2026 11:51:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87140F8007E
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=ftnlHa3d
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Y7bMSyh28TwIllD44mPNAFrsqeTCo3gi2arMZd2BPCzWvK4Kp2q84GOU1LWzNTSAv65WUUpKldw68yzcGpD3TWgNL/yHa1A8J73n8IgiB2D2KsPYHhimnaWjDlQoaI8zJkh7JRXOYtAN51uwzkYP+kPjQS1C98NRNiRX8YWQ1wTeiCC/yDOy0OJUUeGYNbE+vLDXCu+XGEqHjk9pgT5UzwAI8wUWeGcXqDUaDbj3xO2jiSJ7VOxK0wJSK41zrB+1vH1iOuhGnRBH2WHYEBnxLHEtjD4L16Yx3nULS7O3Y/OdBkEH2ANleU81wuNwnIFBZr1bKZmjwkhqfrc+yTwtSQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ythecsojjHVRfZtH8zEVJ9w+aIjT8oQkUtP4G2ZGwrc=;
- b=Od8YgRLf0CGfoATqXX2YMEANhSTyQqq75oVZ3z82UEVF5FbCoYsMiCWb9iyS/G9Jq+kdsVE8q71h0ORap3/zfO2234U2/Aevu3+9bef0RUJ/eKELdXXjnF2IB7nwjuQ4WvZzU5WXfRlV4cuqqqWzRG6QWQOQwFOkzKL88JRb16W6s5SV/W41t4mXv3/x21JzuPlKlIkpp3JmHns7/HCXsJiBTH7d/vcZyqLOE32+cm2DbXMNPUPKTq5Fa0LxFz5xu0x9e9kmsbRO0s1I+xdPeNy/fJhipMBxXT5eqR47Q67uSOpJ1nGiCZEac8j4rZ7858VdJVyee0o5pvPPOkg5uA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ythecsojjHVRfZtH8zEVJ9w+aIjT8oQkUtP4G2ZGwrc=;
- b=ftnlHa3dbG2JxsgUOxKBAyEKJ5RLFaAuFYChaLJAcPBtUVl73i9EPdqxwE9wrGTEjBLFmKxXYcMOUxZJhVNAeW5ZLMfWtd8MHaYYoWTB1WAe6CNMedPQe28dY6W3vob5uulh+3moGLDwgNVgJQHyDy+PptcUNHHoepp+P5way4I=
-Received: from BY5PR03CA0011.namprd03.prod.outlook.com (2603:10b6:a03:1e0::21)
- by PH8PR12MB6796.namprd12.prod.outlook.com (2603:10b6:510:1c7::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.428.9; Thu, 17 Sep
- 2026 09:06:00 +0000
-Received: from SJ1PEPF00002316.namprd03.prod.outlook.com
- (2603:10b6:a03:1e0:cafe::9a) by BY5PR03CA0011.outlook.office365.com
- (2603:10b6:a03:1e0::21) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.360.13 via Frontend Transport; Thu,
- 17 Sep 2026 09:06:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
-Received: from satlexmb07.amd.com (165.204.84.17) by
- SJ1PEPF00002316.mail.protection.outlook.com (10.167.242.170) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.451.8 via Frontend Transport; Thu, 17 Sep 2026 09:06:00 +0000
-Received: from satlexmb10.amd.com (10.181.42.219) by satlexmb07.amd.com
- (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.49; Thu, 17 Sep
- 2026 04:05:56 -0500
-Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb10.amd.com
- (10.181.42.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.49; Thu, 17 Sep
- 2026 04:05:55 -0500
-Received: from amd-System-Product-Name.amd.com (10.180.168.240) by
- satlexmb08.amd.com (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.49
- via Frontend Transport; Thu, 17 Sep 2026 04:05:52 -0500
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To: <vkoul@kernel.org>
-CC: <broonie@kernel.org>, <alsa-devel@alsa-project.org>,
-	<yung-chuan.liao@linux.intel.com>, <pierre-louis.bossart@linux.dev>,
-	<Basavaraj.Hiregoudar@amd.com>, <Sunil-kumar.Dommati@amd.com>,
-	<venkataprasad.potturu@amd.com>, <Syed.SabaKareem@amd.com>,
-	<Mario.Limonciello@amd.com>, <Richard.Gong@amd.com>,
-	<linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Vijendar
- Mukunda" <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 9/9] soundwire: amd: consolidate revision-specific probe setup
-Date: Thu, 17 Sep 2026 14:32:57 +0530
-Message-ID: <20260917090407.3828816-10-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20260917090407.3828816-1-Vijendar.Mukunda@amd.com>
-References: <20260917090407.3828816-1-Vijendar.Mukunda@amd.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=yahoo.co.jp header.i=@yahoo.co.jp header.a=rsa-sha256
+ header.s=yahoocojp-202506 header.b=SAHK0K8l
+X-YMail-OSG: Ax64q2oCAAsh8z99gp3dQmtvaPE6xVUoFvot2fjzQ9DDAJQkLVFy6y24MXQBReE
+ u7j2liOs72xGRnNburpCCg5A2WUaUJt1JQvODaSr1dF9ZDwVPUCGWDJqiwrsb6mu1uuD7F9uN3wN
+ xyc0dQb2D/JA2tAmYOzFDWDxglJBAlA/oXeu9+kR/46a57ZxDo6od/XarKtmFb1//Zhfi+tetOPi
+ yxzmWmNwRovwjyMPTgdnodLpBI5Bv/V44DkmNsG+4hqh9GFpSR1k0xW5YoySt6I7/8l0TEUGCJot
+ QUp5GMq6uXQv31CcvUcPfsmLVDQOCs5ghxt2E7WPdkKyzSQeYlTMIV9eUuqmkEaJhXJsiLbEy9qy
+ Sie0XvSZ9ct0UnC6YezAXhn3CbRv+COJ78YfIqu59XCn2BoWKb/T6j+BH6h7V6dWsKw4KVZEYb1O
+ 01ziRCBMOCgwfgCaArwn7EXYv/WqjcthYUr4DejUS5kjaBWO8JIc17Y77OzJDxDoZX9wuMbVazf9
+ 4iupYQfHerw7rkzymxIwkhEDdYxkS4Ap7qcsBz3tWGjsyv5XiLfVqkZ1g9QCWyC22wGy+maobB+Z
+ DPr+SXE+crSdSY08Ot+jnPfIy+47b5LE38qMha+ZzgRA0Rk0ZGKleJVham2E+dG/A20+u/Abpft+
+ ymjPRdWN6egth+lNNOiCwcGSYOJrvq4nInmeGah+Gb7Eb5taRTBuQQUnahbUjkI5zyB+0BMTOdKX
+ ymTDWn0LSYn+zl/472ZKqV3amKSE1KWPcmnrCEQPEOS9NtP4iwCEsmWKi4MSuhNKbphdgX+aznpn
+ uEZDNhLviH5LPlm1tIE2ufr7qMR4EogLfQYmK9PXRN/QoEVzsH3mxsmV0/Kv/NYEd3U99EyFdCHG
+ ahbARAYVJ7c1JDiUqJ4dDaiwZylheZTWiCcHD3J313I2kqAQdhnzhPbxjO6VsMa4J+NZHt+mck/4
+ Fhin74KIQxbnjaJz71rg+GBadDIC/wyTB6oYXRtghEfs+1+Ym1v7yIpv1SkPxL5FyMfq/VmN/bQF
+ WIN/uF8wt9XXx0OYui1ungX3l/HEk7e+AXf501tTJ1Uq5AWSAZBNMSUa53k6s25E7ktSSChWBwo8
+ S7fH5sVX/ve/75KMmIHWMacEAs+gw5Y9fPsk9sJR3ziN7Rxg+jHKcV2GuuyPd+Iri4hVrVoQ3Caq
+ 911ML9YqvfcpkCRQXs/XalkI8UO0qy8NC18CyV9OcUYYnrXCXJ6GkAIQ3+OlLv5wKzKPi7ffert/
+ m1u2Grb6EEqXHULW/RK7Vojar6/aV+TLyweiGzqeaU9yUxXxYUKMfBuIS/HXQXmpaNtvyZFImTGS
+ GfnhNZ4Q5Xo0xFiLlmCQ8F1VrhYwqBxVlOeKGNaJES96NwMMAcThgddFuPABTSrgKW2Nb9RTnkM/
+ XDwdkXuNGAbDfTcF92X6MuAC3lM7dGU3BhIctZYQB8tDKvZJjyDpBakaEvrqwNdUYWgxmUglYRgU
+ pEu3E6am6OJEh5krcf5Z06P1dsMGzWIlwcK0evK1JxOazAF5gQ+vIT6FiUqtvfuYR5AkiOqjWTJj
+ dMXobi3a7qjnBr5rJcBGMUGiot6G2g8E/tmR5hYygI4HRGm6Un94bSQ8b2b2tmxiIzksn4DGF9w4
+ LFWxHgsZ9oGekIn29xszsv8zJ0ozi9g2RKB+UywZOhz55oqfi61dolJEcdzIr6HOIK+CYfEgj1X8
+ hlH6L+aIL5JZj4GlYcnHarqOxhW7OgWHPv5uPy3oG2ypkxnZf7cLMHipH2rVUtfj68cKp7tZUArG
+ mEKFSukU/0g0hiWGlMR+q4gRKRtOjakp+2UFCAE5ICOmDsrJA5rQLyqWLSFIwOymV6zAXDsI7wju
+ yvKn0SDphnK0mc9KchAkYfrbU744yf14+NvjIPptU/x9whlwpYRzmjGGkXGPGiKjvI3usv7XJCSb
+ 6bgeTagZg9cSF/m9sPKTNhkL5P4vzRQRTofMetQoToYp4J+6Xyvgcs9TbhjqgGznaexVTlR+yDRG
+ Zn9uJRZM6ro2lYbPfwDjDBGLSSTGpKfKyV7VKvdDR7Pe0SbXmkXObPmSveS5/6cTcXc//TeZXTVY
+ xjP0PNMu1z/6TMwIIn5+pAHoPerqjiXWibRLfUYUBGvtKViRyMie+UXpNMUEsPrkIcRGiHFMtXhH
+ PQX4ATqxxkj4/VSpnkgidXfD5zJAePlWmJhOMfgHBQ9pOU+idp2dhtu1/Y24dJRsbLyTyCFtHUm1
+ 5W3wL4wmHqdTAaMyzXg4M4Rcs3gy1cI72mTruyQy8c/3sp3kjnM+di7ORkih0Lc73rlbNaDZo7b+
+ trwIZ5OMZITfJPQ8f6cusuC0TjuUKzxvC6oMkSJquDVA+oUV0JPxg7mbtQYgy2wvlp4TAd/X84bv
+ h8Y6dBzFvFawz9W8cU++j4GW8ox1hyFgXwOPsCwEdn90XpBGhR3TrqPgmcINNmdZkQ9SNW6AwK9m
+ jUXb/BGiY3+lf6ArbUb3TJ6uuU+uX09W4rwLuMTQAe8VegWOkfuCHOjxpYU2Kf2USLKBmPMOImPP
+ 2iHC60g9wcmlkX4onG11iio5jnyFfpcrg5oMwmHWUl25VDU9FeAdErBRktgmralrew8d9axRkHqZ
+ 5YZwDRYUj0oPGeeW1ousOkSnSBKPh/lQJWHEaCK7Ln/7PTqUChl8m0knAnHWALXMJ3QEoOK4deWD
+ zQIYQrbu82y4C62uu9AXTH2TJ/ZAXcUwtoHgj2ioA0iqby5Utug3Sa7y5U+Bm+ZugReofnEoRvYN
+ Cd1EXp36lxBNZ15rg//wUvJ5pfw==
+X-Sonic-MF: seiji_adachi@yahoo.co.jp
+Received: from sonicgw.mail.gze.yahoo.co.jp by
+ sonicconh6104.mail.ssk.ynwp.yahoo.co.jp with HTTP;
+ Thu, 17 Sep 2026 09:51:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1789638684;
+	s=yahoocojp-202506; d=yahoo.co.jp;
+	h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date;
+	bh=yYunXypG8ybvRM7Im97Zkt6oUO9NyYy3nqq3uQyEhjM=;
+	b=SAHK0K8lAfUwNM5LvMNUtyGuvg10KFzQGhHDbRY1/FcFhSQgm/j93gAj6T3tK5Ui
+	316aTSTL0lox5xgmEIjq4+EkfLv1rQTn4cvxnrbqyCbDKoBqWJauggc0w5z1ls9U9i1
+	Qau0FMdrYoo6fyIpuBnI7acgIPeuI78cGLq0mFLpkpuFM7zvgcTQICc3sht6P59HyDQ
+	RY8RvBXwtQBhm6rp5N6HXInOf3OAHyN05aXSaHd66jQhz6G5BexGjxeSgoZxhr53F/C
+	Eggx3UFMyTsLmLPWUo6Fiqh+l5mdft3fWUw/7NBXqNZXeI47b4V3SjQ+woqVSJ4TMHW
+	3axvPCAoEg==
+Received: by smtphe6004.mail.ssk.ynwp.yahoo.co.jp (YJ Hermes SMTP Server) with
+ ESMTPA ID 21d850ee35a89be4551df81a82ad8df6;
+          Thu, 17 Sep 2026 18:51:26 +0900 (JST)
+Date: Thu, 17 Sep 2026 18:51:24 +0900
+From: Seiji Adachi <seiji_adachi@yahoo.co.jp>
+To: Vijendar.Mukunda@amd.com, broonie@kernel.org
+Cc: venkataprasad.potturu@amd.com, lgirdwood@gmail.com, perex@perex.cz,
+ tiwai@suse.com, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Seiji Adachi <seiji_adachi@yahoo.co.jp>
+Subject: [RESEND PATCH] ASoC: amd: yc: Add Lenovo ThinkPad E16 Gen 2 (21JN)
+ to quirks
+Message-ID: <aqu4HOCmdCUs_unm@adriana>
+References: <almeAbvirJwQ5doF.ref@adriana>
+ <almeAbvirJwQ5doF@adriana>
+ <alnKI3bPaZUc6uwB@adriana>
+ <aoukqUoiIzcctf-k@adriana>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF00002316:EE_|PH8PR12MB6796:EE_
-X-MS-Office365-Filtering-Correlation-Id: 55f18229-3814-4ee6-fde6-08df149ae49a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|1800799024|36860700016|82310400026|376014|23010399003|18002099003|22082099003|10067099003|11063799006|56012099006;
-X-Microsoft-Antispam-Message-Info: 
-	AqxVN8oW7dYkGdB8Qv9zzpKblo17UKqZjE2wWulkVTsZ0kFbDKS1V+fB2vbgiNOyiY88O9i+Kf1NIz8DMhYyJvkqeC7XIKiIN+0+toLzM5j2iEdniRl7PuGN8dd8uK69iQV+FmmyJW9z1bt6reiaZ/6OIx7nD9/THpISXISncp4rpIE9a8p9s1e6Md5P2GZ9oSxaggZnZmVo75uYtPorVlsBnBSq2BmTsIaHbjWVHpkkY8LBkTs2HakcseeYIoL4GHcNrPkZMWbWLeJbAUPomFBBJwFFVjivfEKMSDRno/l37kh7ACxxf5l4ddgjhGLDXgmr6s8XyNY3NxvmbI4EjCyWi+IZ57uBSWyh/DbrvKDMvW4XTKGuYtXARvTZV6uhTGuNFeQFAhWmPOPoZQdHAaeMMwW3Ab43GjdvALxElyY7V9wcK/iOfs2lVfcCSI1K/nNsOT35w2M8d+esrK6uwURLKSbUeOmJDJ358e+jrxrgCVUfF8ozBwuHppwL/UYcqGJPspJdXaZk5+Cb5zLB+6UTyFge/EgmcSuM4l9gCElgdF+nBtJV8/NrsRzkkmd5a4jfLHXznWhTWUtG/r8s2kQK+3Ad+dpp44fmJ2fjhFpVV0E0QidkYwhzW0EYlW2NBhn0lpcnKFUfv4ao3K3Z/M8DdW4UYOQzFlhsx0MpVaeh2t7CaRKPc/DTJvpqHs4Rns6hQo84kVCodcSoI3wiJw==
-X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(36860700016)(82310400026)(376014)(23010399003)(18002099003)(22082099003)(10067099003)(11063799006)(56012099006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	XhPbbjCeq2LQWZIXAhItxi8w1Mt6EecBYAH0KyK/u5BVQ73WLlOZS7bD0vfHnkW7gWgP2Znub4CbrYIoWqlhGSUUfSwBszsp4esNjTpiPoYT6FsAzQ0xohngSrdkwJzcLSjOZPpmcuZ7difhTkx5b0Z+hJltC+RYi+OMo1ICAZiEH3gVPgLcpt4kDwbRFiHnAnAZfn6xBf+0uygGWS8j9ZoyIfJ7M6rZqSte7+09bDUcXnmq6hd5KSYGxXDa1LYIgbRW4BZLlFxi2dkYQXhQV3tC7ag7966u+VpZP/4QZVUUinSRKR8dLpWPUD0m9TaYHDRaDXKUqEldYRNT+BQBke2GeFF/d+hGCPjD6cqdqwxjUTob9wS4MWnBVTveCA82PAZQPggSJVNahcda4V2KOYYYnHyuuPaztMQy+LVL+3O2a/XB3T3KedE4UKH8uegx
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2026 09:06:00.1817
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 55f18229-3814-4ee6-fde6-08df149ae49a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	SJ1PEPF00002316.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6796
-Message-ID-Hash: LVGDFGLFNLCRKNBPOQC4TZX4L44ULPYR
-X-Message-ID-Hash: LVGDFGLFNLCRKNBPOQC4TZX4L44ULPYR
-X-MailFrom: Vijendar.Mukunda@amd.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aoukqUoiIzcctf-k@adriana>
+Message-ID-Hash: EOEMJDNH3EM7SCJSVRYOH4XPWCI476OG
+X-Message-ID-Hash: EOEMJDNH3EM7SCJSVRYOH4XPWCI476OG
+X-MailFrom: seiji_adachi@yahoo.co.jp
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -168,7 +147,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LVGDFGLFNLCRKNBPOQC4TZX4L44ULPYR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EOEMJDNH3EM7SCJSVRYOH4XPWCI476OG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -177,80 +156,94 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Determine port counts first via a switch on acp_rev, compute max_ports,
-then consolidate all remaining revision-specific assignments
-(mmio offset, bus ops, port ops, compute_params, and port_offset_map
-allocation) into a single second switch. Both switches reject unknown
-revisions with dev_err() and -EINVAL, keeping each switch
-self-contained so an incomplete addition of a new revision is caught
-at whichever switch it is missing from.
+Hi,
 
-cols_index and rows_index are no longer initialised at probe time;
-acp_sdw_clk_init_ctrl() sets them from the actual bus clock and frame
-shape before amd_acp63_sdw_set_frameshape() is ever called, so no
-early initialisation is needed.
+I am resending this request along with the code change (diff) required for 
+Lenovo ThinkPad E16 Gen 2 (21JN).
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Could you please review and consider applying the following patch to 
+sound/soc/amd/yc/acp6x-mach.c?
+
+Thanks,
+Seiji
+
 ---
- drivers/soundwire/amd_manager.c | 32 +++++++++++++++++++++-----------
- 1 file changed, 21 insertions(+), 11 deletions(-)
+Subject: [PATCH] ASoC: amd: yc: Add Lenovo ThinkPad E16 Gen 2 (21JN) to quirks
 
-diff --git a/drivers/soundwire/amd_manager.c b/drivers/soundwire/amd_manager.c
-index 834e943b040b..c660f4c8d0e6 100644
---- a/drivers/soundwire/amd_manager.c
-+++ b/drivers/soundwire/amd_manager.c
-@@ -1462,16 +1462,9 @@ static int amd_sdw_manager_probe(struct platform_device *pdev)
- 	}
- 	amd_manager->ping_slave_stat = U32_MAX;
- 	amd_manager->instance = pdata->instance;
--	amd_manager->mmio = amd_manager->acp_mmio +
--			    (amd_manager->instance * ACP63_SDW_MANAGER_REG_OFFSET);
- 	amd_manager->acp_sdw_lock = pdata->acp_sdw_lock;
- 	amd_manager->acp_rev = pdata->acp_rev;
--	amd_manager->cols_index = sdw_find_col_index(AMD_SDW_DEFAULT_COLUMNS);
--	amd_manager->rows_index = sdw_find_row_index(AMD_SDW_DEFAULT_ROWS);
- 	amd_manager->dev = dev;
--	amd_manager->bus.ops = &amd_acp63_sdw_ops;
--	amd_manager->bus.port_ops = &amd_acp63_sdw_port_ops;
--	amd_manager->bus.compute_params = &amd_acp63_sdw_compute_params;
- 	amd_manager->bus.clk_stop_timeout = 200;
- 	amd_manager->bus.link_id = amd_manager->instance;
- 	ret = amd_sdw_hw_init_ops(amd_manager);
-@@ -1510,13 +1503,30 @@ static int amd_sdw_manager_probe(struct platform_device *pdev)
- 		amd_manager->num_din_ports = AMD_ACP70_SDW_MAX_RX_PORTS;
- 		break;
- 	default:
-+		dev_err(dev, "unsupported ACP revision: 0x%x\n", amd_manager->acp_rev);
- 		return -EINVAL;
- 	}
- 	amd_manager->max_ports = amd_manager->num_dout_ports + amd_manager->num_din_ports;
--	amd_manager->port_offset_map = devm_kcalloc(dev, amd_manager->max_ports,
--						    sizeof(int), GFP_KERNEL);
--	if (!amd_manager->port_offset_map)
--		return -ENOMEM;
-+
-+	switch (amd_manager->acp_rev) {
-+	case ACP63_PCI_REV_ID:
-+	case ACP70_PCI_REV_ID:
-+	case ACP71_PCI_REV_ID:
-+	case ACP72_PCI_REV_ID:
-+		amd_manager->mmio = amd_manager->acp_mmio +
-+				    (amd_manager->instance * ACP63_SDW_MANAGER_REG_OFFSET);
-+		amd_manager->bus.ops = &amd_acp63_sdw_ops;
-+		amd_manager->bus.port_ops = &amd_acp63_sdw_port_ops;
-+		amd_manager->bus.compute_params = &amd_acp63_sdw_compute_params;
-+		amd_manager->port_offset_map = devm_kcalloc(dev, amd_manager->max_ports,
-+							    sizeof(int), GFP_KERNEL);
-+		if (!amd_manager->port_offset_map)
-+			return -ENOMEM;
-+		break;
-+	default:
-+		dev_err(dev, "unsupported ACP revision: 0x%x\n", amd_manager->acp_rev);
-+		return -EINVAL;
-+	}
- 
- 	prop = &amd_manager->bus.prop;
- 	prop->mclk_freq = AMD_SDW_BUS_BASE_FREQ;
--- 
-2.48.1
+Add ThinkPad E16 Gen 2 (21JN) to the DMI table in acp6x-mach.c
+to enable the internal digital microphone (DMIC).
 
+Signed-off-by: Seiji Adachi <seiji_adachi@yahoo.co.jp>
+---
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 385fede6d..ea173bdab 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -248,6 +248,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 						 DMI_MATCH(DMI_PRODUCT_NAME, "21J6"),
+ 				 }
+ 		 },
++		{
++				.driver_data = &acp6x_card,
++				.matches = {
++						DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++						DMI_MATCH(DMI_PRODUCT_NAME, "21JN"),
++				}
++		},
+ 		 {
+ 				 .driver_data = &acp6x_card,
+ 				 .matches = {
+---
+
+
+On Mon, Aug 24, 2026 at 10:55:53AM +0900, Seiji Adachi wrote:
+> Hi,
+> 
+> I am writing to provide an update regarding the internal microphone issue on Lenovo ThinkPad E16 Gen 2 (21JN-003SCD).
+> 
+> I have recently updated the kernel to version 7.1.8+deb13-amd64 (Debian trixie-backports), but the internal digital microphone (DMIC) is still not recognized.
+> 
+> Output of `arecord -l` on kernel 7.1.8:
+> **** List of CAPTURE Hardware Devices ****
+> card 1: Generic_1 [HD-Audio Generic], device 0: CX11880 Analog [CX11880 Analog]
+>   Subdevices: 0/1
+>   Subdevice #0: subdevice #0
+> 
+> Could you please check if the DMI entry for 21JN can be added to sound/soc/amd/yc/acp6x-mach.c?
+> 
+> Thank you for your help.
+> 
+> Best regards,
+> Seiji
+> 
+> 
+> On Fri, Jul 17, 2026 at 02:22:27PM +0800, Seiji Adachi wrote:
+> > Hi,
+> > 
+> > An update on this: I have just upgraded my system kernel to the latest available version, 7.0.13. 
+> > 
+> > However, the internal digital microphone (DMIC) is still not detected (`arecord -l` shows the same result as before). 
+> > 
+> > So the quirk entry for "21JN" is definitely still needed in the latest kernel version.
+> > 
+> > Best regards,
+> > 
+> > Seiji
+> > 
+> > On Fri, Jul 17, 2026 at 11:17:58AM +0800, Seiji Adachi wrote:
+> > > Hi,
+> > > 
+> > > I have a Lenovo ThinkPad E16 Gen 2 (AMD Ryzen 7 7735HS) with machine type "21JN".
+> > > Currently, the internal digital microphone (DMIC) is not detected on Debian 13 (kernel 6.18).
+> > > 
+> > > Similar to the "21M5" model, this "21JN" model also requires a DMI quirk entry to enable the internal microphone.
+> > > 
+> > > Could you please add the "21JN" model to the quirk list in `sound/soc/amd/yc/acp6x-mach.c`?
+> > > 
+> > > DMI info:
+> > > - Vendor: LENOVO
+> > > - Product Name: 21JN
+> > > 
+> > > Thank you,
+> > > 
+> > > Seiji Adachi
