@@ -4,78 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 278E4C982DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2026 19:47:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4884C982DE
+	for <alsa-devel@archiver.kernel.org>; Sat, 19 Sep 2026 01:07:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3ED9E60200;
-	Fri, 18 Sep 2026 21:47:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ED9E60200
+	by alsa0.perex.cz (Postfix) with ESMTPS id 892B660211;
+	Sat, 19 Sep 2026 03:07:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 892B660211
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1789760833;
-	bh=0hQTrENtNJ0P7sH605gLX+Oz0I5J+rlVcGrlGfw6ea0=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	s=default; t=1789780038;
+	bh=dDtu633nqqsnlmQW/LR+c9v+G3qRg+alQ1tWkgS6BdA=;
+	h=Date:From:To:In-Reply-To:References:Subject:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=UkWbUWEf0DI5KUh9XnLWQRxO4n78TfiICuhc5eoZTVaWqt5FpBIgmYg4vmfL69G1l
-	 MGsvnfeYJWcPXQ0+Z8wzOKoQjO3hruwd3HVQQE956YBwjwmKKNaEkxq/J7InBkhJhw
-	 CfuomdyP6m71N4NkAr+zCfh0TYVn03MHDBqybAYw=
+	b=dOsJjOHNoAJGpv8wizcjicVO12C/QM3dXQqq8XrCzYd+WA8bzbWErgEZkMwSXLCE3
+	 dbn7lBE2dCwLGpL4k9Y/HA5ZCJd4L3n6qYR61I9nGA+ULVwqfirt1myptkGHWXO4sa
+	 O/87GtQwM4ytJXb3ebi89ncxVi4gCIrRc1mPAhaI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 505F8F80603; Fri, 18 Sep 2026 21:46:38 +0200 (CEST)
+	id 06BD9F80557; Sat, 19 Sep 2026 03:06:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8ABEEF80601;
-	Fri, 18 Sep 2026 21:46:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53ABEF805FA;
+	Sat, 19 Sep 2026 03:06:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E208CF80571; Fri, 18 Sep 2026 21:46:31 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1789760791;
-	b=ilnyXuG7QRcMWNwRNx8DXvH+TbY4vaBJUzKdg4SyTLBQQZHVH2R/wzE7aEP5ipSBeu7H
-	 2PCCbuocvdPTZcKiUB9POkhnYXH+eZB75CVBFERbk3NCm5ppBCmmv4AWBpH/H+YzaRLyc
-	 6cOqz6E+6/afZcFgWrzAD64ICtTMSZhD+6DDjHafLKj8Yt8vT5tJgEBFbYDH1CIUGsTpe
-	 izmHGvK/kjl2S2X1Csr1yQn3lKcv8wnqTd2jHC+UX0hgMLrzGDhoV77tSoA7Om5rAqJtq
-	 Gd6T0b+M/pwDHDlfh6069ThK+ZNO6zOy6DXXtRWVlU+9OgLxpJUnn8GXDxyJxoo8eRg==
+	id 395FDF80557; Sat, 19 Sep 2026 03:06:38 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=185.205.69.214
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1789779994;
+	b=ncx31I/lOpo4PVQ3Xjn4YvcgWu8Z3AiotWvne9hp220JoOqhClhDsZuev/dCnwtYwjuy
+	 +TohVAUy/YTknAn7P+rh1L+UYS8oI4jH0LlmB9Zl2lOraFlGvxOxXjaPgrkNDTeJpG6GN
+	 jlIWC2rsFTTZ74B424QizSyn/bWebASt+EpJ+4evsjR/pppR9mIL2Lj31QMUMnknXrYS+
+	 uKqvY2049QmO95WhQo+AcD599jwipYGlrs1ub1QEzEPOkTeikhqtTyQ/4fCWqeFaLQn7C
+	 ih9hJ7ntqUbUgqTC8SFdiZ08AvaCY6rBIhGA/kj+UU6NKXzMk3TpXAdN7myUcEXFcvQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1789760791;
-	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=0hQTrENtNJ0P7sH605gLX+Oz0I5J+rlVcGrlGfw6ea0=;
-	b=OpNwQ674nMvCUEJFPx55JAhknkUXg/UzC5dKOCN+2uz5lRz8tsJhvjxbWLUt0dJnjeKF
-	 JstnxeidRuAUO5UH9fU2ZJ8SNlqGqq6p0aMZqRgJxx3K83Dh4PNgMzymR7bi6OMvV+kMe
-	 kMmXGB3cX7daVHu306K23ugh4gR3cZeYKGO3DMFILMuPd7HO7o06kBdfP36NNp1d0jmeb
-	 3F24Ieqd2STTzQbwejirsguaxJqVrDx+AiL+RmDwaiisWQZJiowFl9/2bxOhcErNmIK/1
-	 y+UlA5PAAaEBu8RqZZlN96YhxPQ5xNZo6SRvCgKYQwBxqZ5LoLFY0trYttzeLd7hPaw==
+	c=relaxed/simple; t=1789779994;
+	h=DKIM-Signature:Date:From:To:Message-ID:Subject:MIME-Version;
+	bh=c/e2k4NoKgp5m/hbmvnc7euZIFgAs0wxlpjI8Odo7Mg=;
+	b=oM7dvlxoCeoQTJqO1wUREfcQqdH02sKmS3ZGVtrNDopXDI71oyqKx2o428Iz+z391ikb
+	 mdM0BaM7dWcAg5rKCS1Gtqprl7Hlld08iPry0i8h5UJTlxo/uk1qADcJrbbPyhC0IyOxX
+	 EKLOu6ZhukxNVkOJnOnbMVP6fryqjv1RsoOHsKlgxo+pJq/kGQssCKpzbS8vU8c8y28H/
+	 uDRUAolR8MOPPwlYlTB4h2/fq6ma0UyR0hh8yBHmBhGCK24ph2Dvd7LoctutZWuk6Iggv
+	 u7IQzLvS96R+qWIw2ZIe8ZytsD/FnaAialgMznZnSOPsv29Wv8zWhZshrrJak3xYEUw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=45.14.194.44
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E8B6F8026A
-	for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2026 21:46:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E8B6F8026A
+ dkim=pass header.d=tuta.io header.i=@tuta.io header.a=rsa-sha256 header.s=s1
+ header.b=a8M3AQV3;
+	arc=none smtp.remote-ip=185.205.69.214
+Received: from mail.w14.tutanota.de (mail.w14.tutanota.de [185.205.69.214])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 23760F80448
+	for <alsa-devel@alsa-project.org>; Sat, 19 Sep 2026 03:06:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23760F80448
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=tuta.io header.i=@tuta.io header.a=rsa-sha256
+ header.s=s1 header.b=a8M3AQV3
+Received: from tutadb.w10.tutanota.de (w10.api.tuta.com [IPv6:fd:ac::d:10])
+	by mail.w14.tutanota.de (Postfix) with ESMTP id 238AC186740DA
+	for <alsa-devel@alsa-project.org>; Sat, 19 Sep 2026 03:06:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1789779992;
+	s=s1; d=tuta.io;
+	h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Cc:Date:Date:In-Reply-To:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:References:Sender;
+	bh=RWviku0Lgp+I0JnGEhxfSuSZTJjHJSqtxrjlT4D5ydE=;
+	b=a8M3AQV3se1MAOWjGSO8LmhqpdlRYDeSAQkxjZPb8/mBvbrKN1VVBp6guGDV/hd2
+	fEkKAfKkxPhfBrk3ITutPcEUpDmWVksiZijTEIz5mRtJecvwhBke6vN5AuyVe5ECi5Z
+	CCQ3LT8nsGlwYK1gnuqdQusn5O1ap7RpSVjTsFa9dJ14kvjv1VpApCsw/Rl9oM1leIv
+	iA9e9o43DfiTkmrKxnwCcVva0KdVk5ZLiJEY72CfhS7tZ/a5LUm3DpVj6WtKvNP5mvR
+	fdQd/y0hFnVakw0C+DI3htQwMpk+tvGnZRCu2jWw3TSiGbtskdzEuV5qq1QNYSE0rzk
+	aQNNEjq2OA==
+Date: Sat, 19 Sep 2026 03:06:32 +0200 (CEST)
+From: richardh@tuta.io
+To: Alsa Devel <alsa-devel@alsa-project.org>
+Message-ID: <P1rBm0b--F-9@tuta.io>
+In-Reply-To: 
+ <178972559304.30.15231273321927646247@mailman-core.alsa-project.org>
+References: 
+ <178972559304.30.15231273321927646247@mailman-core.alsa-project.org>
+Subject: Help: unsubscribe
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <18d681f48ae4dc00-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-lib/pr/526@alsa-project.org>
-References: <alsa-project/alsa-lib/pr/526@alsa-project.org>
-Subject: topology: harden binary topology decoder against malformed input
-Date: Fri, 18 Sep 2026 21:46:31 +0200 (CEST)
-Message-ID-Hash: UPZ66UVKNOWQQMIY6HOM662KXJ2OYD2C
-X-Message-ID-Hash: UPZ66UVKNOWQQMIY6HOM662KXJ2OYD2C
-X-MailFrom: github@alsa-project.org
+Feedback-ID: 
+ 01546680d2e6a4859a61b20542b097ed7373b2856ff867a73774a10fd7e5de6743ca3cb7b70af8fccef279ede3aee002242fd8af3b0bc3208bb05f920a859c4107:TurnOnPrivacy!:tutamail
+Message-ID-Hash: JUWCSWJU5WNIC6MO6OIZLBVAF7UZFJG6
+X-Message-ID-Hash: JUWCSWJU5WNIC6MO6OIZLBVAF7UZFJG6
+X-MailFrom: richardh@tuta.io
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
  nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
  news-moderation; no-subject; digests; suspicious-header
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UPZ66UVKNOWQQMIY6HOM662KXJ2OYD2C/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JUWCSWJU5WNIC6MO6OIZLBVAF7UZFJG6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,33 +111,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib pull request #526 was opened from HarshRajSinghania:
-
-As discussed over email with Jaroslav, this hardens the binary topology decoder
-against malformed / untrusted `.tplg` input. Three related issues, each confirmed
-with AddressSanitizer:
-
-1. `snd_tplg_decode()` (src/topology/decoder.c): `hdr->size + hdr->payload_size`
-   is evaluated in 32-bit and can wrap, bypassing the payload bounds check; the
-   block decoder is then called with the raw (huge) `payload_size`, causing an
-   out-of-bounds read. Fixed by doing the arithmetic in 64-bit (and the advance
-   in `size_t`).
-
-2. `tplg_decode_dapm_widget()` (src/topology/dapm.c): the kcontrol loop reads the
-   control header (`chdr->type`, then `mc/ec/bc->size` and `->priv.size`) before
-   the `size2 > size` check, giving an out-of-bounds read on a truncated payload.
-   Fixed by adding `size < sizeof(*chdr)` / `sizeof(*mc|ec|bc)` guards and
-   computing `size2` in `size_t`.
-
-3. `tplg_decode_dapm_graph()` (src/topology/dapm.c): `alloca()` is called with a
-   size derived from the input payload, allowing stack exhaustion on large input.
-   Fixed by switching to `calloc()` / `free()`, which fails gracefully.
-
-Scope is the debug-oriented decode path only, as you noted. Standalone ASan PoC
-harnesses are available if useful.
-
-Signed-off-by: Harsh Raj Singhania <raj.harshraut@gmail.com>
-
-Request URL   : https://github.com/alsa-project/alsa-lib/pull/526
-Patch URL     : https://github.com/alsa-project/alsa-lib/pull/526.patch
-Repository URL: https://github.com/alsa-project/alsa-lib
+SGkNCg0KUGxlYXNlIHVuc3Vic2NyaWJlIHJpY2hhcmRoQHR1dGEuaW/CoGZyb20geW91ciBtYWls
+aW5nIGxpc3QuDQoNCktpbmQgcmVnYXJkcw0KDQrigItSaWNoYXJkDQoNCi0tIA0KIFNlY3VyZWQg
+d2l0aCBUdXRhIE1haWw6IA0KIGh0dHBzOi8vdHV0YS5jb20vZnJlZS1lbWFpbA0KDQoNCjE4IFNl
+cHQgMjAyNiwgMjA6MDAgYnkgYWxzYS1kZXZlbC1yZXF1ZXN0QGFsc2EtcHJvamVjdC5vcmc6DQoN
+Cj4gU2VuZCBBbHNhLWRldmVsIG1haWxpbmcgbGlzdCBzdWJtaXNzaW9ucyB0bw0KPiAgYWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnDQo+DQo+IFRvIHN1YnNjcmliZSBvciB1bnN1YnNjcmliZSB2
+aWEgZW1haWwsIHNlbmQgYSBtZXNzYWdlIHdpdGggc3ViamVjdCBvcg0KPiBib2R5ICdoZWxwJyB0
+bw0KPiAgYWxzYS1kZXZlbC1yZXF1ZXN0QGFsc2EtcHJvamVjdC5vcmcNCj4NCj4gWW91IGNhbiBy
+ZWFjaCB0aGUgcGVyc29uIG1hbmFnaW5nIHRoZSBsaXN0IGF0DQo+ICBhbHNhLWRldmVsLW93bmVy
+QGFsc2EtcHJvamVjdC5vcmcNCj4NCj4gV2hlbiByZXBseWluZywgcGxlYXNlIGVkaXQgeW91ciBT
+dWJqZWN0IGxpbmUgc28gaXQgaXMgbW9yZSBzcGVjaWZpYw0KPiB0aGFuICJSZTogQ29udGVudHMg
+b2YgQWxzYS1kZXZlbCBkaWdlc3QuLi4iVG9kYXkncyBUb3BpY3M6DQo+DQo+ICAxLiBbUEFUQ0hd
+IEFTb0M6IGFtZDogYWNwOiBlbmFibGUgVEFTMjc4MyBhbmQgYWRkIFJUNzEyLVZCIFNvdW5kV2ly
+ZSBtYWNoaW5lDQo+ICAoU3llZCBTYWJhIEthcmVlbSkNCj4gIDIuIFJlOiBbUEFUQ0hdIEFTb0M6
+IGFtZDogeWM6IEFkZCBMZW5vdm8gVGhpbmtQYWQgRTE2IEdlbiAyICgyMUpOKSB0byBxdWlya3MN
+Cj4gIChNYXJrIEJyb3duKQ0KPiAgMy4gUmU6IFtQQVRDSF0gQVNvQzogYW1kOiBhY3A6IGVuYWJs
+ZSBUQVMyNzgzIGFuZCBhZGQgUlQ3MTItVkIgU291bmRXaXJlIG1hY2hpbmUNCj4gIChNYXJrIEJy
+b3duKQ0KPiAgNC4gUmU6IFtQQVRDSCAwMC8xMV0gQVNvQzogU09GOiBhbWQ6IFNvdW5kV2lyZSBh
+bmQgUERNIHN1cHBvcnQgYW5kIGZpeGVzIGZvciBBQ1A3LkIvNy5GDQo+ICAoTWFyayBCcm93bikN
+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QgLS0gYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnDQo+IFRv
+IHVuc3Vic2NyaWJlIHNlbmQgYW4gZW1haWwgdG8gYWxzYS1kZXZlbC1sZWF2ZUBhbHNhLXByb2pl
+Y3Qub3JnDQo+DQoNCg==
