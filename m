@@ -4,105 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4884C982DE
-	for <alsa-devel@archiver.kernel.org>; Sat, 19 Sep 2026 01:07:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB35AC982D8
+	for <alsa-devel@archiver.kernel.org>; Sat, 19 Sep 2026 01:19:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 892B660211;
-	Sat, 19 Sep 2026 03:07:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 892B660211
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A71360214;
+	Sat, 19 Sep 2026 03:19:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A71360214
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1789780038;
-	bh=dDtu633nqqsnlmQW/LR+c9v+G3qRg+alQ1tWkgS6BdA=;
-	h=Date:From:To:In-Reply-To:References:Subject:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=dOsJjOHNoAJGpv8wizcjicVO12C/QM3dXQqq8XrCzYd+WA8bzbWErgEZkMwSXLCE3
-	 dbn7lBE2dCwLGpL4k9Y/HA5ZCJd4L3n6qYR61I9nGA+ULVwqfirt1myptkGHWXO4sa
-	 O/87GtQwM4ytJXb3ebi89ncxVi4gCIrRc1mPAhaI=
+	s=default; t=1789780759;
+	bh=JxiZ75H22xQMkY5YKcnQ/D6qtYXF1VvTRHeePs9uAIE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=rcSSw/BGl6x4E08QaXzMfZIwoug5yQR0hgXC6m7vv6LsNIUwFnZtd/OkkzrXp8XJI
+	 9jC9heUUhdbTadA4/kpQPaknn0TcOzl1HN4NAYQ6jrkpaqeO3SR22qaTshnars87gt
+	 wDs1At2ttD1T9W0QeysdfTGhUleYsb9rtef9ogKA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06BD9F80557; Sat, 19 Sep 2026 03:06:44 +0200 (CEST)
+	id 83E43F805B1; Sat, 19 Sep 2026 03:18:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 53ABEF805FA;
-	Sat, 19 Sep 2026 03:06:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57B7AF805FD;
+	Sat, 19 Sep 2026 03:18:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 395FDF80557; Sat, 19 Sep 2026 03:06:38 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=185.205.69.214
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1789779994;
-	b=ncx31I/lOpo4PVQ3Xjn4YvcgWu8Z3AiotWvne9hp220JoOqhClhDsZuev/dCnwtYwjuy
-	 +TohVAUy/YTknAn7P+rh1L+UYS8oI4jH0LlmB9Zl2lOraFlGvxOxXjaPgrkNDTeJpG6GN
-	 jlIWC2rsFTTZ74B424QizSyn/bWebASt+EpJ+4evsjR/pppR9mIL2Lj31QMUMnknXrYS+
-	 uKqvY2049QmO95WhQo+AcD599jwipYGlrs1ub1QEzEPOkTeikhqtTyQ/4fCWqeFaLQn7C
-	 ih9hJ7ntqUbUgqTC8SFdiZ08AvaCY6rBIhGA/kj+UU6NKXzMk3TpXAdN7myUcEXFcvQ==
+	id D85F6F80557; Sat, 19 Sep 2026 03:18:37 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=111.86.247.1
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1789780713;
+	b=M5m0poHxOQ3CaT0GLmS6oVsLzUiGLkl7GqK+YuvU10P3a2ta/rdizyiQtHAWKmhmKx0U
+	 4u3VEoKeKUiUqZg0rOgpgJ4sF6Hi3ELjJBbgQN9xgdcciJWL7zlT2O3/mPJ9kNHjNeAuI
+	 C2OUm228Ebdsp59MWz9OhRVDk9HLIeftkVIjzEqM2ORwe1cJaJ7dqSJOdOFQTsDGGZ+It
+	 F/RT2zEzVe68C1AUZkxU43cYGjXz1Z/RSgB2SxUAY6FnaFU54FkWfdtTvvJSyPD00wYf7
+	 AYi9Z0s9AQbeHPxtDFdmxgo++vBUecL8B8DiO4LHRytcvbAnABQTZkIpbxYT5TJCdvg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1789779994;
-	h=DKIM-Signature:Date:From:To:Message-ID:Subject:MIME-Version;
-	bh=c/e2k4NoKgp5m/hbmvnc7euZIFgAs0wxlpjI8Odo7Mg=;
-	b=oM7dvlxoCeoQTJqO1wUREfcQqdH02sKmS3ZGVtrNDopXDI71oyqKx2o428Iz+z391ikb
-	 mdM0BaM7dWcAg5rKCS1Gtqprl7Hlld08iPry0i8h5UJTlxo/uk1qADcJrbbPyhC0IyOxX
-	 EKLOu6ZhukxNVkOJnOnbMVP6fryqjv1RsoOHsKlgxo+pJq/kGQssCKpzbS8vU8c8y28H/
-	 uDRUAolR8MOPPwlYlTB4h2/fq6ma0UyR0hh8yBHmBhGCK24ph2Dvd7LoctutZWuk6Iggv
-	 u7IQzLvS96R+qWIw2ZIe8ZytsD/FnaAialgMznZnSOPsv29Wv8zWhZshrrJak3xYEUw==
+	c=relaxed/simple; t=1789780713;
+	h=Date:Message-ID:From:To:Subject:MIME-Version:DKIM-Signature;
+	bh=JxiZ75H22xQMkY5YKcnQ/D6qtYXF1VvTRHeePs9uAIE=;
+	b=qsDpghujqNG1Fhlz0+mJaFDDdLjxklJr6HjKLvTkwKFTzo7/IHa94VQkd0d1PGb7lN2H
+	 hXRhP4sYWHSOa5Yw43l7QSIHhjsVCuRJ5gAShV1Qmv0jK3PB/yO3qUTM8QJhiTcZNBNSn
+	 p6wwqyRahvjUwRFQj/kxmDYWSNE75kx5x9QvkeRcm8QTCKUUjv8XSpZ7JsDGwX7GkcdOZ
+	 ZEGHbhdgKJGwclgdgRhOeEbPFMwhMAefwRWhaueMcAcxPoUSFMk14vGST1WZ8pbuohbVH
+	 RTfX5KH7Jz2s0shinFMmFt7BzsjIqKCNGlznckDD7a3yml+Bf9j5154cx+KWv1iptyQ==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=tuta.io header.i=@tuta.io header.a=rsa-sha256 header.s=s1
- header.b=a8M3AQV3;
-	arc=none smtp.remote-ip=185.205.69.214
-Received: from mail.w14.tutanota.de (mail.w14.tutanota.de [185.205.69.214])
+ dkim=pass header.d=ab.auone-net.jp header.i=@ab.auone-net.jp
+ header.a=rsa-sha256 header.s=default-1 header.b=KRKYdJ+D;
+	arc=none smtp.remote-ip=111.86.247.1
+Received: from mta-snd-e01.auone-net.jp (mta-snd-e01.auone-net.jp
+ [111.86.247.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 23760F80448
-	for <alsa-devel@alsa-project.org>; Sat, 19 Sep 2026 03:06:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23760F80448
+	by alsa1.perex.cz (Postfix) with ESMTPS id E8D45F80088
+	for <alsa-devel@alsa-project.org>; Sat, 19 Sep 2026 03:18:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8D45F80088
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=tuta.io header.i=@tuta.io header.a=rsa-sha256
- header.s=s1 header.b=a8M3AQV3
-Received: from tutadb.w10.tutanota.de (w10.api.tuta.com [IPv6:fd:ac::d:10])
-	by mail.w14.tutanota.de (Postfix) with ESMTP id 238AC186740DA
-	for <alsa-devel@alsa-project.org>; Sat, 19 Sep 2026 03:06:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1789779992;
-	s=s1; d=tuta.io;
-	h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Cc:Date:Date:In-Reply-To:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:References:Sender;
-	bh=RWviku0Lgp+I0JnGEhxfSuSZTJjHJSqtxrjlT4D5ydE=;
-	b=a8M3AQV3se1MAOWjGSO8LmhqpdlRYDeSAQkxjZPb8/mBvbrKN1VVBp6guGDV/hd2
-	fEkKAfKkxPhfBrk3ITutPcEUpDmWVksiZijTEIz5mRtJecvwhBke6vN5AuyVe5ECi5Z
-	CCQ3LT8nsGlwYK1gnuqdQusn5O1ap7RpSVjTsFa9dJ14kvjv1VpApCsw/Rl9oM1leIv
-	iA9e9o43DfiTkmrKxnwCcVva0KdVk5ZLiJEY72CfhS7tZ/a5LUm3DpVj6WtKvNP5mvR
-	fdQd/y0hFnVakw0C+DI3htQwMpk+tvGnZRCu2jWw3TSiGbtskdzEuV5qq1QNYSE0rzk
-	aQNNEjq2OA==
-Date: Sat, 19 Sep 2026 03:06:32 +0200 (CEST)
-From: richardh@tuta.io
-To: Alsa Devel <alsa-devel@alsa-project.org>
-Message-ID: <P1rBm0b--F-9@tuta.io>
-In-Reply-To: 
- <178972559304.30.15231273321927646247@mailman-core.alsa-project.org>
+ unprotected) header.d=ab.auone-net.jp header.i=@ab.auone-net.jp
+ header.a=rsa-sha256 header.s=default-1 header.b=KRKYdJ+D
+Received: from localhost.localdomain.localhost by mta-snd-e01.auone-net.jp
+          with ESMTP
+          id
+ <20260919011823933.HCTX.103293.localhost.localdomain.localhost@mta-snd-e01.auone-net.jp>;
+          Sat, 19 Sep 2026 10:18:23 +0900
+Date: Sat, 19 Sep 2026 10:18:19 +0900
+Message-ID: <87mrtem42s.wl-nomiya@ab.auone-net.jp>
+From: Masaru Nomiya <nomiya@ab.auone-net.jp>
+To: richardh@tuta.io
+Cc: alsa-devel@alsa-project.org
+Subject: Re: Help: unsubscribe
+In-Reply-To: <P1rBm0b--F-9@tuta.io>
 References: 
  <178972559304.30.15231273321927646247@mailman-core.alsa-project.org>
-Subject: Help: unsubscribe
-MIME-Version: 1.0
-Feedback-ID: 
- 01546680d2e6a4859a61b20542b097ed7373b2856ff867a73774a10fd7e5de6743ca3cb7b70af8fccef279ede3aee002242fd8af3b0bc3208bb05f920a859c4107:TurnOnPrivacy!:tutamail
-Message-ID-Hash: JUWCSWJU5WNIC6MO6OIZLBVAF7UZFJG6
-X-Message-ID-Hash: JUWCSWJU5WNIC6MO6OIZLBVAF7UZFJG6
-X-MailFrom: richardh@tuta.io
+	<P1rBm0b--F-9@tuta.io>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?ISO-8859-4?Q?Goj=F2?=) APEL-LB/10.8 EasyPG/1.0.0
+ Emacs/32.0.50 (x86_64-Tumbleweed-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+X-cite: carm 20
+X-cite-me: MN
+X-C-sig-version: Using c-sig version 3.8
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ab.auone-net.jp;
+ s=default-1; t=1789780704;
+ bh=jkvoh53lHD8cs+eyXVijdphIn2zeyYCu4tIYGsWmupQ=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References;
+ b=KRKYdJ+DbXYfF4QSxtym57ltW++YhLT+KexcBc4QkpkGZJj2oLwXom4YSR3TnCzaSO5sYef6
+ Oa7c7VHw7zwiPKGSRE1KU7FPIzkAWfkFCOiMybdunvofnNgAf/dLzjkmzuxxhRxFDJAe9uqmty
+ 6x6u+s1B46dFK+M6/VFWOvZoP2HvdBi1Wt5nSPrUr0j7brjxd6m/XD7HrhkOHdgBZs7A9qCXuA
+ RtOwfA3CJBkadbINtMZH+KkNJzn78zHbUy+M4psfT1vYQqc1tNqgY4rXA+nz3TMuyoOta0I/Fo
+ 0wr7TXeZlgtEmwh3qoCj4ijBc5HnYpejD7ki7JbimfD9ZWiQ==
+Message-ID-Hash: ZKL6MKVEFCOAJO6BLVBUIBJXGWB2COBA
+X-Message-ID-Hash: ZKL6MKVEFCOAJO6BLVBUIBJXGWB2COBA
+X-MailFrom: nomiya@ab.auone-net.jp
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
  nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
  news-moderation; no-subject; digests; suspicious-header
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
-X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JUWCSWJU5WNIC6MO6OIZLBVAF7UZFJG6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZKL6MKVEFCOAJO6BLVBUIBJXGWB2COBA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,26 +117,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-SGkNCg0KUGxlYXNlIHVuc3Vic2NyaWJlIHJpY2hhcmRoQHR1dGEuaW/CoGZyb20geW91ciBtYWls
-aW5nIGxpc3QuDQoNCktpbmQgcmVnYXJkcw0KDQrigItSaWNoYXJkDQoNCi0tIA0KIFNlY3VyZWQg
-d2l0aCBUdXRhIE1haWw6IA0KIGh0dHBzOi8vdHV0YS5jb20vZnJlZS1lbWFpbA0KDQoNCjE4IFNl
-cHQgMjAyNiwgMjA6MDAgYnkgYWxzYS1kZXZlbC1yZXF1ZXN0QGFsc2EtcHJvamVjdC5vcmc6DQoN
-Cj4gU2VuZCBBbHNhLWRldmVsIG1haWxpbmcgbGlzdCBzdWJtaXNzaW9ucyB0bw0KPiAgYWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnDQo+DQo+IFRvIHN1YnNjcmliZSBvciB1bnN1YnNjcmliZSB2
-aWEgZW1haWwsIHNlbmQgYSBtZXNzYWdlIHdpdGggc3ViamVjdCBvcg0KPiBib2R5ICdoZWxwJyB0
-bw0KPiAgYWxzYS1kZXZlbC1yZXF1ZXN0QGFsc2EtcHJvamVjdC5vcmcNCj4NCj4gWW91IGNhbiBy
-ZWFjaCB0aGUgcGVyc29uIG1hbmFnaW5nIHRoZSBsaXN0IGF0DQo+ICBhbHNhLWRldmVsLW93bmVy
-QGFsc2EtcHJvamVjdC5vcmcNCj4NCj4gV2hlbiByZXBseWluZywgcGxlYXNlIGVkaXQgeW91ciBT
-dWJqZWN0IGxpbmUgc28gaXQgaXMgbW9yZSBzcGVjaWZpYw0KPiB0aGFuICJSZTogQ29udGVudHMg
-b2YgQWxzYS1kZXZlbCBkaWdlc3QuLi4iVG9kYXkncyBUb3BpY3M6DQo+DQo+ICAxLiBbUEFUQ0hd
-IEFTb0M6IGFtZDogYWNwOiBlbmFibGUgVEFTMjc4MyBhbmQgYWRkIFJUNzEyLVZCIFNvdW5kV2ly
-ZSBtYWNoaW5lDQo+ICAoU3llZCBTYWJhIEthcmVlbSkNCj4gIDIuIFJlOiBbUEFUQ0hdIEFTb0M6
-IGFtZDogeWM6IEFkZCBMZW5vdm8gVGhpbmtQYWQgRTE2IEdlbiAyICgyMUpOKSB0byBxdWlya3MN
-Cj4gIChNYXJrIEJyb3duKQ0KPiAgMy4gUmU6IFtQQVRDSF0gQVNvQzogYW1kOiBhY3A6IGVuYWJs
-ZSBUQVMyNzgzIGFuZCBhZGQgUlQ3MTItVkIgU291bmRXaXJlIG1hY2hpbmUNCj4gIChNYXJrIEJy
-b3duKQ0KPiAgNC4gUmU6IFtQQVRDSCAwMC8xMV0gQVNvQzogU09GOiBhbWQ6IFNvdW5kV2lyZSBh
-bmQgUERNIHN1cHBvcnQgYW5kIGZpeGVzIGZvciBBQ1A3LkIvNy5GDQo+ICAoTWFyayBCcm93bikN
-Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QgLS0gYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnDQo+IFRv
-IHVuc3Vic2NyaWJlIHNlbmQgYW4gZW1haWwgdG8gYWxzYS1kZXZlbC1sZWF2ZUBhbHNhLXByb2pl
-Y3Qub3JnDQo+DQoNCg==
+Hello,
+
+In the Message;=20
+
+  Subject    : Help: unsubscribe
+  Message-ID : <P1rBm0b--F-9@tuta.io>
+  Date & Time: Sat, 19 Sep 2026 03:06:32 +0200 (CEST)
+
+richardh@tuta.io has written:
+
+> Hi
+
+> Please unsubscribe richardh@tuta.io=C2=A0from your mailing list.
+
+To unsubscribe send an email to alsa-devel-leave@alsa-project.org
+
+Best Regards.
+
+--
+=E2=94=8F=E2=94=81=E2=94=81=E2=94=93=E5=BD=A1   Masaru Nomiya              =
+       mail-to: nomiya @ ab.auone-net.jp
+=E2=94=83=EF=BC=BC=EF=BC=8F=E5=BD=A1
+=E2=94=97=E2=94=81=E2=94=81=E2=94=9B          "In other words, letting an A=
+I do your reasoning means your
+	           reasoning is only ever going to be as good as that AI system.
+	           As always, let the prompter beware."
+
+  -- ""Cognitive surrender" leads AI users to abandon logical thinking"  --
