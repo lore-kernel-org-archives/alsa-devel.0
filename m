@@ -4,68 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F413C982D8
-	for <alsa-devel@archiver.kernel.org>; Sat, 19 Sep 2026 05:12:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 150DCC982D7
+	for <alsa-devel@archiver.kernel.org>; Sat, 19 Sep 2026 14:25:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6BFB36020D;
-	Sat, 19 Sep 2026 07:11:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BFB36020D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 793B56020D;
+	Sat, 19 Sep 2026 16:25:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 793B56020D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1789794721;
-	bh=ikrummqE6rDSEl7icHP7mTNtGRrOvFraXwP5OoJClyc=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=UpI+76P2CSKrP1O7ocbrRpKXRORSVlpI77zFA6v65JFeIA5+lNPgWROj0VK/cf+sC
-	 4HtVlbCvnzYPBtkKS7mKijGpR8x8YoxMmong4wPxnh7dvrgfMZjxB0WukeMYa4DP9Z
-	 /8/Xz0OX/iLtzEg1tTGBNNCiVsZ7bFqefo3/CeRY=
+	s=default; t=1789827926;
+	bh=dUIpai9ou9B5J3VaKuOLptEiGqLXnibfYtETAyT5CW8=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Tp3A3UHjIzcWxpruP9Ud+IM6sC+lisn6DvhzRCdgyCJwQHoGr6gXaVER5i57CCblB
+	 d6vHRm5Vr/NPP7oK6MXGRUbRcxo9GAB07UGwqz9aJ3WrNII639VpwRU25R/jjDrFh7
+	 j8vqAt2AoQ1nG2T52GwJLUE9HOMCzE7iHDn2f3QA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 70A5DF805F6; Sat, 19 Sep 2026 07:11:28 +0200 (CEST)
+	id C0843F805F5; Sat, 19 Sep 2026 16:24:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E95F3F805FB;
-	Sat, 19 Sep 2026 07:11:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0158F805FB;
+	Sat, 19 Sep 2026 16:24:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26538F80557; Sat, 19 Sep 2026 07:11:19 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1789794677;
-	b=UfwSeuxjbfHNN4BvZ30wFDP6fBE8rOFMwlERO6AcyYhYH/Uwwv5Bl9DevrK25o5Hmmkv
-	 I3JL5/g2tjhlL16FoqyxrWLUNYkFTlBnNR/YClGMJD1THXaSHKM9J2vPrlWZerGGfxSrB
-	 CQ8YQcpRZIsI/lzfn6Y3fRSuTR32NlNOgIGsXBDHk6BkkbjWeJfGqbMXSW5296GF+abaj
-	 iXtdJBg7y4PUsrsk9gNWGaD7HXV57V1eu1XYpZdB453RshxnrScM+n9r88YWUTHKltj8J
-	 l3ogFDAhIW3pQC+0NlmPiiRR4WGXs4kiPdT99bvhmeVu+mWQfUeu3T03/eIAB5S3sqg==
+	id C39CEF80557; Sat, 19 Sep 2026 16:24:44 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=95.217.178.61
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1789827883;
+	b=RifXncvsbhRo7C7MFpIolLBv9FUE656MPQAzc99ZzCF/PDOqRqnlc3LHOhENRwz4YyNz
+	 sWXUsjr5GBNjnqC/NL9jTemqoL1MjX0dHC3yS+RWYK5f9NS7VyH5B96aD+A2iR10nGhBe
+	 svUfgOAKFHlvjDV8Hb4p8+3x/OMn1nt8wSTqmnwuZM/f8GbCwbsy67re/aEURnwEJu34l
+	 +Xjp6M84A+RnsHuZnDUijfg4D5iAz31AsGPwpgZ+5/eKTpijtDib3gox3sR2kSz9I8HJg
+	 ROkyYkH4FMN5qx5elfowvv98FXklJi/BvmlDLKWJSivjm0Xup44FAudYYrXG+XDp7XQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1789794677;
-	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=ikrummqE6rDSEl7icHP7mTNtGRrOvFraXwP5OoJClyc=;
-	b=WTjrDtrxaXeVmAV7QQtauMSF/zG5FjfBgouOhADVzMu1fSSG1g+VxpmPm/tK8gerHeZq
-	 qYAXhAnS9yFIpdNGnOFDQoDOFjn/gLXSLfO4BoY8F8kIhebB0r+351+jCcvS/+RnJLHDg
-	 AuLNFgtxOGPG7TGM9wYrAjOYfMU4CZFBRapDhdkEb5kjJXbuXI3T2LIjQ/efCa9AUiMeX
-	 KrBd06IWrS5JA8/f66kk8XGiWVsxKXtEK6LmZY56uZAbtdgIbPxwl1L71QKZ+xqsaQLdi
-	 HYFiSiJKKcE0PaLw0Esu9Cr0sxbsm+iTuz4KiiMSTA5KAuceVXFE48p37z+Ko0lrD4Q==
+	c=relaxed/simple; t=1789827883;
+	h=DKIM-Signature:DKIM-Signature:Date:From:To:Subject:Message-Id:
+	 Mime-Version;
+	bh=dUIpai9ou9B5J3VaKuOLptEiGqLXnibfYtETAyT5CW8=;
+	b=pysBq7NhjV4trtmzV71DE6s91keiZPzPQkNDmBeHC3tfmhei2v1iuegslQpzwUOkRMnl
+	 XM7ITq9xNHaP+R2Ai7DqnZBvaFFFiWqgw2MyBbkIGCc4kMmrkdTNce8xS3+64dUl0QXHf
+	 L3jlWF7qJ4cfjS/lYta+CA4HLCYw6W2h7mQ4Ee0rYmUcl64o1A7yfEaZlPQ8o83psVYYm
+	 L/NjgZql4hecNU3bdflfH6PRbwnt/T+mJEjc6o2Nkw2Vjpv5K6qRbpDja4U4TFmWZqjUb
+	 pqCM5vZ02vddLXBB9fpHsDAAVpdK3nCtZ2bIzHEq9xkDvt+3J4oDr53EP5up6unBgNw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=45.14.194.44
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 594FEF80088
-	for <alsa-devel@alsa-project.org>; Sat, 19 Sep 2026 07:11:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 594FEF80088
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <18d6a0c66248ae00-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-lib/pr/527@alsa-project.org>
-References: <alsa-project/alsa-lib/pr/527@alsa-project.org>
-Subject: 
- =?utf-8?q?alsa-lib=3A_security_hardening_=E2=80=94_UCM=2C_conf_parser=2C_topology=2C_PCM_plugins_=286_findings=29?=
-Date: Sat, 19 Sep 2026 07:11:19 +0200 (CEST)
-Message-ID-Hash: BZANYAJZ7AHTR3ZT3AKXAIDT4LLLIEU7
-X-Message-ID-Hash: BZANYAJZ7AHTR3ZT3AKXAIDT4LLLIEU7
-X-MailFrom: github@alsa-project.org
+ dkim=fail reason="signature verification failed" header.d=gorgnet.net
+ header.i=@gorgnet.net header.a=ed25519-sha256 header.s=b1 header.b=gJLpRLCv;
+	dkim=pass header.d=gorgnet.net header.i=@gorgnet.net header.a=rsa-sha256
+ header.s=a1 header.b=CthQmjb7;
+	arc=none smtp.remote-ip=95.217.178.61
+Received: from gorgnet.net (gorgnet.net [95.217.178.61])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 212B3F8011B
+	for <alsa-devel@alsa-project.org>; Sat, 19 Sep 2026 16:24:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 212B3F8011B
+Authentication-Results: alsa1.perex.cz;
+	dkim=fail reason="signature verification failed" header.d=gorgnet.net
+ header.i=@gorgnet.net header.a=ed25519-sha256 header.s=b1 header.b=gJLpRLCv;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gorgnet.net header.i=@gorgnet.net header.a=rsa-sha256
+ header.s=a1 header.b=CthQmjb7
+DKIM-Signature: v=1; a=ed25519-sha256; c=simple/simple;
+  d=gorgnet.net; s=b1; x=1790432460; q=dns/txt; h=Received:
+  Received:Date:From:To:Cc:Subject:Message-Id:Mime-Version:
+  Content-Type:Content-Transfer-Encoding; bh=dUIpai9ou9B5J3VaKuOL
+  ptEiGqLXnibfYtETAyT5CW8=; b=gJLpRLCv9q9QKSYn/t8uhxLrKNEG6UuFkPFU
+  8aCiMFmefywssewOONjvvIz/eaKNfVfRc+wFbizoX7IhuoWrBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=gorgnet.net; s=a1; x=1790432460; q=dns/txt; h=Received:
+  Received:Date:From:To:Cc:Subject:Message-Id:Mime-Version:
+  Content-Type:Content-Transfer-Encoding; bh=dUIpai9ou9B5J3VaKuOL
+  ptEiGqLXnibfYtETAyT5CW8=; b=CthQmjb7HNhDE2J9e3ItoQyA6i/zU8YmO1DX
+  TH4A+TLx3D5cWb8b2p8uAteO4d6Hi688mpsdWuvj2Z3uR9rjITDubQReV/5BuFNU
+  M5H9Flfl6Hnu8OQqg9shwJKJHYmNYblwlNNQ+HorYuTwJwVDcDID1/nnutpf5gzb
+  Q4cVJ1oRYoJsqnl6bYwyO0NWNvtzVZvCVhxKObGRYLt1lNWzGv/mVZHSnrpMTXqE
+  kHNhR4cfvLdwRv09iUhjsZgkPv3JR1zsr5eedWVa6v0asQh/rl15Uka7hyWZSpEb
+  0yL51XHG37qKe2OxjH8s5JNGRu3OVqHWK3DMkGGV2VJrX33c7A==
+Received: (qmail 16781 invoked from network); 19 Sep 2026 14:21:00 -0000
+Received: from unknown (HELO void1) (gorg@gorgnet.net@38.240.16.98)
+  for <alsa-devel@alsa-project.org>
+  de/crypted with TLSv1.2: ECDHE-ECDSA-CHACHA20-POLY1305 [unknown/unknown]
+  by 0 with ESMTPSA; 19 Sep 2026 14:21:00 -0000
+Date: Sat, 19 Sep 2026 07:24:37 -0700
+From: George Matsumura <gorg@gorgnet.net>
+To: alsa-devel@alsa-project.org, perex@perex.cz
+Cc: tiwai@suse.de
+Subject: [PATCH] alsa-lib: Revert
+ "A try to fix one rouding problem in refine"
+Message-Id: <20260919072437.ecc0cf4d5c702127dc77ac0e@gorgnet.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-unknown-linux-musl)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: Y2XIKOOXON6JRO6CCGXDDKLVDUYQYDJO
+X-Message-ID-Hash: Y2XIKOOXON6JRO6CCGXDDKLVDUYQYDJO
+X-MailFrom: gorg@gorgnet.net
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -76,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BZANYAJZ7AHTR3ZT3AKXAIDT4LLLIEU7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y2XIKOOXON6JRO6CCGXDDKLVDUYQYDJO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,58 +119,146 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-YWxzYS1wcm9qZWN0L2Fsc2EtbGliIHB1bGwgcmVxdWVzdCAjNTI3IHdhcyBvcGVuZWQgZnJvbSBI
-YXJzaFJhalNpbmdoYW5pYToKClRoaXMgUFIgYWRkcmVzc2VzICoqc2l4IGluZGVwZW5kZW50bHkt
-dHJpZ2dlcmVkIHNlY3VyaXR5IGhhcmRlbmluZyBpc3N1ZXMqKiBmb3VuZCBkdXJpbmcgYSBzb3Vy
-Y2UgYXVkaXQgb2YgY29tbWl0IGBmODRjZDRjYCwgYWxsIHZlcmlmaWVkIHdpdGggcHJvb2Ytb2Yt
-Y29uY2VwdCBwcm9ncmFtcy4KCkEzIChgc2hlbGxgL2BzeXN0ZW0oKWApIGFuZCBBNiAoUENNIGZp
-bGUgYHBvcGVuYCkgYXJlIGludGVudGlvbmFsIGZlYXR1cmVzIGFuZCBhcmUgbm90IHBhdGNoZWQg
-aGVyZSDigJQgaGFyZGVuaW5nIHN1Z2dlc3Rpb25zIG5vdGVkIGlubGluZSBmb3IgbWFpbnRhaW5l
-ciBjb25zaWRlcmF0aW9uLgoKLS0tCgojIyMgQTEg4oCUIFVDTSBgc3lzd2AgcGF0aCB0cmF2ZXJz
-YWwgKENXRS0yMikgwrcgYHNyYy91Y20vbWFpbi5jYApgZXhlY3V0ZV9zeXN3KClgIGNvbmNhdGVu
-YXRlcyB0aGUgc3lzZnMgcm9vdCB3aXRoIGEgY2FsbGVyLXN1cHBsaWVkIHN0cmluZyB2aWEgYHNu
-cHJpbnRmKClgIHdpdGggbm8gYC4uYCByZWplY3Rpb24gb3IgYHJlYWxwYXRoKClgIGNvbmZpbmVt
-ZW50LiBBIFVDTSBwYXRoIGxpa2UgYC4uLy4uL2V0Yy9jcm9uLmQveDp2YWx1ZWAgd3JpdGVzIHRv
-IGFuIGFyYml0cmFyeSBmaWxlc3lzdGVtIGxvY2F0aW9uLiAqKkZpeDoqKiBgcmVhbHBhdGgoKWAg
-Y29uZmluZW1lbnQg4oCUIHJlamVjdCBpZiByZXNvbHZlZCBwYXRoIGRvZXMgbm90IHJlbWFpbiB3
-aXRoaW4gdGhlIHN5c2ZzIHJvb3QuCgojIyMgQTIg4oCUIFVDTSBgY2ZnLXNhdmVgIHVucmVzdHJp
-Y3RlZCBwYXRoIChDV0UtNzMpIMK3IGBzcmMvdWNtL21haW4uY2AKYGV4ZWN1dGVfY2Znc2F2ZSgp
-YCBjYWxscyBgc25kX291dHB1dF9zdGRpb19vcGVuKCZvdXQsIGZpbGUsICJ3KyIpYCB3aXRoIGEg
-cmF3IGNhbGxlci1zdXBwbGllZCBgZmlsZWAgYW5kIG5vIHJlc3RyaWN0aW9uLiBBbnkgd3JpdGFi
-bGUgcGF0aCAoZS5nLiBgfi8uc3NoL2F1dGhvcml6ZWRfa2V5c2ApIGlzIHJlYWNoYWJsZS4gKipG
-aXg6KiogYHJlYWxwYXRoKClgIGNoZWNrIOKAlCBjb25maW5lIHRvIGBYREdfUlVOVElNRV9ESVJg
-IChmYWxsYmFjayBgL3RtcGApLgoKIyMjIEE0IOKAlCBDb25maWcgcGFyc2VyIGFic29sdXRlIGlu
-Y2x1ZGUgdHJhdmVyc2FsIChDV0UtMjIpIMK3IGBzcmMvY29uZi5jYApgaW5wdXRfc3RkaW9fb3Bl
-bigpYCBpbW1lZGlhdGVseSBvcGVucyBhbnkgYWJzb2x1dGUgcGF0aCAoYGZpbGVbMF09PScvJ2Ap
-IHdpdGhvdXQgY2hlY2tpbmcgZm9yIGAuLmAgY29tcG9uZW50cy4gQSBwbGFudGVkIGNvbmZpZyB3
-aXRoIGA8Ly4uLy4uL2V0Yy9zaGFkb3c+YCBjYW4gcmVhZCBhcmJpdHJhcnkgZmlsZXMuICoqRml4
-OioqIHJlamVjdCBwYXRocyBjb250YWluaW5nIGAvLi4vYC4KCiMjIyBBNSDigJQgVG9wb2xvZ3kg
-Y29udHJvbCBgdWludDMyX3RgIGludGVnZXIgb3ZlcmZsb3cgKENXRS0xOTApIMK3IGBzcmMvdG9w
-b2xvZ3kvY3RsLmNgCmBzaXplMiA9IHgtPnNpemUgKyB4LT5wcml2LnNpemVgIGlzIGNvbXB1dGVk
-IGluIDMyLWJpdCB1bnNpZ25lZCBhcml0aG1ldGljIGJlZm9yZSBiZWluZyB3aWRlbmVkIHRvIGBz
-aXplX3RgLiBPbiBhIDY0LWJpdCBob3N0LCBgMHhGRkZGRkZGMCArIDB4MjAgPSAweDEwYCAod3Jh
-cHMpLCBieXBhc3NpbmcgdGhlIHN1YnNlcXVlbnQgYHNpemUyID4gc2l6ZWAgZ3VhcmQuIFRocmVl
-IHNpdGVzOiBgdHBsZ19kZWNvZGVfY29udHJvbF9taXhlcmAsIGB0cGxnX2RlY29kZV9jb250cm9s
-X2VudW1gLCBgdHBsZ19kZWNvZGVfY29udHJvbF9ieXRlc2AgKGRpc3RpbmN0IGZyb20gQ1ZFLTIw
-MjYtMjUwNjggd2hpY2ggd2FzIGB0cGxnX2RlY29kZV9jb250cm9sX21peGVyMWApLiAqKkZpeDoq
-KiBwcmUtY2hlY2sgZm9yIG92ZXJmbG93LCB0aGVuIGAoc2l6ZV90KXgtPnNpemUgKyAoc2l6ZV90
-KXgtPnByaXYuc2l6ZWAuCgojIyMgQTcg4oCUIFBDTSBgcm91dGVgIHBsdWdpbiB1bmJvdW5kZWQg
-YHR0YWJsZWAgYWxsb2NhdGlvbiAoQ1dFLTc3MCkgwrcgYHNyYy9wY20vcGNtX3JvdXRlLmNgCmBj
-c2l6ZWAvYHNzaXplYCBncm93IGZyb20gY29uZmlnLXN1cHBsaWVkIGNoYW5uZWwgaW5kaWNlcyB3
-aXRoIG5vIHVwcGVyIGJvdW5kIGJlZm9yZSBgbWFsbG9jKGNzaXplICogc3NpemUgKiBzaXplb2Yo
-ZW50cnkpKWAuIEluZGV4IGAxMDczNzQxODIzYCDihpIgYG1hbGxvYyg4IEdCKWAuICoqRml4Oioq
-IGNhcCBib3RoIGF0IDEwMjQgKGNvbnNpc3RlbnQgd2l0aCBgZG1peGAsIGBzb2Z0dm9sYCwgb3Ro
-ZXIgUENNIHBsdWdpbnMpLgoKIyMjIEE4IOKAlCBQQ00gYG11bHRpYCBzcGFyc2UgYmluZGluZ3Mg
-T09CIGFzc2VydCAoQ1dFLTYxNykgwrcgYHNyYy9wY20vcGNtX211bHRpLmNgClNwYXJzZSBiaW5k
-aW5nIG1hcHMgbGVhdmUgYHNpZHhzW2ldID09IC0xYCBmb3IgZ2FwIGluZGljZXMuIGBhc3NlcnQo
-c2NoYW5uZWxzW2ldIDwgc2NoYW5uZWxzX2NvdW50W3NpZHhzW2ldXSlgIHRoZW4gZGVyZWZlcmVu
-Y2VzIGBzY2hhbm5lbHNfY291bnRbLTFdYCDihpIgU0lHQUJSVCAoZGVidWcpIC8gT09CIHJlYWQg
-KE5ERUJVRykuICoqRml4OioqIHJlcGxhY2UgYm90aCBgYXNzZXJ0KClgcyB3aXRoIGV4cGxpY2l0
-IGAtRUlOVkFMYCByZXR1cm5zIHdpdGggYm91bmRzIGFuZCBzaWduIGNoZWNrcy4KCi0tLQoKKipW
-ZXJpZmllZDoqKiBhbGwgc2l4IFBvQyBwcm9ncmFtcyBjb25maXJtZWQgb24gYGxpYmFzb3VuZDIg
-MS4yLjE0YCAvIGBnY2MgMTQuMmAsIGNvbW1pdCBgZjg0Y2Q0Y2AuCgoqKlNpZ25lZC1vZmYtYnk6
-KiogSGFyc2ggUmFqIFNpbmdoYW5pYSA8cmFqLmhhcnNocmF1dEBnbWFpbC5jb20+CgpSZXF1ZXN0
-IFVSTCAgIDogaHR0cHM6Ly9naXRodWIuY29tL2Fsc2EtcHJvamVjdC9hbHNhLWxpYi9wdWxsLzUy
-NwpQYXRjaCBVUkwgICAgIDogaHR0cHM6Ly9naXRodWIuY29tL2Fsc2EtcHJvamVjdC9hbHNhLWxp
-Yi9wdWxsLzUyNy5wYXRjaApSZXBvc2l0b3J5IFVSTDogaHR0cHM6Ly9naXRodWIuY29tL2Fsc2Et
-cHJvamVjdC9hbHNhLWxpYgo=
+Greetings,
+
+When attempting to use ALSA directly (without any sound server such as
+pulseaudio) with a configuration using the plug plugin, using parameters
+where sample rate resampling is necessary, snd_pcm_hw_params or
+snd_pcm_set_params may fail, returning EINVAL.
+
+This is because refinement rule 7 in pcm_params.c requires the
+period_time to remain an interval rather than a single value if
+period_time does not perfectly divide period_size. The code that was
+introduced with this change converts the interval to one of its extrema,
+leading to -EINVAL, indicating an empty inteval, being returned by
+snd_pcm_hw_rule_mulkdiv.
+
+I encountered this when attempting to play 44100 Hz audio with firefox
+and deadbeef in a configuration that required the plug plugin to
+resample the audio to 48000 Hz for a slave dmix plugin. The follwing
+debug output (enabled with RULES_DEBUG in pcm_params.c) was produced at
+the end of configuration:
+
+refine_soft '(null)' (begin)
+ACCESS: MMAP_INTERLEAVED MMAP_NONINTERLEAVED
+FORMAT: S16_LE
+SUBFORMAT: STD
+SAMPLE_BITS: ALL
+FRAME_BITS: ALL
+CHANNELS: 1
+RATE: 44100
+PERIOD_TIME: 21000
+PERIOD_SIZE: [926 926]
+PERIOD_BYTES: ALL
+PERIODS: (4 5)
+BUFFER_TIME: (104988 104989)
+BUFFER_SIZE: 4630
+BUFFER_BYTES: ALL
+TICK_TIME: 0
+Rule 0 (0x7f8d59fd9530): FORMAT=S16_LE -> S16_LE SAMPLE_BITS=[1 4294967295]
+Rule 1 (0x7f8d59fd9480): SAMPLE_BITS=[1 4294967295] -> 16 FORMAT=S16_LE SAMPLE_BITS=16
+Rule 2 (0x7f8d59fd93f0): SAMPLE_BITS=16 -> 16 FRAME_BITS=[1 4294967295] CHANNELS=1
+Rule 3 (0x7f8d59fd9360): FRAME_BITS=[1 4294967295] -> 16 SAMPLE_BITS=16 CHANNELS=1
+Rule 4 (0x7f8d59fd92d0): FRAME_BITS=16 -> 16 PERIOD_BYTES=ALL PERIOD_SIZE=926
+Rule 5 (0x7f8d59fd92d0): FRAME_BITS=16 -> 16 BUFFER_BYTES=[1 4294967295] BUFFER_SIZE=4630
+Rule 6 (0x7f8d59fd93f0): CHANNELS=1 -> 1 FRAME_BITS=16 SAMPLE_BITS=16
+Rule 7 (0x7f8d59fd92d0): RATE=44100 -> NONE PERIOD_SIZE=926 PERIOD_TIME=21000
+refine_soft '(null)' (end--22)
+
+PERIOD_SIZE previously had a value of (926 927), which would have
+allowed rule 7 to run correctly, before being converted to [926 926] in
+snd_pcm_rate_hw_refine_cchange.
+
+I believe this arose from a similar issue:
+
+https://bbs.archlinux.org/viewtopic.php?id=259785
+
+This reverts commit 37728639ae05de702825d96bd1d42e24ae772248. In doing
+so, it allows for period_size to remain an open interval in this case
+and for configuration to proceed successfully.
+
+I am unsure if this is the case, but I suspect that the bug that
+37728639ae05de702825d96bd1d42e24ae772248 was originally meant to
+address was later resolved by de88f0e58617e0fef265ec136efccb297e735571.
+
+Thank you for reading this, and I apologize for any parts of it that
+were unclear. Please let me know if there is any other information that
+I can provide.
+
+Regards,
+    George
+
+Signed-off-by: George Matsumura <gorg@gorgnet.net>
+---
+diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
+index d54be3c2..c1e2616d 100644
+--- a/src/pcm/pcm_rate.c
++++ b/src/pcm/pcm_rate.c
+@@ -34,10 +34,6 @@
+ #include "bswap.h"
+ #include <inttypes.h>
+ 
+-#if 0
+-#define DEBUG_REFINE
+-#endif
+-
+ #ifndef PIC
+ /* entry for static linking */
+ const char *_snd_module_pcm_rate = "";
+@@ -207,10 +203,7 @@ static int snd_pcm_rate_hw_refine_cchange(snd_pcm_t *pcm, snd_pcm_hw_params_t *p
+ {
+ 	snd_pcm_rate_t *rate = pcm->private_data;
+ 	snd_interval_t t;
+-#ifdef DEBUG_REFINE
+-	snd_output_t *out;
+-#endif
+-	const snd_interval_t *sbuffer_size, *buffer_size;
++	const snd_interval_t *sbuffer_size;
+ 	const snd_interval_t *srate, *crate;
+ 	int err;
+ 	unsigned int links = (SND_PCM_HW_PARBIT_CHANNELS |
+@@ -229,44 +222,7 @@ static int snd_pcm_rate_hw_refine_cchange(snd_pcm_t *pcm, snd_pcm_hw_params_t *p
+ 	err = _snd_pcm_hw_param_set_interval(params, SND_PCM_HW_PARAM_BUFFER_SIZE, &t);
+ 	if (err < 0)
+ 		return err;
+-	buffer_size = snd_pcm_hw_param_get_interval(params, SND_PCM_HW_PARAM_BUFFER_SIZE);
+-	/*
+-	 * this condition probably needs more work:
+-	 *   in case when the buffer_size is known and we are looking
+-	 *   for best period_size, we should prefer situation when
+-	 *   (buffer_size / period_size) * period_size == buffer_size
+-	 */
+-	if (snd_interval_single(buffer_size) && buffer_size->integer) {
+-		snd_interval_t *period_size;
+-		period_size = (snd_interval_t *)snd_pcm_hw_param_get_interval(params, SND_PCM_HW_PARAM_PERIOD_SIZE);
+-		if (!snd_interval_checkempty(period_size) &&
+-		    period_size->openmin && period_size->openmax &&
+-		    period_size->min + 1 == period_size->max) {
+-			if (period_size->min > 0 && (buffer_size->min / period_size->min) * period_size->min == buffer_size->min) {
+-				snd_interval_set_value(period_size, period_size->min);
+-			} else if ((buffer_size->max / period_size->max) * period_size->max == buffer_size->max) {
+-				snd_interval_set_value(period_size, period_size->max);
+-			}
+-		}
+-	}
+-#ifdef DEBUG_REFINE
+-	snd_output_stdio_attach(&out, stderr, 0);
+-	snd_output_printf(out, "REFINE (params):\n");
+-	snd_pcm_hw_params_dump(params, out);
+-	snd_output_printf(out, "REFINE (slave params):\n");
+-	snd_pcm_hw_params_dump(sparams, out);
+-	snd_output_close(out);
+-#endif
+ 	err = _snd_pcm_hw_params_refine(params, links, sparams);
+-#ifdef DEBUG_REFINE
+-	snd_output_stdio_attach(&out, stderr, 0);
+-	snd_output_printf(out, "********************\n");
+-	snd_output_printf(out, "REFINE (params) (%i):\n", err);
+-	snd_pcm_hw_params_dump(params, out);
+-	snd_output_printf(out, "REFINE (slave params):\n");
+-	snd_pcm_hw_params_dump(sparams, out);
+-	snd_output_close(out);
+-#endif
+ 	if (err < 0)
+ 		return err;
+ 	return 0;
