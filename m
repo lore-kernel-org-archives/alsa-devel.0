@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0F76C982DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2026 09:29:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A73BEC982E1
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2026 10:15:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20778601F9;
-	Mon, 21 Sep 2026 11:28:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20778601F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 21162601F2;
+	Mon, 21 Sep 2026 12:15:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21162601F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1789982948;
-	bh=BlO8YcIAdLIGXqChhgVqSTvIsclf7Ez8KriTr4yfPo4=;
+	s=default; t=1789985740;
+	bh=Aqcq9aL88BNS0cECLzkTksUWHdYdimF8T4Db+anjypQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ID0aP7XorjNA1YQKQeI4/6k/aEtgqO5w6CQm+oFNIOn4IaQDNSbk8aOSpklInWASY
-	 03v7npwD4Tk5TCTU40i2GoTBC3rFKVNUmuICaSsj87H4n1XECUUTm77DQ/97jiVtas
-	 wyrqhwhdCThW4RLT2BmXkC0TeIoV4ym8owD6vf+o=
+	b=WTM4iZ/MJ+iAGfvjJ4tAkNsB58oI8yyYx1/+WwbVGpaCz437Rtxacvb8Yen0Mb8Fc
+	 R1AXvAuiIWTglSNoD4PL7C6FyB0HjnNZI7KKeOxn8DB7PWcXgmOYnW38B5aT/Myxa0
+	 w+Affyve0Y9+eFK28Z3iRJDvhN6ZhRKm4F7H4RSA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B08CAF805FD; Mon, 21 Sep 2026 11:28:35 +0200 (CEST)
+	id CCE2FF805F8; Mon, 21 Sep 2026 12:15:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC4EEF80601;
-	Mon, 21 Sep 2026 11:28:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC3D4F80601;
+	Mon, 21 Sep 2026 12:15:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D1E3CF804F3; Mon, 21 Sep 2026 11:28:28 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1789982907;
-	b=KrTtIZdoUXpJp7ETuS/EE324Robs+L02grlSLOsY7dwMS5R6IHK4Pip43H9jNp71dwXY
-	 3N93gX2er7CinI2VR8kq0FKJong3RF1qVN1ad4wDyvgdexaZDoK13WeLkPo8hZcGuf/4b
-	 RzmRQHtQPUpcsu3sPAl4ur46yaezFS2D+NszZD0PdD+viSKCRhT7Lv15tWDLXTSDAduxj
-	 DJdIh1lKiPR1dhMre5sOI6SIklos+to+Y+CiLRQ+yFm4/zd992Wuac5mTJJ8lk/B7SCnL
-	 rGdoNLfe6cq2RMj3krqPSoCm4VS1WdGtNg5EnKZmnU3OIRngIzyXCAF8paxZFib6zBQ==
+	id 442ECF804F3; Mon, 21 Sep 2026 12:14:58 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1789985697;
+	b=YptlJiH6Ps3SVid/EFLTIdL4ziltftEFdq5heLog/TLwu7VpKW3khx0onj6HfXTXVio5
+	 Y5k0zgrwTwtRtMlz5GYnzoXHSYmkz0yUyqXVrfEookqE8snH+T/Zb2RVHTooBtXZDYXx0
+	 HC276/VSCGqdAr4kOO1f3t6IwYLpjhp5fHKkr2dW0vdzIT6oP9ZRYpNpMDHRrCeSszLXu
+	 OycbS2BWOyBPsU8VU4pmukIiDTv7bux+nJWCkPOtQHi9Ewh3qwdy9KVAFg3DAhPPbSbVP
+	 2eUf4GMfnExuJLsx+xN9fn24d5PqtmfTAKYeEQUbAC9AFuCHhJXADyyy87OYus4ASdw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1789982907;
+	c=relaxed/simple; t=1789985697;
 	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
-	bh=BlO8YcIAdLIGXqChhgVqSTvIsclf7Ez8KriTr4yfPo4=;
-	b=OtVhydDruGxxMAbFAqAA16yxnUWEwRApWrDOolrDhzdJiqHMSiTgWhmlIXH+9IVIxhe9
-	 Fd3Cfe7SJWlpUT7by04JKVAhJttL0YVG/9VlVRe9r6jQFSDtA3pQBiSNaXj9vtaUYiXP3
-	 F9Sx0NaKBr2Dyhb5FvI1o8QC+0ifymhiQQvbuMqGjz2+9CwiDrB+oF6mF8BbE3staW/2T
-	 P3sGm5KpDcZ9KmRhhaljwSfL1NRC9c391I7JU/rYq83NV9bt929HA/8qNhWxiQ57GqSlk
-	 lOtYA7zAiDXEnYQOE4JjV4XUQGa5o11Yvof3B0y+yr5FVZMGAEcQ5K4ow4ZCtMMskzg==
+	bh=Aqcq9aL88BNS0cECLzkTksUWHdYdimF8T4Db+anjypQ=;
+	b=pyLXOtVkQdWRuvwg9rvlPJ6JwRsMcPDAAvKTqW8XU8kTXOpjPu5s/KtiMZAmd6FgdfcL
+	 VIBrvU6SG+gDKd3sEAzCKgtf3COO8vKl0yw79qbg3oZcwCJI2ToqY/802xA9FiqlgTRYe
+	 cGfyH60HfYrJXj9Av9dD5BFhVkV8A3E4b24fu904iotUMt21/HDj/sJTcvjg+nF9UzP7T
+	 6VXHK+qyzvoBtXBUw1UADV/GXnWBp6wtoxM02bA/LL3juyhpResMt0kc7jPDILr/JTFs4
+	 SFnMQjgQha7he07njDnHnynXSDZ0lvAiMBOtgao8AWUX6mH3ZzbPEmxzj1L0MaDRJcg==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=DDvl+ge2;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+ header.s=k20260515 header.b=j8BpV7B7;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 99DE4F801F7
-	for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2026 11:28:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99DE4F801F7
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6BAA3F800B0
+	for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2026 12:14:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BAA3F800B0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=DDvl+ge2
+ header.s=k20260515 header.b=j8BpV7B7
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 458B843472;
-	Mon, 21 Sep 2026 09:28:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30B731F000FF;
-	Mon, 21 Sep 2026 09:28:18 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id B299F600D1;
+	Mon, 21 Sep 2026 10:14:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 341BB1F000FF;
+	Mon, 21 Sep 2026 10:14:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789982903;
-	bh=Xkoji6zTVBEB22n/TDJ3LMI+tSUvIAOWk7kusizeXCI=;
+	s=k20260515; t=1789985693;
+	bh=Aqcq9aL88BNS0cECLzkTksUWHdYdimF8T4Db+anjypQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=DDvl+ge2tsNfsLi4bmj87KXWxJsb3xBG3klQYu6S1TLOKMS9zwVBy4gg2JWvVbmPg
-	 tcSjkU2YKqFzrkyScxe2kIRZRyNdZ3QP5W7tzbexr2jh/+/XfsSUXdfCoDGgV1B3Ka
-	 h0EvmjiLX9u1tVuWn8dp0YoZgX8uIP4px3xsYg+XWeJZNRj508KQEM97eXUEYty1Dc
-	 xMGzrivmjatQkrdPeK0/qHDzlmNKvHCmp9Tzo2mtVoIKnSWzlSmLxknsh/doJWWRzV
-	 fXkRz4gQnZJgsObRR6XxSf0l5qs3qKOVN3m+w1uJ+tYr52UFf3RU5gyMNAsyH2Gnv9
-	 XkYloDzLxLG6w==
+	b=j8BpV7B7EaLh0TRBdDEWhu1XlQA814ENsQgkEUZU6Fo4T6WiA/dznBTq+R1y00xn4
+	 ljJFaQ656/qRmIpgMd6I0LfEq1Ho0m3pZdFh2QMWA7g15O7hqh4MRgaH7dRs/E36IZ
+	 NpHcd8uOzpaJ1YJnUZ636VglI0i7TtWyjMUIsekqdyx7fcVIKTNgzinK4wd7VbTri3
+	 cWvaMw0GlGmwKzZlEN9BaYHGegwDkCUTOdAR/QbH4zdAbEtJzcfph9Qugp/mi3h93r
+	 tODcjhH/iRmFgA7nLDLBgWJeQa8LoTUkyCI9QXrXz/Pzx1vH7VjGpDXloLp9GK8hX3
+	 gtCZ20wJFqxKQ==
 Received: by finisterre.sirena.org.uk (Postfix, from userid 1000)
-	id BEE3E1AC52F5; Mon, 21 Sep 2026 10:27:47 +0100 (BST)
-Date: Mon, 21 Sep 2026 11:27:47 +0200
+	id 2DC201AC52F5; Mon, 21 Sep 2026 11:14:49 +0100 (BST)
+Date: Mon, 21 Sep 2026 12:14:49 +0200
 From: Mark Brown <broonie@kernel.org>
 To: "Xu, Baojun" <baojun.xu@ti.com>
 Cc: "tiwai@suse.de" <tiwai@suse.de>,
@@ -95,18 +95,20 @@ Cc: "tiwai@suse.de" <tiwai@suse.de>,
 	"Syed.SabaKareem@amd.com" <Syed.SabaKareem@amd.com>
 Subject: Re: [EXTERNAL] Re: [PATCH v5] ASoC: tas2783-sdw: add firmware
  download status check
-Message-ID: <arD4k6hCZyqycYYW@sirena.co.uk>
+Message-ID: <arEDmZ76qb3eLiwk@sirena.co.uk>
 References: <20260921064053.932-1-baojun.xu@ti.com>
  <arDujlvvKixE6ifp@sirena.co.uk>
  <1c8da29a1fac4435a59783ab9fe7f68b@ti.com>
+ <arD4k6hCZyqycYYW@sirena.co.uk>
+ <4d1f121c8ac348dcbb16b554e4ed2b9c@ti.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bJCWGDMDCoajVTO9"
+	protocol="application/pgp-signature"; boundary="Nnf9EGSfCSnJfaGN"
 Content-Disposition: inline
-In-Reply-To: <1c8da29a1fac4435a59783ab9fe7f68b@ti.com>
+In-Reply-To: <4d1f121c8ac348dcbb16b554e4ed2b9c@ti.com>
 X-Cookie: Too clever is dumb.
-Message-ID-Hash: 3RI36KBYB5YEQAHUAPMFWR4HTJJ7WBAU
-X-Message-ID-Hash: 3RI36KBYB5YEQAHUAPMFWR4HTJJ7WBAU
+Message-ID-Hash: 6ZXDMAATEQ6YQBPK7H2K4R2OICNNKG7U
+X-Message-ID-Hash: 6ZXDMAATEQ6YQBPK7H2K4R2OICNNKG7U
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -118,7 +120,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3RI36KBYB5YEQAHUAPMFWR4HTJJ7WBAU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6ZXDMAATEQ6YQBPK7H2K4R2OICNNKG7U/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,40 +130,39 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---bJCWGDMDCoajVTO9
+--Nnf9EGSfCSnJfaGN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Sep 21, 2026 at 09:22:23AM +0000, Xu, Baojun wrote:
+On Mon, Sep 21, 2026 at 10:08:54AM +0000, Xu, Baojun wrote:
 
-> > > +     /* Check if the AMP is in reset status. */
-> > > +     if (val == 0x20) {
-> > > +             tas_dev->fw_dl_success = false;
+> Previously, a local variable tracked the AMP reset state to determine if a
+> firmware download was required. However, we observed that the AMP resets
+> during SoundWire bus stop/start sequences, causing the variable to become
+> stale. To improve stability, the driver now directly reads the register
+> value instead of relying on the cached variable.
 
-> > I'm still not seeing where fw_dl_success gets set to true if the
-> > download was skipped.
+It should just need an assignment to set the download flag when you
+decide to skip?
 
-> If download was skipped, it should be true.
+> This version has been verified to work correctly on the current platform.
 
-As I said on the previous version can you guarantee that the driver is
-being probed with the device having been reset?  What happens if
-something earlier in the boot process left it running, or the driver was
-removed and reprobed?  The logic only works currently if the driver did
-the download that it's skipping.
+Are you sure there are no users with other systems who might be broken
+by skipping the download?
 
---bJCWGDMDCoajVTO9
+--Nnf9EGSfCSnJfaGN
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmqw+JIACgkQJNaLcl1U
-h9BJEAf/eeDwmjV/FSyl6fIe7qlINfYCE9CEaHUbl12MXZlEzgyMZAHy0DHbA1VH
-UtqTp0Vs8mOwXPcib1/xqVocHIvSgnr38zSGBR6ZWiXTlgqPpJ/3txPBvl3DELlw
-JDZrV9yQEvlDu/1hS1A0ecdFkjdqnrHOVRypk7ISFg9t94TlxJFmNxMXu0f86Tls
-XtulpOyuLMEPlDNw0E0BTLkW0AlCi+qc/+1dPguUHiGeM0jTedi9cXLvSls2SU6P
-QjYKegIzU9vRAGH2xm9ywL8emZNPFMiWD9uvWhOFO5jfEeKqOu7TJHw8ydyHHoyU
-sH4foP1eFeHvfgYPw1SX3WbmcBWIoQ==
-=fpaH
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmqxA5gACgkQJNaLcl1U
+h9Ce+gf/Tk4xSnpcXTJeZWcbSj5JbxXk2JzDAwBUFxoiTU81EYI9M+1U8ZwMjKcE
+Q+bohZFKf0g7MhxDTrLZMS5h8X5UeEwONHXf5nS+P6gEldpFol8rv3fY7pwKn6AD
+NPV6+5w9gv98a17rIpXitX2odoC8/V6Cg4kEuVLqP5Wqbu96AbRVsk0/t7YfN9Cl
+WpOHdRvfEVLF1I4qGvHZ2CdcmMPmV+m1PaHnMDI3wCzB+KGr99PGM0QYuz+ZQ8TI
+ppbPKwc8MP7+r9BTbX/isjJf14MOOm5bZNNNFPQ2ElUfsHC8SmIEgOOHEQe6gZrU
+seAHlha+5N5UQgDHcyZF+++pKGQU+Q==
+=YwsF
 -----END PGP SIGNATURE-----
 
---bJCWGDMDCoajVTO9--
+--Nnf9EGSfCSnJfaGN--
