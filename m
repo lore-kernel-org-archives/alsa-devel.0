@@ -4,138 +4,137 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C200ECA5FA7
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2026 19:06:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7ECB3CA5FA5
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2026 19:06:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4301601FC;
-	Tue, 29 Sep 2026 21:06:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4301601FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 928EF6022A;
+	Tue, 29 Sep 2026 21:06:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 928EF6022A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1790708773;
-	bh=WknN3qNtH4JTLXmCCpLnNMgtMtc/j3sW2TuN6Se+G6A=;
+	s=default; t=1790708789;
+	bh=g9/te5WvsHjHBvdvhfPd73b3h3dKIHi50yfhrHRAfeg=;
 	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=j6kPJDVXb77DcvliHZjuL/FYlFw+K/W+3y3kLWaJexxBgnzG4ta6CuynZimDuVV/T
-	 4YSSmzz82E5LjPNOlpN/QsEAi5mnx1zod8t6847Y7Oswvru1tBw4G8z2SH6SAzirJo
-	 dLfqy8Ag0Q3ZB7YzzONKIWKQMSQVG2B7pGI9YB5U=
+	b=IImS3mM2jJLZHAGAL+ox0lhBqJf3M/9UsEC3gqB9kIo1waEAV2jnio0lBfvaM2XNE
+	 a7OsLanED4yTPwDhq/l2FEdz+UJtSNpg0xrj0S4iJ3fBox7wnqX6lGqcimWQ9Zhtvx
+	 IiVaR2IbiBmLVLmYIN0K7wPfAL0DE4vWvOOe4JZo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C056EF8067F; Tue, 29 Sep 2026 21:04:59 +0200 (CEST)
+	id 53971F806AE; Tue, 29 Sep 2026 21:05:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2AE5EF8067C;
-	Tue, 29 Sep 2026 21:04:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0BC6BF806A9;
+	Tue, 29 Sep 2026 21:05:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 54EBEF804F3; Mon, 21 Sep 2026 12:10:25 +0200 (CEST)
+	id F29BEF804F3; Mon, 21 Sep 2026 13:22:23 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz;
- arc=pass header.oldest-pass=0 smtp.remote-ip=148.163.154.28
-ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1789985421;
-	b=oT6JkWLYu/+eg3MV9Ira7gjmYKrAOyV8Sw/0s2heiQzgKJodOAfvlVfmEZWVNMCjYzUd
-	 MTr8JSOTf0txDmnw9btU7KSAG8ipiHlaOOnVaDJxB9Puks+eS2FinyZEBjy7NfgdVn+/R
-	 06nWd/32FcpHICqtkjyEGBIaLwBFqCr7z7Lg+C9McGYJLQTSsNqfQcJ9Zt0p3ff/49bF/
-	 Oydpsru05N2PsGpf6c6nJyoGidbZExFZogNFBh1drSb/TUw8ngUN+Kz6Heay0SejizPwo
-	 i1vr2Po9mFwp/GCUtS18VD2STvT4B4yiSylreNwv4SGSnkT7QzEiSoW3I9yQ912bAlw==
+ arc=pass header.oldest-pass=0 smtp.remote-ip=148.163.150.75
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1789989739;
+	b=otlBOwQFwcw13sZDQrDu8/d0K9SiQa7zOPBmE5PsFV2neSC4HkrOM88grr1QlIermBnf
+	 zbe7VSCvxDs+qLREeFYfBXzOmNu1Y1OlE/YyJpBTr1fqhj1z7t5nG3YBiixU4UWNlxBl8
+	 Npuvcaw6Vldl5bUQcv1zPEPc3/E8OlocyMaXWDqT7GmMFofH5IOjS1Ip8EePoC0TshvBe
+	 pHcA8Xjegdgtyn1vjluCR7O9uUMceCW/f9mvL78YU27Mbdp+KL3Qgv0U9C+94V0osKNe5
+	 WUoNj0mYUfHHUFSYHec/gTBopH4NARe2haq5qzpT1KA0LD1knwx4OjkaKdLOPnCXLPA==
 ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1789985421;
+	c=relaxed/simple; t=1789989739;
 	h=DKIM-Signature:DKIM-Signature:From:To:Subject:Date:Message-ID:
 	 MIME-Version;
-	bh=WknN3qNtH4JTLXmCCpLnNMgtMtc/j3sW2TuN6Se+G6A=;
-	b=f/vWkjpOnr44PTmrFTK3Ael9HDEfne6jke1W2gFTTj3BDJ3bm7v80zOYNGUf7/T8LKs4
-	 gzRycnwih56ohA4dDL6pShvGT4MOF6E23t80AwTcH/M5UjrLCHcv5UTS9H3Rais4UDCZb
-	 DEEdGfy28wp9v5oI+Ps4ZGipY6KdsJwYHOPIllNJyFx94LZYYj90dZVLKNvgfVkFN81UD
-	 yWvpajOP8VgBNlN+8eCU1Dy9OENvZfQbM5++shU83Am4xHsL6I0BgIc1M8HeLYtxb06BF
-	 BLxHiIh1xfSd/qofKMIDPG0J7ZFHAciPbM/PdxCobxoPO6/+8auWUfFywkCXc6r/IgQ==
+	bh=g9/te5WvsHjHBvdvhfPd73b3h3dKIHi50yfhrHRAfeg=;
+	b=SE0OvAoQf/Hlp+Bl/jQAuXVLw8fAyLzg5sMrFyd7XR//1JkwZXTiAXXQlFK2v7mMOlXf
+	 gbzlgWk7svcQSGUH5RzVosc1Ce9vA+BvoMRGrSU/RG/d6gZnzcLyiLWnFUpg4xTAFQYPT
+	 vacfbQVqFrQAIDHK6rykWgzwA3TgxsW+MDnFum8no5aFxwgmVMCB+d5l06tUMAGLazIBL
+	 QbP6kJQyMA/cy8HVU/TmpqB6glc/Xf/WjtgKffPvn/zrcK8wzwy+5c78/Rajth/1cjLyI
+	 JF+QbJ3JxVj6ZxL81iWszn92DO/nTyUnSc3JHlHHBjAspD/gZ6VA1yOGHzylvkO9BfQ==
 ARC-Authentication-Results: i=2; alsa1.perex.cz;
  dkim=pass header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=proofpoint-05-2026 header.b=hDwWFoi0;
+ header.s=proofpoint-05-2026 header.b=F2z1B4FN;
 	dkim=pass header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=selector1 header.b="LQw/5ePA";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=148.163.154.28
-Received: from mx0b-0002e601.pphosted.com (mx0b-0002e601.pphosted.com
- [148.163.154.28])
+ header.s=selector1 header.b=RK8mTXQu;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=148.163.150.75
+Received: from mx0a-0002e601.pphosted.com (mx0a-0002e601.pphosted.com
+ [148.163.150.75])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A7619F800FA
-	for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2026 12:10:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7619F800FA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0273AF801F7
+	for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2026 13:22:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0273AF801F7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=proofpoint-05-2026 header.b=hDwWFoi0;
+ header.s=proofpoint-05-2026 header.b=F2z1B4FN;
 	dkim=pass (1024-bit key,
  unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=selector1 header.b=LQw/5ePA
-Received: from pps.filterd (m0374955.ppops.net [127.0.0.1])
-	by mx0b-0002e601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 68L7AwPF3481723;
-	Mon, 21 Sep 2026 05:10:14 -0500
+ header.s=selector1 header.b=RK8mTXQu
+Received: from pps.filterd (m0384305.ppops.net [127.0.0.1])
+	by m0384305.ppops.net (8.18.1.11/8.18.1.11) with ESMTP id 68LAfJgx668739;
+	Mon, 21 Sep 2026 06:22:11 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; h=cc
 	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=proofpoint-05-2026; bh=vQhFS+7nUzU/S
-	YUQ4RyjWlG/MLsoj3wi6dIM9Pmxaas=; b=hDwWFoi0aWOYL3juptcoPdRlxSmlb
-	j5NcswycvF9nztoScRDASfWBF11D7+U3lbg1C2s0nCxEHALQ/7CUPugimSks79ih
-	n68Lb8xEeoHoXrLPI01Odr7lqRefS84vuUAMrSNlTucawpp2hdYpl0r8/MJXRLeU
-	mS1MmF99mnetQVztmzswOlHFH3ol0dglg39E20JX2QDR45ITepwwj4h2c6JThc7P
-	CmFOtKgep5edaJw4LnknWAt7Le1KIn7IiTur1krGDYJ1nVCDVqrW3zbEqJE+ukTy
-	RIB010YKHWmYplPZqOneqLZA8A7mr8bX0eaAUCaz9C6b4DQR6j9Cci8hg==
-Received: from mw6pr02cu001.outbound.protection.outlook.com
- (mail-westus2azon11012015.outbound.protection.outlook.com [52.101.48.15])
-	by mx0b-0002e601.pphosted.com (PPS) with ESMTPS id 4gt9s5p935-2
+	:mime-version:subject:to; s=proofpoint-05-2026; bh=2nKFF44/VHxdb
+	0bi3G/euatML3Y7aet/Oa0ERJnlurI=; b=F2z1B4FNvbNfK/c/WVe6z9D1sGBhk
+	aM92WjQ8kbUoPXBRHKXQJRXU1I4G74sRkgUwY+xmdB8oFVaXERLy0aW1fM8/QXJL
+	O2ElwfAZNN8NHl9IW6MMx5lLDqa/C0i6k3ZHk0Qcgb7tamOSmdVV06ERjSh+1G7e
+	DglOG/vDzh4XkCRzpFgpKwRbDpdyZjou1TFwpgndbj5Rs09n5Oy7M38v7L7JzPt1
+	cRix0pUL7aWE1WkD4IEtreP/oDKxiMHy8zgv+VLUj85pTWFerERDGEkPTwaEDtSr
+	qH81bHPwou8TAmUlrqmTBjoihGvNkVWxK8OD9y4jhe3l+UBIOvP2svtpQ==
+Received: from ph8pr06cu001.outbound.protection.outlook.com
+ (mail-westus3azon11012034.outbound.protection.outlook.com [40.107.209.34])
+	by m0384305.ppops.net (PPS) with ESMTPS id 4gtcbnp2xk-2
 	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Mon, 21 Sep 2026 05:10:13 -0500 (CDT)
+	Mon, 21 Sep 2026 06:22:11 -0500 (CDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=oSAxwE2GGjI8213y8Y8/HQfIHrn1YKrFHT8+VyWJRcBylYu4XdUQP4m7Fx6rSfoQTIHpAmfW4ca1K63Ex73s2XK2ZTTOFiAGjLWWi/Yp6kCXa6uKiHZT4VGi+TgsQB76UJuVSp+a6tCXk2S+79YL1hJp/O3YAsaWwft0/cC8pr4JnK9aT4hWu1Hj31QM7MNiSw/D5k2FUZSPifVyo6btdt0DnDap2z1jA0CYLkfeFosoTkQ6N98Pue36/5S1DvzA+3ANp8AbeH+ytEv7qgHwim3oMTxtrrgcKLHHqIrnQuBqPji8XT/wl2vmslvVwX6zXG99HDw+qFQIcC7Icb5DXQ==
+ b=goe3xP0/TNqwg3iB0TKMXMmpH1K2mbW1Gh5dWPr1bRQ2BCeqwNj8uAaGkVa0bDFNOjuO8k+tNi/ccVQCzPkPxOpuxM6/uekkES3D75bgqX7JO/F0v5tHvV/S3LJjApEC9snDD70Cs0WCkmDP/ca+4dQwKzEfxlsy0hWxct60RM1vkvtv7JmxB/iGDZHLpAja9agdYhFaAzrNQ++rvfMJjVl6x0LtkqSw2Z9B1on+tZF34z0OYngRY4okF4X8zMKHpPqcFY4EZhI1p9tr5ozdp3frxVBhOcRHj8mpZGTfxQhumvTpn1lgPoCSAagqjurIEZJepZzD0uBuRo69thkIxw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vQhFS+7nUzU/SYUQ4RyjWlG/MLsoj3wi6dIM9Pmxaas=;
- b=I5RJmwpb4RHd2aHPwTLj5c24R+TBdK5mVFiBLvYG063EAhVE2hw6TwEdfTUkfHM3RfEP/maCQAVmu0NQeOLppgUc4tX9ct6GW2MD16LgTFlV6vigCCtFrI+WRT9p9Vpct1tCM8RKVJk6OR5IxXm1YP1PHe2gzKEmYlgRN5QOO2Bz5+DSjtNGOrFI1i1Pa7Ep1dpoZbD1MQfY1mSS0JGXEFR3R7foikaqElSF+CA32/ykR8Y+WEeba1jBEuO/jspGUXn2MhIKSOenFz5l4xtSL1E3L3h/bLZw4eDixRqH2jjlNolR9LUJp/blie/uPsnMIAiSvrlyB1l8PI/rLPjqIQ==
+ bh=2nKFF44/VHxdb0bi3G/euatML3Y7aet/Oa0ERJnlurI=;
+ b=itptCy5NWIDcZiSeJDJU7kE4pvmu+s4OQZFelRJja+ltIv+Mv+IlHHoTt0m6vCd5DP6Ad3ZptDAgj5ytmp6uSMrLBuWGyWCZ/f9Ca2FE9TX91OYoofv/cpkgA/8U1pXcylKG3EfBnlm1yApxusbzjXLmFW8tjMBSmPMOSXqtjRWirdSQpzmSUAVNPpYGfRddoSC0As7gHbUV3beKsdez8yWMDXAKaZayGb2+wpMYHIAJLKKCiqqkOOMNQAAWvko32gY2H6MkYhpknI/qzGVMdqNuJNvAsSceluvCUUCabkb4xa4TUyz/Rj/Omc/xlchYg823DAI/VpeEwLkrQDAtFw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  198.47.21.195) smtp.rcpttodomain=amd.com smtp.mailfrom=ti.com; dmarc=pass
  (p=quarantine sp=none pct=100) action=none header.from=ti.com; dkim=none
  (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vQhFS+7nUzU/SYUQ4RyjWlG/MLsoj3wi6dIM9Pmxaas=;
- b=LQw/5ePAuOvUT9tE42R/0N+tS0Hi/XANYtWxeV6pGlnc1ayTyB46p1yv2VaQbFNon2r3vmqX8+e8chm4fPcMjKikYe25+/HpKJsK7pvtm9rwwcCLN5+CRcvGqtX1bq1J7UaWMPR10zTNj3TXseU+Nt/GjH5IjvFEoGNHblnUr5Q=
-Received: from BY5PR04CA0030.namprd04.prod.outlook.com (2603:10b6:a03:1d0::40)
- by MN6PR10MB8165.namprd10.prod.outlook.com (2603:10b6:208:4fc::20) with
+ bh=2nKFF44/VHxdb0bi3G/euatML3Y7aet/Oa0ERJnlurI=;
+ b=RK8mTXQu5Bf8JT5ixxzG/ErI9B9emNU2Z/G9CCEBmcmgu0gkk96bkN9hJyozh/oDR4HTcroXtHi3I9f3G1uH53vbdwAH5H2XKB10yynJViY8nGl5f7q7JZhqxaW7oHmFIPrTmvYRJeN3HQrXxBQfPCKE0eZ0uG9alAQCMuq4SI4=
+Received: from SJ0PR03CA0112.namprd03.prod.outlook.com (2603:10b6:a03:333::27)
+ by PH3PPFBA17DA552.namprd10.prod.outlook.com (2603:10b6:518:1::7c3) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.451.13; Mon, 21 Sep
- 2026 10:10:06 +0000
-Received: from SJ5PEPF00000208.namprd05.prod.outlook.com
- (2603:10b6:a03:1d0:cafe::31) by BY5PR04CA0030.outlook.office365.com
- (2603:10b6:a03:1d0::40) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.428.16 via Frontend Transport; Mon,
- 21 Sep 2026 10:10:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.195)
- smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
- action=none header.from=ti.com;
+ 2026 11:20:13 +0000
+Received: from SJ1PEPF000023D3.namprd21.prod.outlook.com
+ (2603:10b6:a03:333:cafe::92) by SJ0PR03CA0112.outlook.office365.com
+ (2603:10b6:a03:333::27) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.428.11 via Frontend Transport; Mon,
+ 21 Sep 2026 11:20:13 +0000
+X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
+ is 198.47.21.195) smtp.mailfrom=ti.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=ti.com;
 Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
  198.47.21.195 as permitted sender) receiver=protection.outlook.com;
  client-ip=198.47.21.195; helo=flwvzet201.ext.ti.com; pr=C
 Received: from flwvzet201.ext.ti.com (198.47.21.195) by
- SJ5PEPF00000208.mail.protection.outlook.com (10.167.244.41) with Microsoft
+ SJ1PEPF000023D3.mail.protection.outlook.com (10.167.244.68) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.451.8 via Frontend Transport; Mon, 21 Sep 2026 10:10:04 +0000
-Received: from DFLE214.ent.ti.com (10.64.6.72) by flwvzet201.ext.ti.com
+ 15.21.451.0 via Frontend Transport; Mon, 21 Sep 2026 11:20:11 +0000
+Received: from DFLE208.ent.ti.com (10.64.6.66) by flwvzet201.ext.ti.com
  (10.248.192.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Mon, 21 Sep
- 2026 05:09:21 -0500
-Received: from DFLE200.ent.ti.com (10.64.6.58) by DFLE214.ent.ti.com
- (10.64.6.72) with Microsoft SMTP Server (version=TLS1_2,
+ 2026 06:19:39 -0500
+Received: from DFLE213.ent.ti.com (10.64.6.71) by DFLE208.ent.ti.com
+ (10.64.6.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Mon, 21 Sep
- 2026 05:09:21 -0500
-Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DFLE200.ent.ti.com
- (10.64.6.58) with Microsoft SMTP Server (version=TLS1_2,
+ 2026 06:19:39 -0500
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE213.ent.ti.com
+ (10.64.6.71) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45 via Frontend
- Transport; Mon, 21 Sep 2026 05:09:21 -0500
+ Transport; Mon, 21 Sep 2026 06:19:39 -0500
 Received: from LAPTOP-70RJ5B8Q ([10.250.165.249])
-	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 68LA9CvV2751537;
-	Mon, 21 Sep 2026 05:09:13 -0500
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 68LBJXnp1945608;
+	Mon, 21 Sep 2026 06:19:34 -0500
 From: Baojun Xu <baojun.xu@ti.com>
 To: <broonie@kernel.org>
 CC: <tiwai@suse.de>, <andriy.shevchenko@linux.intel.com>,
@@ -145,85 +144,86 @@ CC: <tiwai@suse.de>, <andriy.shevchenko@linux.intel.com>,
         <k-yi@ti.com>, <henry.lo@ti.com>, <robinchen@ti.com>,
         <niranjan.hy@ti.com>, <pin-hao.huang@hp.com>,
         <Syed.SabaKareem@amd.com>
-Subject: [PATCH v6] ASoC: tas2783-sdw: add firmware download status check
-Date: Mon, 21 Sep 2026 18:09:09 +0800
-Message-ID: <20260921100909.986-1-baojun.xu@ti.com>
+Subject: [PATCH v7] ASoC: tas2783-sdw: add firmware download status check
+Date: Mon, 21 Sep 2026 19:19:30 +0800
+Message-ID: <20260921111930.1040-1-baojun.xu@ti.com>
 X-Mailer: git-send-email 2.55.0.windows.3
 MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ5PEPF00000208:EE_|MN6PR10MB8165:EE_
-X-MS-Office365-Filtering-Correlation-Id: c017159a-2e16-47a3-0a95-08df17c881d0
+X-MS-TrafficTypeDiagnostic: SJ1PEPF000023D3:EE_|PH3PPFBA17DA552:EE_
+X-MS-Office365-Filtering-Correlation-Id: 774bce24-1cac-43dc-c9b9-08df17d24d63
 X-LD-Processed: e5b49634-450b-4709-8abb-1e2b19b982b7,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
- BCL:0;ARA:13230040|23010399003|82310400026|36860700016|1800799024|376014|10067099003|56012099006|6133799003|3023799007|18002099003;
+ BCL:0;ARA:13230040|82310400026|1800799024|36860700016|376014|23010399003|6133799003|18002099003|3023799007|10067099003|56012099006;
 X-Microsoft-Antispam-Message-Info: 
- Fwr9GvpZ0JJZlEkC1bufJqKIhD01o3d1jXc1VEimO/THdL0vGiHMlJ3drODND5AoD0LILzrS/cvCraDS3oWGzECMpEEBzxjOnsx3+x6qjhGhjGUzWtrjEWavO7nwHqqC/6Dm+rB2GfUhF4OlyvM87UOFrrl43dEp3gDe178IeFysX1sNGXHcVuU0SMPhomoqMXWmuolqP9H0X5zpmW6SNifgpjKYt+yCmFjBhaSZR9LYqtqbu9prk8dJ9UfvOKYdpKECLF3YLEwgiEK1wFLAlMCJcHEFCBKleGr3Irwg6jjSU77ecc7Dotv6vXgnnN3Gw47aO8UNzATi80CwLcBH6cQgn0v9nGLhFcX9KUjpRUKVphk22XSMrzly3LkslSuCJXmIM1SqZAt6YveET1mKHJ5BU8+v9SK/sEd9Tcus1tE0JUAm9tkS3E53JWxJlSrfInfOdhLE5Ey4V0nVxuA85K3fbUe4tZbsHuGu5ZfOkkrF/s6t19zNEMwqR80yDFt9+Ju4x6UySInnQ/x0hNJb8WEweFXXhaES3EGX2vRxSFMeSuNCmVtuHD4z+EbHpd6Dk3iUHKKjhgaIdNp0u/t8LFPwbwc/h9R/q9nVxaVH/UeO2N9lGAtbWMNweDsvARjUPgUebBVT/gHbQlGcSER8HyBExKbE49xsV6ga6wNH3j7ubbyVhX7SlAwYwHY2yMGFdroWU/MXMgDsk0PkWcUY1w==
+ ig8T0XoqO/h9bXX+N7gCNjE/SScr9j5JTH7UOl9ct+A74ZDJmOx+BJtEI7QKlgiUmHJIqrUzGKiTeOiCzvrr+OJGYQ8+XYw837eDztvU/tP/TpNm58azwx6nEbVEogOhbB+rfMauaHJVTLPI5QcOIVBQ6kW+uX7vM1tSTSuWkTIlJrTvuUHAVF9jn6OOV8JrL989c/0TF2/Yk6WlXyjeGiPo2lzEYun0ptnVrp75y/hXK50614jcfOmtNJP/LbrAQK1iPZjpp/6u97RDDv/3I9kO7W0s5JlsaA1Wkr44TG7IiV7eX4GE3ArMYCVYMwsGBcZlHQvYz9JYi4acExu/54LiILZy5urqMhPfV/uAtXm2cW7HPuE5VWl8iprd6KK4sX1tRYAG0uXUUeZoBw3Y5Q9x6DrskLrbBRrlOV8M5JCgC/rA4uLSgfit64YPJgTTeqXRpJfVKa2hgoSAHH1k/hXJvOCt1iag9IrjkJLGwJuFj/oMfSwS7STqJ+jMAXl9+O7HSiyOAysFPly4yVla5FOB51y+wTSnbCm6HKELZFlgKmxtEZhH30J7BH3CiCiDb7dCkEjG0TGr3j5tpwM6byaXQhTSDBaE9PAMzaVS1RXA3Jxzx71U1ZfxfAdfWRbzn/kB1sqcpn1lU4uKQzWS2ndX2KqwZMt+0SPoCuQ4ieha3UqcdUH/l4w8pJuTnF/Soi8v2xyjiIeFWW3hlAzAJQ==
 X-Forefront-Antispam-Report: 
- CIP:198.47.21.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet201.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(23010399003)(82310400026)(36860700016)(1800799024)(376014)(10067099003)(56012099006)(6133799003)(3023799007)(18002099003);DIR:OUT;SFP:1101;
+ CIP:198.47.21.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet201.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(36860700016)(376014)(23010399003)(6133799003)(18002099003)(3023799007)(10067099003)(56012099006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
- Pi7jg2EGbaN0H5D/aytR3L53MBdmGQ4b4g+fI+4kjHw3FRLwSZ9O6n4pljY107kW7KEFxm2WFZEU0rtworBvspBaj2UREGy1ZIuI7sj57YG0W61NUZyWFH2quVz4BM3Je5zLRtJ5CeiMixDlswQ71E2p5DNiUy8KVRSGPlgOs6gsghKaP6HDAnrAAP1FLr0TplIxEoBIqrVBfZee5zsXVZI5TlwrPW4A/1XLg30PIIDxiZLkJeaKW8WHzPCWd4XUQUADoKqAhdJvpzIVbhO0Fo44yd7Hlz1pipw7a9ztqL9ZKkWOlI2e01sejAEkqNYcH8frdauoy0pZSo19wpgKsl14ZtXsXDmr9Kw/5HbyxX8pLKklCKBCrPtf2CIyJ/AQLYOeiFNPJw6Jk45mphPf/uBduReiWTxLh0R17wonEJyNUIZM+o/5bpvdTZJuj//6
+ hJ4/vkMSXKKXN8z/fLT8n4pyRfzwQR4RUfrBgCTFr3yOZjtUTg7alObnyAnEv0rIDseGQT+7NwWzj4TagvzBwc5am6KmwXhI5TPtAR9NhINQf08cBIkA6xpny9xvKfCWNprIydvqH31JGkO1LpyW+UJoZ95lubQUgV7gMREG1QWMpsywLcxzuiXXDlPfACtNsKaMXTEquD8/75+mhPpiYVBG5Co5blAtnGPETI2FUFNjkPS5xHs+Zq9yvO7+3tVKrLS8pYuFjwSRiEfTQJ6TZli7xOfJmklsu/qHpDsTncult+buIGLi1YiDuCUKqdU/9Wk1/smJM2c+BM071ICJ1tF4dq4wehSKGgCdNnr2/vIjNANUkZ1ehsoCjtxIi09YDrOBzr3qwkf7JSWIogb5wbwj5Kb4zgWdN2oFoUExNWfxmikWmJ1AfkOnpvKy2LXm
 X-Exchange-RoutingPolicyChecked: 
-	PXnzmxROaXd0ArJTAGJzsVcakAHBl6PRglBekAy83j94GOqEjueoweja+SnxPF7jRDGfiD1LKlQHdvH9yjeEVRh9RmZK6yJ6MvMOIHKXznE4NCA4GFaR7elwd0ARiYYc10BHEKo5fUfndM0GoJd2ppaY37e0kSWnjSWwNn5wUt4YuWVwru4zxzIQXmhe5lKubn3VWETt98qA6My76UUPghOtDixy2zN7y83vylFsjNS8zxuoPMson5YTNmtZG+pPALfy2SV37KxMMM7NhkvIAGLZCag5scEcds+c1ALIlsZnlm2l3Q8BI1gmx9mcZMQQZsuxQi1aA1FL38VDqC3LfA==
+	Tj+zULaSFC8oIqpdfeUDhJub0aBtR1t4AFNNtClLAhWatgEd2tz/C6PsFf9k9vTKMt+v2q1ynO0SlMo5sMWO+DSHROlekT8yCN14brI0BPm0f3KBEGq7CVlLeGimgzr5rtTtNGtf1wXb1zRgABiJONU2bDatUJ5eACtA1iGSogNUAZmAIkhelwchr3TEhWgHupWAqzFzaR9x0hfKjq2DEc4f17n4Zc/YruklWWYNiIimRDSHA/uStMRiB0PR654SelsoBmiwzGksfJ/VwfOVzjL0ZbzAC8ICx6SSgD6amDi3eZ7hTM9R6LkEv9+ioqjZkOl8Z83t4xDphPsa1pQ5LA==
 X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2026 10:10:04.7381
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2026 11:20:11.7484
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- c017159a-2e16-47a3-0a95-08df17c881d0
+ 774bce24-1cac-43dc-c9b9-08df17d24d63
 X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
  TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.195];Helo=[flwvzet201.ext.ti.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
- SJ5PEPF00000208.namprd05.prod.outlook.com
+ SJ1PEPF000023D3.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR10MB8165
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTIxMDE0NyBTYWx0ZWRfXwZLepCsTnElQ
- GDyWqvUl6nn4sVJJyRldd2eTHcNUixFM2AWyCua+cAjaDDt6UDJKAkz5sYSZTxKeajVpo7kLFnI
- Xl2ixeb6IpXC96IAEFljKo4eR49T/k3iQPwfAvNNA8/XFKRpFtr1KgKwJhslGadVlBZoqKajOjN
- 0RpQkcDN1TPRVjLEYSs389K5Tl3dE+SZuevLjxpKgf3R+sXAS8YR0MppuXZ1Qe24BDQ3YoaJ6KO
- ja4KWrb3ay/k0PbbrE7PXWFHuxxiMjmV0vJ+wKDEDe+/mv0slWowdNzVILyS2BomVzC9H3lOZCL
- qUCWz3z6Xo7yMZyaz5ZLRYkpH3kkCEZNeug/AGkSxlvd4n8W1jgzPS3Z9yZUOaqE1cdEUwqWMIx
- 2eWN31BfCKrUUKVuhM4G8fYqS1RlOfKPnQlaFHWNJACgU/JC437OvAX5oOWQWqzJJLJo+3Ok4Gy
- nTkS2pLn8iKsj/RzMng==
-X-Proofpoint-Spam-Info: AW1haW4tMjYwOTIxMDE0NyBTYWx0ZWRfXzx54gq3XzOm7
- S+4OxyfGf/kIYxSdA40ZpXwYMTKxPTHHaYWmYdEgblpBVbHHx6lScg2vV5knsmYItrf0eQH2VAI
- p/7Rrw9TWF7UUb9DNiU2T9a7e3B76HA=
-X-Proofpoint-GUID: 2vQJuiciaKk1NV35yHjgkOxVkeesz1_B
-X-Proofpoint-ORIG-GUID: 2vQJuiciaKk1NV35yHjgkOxVkeesz1_B
-X-Authority-Analysis: v=2.4 cv=X6rHu2Te c=1 sm=1 tr=0 ts=6ab10285 cx=c_pps
- a=cLI4zmX3yytpP84iY95SKA==:117 a=tJyPKKxUohctrY4NYmUjkA==:17
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH3PPFBA17DA552
+X-Proofpoint-Spam-Info: AW1haW4tMjYwOTIxMDE2NCBTYWx0ZWRfXzhmTPUyy9lT9
+ XLx5myNvw62br8QXE40hSPmeMEqswlvwkB7mvE3ZpIf9vGmCVVJ9PzuC0d7AKkQZ3V8uJitmqND
+ OYYjvbFoQOlBy7yTOiG5bof4MMTqQb8=
+X-Authority-Analysis: v=2.4 cv=P7CvFSAu c=1 sm=1 tr=0 ts=6ab11363 cx=c_pps
+ a=p5SqRtR3VJW1kgksvcX22A==:117 a=tJyPKKxUohctrY4NYmUjkA==:17
  a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=IkcTkHD0fZMA:10 a=VdqzKS8jKosA:10
  a=V5UXEbMT0ywA:10 a=VkNPw1HP01LnGYTKEx00:22 a=Z8NIEmU8O1QQgoT56wFK:22
- a=fPAWb5peG099m5CrUpKH:22 a=sozttTNsAAAA:8 a=xTpt9nq8K6IhJSBj_EAA:9
+ a=taLDd7a_hP9WKsMzeGRc:22 a=sozttTNsAAAA:8 a=jCSrLPWn5dSP2qGiRh8A:9
  a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTIxMDE2NCBTYWx0ZWRfX3j0lZGm35pkJ
+ as94cXQp5vE+eaNiQC+vZk6ZBszNY88TXImU/23q7UcGTUZpt5lWjTSZ2aughS5mlCtQ0WNRKvE
+ jDTT84YmRgbMcf4ab7VRF2zokdpcTrNMkAFQyoqGCwJLsq0rjHsU2xLbkpleJCXf41gpihJVa0g
+ jdAAzKS1ikgaonQX7/PMoSn3W/GiwdZr8vC/qmZnk8OfbJFkEJtgp/ef+3FhEFYFJnFW+hdDjr+
+ cCn2IjrW0wxvTdd9ZZVDQDh2VXT6/PWpZjzwdhaXKbFovL2+9kJWJeYRe9pc3VDa4i9hSOxDCDx
+ bxrmaRECWceOrDgquetbkAvPIgcEpsii9HGAU+MOANtfb7Nf85O54cTZQPrBFGJGbdMB2NvSAcz
+ QAuZkY9DcM30WRgJKnWwrpEBWFPPWlTCy8o6ztApwJ1Em2bRjeVqFFeMq6pamQyiJiEvuZsyk1u
+ 2/DfgjtXP3gsUMpszyQ==
+X-Proofpoint-GUID: AjNvb7s_ZEV-aK9Q-oAt1nYQ7RHcn6Mv
+X-Proofpoint-ORIG-GUID: AjNvb7s_ZEV-aK9Q-oAt1nYQ7RHcn6Mv
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-09-21_03,2026-09-16_02,2025-10-01_01
+ definitions=2026-09-21_04,2026-09-16_02,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 impostorscore=0 malwarescore=0 clxscore=1015 bulkscore=0
- suspectscore=0 phishscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2609040000 definitions=main-2609210147
+ clxscore=1015 malwarescore=0 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 phishscore=0 suspectscore=0 adultscore=0 spamscore=0
+ bulkscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.22.0-2609040000
+ definitions=main-2609210164
 X-MailFrom: baojun.xu@ti.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: RTU765EXOEKQPCQYNYLDMOLCY3Q6KBCZ
-X-Message-ID-Hash: RTU765EXOEKQPCQYNYLDMOLCY3Q6KBCZ
-X-Mailman-Approved-At: Tue, 29 Sep 2026 19:04:42 +0000
+Message-ID-Hash: YGMWOBAWGI5OXHVHTD52XVKVKIM2T3OC
+X-Message-ID-Hash: YGMWOBAWGI5OXHVHTD52XVKVKIM2T3OC
+X-Mailman-Approved-At: Tue, 29 Sep 2026 19:04:43 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RTU765EXOEKQPCQYNYLDMOLCY3Q6KBCZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YGMWOBAWGI5OXHVHTD52XVKVKIM2T3OC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -232,15 +232,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Currently, the firmware download is unnecessarily triggered on every
-system resume from suspend, causing significant wake-up latency. However,
-this step is redundant if the AMP remains powered on.
-Furthermore, PRAM access is skipped if the firmware version read from
-registers matches the expected value, indicating that the memory content
-was retained across the AMP reset.
+Currently, firmware download during system resume from suspend introduces
+significant wake-up latency. However, since PRAM content in the AMP
+persists across resets and is not erased, this step can be optimized.
+By verifying that the firmware version read from registers matches the
+expected value, we can confirm that memory content was retained.
+Consequently, the PRAM download can be skipped, significantly reducing
+resume latency.
 
 Signed-off-by: Baojun Xu <baojun.xu@ti.com>
 ---
+v7:
+ - Update the description about this patch.
+ - Restore PRAM and YRAM in tas2783_sdca_mbq_size to avoid register access
+   error, it will cause download failed without this.
+ - Remove register check for firmware download.
 v6:
 - Exclude PRAM and YRAM from the MBQ register group.
 - Revert changes to usleep_range().
@@ -279,12 +285,12 @@ v2:
  - ‌Set idle_bias_on to 0 to enable low-power mode.
  - Reactivate the AMP after resume.
 ---
- sound/soc/codecs/tas2783-sdw.c | 95 ++++++++++++++++++++--------------
+ sound/soc/codecs/tas2783-sdw.c | 70 ++++++++++++++++++++--------------
  sound/soc/codecs/tas2783.h     |  4 +-
- 2 files changed, 58 insertions(+), 41 deletions(-)
+ 2 files changed, 44 insertions(+), 30 deletions(-)
 
 diff --git a/sound/soc/codecs/tas2783-sdw.c b/sound/soc/codecs/tas2783-sdw.c
-index 85ab3fd83c7b..2f6c7811cd38 100644
+index 85ab3fd83c7b..a57230e01f75 100644
 --- a/sound/soc/codecs/tas2783-sdw.c
 +++ b/sound/soc/codecs/tas2783-sdw.c
 @@ -97,6 +97,7 @@ struct tas2783_prv {
@@ -295,7 +301,7 @@ index 85ab3fd83c7b..2f6c7811cd38 100644
  	/* wq for firmware download */
  	wait_queue_head_t fw_wait;
  	bool fw_dl_task_done;
-@@ -315,8 +316,8 @@ static int tas2783_sdca_mbq_size(struct device *dev, u32 reg)
+@@ -315,8 +316,10 @@ static int tas2783_sdca_mbq_size(struct device *dev, u32 reg)
  	case 0x300 ... 0x340: /* Data port 3. */
  	case 0x400 ... 0x440: /* Data port 4. */
  	case 0x500 ... 0x540: /* Data port 5. */
@@ -303,10 +309,12 @@ index 85ab3fd83c7b..2f6c7811cd38 100644
 -	case 0x807e80 ... 0x807eff: /* Page 253. */
 +	case TASDEV_REG_SDW(0, 0, 0) ... TASDEV_REG_SDW(0x00, 0x01, 0x80):
 +	case TASDEV_REG_SDW(0, 0xfd, 0) ... TASDEV_REG_SDW(0, 0xfd, 0x80):
++	case PRAM_ADDR_START ... PRAM_ADDR_END:
++	case YRAM_ADDR_START ... YRAM_ADDR_END:
  	case SDW_SDCA_CTL(1, TAS2783_SDCA_ENT_UDMPU23,
  			  TAS2783_SDCA_CTL_UDMPU_CLUSTER, 0):
  	case SDW_SDCA_CTL(1, TAS2783_SDCA_ENT_FU21, TAS2783_SDCA_CTL_FU_MUTE,
-@@ -517,7 +518,7 @@ static const struct regmap_config tas_regmap = {
+@@ -517,7 +520,7 @@ static const struct regmap_config tas_regmap = {
  	.volatile_reg = tas2783_volatile_register,
  	.reg_defaults = tas2783_reg_default,
  	.num_reg_defaults = ARRAY_SIZE(tas2783_reg_default),
@@ -315,7 +323,7 @@ index 85ab3fd83c7b..2f6c7811cd38 100644
  	.cache_type = REGCACHE_MAPLE,
  	.use_single_read = true,
  	.use_single_write = true,
-@@ -745,6 +746,7 @@ static void tas2783_fw_ready(const struct firmware *fmw, void *context)
+@@ -745,6 +748,7 @@ static void tas2783_fw_ready(const struct firmware *fmw, void *context)
  	const u8 *buf = NULL;
  	s32  img_sz, ret = 0, cur_file = 0;
  	s32 offset = 0;
@@ -323,7 +331,7 @@ index 85ab3fd83c7b..2f6c7811cd38 100644
  
  	struct tas_fw_hdr *hdr __free(kfree) = kzalloc_obj(*hdr);
  	struct tas_fw_file *file __free(kfree) = kzalloc_obj(*file);
-@@ -786,6 +788,11 @@ static void tas2783_fw_ready(const struct firmware *fmw, void *context)
+@@ -786,6 +790,11 @@ static void tas2783_fw_ready(const struct firmware *fmw, void *context)
  	}
  
  	mutex_lock(&tas_dev->pde_lock);
@@ -335,7 +343,7 @@ index 85ab3fd83c7b..2f6c7811cd38 100644
  	while (offset < (img_sz - FW_FL_HDR)) {
  		offset += tas_fw_get_next_file(&buf[offset], file);
  		dev_dbg(tas_dev->dev,
-@@ -794,6 +801,13 @@ static void tas2783_fw_ready(const struct firmware *fmw, void *context)
+@@ -794,6 +803,13 @@ static void tas2783_fw_ready(const struct firmware *fmw, void *context)
  			file->version, file->length,
  			file->dest_addr, file->fw_data);
  
@@ -349,7 +357,7 @@ index 85ab3fd83c7b..2f6c7811cd38 100644
  		ret = sdw_nwrite_no_pm(tas_dev->sdw_peripheral,
  				       file->dest_addr,
  				       file->length,
-@@ -801,17 +815,34 @@ static void tas2783_fw_ready(const struct firmware *fmw, void *context)
+@@ -801,17 +817,34 @@ static void tas2783_fw_ready(const struct firmware *fmw, void *context)
  		if (ret < 0) {
  			dev_err(tas_dev->dev,
  				"FW download failed: %d", ret);
@@ -385,7 +393,7 @@ index 85ab3fd83c7b..2f6c7811cd38 100644
  	}
  
  out:
-@@ -962,30 +993,6 @@ static s32 tas_sdw_hw_params(struct snd_pcm_substream *substream,
+@@ -962,30 +995,6 @@ static s32 tas_sdw_hw_params(struct snd_pcm_substream *substream,
  	snd_sdw_params_to_config(substream, params,
  				 &stream_config, &port_config);
  
@@ -416,7 +424,7 @@ index 85ab3fd83c7b..2f6c7811cd38 100644
  	/* port 1 for playback */
  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
  		port_config.num = 1;
-@@ -1074,7 +1081,7 @@ static const struct snd_soc_component_driver soc_codec_driver_tasdevice = {
+@@ -1074,7 +1083,7 @@ static const struct snd_soc_component_driver soc_codec_driver_tasdevice = {
  	.num_dapm_widgets = ARRAY_SIZE(tas_dapm_widgets),
  	.dapm_routes = tas_audio_map,
  	.num_dapm_routes = ARRAY_SIZE(tas_audio_map),
@@ -425,49 +433,7 @@ index 85ab3fd83c7b..2f6c7811cd38 100644
  	.endianness = 1,
  };
  
-@@ -1207,25 +1214,30 @@ static s32 tas_fw_load(struct tas2783_prv *tas_dev, struct sdw_slave *slave)
- static s32 tas_io_init(struct device *dev, struct sdw_slave *slave)
- {
- 	struct tas2783_prv *tas_dev = dev_get_drvdata(dev);
-+	unsigned int val;
- 	s32 ret;
- 
- 	if (tas_dev->hw_init)
- 		return 0;
- 
--	tas_dev->fw_dl_success = false;
-+	ret = regmap_read(tas_dev->regmap, TASDEV_REG_SDW(0, 0, 7), &val);
- 
--	ret = regmap_write(tas_dev->regmap, TAS2783_SW_RESET, 0x1);
--	if (ret) {
--		dev_err(dev, "sw reset failed, err=%d", ret);
--		return ret;
--	}
--	usleep_range(2000, 2200);
-+	/* Check if the AMP is in reset status. */
-+	if (val == 0x20) {
-+		tas_dev->fw_dl_success = false;
- 
--	tas_dev->fw_use_fallback = false;
--	ret = tas_fw_load(tas_dev, slave);
--	if (!ret && tas_dev->fw_use_fallback)
--		ret = tas_fw_load(tas_dev, slave);
-+		ret = regmap_write(tas_dev->regmap, TAS2783_SW_RESET, 0x1);
-+		if (ret) {
-+			dev_err(dev, "sw reset failed, err=%d", ret);
-+			return ret;
-+		}
-+		fsleep(2200);
- 
-+		tas_dev->fw_use_fallback = false;
-+		ret = tas_fw_load(tas_dev, slave);
-+		if (!ret && tas_dev->fw_use_fallback)
-+			ret = tas_fw_load(tas_dev, slave);
-+	}
- 	if (!ret) {
- 		if (tas_dev->sa_func_data)
- 			ret = sdca_regmap_write_init(dev, tas_dev->regmap,
-@@ -1234,6 +1246,8 @@ static s32 tas_io_init(struct device *dev, struct sdw_slave *slave)
+@@ -1234,6 +1243,8 @@ static s32 tas_io_init(struct device *dev, struct sdw_slave *slave)
  			ret = regmap_multi_reg_write(tas_dev->regmap, tas2783_init_seq,
  						     ARRAY_SIZE(tas2783_init_seq));
  
@@ -476,7 +442,7 @@ index 85ab3fd83c7b..2f6c7811cd38 100644
  		if (ret)
  			dev_err(tas_dev->dev,
  				"init writes failed, err=%d", ret);
-@@ -1413,6 +1427,7 @@ static s32 tas_sdw_probe(struct sdw_slave *peripheral,
+@@ -1413,6 +1424,7 @@ static s32 tas_sdw_probe(struct sdw_slave *peripheral,
  	tas_dev->dev = dev;
  	tas_dev->sdw_peripheral = peripheral;
  	tas_dev->hw_init = false;
