@@ -4,99 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A624C982E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2026 08:45:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90F81C982DE
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2026 09:11:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C4386601F9;
-	Mon, 21 Sep 2026 10:45:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4386601F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28C5A60201;
+	Mon, 21 Sep 2026 11:11:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28C5A60201
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1789980351;
-	bh=zLNqymAThwirWrpKPzjL47ACUIlYHrddj+w+YqFsR/g=;
+	s=default; t=1789981915;
+	bh=+VcB+ttMt1E9WO6tUcLJBeyW9ptO/U+QQgi2fbcNjGw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mmwFCpQRSSi+s/rgc8IBpsFNFZmaHDBBnvp33PBMuEO2i0UumJrU3c2nV+N0yaT15
-	 58RihhMdq+IKtqzdqxal29Vvac/0RUnom8HO2Q3KZRqTq5ruawfPg+rMM/Y+oRjE5b
-	 HTKivOzVzmv48wydry0UfrgmmBOKWCIdF46FuCBs=
+	b=M/4750IgGmitjcwykLK+yk5a5be4PgwmvsKeDPmGtx7Vnfml+TYGboUAxa96stcf+
+	 E9FDZBBomU2FSBPpNS69BBrYYrkwryKchUyhJY6y0ptBxcR2Anpdx2DB+763Nm3y/N
+	 vwS0wT6xv6LbxeaU4DEWGX5uAoeARSY6jpbDrxtE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8CD6DF805F2; Mon, 21 Sep 2026 10:45:17 +0200 (CEST)
+	id 84466F805FF; Mon, 21 Sep 2026 11:11:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A251CF80600;
-	Mon, 21 Sep 2026 10:45:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D6435F80600;
+	Mon, 21 Sep 2026 11:11:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EBEFFF804F3; Mon, 21 Sep 2026 10:45:10 +0200 (CEST)
+	id E6C72F804F3; Mon, 21 Sep 2026 11:11:08 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1789980309;
-	b=cLaicigMOHV/36BrMlt71HcxZhijdtTZcMJqACXx2dahrp5kQUohMOAvVYYXcyVYxigx
-	 pnKvoCtRW2O7tpJFtteRlyQFg5xRfBaSc4rSlR/AYJYufDKzt0q4ueJxwqDGdltmGKfhX
-	 7Ab9EqUM8Y4+ZwQB/D7XQwfhjmkzbsmI/fQ5crx958kmliKt2cZB+TIPILW+rQM8lkP8m
-	 MLcY4Ddf8IB/5JxcIG7pVP/6IyCLaqwLldwewCclEJXX//7C7cjVZBpv+hkEDrDOqgi43
-	 DViezPHohyppLqhEnQ2U494/2w1J1x/qjzF2swMJalZcU+nOmyNx8fx9zQmwCDzr9lw==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1789981868;
+	b=WvR+l5HQZ4NiS5ZzPWDWhhmaYGPnp+lzfIlusiiXOe/qBzG1TRwaFdqJzJoMibWHHhQN
+	 7TTlAx1aYODIBIhoSMtC/ie/6E1mZci4yBtKo4NUOS5oJ9OjJ6etOBH5Ab9P6YZTWjUNo
+	 e0SGNrdrb41f6zfRy8agkB0Ydf9eOwvo3ywpms/BuAaVFdbCl8HfeYD7F/6OMaNVTcoCA
+	 mh5UuVvXbWIfI1t64gh0Rh6C9qUrKn00ostYRMmWQHt4wPuXJotZILVu7yiKTTK1joLEO
+	 VF80EYCh+5ZpvPp/Cs1+Ed4zxDHXI5wwfSewNtz+Zd3x05v4VJvixVDYoE1AAI27c9w==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1789980309;
+	c=relaxed/simple; t=1789981868;
 	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
-	bh=zLNqymAThwirWrpKPzjL47ACUIlYHrddj+w+YqFsR/g=;
-	b=XMzpR+Hjh5t/tt/0Tq0rKPv18DfDa5058l8EmI6Rz8bcLpUZUPPbTNVD7Q3vutc8/A3g
-	 ssXno5+YCnG7uDM1C7KcK9Nad2X1V0cEo+MU8+hIwTgPRtgRdXU+XUPsYwdl62A1juRER
-	 O/LVDCSyFpwQDYc3H6pyoPm+cJSBvVbgdKy9Zzo7OYxEtzrKM6G6I6Pxb+ubl9aEfLxF3
-	 6AXkoUMRXipBQ42/uN1L3fXopU7yTEMZxTgiCUNKNxeHhpYG07OMugJdAuJMrzpKFSjGZ
-	 mUhmzI1b4nt3E1unYrbU0qDt/elq4zTxBd8vs6491BxH90BP/DUqnJqtCkTLDK+SrmQ==
+	bh=+VcB+ttMt1E9WO6tUcLJBeyW9ptO/U+QQgi2fbcNjGw=;
+	b=VbwBIRJpVq+065eCD0avlVPcynYOX8dyjV14/bsXYtpMCqFW1wx+YVA0MugwDOVAcBxK
+	 nmskzLeI7cpyepl6sWOP2OJKvpldINDacxPWQMXl0m1BP1gg394cQQ89nxar5+BOhkyOe
+	 81ydnwB2BxQqX4Wn0D1UR7Jv+xdoUf0dWKh+q2CA/xxxBt7nmbl2VFkI+yvXeLbly0zFz
+	 Uhz5QDlk+azSe7j9lHnutMlNAPBxKbbWWidRrkO3CMx74pAQ1p7Ee2B/sJkIG6znY82Iy
+	 sLvLHZid3s2T2oeB0+w9rCeytdPDdAYMA9oMXEWxpfYOF+eAUr3NhLkTvuk6ToG6UfA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=PqxNFxws;
+ header.s=k20260515 header.b=PYlEgP8q;
 	arc=none smtp.remote-ip=172.105.4.254
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8BF2CF801F7
-	for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2026 10:45:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BF2CF801F7
+	by alsa1.perex.cz (Postfix) with ESMTPS id E3F61F800FA
+	for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2026 11:11:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3F61F800FA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=PqxNFxws
+ header.s=k20260515 header.b=PYlEgP8q
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 13EB2600C8;
-	Mon, 21 Sep 2026 08:45:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 903D61F000FF;
-	Mon, 21 Sep 2026 08:45:05 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 4F345600C8;
+	Mon, 21 Sep 2026 09:11:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCD0D1F000FF;
+	Mon, 21 Sep 2026 09:11:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789980305;
-	bh=gSNN01wFYBHZnpHxJ+PpJ3sqcFTBsReiFtNxr1PV3i4=;
+	s=k20260515; t=1789981864;
+	bh=4r6J+O27bPN/mF+lHzy1akfGvLRv+kcqQTrsw7MnBbI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=PqxNFxwsJI9qFgkPHnmboduGHAg6kuQJR1GAcVAJFDIC84kvH7d8M/7i7/nrkFZ1s
-	 sHxI8sWisRuOGfyPJzvKetrLE9wf/ZadEaVwEwDGsqBXfZDzKk10bYFY7d6+yQntXE
-	 DpVuFdonE5gzv6iMsKdCIwW2VSyXD+lyp3aF4nor3SBEnXqZBecCNjASXHZhh6QW6P
-	 thtAhMZ2T7Y+PtKzsml+PbKP74PABbJY6PWsWR/M5F3gmp8Ds9+KdRnq1i0zx1qjZx
-	 qeMBNp6dO3bzYq3lAUxlPLccqV0bzPz+5qH/YIZ8ZA0mNqOwp/1UP/VmSm3DGTArF9
-	 8cZDgr2UUyMqg==
+	b=PYlEgP8qdGaPzQWNM0QBtfYnPomuw7eJiIHcH3f8PvIoFnHmRoVuTH/OvRGeMYBsX
+	 pr+6uknZJa/ndpWPwDrCL3gWqJzTyw23/9kU8fzxzdVe9EPndXt+ZeqdkJF2SzO70j
+	 dS5rTlUlo/ODQJ0RsZ3VhWR+EK+ww/NW4SbJup3khTThfaYIg80qsnXSgvqEzZ+mHy
+	 Ye+HFiZHpCnPvJ4JVzEvUV3uxu3ZVQSVvdaICSIw014M5t68O/Uesau2NHaDeXVykf
+	 6MxbMhvuIMgeY8rSHjJva5W63QqOcQVkW916zAI5WHmcmuQMOo/pDP8ybtRYGq2YDg
+	 mPzuRtJOfyi2g==
 Received: by finisterre.sirena.org.uk (Postfix, from userid 1000)
-	id 2712E1AC52F3; Mon, 21 Sep 2026 09:45:02 +0100 (BST)
-Date: Mon, 21 Sep 2026 10:45:02 +0200
+	id A11611AC52F3; Mon, 21 Sep 2026 10:10:53 +0100 (BST)
+Date: Mon, 21 Sep 2026 11:10:53 +0200
 From: Mark Brown <broonie@kernel.org>
-To: Baojun Xu <baojun.xu@ti.com>
-Cc: tiwai@suse.de, andriy.shevchenko@linux.intel.com, 13916275206@139.com,
-	alsa-devel@alsa-project.org, shenghao-ding@ti.com,
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-	k-yi@ti.com, henry.lo@ti.com, robinchen@ti.com, niranjan.hy@ti.com,
-	pin-hao.huang@hp.com, Syed.SabaKareem@amd.com
-Subject: Re: [PATCH v5] ASoC: tas2783-sdw: add firmware download status check
-Message-ID: <arDujlvvKixE6ifp@sirena.co.uk>
-References: <20260921064053.932-1-baojun.xu@ti.com>
+To: jack.yu@realtek.com
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, lars@metafoo.de,
+	flove@realtek.com, oder_chiou@realtek.com, shumingf@realtek.com,
+	derek.fang@realtek.com
+Subject: Re: [PATCH] ASoC: rt1320: make SRAM registers readable to stop being
+ cached
+Message-ID: <arD0nQ4nTCuI2w0f@sirena.co.uk>
+References: <20260921072847.2929865-1-jack.yu@realtek.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="JvYbaSsERt5MoUz5"
+	protocol="application/pgp-signature"; boundary="Y1q6Ifudjp8kQ4ur"
 Content-Disposition: inline
-In-Reply-To: <20260921064053.932-1-baojun.xu@ti.com>
+In-Reply-To: <20260921072847.2929865-1-jack.yu@realtek.com>
 X-Cookie: Too clever is dumb.
-Message-ID-Hash: BTFO4YI2QRB5T7WHR4GDXB5W2SJ2LVAN
-X-Message-ID-Hash: BTFO4YI2QRB5T7WHR4GDXB5W2SJ2LVAN
+Message-ID-Hash: B7TKFZOBQXQBLQKCEEY7TFD35WOKSYZW
+X-Message-ID-Hash: B7TKFZOBQXQBLQKCEEY7TFD35WOKSYZW
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -108,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BTFO4YI2QRB5T7WHR4GDXB5W2SJ2LVAN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B7TKFZOBQXQBLQKCEEY7TFD35WOKSYZW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,165 +116,43 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---JvYbaSsERt5MoUz5
+--Y1q6Ifudjp8kQ4ur
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 21, 2026 at 02:40:53PM +0800, Baojun Xu wrote:
-> Currently, the firmware download is unnecessarily triggered on every
-> system resume from suspend, causing significant wake-up latency. However,
-> this step is redundant if the AMP remains powered on.
-> Furthermore, PRAM access is skipped if the firmware version read from
-> registers matches the expected value, indicating that the memory content
-> was retained across the AMP reset.
+On Mon, Sep 21, 2026 at 03:28:47PM +0800, jack.yu@realtek.com wrote:
+> From: Jack Yu <jack.yu@realtek.com>
+>=20
+> rt1320_volatile_register() lists the SRAM ranges 0x10000000-0x10008fff
+> and 0x1000c000-0x1000dfff as volatile, so they should never be cached.
+> But regmap only honors the volatile flag for a readable register, and
+> these ranges were missing from rt1320_readable_register().
+> They were therefore cached at probe and
+> replayed over SoundWire on every runtime resume, delaying the first
+> PCM open after autosuspend by about a second.
+>=20
+> Add the two ranges to rt1320_readable_register() so the volatile flag
+> takes effect and the SRAM is no longer cached or replayed.
+> The removed lines are already covered by the
+>  new 0x1000c000-0x1000dfff range, so no register loses readability.
 
-> @@ -431,6 +432,8 @@ static int tas2783_sdca_mbq_size(struct device *dev, =
-u32 reg)
-> =20
->  	case SDW_SDCA_CTL(1, TAS2783_SDCA_ENT_XU22, 0x12, 0):
->  	case SDW_SDCA_CTL(1, TAS2783_SDCA_ENT_XU22, 0x13, 0):
-> +	case PRAM_ADDR_START ... PRAM_ADDR_END:
-> +	case YRAM_ADDR_START ... YRAM_ADDR_END:
->  		return 4;
+The RAE loader seems to expect that 0x1000d000-0x1000d7ff is cached, or
+at least it's fiddling with the cache bypass for that range.
 
-Are you sure these are MBQ registers?
-
-> @@ -794,6 +803,13 @@ static void tas2783_fw_ready(const struct firmware *=
-fmw, void *context)
->  			file->version, file->length,
->  			file->dest_addr, file->fw_data);
-> =20
-> +		if (tas_dev->fw_version =3D=3D fw_version &&
-> +		    file->dest_addr >=3D PRAM_ADDR_START &&
-> +		    (file->dest_addr + file->length) <=3D PRAM_ADDR_END) {
-> +			cur_file++;
-> +			dev_dbg(tas_dev->dev, "Ignore PRAM block");
-> +			continue;
-> +		}
->  		ret =3D sdw_nwrite_no_pm(tas_dev->sdw_peripheral,
->  				       file->dest_addr,
->  				       file->length,
-
-This could skip blocks unintentionally if the verison happens to be 0.
-
-> +			 * failed after Power-On.
-> +			 */
-> +			ret =3D sdw_nwrite_no_pm(tas_dev->sdw_peripheral,
-> +					       file->dest_addr,
-> +					       file->length,
-> +					       file->fw_data);
-> +			if (ret < 0) {
-> +				dev_err(tas_dev->dev,
-> +					"FW download failed again: %d", ret);
-> +				break;
-> +			}
-
-This logs an error and gives up on the download...
-
->  	if (cur_file =3D=3D 0) {
->  		dev_err(tas_dev->dev, "fw with no files");
->  		ret =3D -EINVAL;
->  	} else {
->  		tas2783_update_calibdata(tas_dev);
-> +		ret =3D regmap_bulk_read(tas_dev->regmap, TAS2783_FW_VERSION,
-> +					&val, 4);
-> +		tas_dev->fw_version =3D (val[0] << 24) | (val[1] << 16) |
-> +				       (val[2] << 8) | val[3];
-
-=2E..then we do another read and overwrite the return value, potentially
-we might have a successful read.
-
-> @@ -951,7 +984,7 @@ static s32 tas_sdw_hw_params(struct snd_pcm_substream=
- *substream,
->  							TAS2783_SDCA_POW_STATE_ON);
->  			if (!ret)
->  				break;
-> -			usleep_range(2000, 2200);
-> +			fsleep(2200);
->  		} while (retry--);
->  	}
-
-This should be a separate patch.
-
-> @@ -962,30 +995,6 @@ static s32 tas_sdw_hw_params(struct snd_pcm_substrea=
-m *substream,
->  	snd_sdw_params_to_config(substream, params,
->  				 &stream_config, &port_config);
-> =20
-> -	/*
-> -	 * The two mono amps each render one channel of the stereo stream:
-> -	 * snd_sdw_params_to_config() hands every codec the full mask for
-> -	 * playback, which leaves the pair in mirror mode and one channel
-> -	 * unreproduced.  Claim a single channel instead, keyed off the
-> -	 * machine-assigned component prefix rather than the SoundWire
-> -	 * address, which is board-specific: soc_sdw_ti_amp.c names the amps
-> -	 * tas2783-1..4.
-> -	 *
-> -	 * Which side an amp then renders does not follow from the bit that
-> -	 * is set - sdw_compute_slave_ports() advances the payload offset by
-> -	 * the popcount of ch_mask and never looks at which bit it is - but
-> -	 * from the amp's position in the codec order of the DAI link, which
-> -	 * on these boards matches the prefix numbering.
-> -	 */
-> -	if (substream->stream =3D=3D SNDRV_PCM_STREAM_PLAYBACK &&
-> -	    params_channels(params) =3D=3D 2 && component->name_prefix) {
-> -		const char *idx_str =3D strrchr(component->name_prefix, '-');
-> -		unsigned long idx;
-> -
-> -		if (idx_str && !kstrtoul(idx_str + 1, 10, &idx) && idx)
-> -			port_config.ch_mask =3D (idx & 1) ? BIT(0) : BIT(1);
-> -	}
-> -
->  	/* port 1 for playback */
->  	if (substream->stream =3D=3D SNDRV_PCM_STREAM_PLAYBACK)
->  		port_config.num =3D 1;
-
-This looks like a rebasing mistake?
-
-> @@ -1207,25 +1216,30 @@ static s32 tas_fw_load(struct tas2783_prv *tas_de=
-v, struct sdw_slave *slave)
->  static s32 tas_io_init(struct device *dev, struct sdw_slave *slave)
->  {
->  	struct tas2783_prv *tas_dev =3D dev_get_drvdata(dev);
-> +	uint val;
-
-unsigned int.
-
-> +	/* Check if the AMP is in reset status. */
-> +	if (val =3D=3D 0x20) {
-> +		tas_dev->fw_dl_success =3D false;
-> =20
-
-I'm still not seeing where fw_dl_success gets set to true if the
-download was skipped.
-
-> @@ -1437,6 +1454,7 @@ static void tas_sdw_remove(struct sdw_slave *periph=
-eral)
->  	struct tas2783_prv *tas_dev =3D dev_get_drvdata(&peripheral->dev);
-> =20
->  	pm_runtime_disable(tas_dev->dev);
-> +	regmap_write(tas_dev->regmap, TAS2783_SW_RESET, 0x1);
->  	tas_remove(tas_dev);
->  	mutex_destroy(&tas_dev->calib_lock);
->  	mutex_destroy(&tas_dev->pde_lock);
-
-We need to make sure the regmap is not in cache only mode to do that
-reset, or make the register volatile.
-
---JvYbaSsERt5MoUz5
+--Y1q6Ifudjp8kQ4ur
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmqw7o0ACgkQJNaLcl1U
-h9BWuwf/ZP4Hlq461d9WfvrCUJWDiAmvOiWWFKLwgcjaNRfQiYXrnBYiCr7LeIoC
-VuCfSDUk8VeLyvuCZ3WLWC5XtLyIK/W56tnO4I85U2K42duDwIljahVl9TWLywU2
-Glmiz682GMHor1jXHKESoZCAS5cs/lhLqzWzEE/4JOoltbH+LY1qR0U9vRVsowJi
-YHXJ2jv2iEOvMEPs70GOYoovcN0RcWPsb4iyEEClYbml2Up4kCgrl+PsoZIh8yto
-3+ByY81LvxaFAthulFkTbDaVxSYXlcfBlTEtjmoxJWiy9v6+EchG74mODgb31a9c
-K3k331xMh2WgtjxcEfGYPPgm3wcuAQ==
-=HkfS
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmqw9JwACgkQJNaLcl1U
+h9BiVQf/eWnNK4MoVU9KyCwyapVjM9noqQMhiXbi/JXdPAURZtVYPaI8UH+p7Mj9
+g/vWBNqG0QRVwBdL2HWhgTOpvtg4cBgQ5FLmtsirnONyt6BlYh1Mp++zt0smaG/R
+wh53jiXfy7NSUPIa3Yr6Z6IXG/DTQbXVJojEhEgTNAe5YngfH5My6UdA0B/uYcAO
+QRSx1LtTryCM/tXkdF17nysyjEqb82wglrssip4uxeYA8m2ACYpU2tvZdHFYuSJJ
+L18QyKeM9kjyNtBackZSWQQa/O89QdU+/26kRaJApFL+k0mlIe2ZaRN60B1jf2XR
+6/1IUFyzLabBKXBozn3KdHO3kck88w==
+=DWOh
 -----END PGP SIGNATURE-----
 
---JvYbaSsERt5MoUz5--
+--Y1q6Ifudjp8kQ4ur--
