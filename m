@@ -4,119 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 290DECA5FA5
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2026 19:08:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 641ABCA5FA7
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2026 19:08:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3316602C9;
-	Tue, 29 Sep 2026 21:07:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3316602C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60A97602CD;
+	Tue, 29 Sep 2026 21:08:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60A97602CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1790708881;
-	bh=DcXE3Yc2viJSW6Ow1/ox3KNAYWE0gUWdlJknnuKRpPs=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=nsQ6S9OL3O+yOzF3mJll5DpEWqybBncFtOVhOlH1EwaeGhfBEPYVzFIqbXY2Ol4e5
-	 hfOiWQLz95s1Bqu5Fug7YionOEvEDldiv2+mOmefTp+s+8yuXAZiUoqyHH80EZchwz
-	 Z2sdgrdZ5tu+MPe53TGUfIvs5Izycc2L6DlZbzxk=
+	s=default; t=1790708894;
+	bh=SKXZvELSgzm1NgdhcAWNDInqrqia7MJiwhHAvfh/KPc=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=vcLMTIMkjJS8gz7JZcZfkGJmNZwifjjWgK5z5sFH+s6LD8mHn94OBNIV+xg+XP1Dd
+	 y+WbamcxsxpWbuabcWc9md5CvTg1/5EDWiE/z+QTw472DLfzYcC09aDbRwBGB2q20l
+	 71j8a983H208GDAnlZwrLc3HsRk0BpJnkZH95guM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 686E1F8077B; Tue, 29 Sep 2026 21:05:21 +0200 (CEST)
+	id 9037EF80800; Tue, 29 Sep 2026 21:05:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6B33F807CA;
-	Tue, 29 Sep 2026 21:05:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28A18F80805;
+	Tue, 29 Sep 2026 21:05:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3AEFFF8051F; Wed, 23 Sep 2026 09:35:04 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=80.241.56.161
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1790148902;
-	b=OSK9g3MScRQvGHQgHRUyurF7xS1l4PQojMTjwIng7vBNs51sM1pHXNamolI+OuP+PHiw
-	 1BsxDTjnJRIGqVT20A597kmJfvHRypPcYvMNql3rOy/qtS8r/bk34irO1OPOcYCLdO+ng
-	 Y0JkBGCpgyx2w/EwnISc8RcFlnAM3MeWmR7wyNZ0freat+IeewiZm7EigUvEFbIpuHaZe
-	 byx+FJzbxrO54GOIQ0EuDqn8hi4swkXOLTOfjh5V4h55/bbr5DWezT1NiW7TB0dZwCRr+
-	 uxojeTQGZfeIdyWG1flnoi1RUXUY6+FcBp+bmLSWPgRSXMXzIwPBvBgGtCliWOHubHw==
+	id C9F76F8051F; Wed, 23 Sep 2026 11:27:47 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=46.101.248.176
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1790155664;
+	b=HWdn7yPCTzU7anFUeGGREjKYxIILJgQ7cd5k2P/81N7eAny5Pnqjhonk2qbzDFwn0z2z
+	 9H0s/pfeiY4gr0QwnFZAlUlHcLiiNUuK6JYGw6N1UfhV1gW8Lq8uyczU+V+5K8SXJaZRd
+	 JtzemPv4LkruCWXMqnMDWeJhh6/5T8BWAWwSpLhu3aMxizZNBkneZgzazUr0Ktu3oRh+W
+	 VTFS7sjMiJr7jEBMCXsky5nGqMBwl2QRmZs7s5TU0L+459kNj+i4goupE7phn5Zhz+qpB
+	 BZAGHoH/d6N1VZ5eUcTdtslBvyFFIGGzIQlJUJxhgN1ldWrUa6eYgWrevx/v03JRClQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1790148902;
-	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
-	bh=pEtqADn3pz8h+K1D1ONtrxvgL7zbhtP5GGjYDWS2paY=;
-	b=NqWD0wStdGU4o+5ZvW0H2XEVdYPRSZnYfzWzwpFahvq7g00wyecmFx9BfRgmTSqQHzWP
-	 KvbMtoBHnLx7oBsR5DwoFYhxaNZRtGA0HByeKcmM208P2yavNTk/An3Fvde4PYEF8PU0M
-	 1BrBNc08ZB3GpvgqNgLIvIH9+MmxqEpQETJblbE6k9P2D7Lhrf0eP3XDWrDJ/WjSZ4UTk
-	 9Wqiy8WeYt+8PjLpjuUbOQMqiXay7U9z3+QOiDuTTamL+kvD1ZG7yJa7UlFWthL8XmxD9
-	 nsIqxNL+70eYY+hP8ZQu4Q8ps8CrWTr3My6YV+8MeUgFwQX2YXztopdidTyaxGilp/w==
+	c=relaxed/simple; t=1790155664;
+	h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=SKXZvELSgzm1NgdhcAWNDInqrqia7MJiwhHAvfh/KPc=;
+	b=fBCgSD3tSHK/bVkXgmnkWvkZgho+dWn4UCbV5SxXcb5bqPZ1Q408KNPyvK+ShMXcIQBn
+	 Q5vqyW3+GllZ/4ynCfp+dlISVVfZyfnNA5EPIB6daNglOIFiGgUgBOcw2YTz9OZHVDh7z
+	 k5G7F6z+caUcLd0a+fMNq40ZJ1Ac7pQqVMagwAfIs44hSX0MiBONSisxVIMQvbeQQLOUJ
+	 TkOGf9K3sr5g6lh30YcRqbI7TFxp4akagjhVui2iLp8tQc/vJXHMmYq9fQOWNVva6Ia4I
+	 dgD+0FKke+6ce9YZr1mIfk+p1SAfxmH+yuDO4Mqz7YN1142lcJG6zX0DR6KT8AWIM/g==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=haering.me header.i=@haering.me header.a=rsa-sha256
- header.s=MBO0001 header.b="E/I4j2Xu";
-	arc=none smtp.remote-ip=80.241.56.161
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2C80DF80246
-	for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2026 09:35:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C80DF80246
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=haering.me header.i=@haering.me header.a=rsa-sha256
- header.s=MBO0001 header.b=E/I4j2Xu
-Received: from smtp202.mailbox.org (smtp202.mailbox.org
- [IPv6:2001:67c:2050:b231:465::202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4hqTJL2p0SzKnVW;
-	Wed, 23 Sep 2026 09:34:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=haering.me; s=MBO0001;
-	t=1790148898;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gcLP6SdZrfauZQ3PhmTToRZh30dCx7bcQLk+cheppqo=;
-	b=E/I4j2XuvkvoO7vZnCshz5136iDFVuEFKBUi5o+yHHFzwgOT+1bQH6eZTE+0q0oiVcGt86
-	nO8aMfHCEJMn6IO1bBdfQvk84Z+oMIvih/3TNFyJnRK3K7pMJLCfrYf9y3xHwGIX9q+DOf
-	3gysWgmFedWM0I9XKn168nxpXGtw1WhvJI1NMaNADc6grfebZ28fTkzzZenJ95PB1bNJjr
-	4/PCtkL0IWijE3PqCG1h49ibL6f2u2Nv7fh31vqD1dliW2I/UWb5dnjJecXcMBC6ZKriSQ
-	62pMpnqqeGTEV85HHGKsL9wlBE+MfIrNaHKwIwyXMMvW30r6PqG+upeVHXCPQw==
-Authentication-Results: outgoing_mbo_mout;
-	dkim=none;
-	spf=pass (outgoing_mbo_mout: domain of alsa-project@haering.me designates
- 2001:67c:2050:b231:465::202 as permitted sender)
- smtp.mailfrom=alsa-project@haering.me
-Date: Wed, 23 Sep 2026 09:34:56 +0200
-From: Marlo <alsa-project@haering.me>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-CC: "tiwai@suse.de" <tiwai@suse.de>
-Subject: =?US-ASCII?Q?Re=3A_Conexant_SN6140=3A_ThinkPad_E?=
- =?US-ASCII?Q?14_Gen_8_=2817aa=3A513e=29_-_PCM_strea?=
- =?US-ASCII?Q?m_RUNNING_at_correct_rate_but_a?=
- =?US-ASCII?Q?nalog_outputs_silent=2C_HDMI_works?=
-In-Reply-To: <38B8FF75-CF35-4EDA-87D4-99FABC272213@haering.me>
-References: <38B8FF75-CF35-4EDA-87D4-99FABC272213@haering.me>
-Message-ID: <9DA35CA2-6065-436B-B46D-028ACF1C98D3@haering.me>
+ arc=none smtp.remote-ip=46.101.248.176
+Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net
+ (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
+	by alsa1.perex.cz (Postfix) with ESMTP id 7AC4FF800FA
+	for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2026 11:27:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7AC4FF800FA
+Received: from zju.edu.cn (unknown [10.98.66.117])
+	by mtasvr (Coremail) with SMTP id _____wD3kyyHm7NqSUMxAQ--.7042S3;
+	Wed, 23 Sep 2026 17:27:36 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.98.66.117])
+	by mail-app3 (Coremail) with SMTP id zS_KCgDHcHOHm7Nq7V5ZBQ--.10433S2;
+	Wed, 23 Sep 2026 17:27:35 +0800 (CST)
+From: Fan Wu <fanwu01@zju.edu.cn>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org
+Cc: alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Vijendar.Mukunda@amd.com,
+	Syed.SabaKareem@amd.com,
+	stable@vger.kernel.org,
+	Fan Wu <fanwu01@zju.edu.cn>,
+	Song Li <songl@zju.edu.cn>
+Subject: [PATCH] ASoC: amd: ps: fix snd_acp63_remove() teardown ordering
+Date: Wed, 23 Sep 2026 09:26:40 +0000
+Message-Id: <20260923092640.502145-1-fanwu01@zju.edu.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 4hqTJL2p0SzKnVW
-X-MailFrom: alsa-project@haering.me
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: zS_KCgDHcHOHm7Nq7V5ZBQ--.10433S2
+X-CM-SenderInfo: qrstjiaswqq6lmxovvfxof0/
+X-CM-DELIVERINFO: 
+ =?B?ee7CXQXKKxbFmtjJiESix3B1w3vZ3A9ovKVTomAyoQazvoRs/NHSP8GI2EvgeEEW7R
+	sfnZPoDCNGYdHSfuFmYJL54WOJv/C88MNEzSiSpndfKYR2FTTyGypo2l/i3sVkfjsSLcEe
+	bUepNW8khWwfHADVnD+p9E6mavGmQbzmcFsnzP86
+X-Coremail-Antispam: 1Uk129KBj93XoW7Kr1xZrWDKFW7AryrJF13GFX_yoW8CF1Dpr
+	Z8GFZxtrWkJw4jyw4UXayjvFn8CrZ3uF45C39akw1xJFn5GrWvkrWSkFy0vFZ5CrWvya12
+	qrW5Ja4YkrZ8AabCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUU9Cb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AK
+	xVW0oVCq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc804V
+	CY07AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AK
+	xVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48Icx
+	kI7VAKI48JM4x0Y48IcxkI7VAKI48G6xCjnVAKz4kxMxAIw28IcxkI7VAKI48JMxC20s02
+	6xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_Jr
+	I_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v2
+	6r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj4
+	0_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_
+	Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07jeAp5UUUUU=
+X-MailFrom: fanwu01@zju.edu.cn
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: 7SAK3HHYFGIY3KXBD66K5ZVYOHO7AHWB
-X-Message-ID-Hash: 7SAK3HHYFGIY3KXBD66K5ZVYOHO7AHWB
-X-Mailman-Approved-At: Tue, 29 Sep 2026 19:04:57 +0000
-Content-Type: text/plain;
- charset=utf-8
-X-Content-Filtered-By: Mailman/MimeDel 3.3.10
+Message-ID-Hash: AM2G2FIYWFET7YAOUA6YQ55IEMYPTUN7
+X-Message-ID-Hash: AM2G2FIYWFET7YAOUA6YQ55IEMYPTUN7
+X-Mailman-Approved-At: Tue, 29 Sep 2026 19:05:07 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7SAK3HHYFGIY3KXBD66K5ZVYOHO7AHWB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AM2G2FIYWFET7YAOUA6YQ55IEMYPTUN7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,117 +119,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hello,
+The ACP threaded interrupt handler dereferences the SoundWire and PDM
+child platform devices, but snd_acp63_remove() unregisters them while
+the interrupt is still registered: devm_request_threaded_irq() ties its
+release to devres cleanup, which runs only after the remove callback
+returns. A completion in this window is a use-after-free.
 
-quick follow-up: after updating from kernel 7.2.5-200.fc44 to
-7.2.7-200.fc44.x86_64 (Fedora 44), internal speakers and the
-headphone jack work again on my ThinkPad E14 Gen 8 (17aa:513e).
+Fix this by masking the ACP interrupt sources and calling devm_free_irq()
+before the first child device is unregistered. The interrupt line is
+shared, and acp_hw_deinit() clears the sources only after the children
+are gone, which would leave the line raised with no handler left to
+ack it. The window predates the tagged refactor, which only reshaped
+the dereferences.
 
-Note that neither the SSID fallback nor the GPIO state has changed
-compared to my original report:
+This issue was found by an in-house static analysis tool.
 
-snd_hda_codec_conexant hdaudioC0D0: SN6140: picked fixup  for PCI SSID 17aa:0000
+Fixes: eaf825037d6d ("ASoC: amd: ps: refactor acp child platform device creation code")
+Cc: stable@vger.kernel.org
+Co-developed-by: Song Li <songl@zju.edu.cn>
+Signed-off-by: Song Li <songl@zju.edu.cn>
+Signed-off-by: Fan Wu <fanwu01@zju.edu.cn>
+---
+ sound/soc/amd/ps/pci-ps.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-GPIO: io=5, o=0, i=0, unsolicited=1, wake=1
-  IO[0..4]: all enable=0, dir=0, data=0
+diff --git a/sound/soc/amd/ps/pci-ps.c b/sound/soc/amd/ps/pci-ps.c
+index 729f9aa..01ee697 100644
+--- a/sound/soc/amd/ps/pci-ps.c
++++ b/sound/soc/amd/ps/pci-ps.c
+@@ -738,6 +738,12 @@ static void snd_acp63_remove(struct pci_dev *pci)
+ 	int ret;
+ 
+ 	adata = pci_get_drvdata(pci);
++	/* Mask the interrupt sources before freeing the shared IRQ. */
++	writel(ACP_EXT_INTR_STAT_CLEAR_MASK,
++	       adata->acp63_base + ACP_EXTERNAL_INTR_STAT);
++	writel(0, adata->acp63_base + ACP_EXTERNAL_INTR_CNTL);
++	writel(0, adata->acp63_base + ACP_EXTERNAL_INTR_ENB);
++	devm_free_irq(&pci->dev, pci->irq, adata);
+ 	if (adata->sdw) {
+ 		amd_sdw_exit(adata);
+ 		platform_device_unregister(adata->sdw_dma_dev);
 
-So neither the 17aa:0000 fallback nor the unconfigured GPIOs seem
-to have been the cause of the silent analog output; something else
-between 7.2.5 and 7.2.7 fixed it. This may also be relevant for the
-ThinkPad E16 Gen 4 (17aa:513f) report.
-
-Thanks!
-
-Best regards,
-Marlo
-
-
-> Marlo <alsa-project@haering.me> hat am 15.09.2026 14:09 MESZ geschrieben:
-> 
->  
-> Hello ALSA developers,
-> 
-> I would like to report what appears to be the same class of issue recently discussed for the ThinkPad E16 Gen 4 (thread: "Conexant SN6140: ThinkPad E16 Gen 4 (17aa:513f) has no speaker output, wrong PCI SSID fixup selected", 2026-07-17). My hardware has a different but neighboring subsystem ID (513e instead of 513f), and I have gathered some additional data points that hopefully narrow down the root cause further.
-> 
-> Hardware
-> --------
-> Laptop: Lenovo ThinkPad E14 Gen 8
-> Product: 21Y6000SGE (Machine Type 21Y6)
-> CPU: Intel Core Ultra (Panther Lake)
-> Audio controller: Intel HD Audio [8086:e428]
-> PCI subsystem: 17aa:513e
-> Codec: Conexant SN6140
-> Codec-reported Subsystem Id: 0x17aa513e
-> BIOS: version 1.02 (no newer version available; fwupdmgr reports no update for System Firmware)
-> 
-> Software
-> --------
-> Distribution: Fedora 44
-> Kernel: 7.2.5-200.fc44.x86_64
-> PipeWire: 1.6.8
-> 
-> Problem
-> -------
-> Both analog outputs are completely silent:
-> - Internal speakers (pin 0x17)
-> - 3.5mm headphone jack on the laptop itself (pin 0x16)
-> 
-> The following DO work correctly:
-> - USB-C connected earbuds (separate USB audio device, as expected)
-> - A headphone plugged into an external HDMI monitor (digital HDMI audio path of the same Intel controller)
-> 
-> This suggests the issue affects the entire analog output section of the codec specifically, while the digital HDMI path on the same chip works fine.
-> 
-> During boot:
-> 
-> snd_hda_codec_conexant hdaudioC0D0: SN6140: BIOS auto-probing.
-> snd_hda_codec_conexant hdaudioC0D0: SN6140: picked fixup for PCI SSID 17aa:0000
-> 
-> Same symptom as the E16 Gen 4 report: the driver falls back to PCI SSID 17aa:0000 instead of the actual Lenovo subsystem ID (17aa:513e in my case).
-> 
-> Mixer / pin state
-> ------------------
-> Master: 88% (unmuted)
-> Speaker: 100% (unmuted), both channels
-> Auto-Mute Mode: Disabled
-> 
-> Node 0x17 [Pin Complex] (speaker):
->   Pincap 0x00010010: OUT EAPD
->   EAPD 0x2: EAPD enabled
->   Pin Default 0x91170110: [Fixed] Speaker at Int Rear
-> 
-> Node 0x11 [Audio Output] (Speaker DAC):
->   Speaker Playback Volume / Switch both present, unmuted
-> 
-> GPIO block (from /proc/asound/card0/codec#0):
->   GPIO: io=5, o=0, i=0, unsolicited=1, wake=1
->   IO[0..4]: all enable=0, dir=0, data=0
-> 
-> Stream-level confirmation (the key new data point)
-> ---------------------------------------------------
-> With PipeWire/WirePlumber stopped, running speaker-test directly against plughw:0,0 while inspecting the kernel PCM state twice, 1 second apart:
-> 
-> cat /proc/asound/card0/pcm0p/sub0/status:
->   1st read: state RUNNING, hw_ptr = 144336
->   2nd read (+1s): state RUNNING, hw_ptr = 192616
-> 
-> That is a delta of 48280 samples in ~1 second, matching the configured 48000 Hz rate almost exactly. hw_params for this stream:
->   access: RW_INTERLEAVED, format: S16_LE, channels: 2, rate: 48000, period_size: 12000, buffer_size: 48000
-> 
-> So the PCM stream is correctly opened, configured, and demonstrably running at the correct real-time rate at the kernel/ALSA level - audio data is being delivered to the codec continuously and on time - yet no sound comes out of either analog output. This rules out any PipeWire/ALSA-lib/stream-configuration/timing issue and narrows the problem down firmly to the codec's analog output stage itself (DAC->amp->pin), consistent with the GPIO block being entirely unconfigured (all 5 GPIO pins disabled) as noted above.
-> 
-> Tests already performed without success
-> ----------------------------------------
-> - normal snd_hda_intel path (current default)
-> - cold boot / full shutdown+restart cycle
-> - checked for a newer BIOS (none available)
-> 
-> I have not yet tried aliasing via the model option with an existing quirk entry's $VENDOR:$DEVICE string as Takashi suggested in the E16 Gen 4 thread - happy to test that or any other patches/instrumentation if pointed in the right direction.
-> 
-> Full diagnostic report (alsa-info.sh):
-> https://alsa-project.org/db/?f=5f8598a774edfeba0d09022c694a0014e3022bfc
-> 
-> Thank you very much for your work, and please let me know what further information or testing would help.
-> 
-> Best regards,
-> Marlo
