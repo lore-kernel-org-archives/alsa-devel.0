@@ -4,115 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6929CC98304
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Sep 2026 01:43:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A519C9830D
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Sep 2026 02:06:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2CA2601C4;
-	Thu, 24 Sep 2026 03:42:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2CA2601C4
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF9B4601E2;
+	Thu, 24 Sep 2026 04:05:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF9B4601E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1790214180;
-	bh=hhi4GWSXUavabY78/XYNmgpvRTFO6W8rtoO3SSP3pKE=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=hYoXqGxKsSYoTNTMBBAENiaNtIN6bzgmBovSjLUR63MvcKvuQ/RKdFZQafmX8222f
-	 raeJTdkrEXjH9O7rcQYp12vpoymdzlpw6vT2QxYatMunPWGN44eaOz4pLJTDhIHQMs
-	 k880BNLozDdRBYUsyaVVHOAYf8AaoOQ1Wmj1Tg/I=
+	s=default; t=1790215569;
+	bh=wIGzAJdFl+9sCrm4XhMQb7bTdxsdCyWk2X5KgQTMfLk=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=BmFYVfJtLXTfKzu3oTeO6ALSCJ4qV8uHx3U1uFAhWWGbm8LqV41BzAfGrzthrIi7Z
+	 0hKNbldkuDVxc/qP+ZRBJKsAYOZuEY7TuZ3EyRgKAaLloTtngX+e92s/I/rLqcAV2e
+	 VNR+K6/OaW9LWE0K1OcaAZ1dGZJz7Y4EqjhjyKH8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 744D3F805FA; Thu, 24 Sep 2026 03:42:28 +0200 (CEST)
+	id CF240F805F5; Thu, 24 Sep 2026 04:05:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E238F805EE;
-	Thu, 24 Sep 2026 03:42:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B88BF805FB;
+	Thu, 24 Sep 2026 04:05:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D66CF8049C; Thu, 24 Sep 2026 03:42:20 +0200 (CEST)
+	id ED7DFF8049C; Thu, 24 Sep 2026 04:05:26 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=211.75.126.72
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1790214138;
-	b=DctS4WRPqehYDCQ2Pl1pCxk6jM7hb7hCOZMM0AxykAtdh9ZfBeTvbJBHkibd7AmrQCFL
-	 dFrRMBrNFWSxxtycZE561aYn5xBkU6hSAeZcHCIVrN00AzIGD771OD2G+Z5DyH6ukRhWc
-	 iWzWd0FBI2E8SSYZpoFgNH7ZkiDE21BgLilsL4Se8FxAd5/bbwMa/v3Bilg9mq/nI+sfH
-	 ZrTNE2gQHC9nN1uLh9bqZi0aiJqVwDaQ7Hsdxb+bJYktM8Z+8GASlaDy3T1fq9jiMIhVP
-	 ay6qP1iAA2yASU5YdU4AfG490g4pxmY6+622WGcjxJebCFvmAf6F8ApMtn6tMZ2V9aQ==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1790215525;
+	b=TDzFdku/hunxVKMOrHWjQUi4oHd5pDVvuZFc0rHKbHmQMZbWrc2mkhPFMUrpqMiBQErv
+	 pcTr9Jh7hDLJNha6uC4fWo8BrnZGa/NZD+2aAvFIaefmssatOrO8nxlRsspQbF+NA/h4Z
+	 Xpp4n6Z3xlTCeEWPnVI4TwzsWPhJ4GyQ1sX7YS4CP8WqkzOk2U1GatbGofoma3ECmgyxH
+	 CtRBdwu4rUKA+1OHJlW1zJHy7URnHfQuUGaZv6XHJDOXUBa+Ld2kP8BvBrBm1MCECwF3X
+	 g4HPrjiii3yq7h03a7QW9DoElecwFv4nQNVgLerGmvRNA+Ibg3rtrZ0KOQODPjfVO7A==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1790214138;
+	c=relaxed/simple; t=1790215525;
 	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=hhi4GWSXUavabY78/XYNmgpvRTFO6W8rtoO3SSP3pKE=;
-	b=hgJzjJ5wvORLh42PphkFtci1QkcOBPxAiqiJsdkUSxxN6I/DXY5nh551ZI7Ph3CAuTXj
-	 AbUb4+ivxixJ6B+qsC+/mgbhBbkoO7WB+F4wVgMctaT7d8DfUnm9isf79rtrgmcc7e0Zq
-	 ypH/+0fIsjLsKsXP8QVhVTs3brlU1/KaAXz6nUXeEnyYQKFAdgrq4a3PTL4/Mcin/cZE9
-	 NvJcDB9EwaNE3sY+bMD6ysLjYR1oox1GK27SypfvgXsuN6M+e0Ythaz01SAdcMYX+45Nj
-	 cKWRcFiaVfHfoSVdj0lFbtKK8RW/R5omBZCGkRJP+yL4aYrcTZhNYQqdS2P/OBb9e7Q==
+	bh=wIGzAJdFl+9sCrm4XhMQb7bTdxsdCyWk2X5KgQTMfLk=;
+	b=pwPydocWLRKPCtTrQ02I9mLyPfXu7wxWcToaQ14TvUNmhFc/Mh4AI7P9YPcVDy0oY33o
+	 PS3+EHsHuGdo0B9AOxddXqEjgFVPsDXiH4ONFVQW18smVKkuIsvwqOc8HgNo3VE+acwDx
+	 QPQI3BGfQnT+svkvp1/H2hdC4Tf1c9yD9imKAlZpU/HRY0VYWoG6nAdoE2LptDZF8Ue1Q
+	 1WcxfadV5FvT+3vbSTKRepp+5pIG5sKiH8oDpR2J4J+LScOTUB6UdNXxXxQ1mPa1iyOGZ
+	 uOwqLws4wT3zVHv8AazqH+tF4jxq2Zq0+RcDAu2NH4XHRzWjI6mBe+//GH9EKM/v9gA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  dkim=pass header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
- header.s=dkim header.b=aZ7fjGmG;
+ header.s=dkim header.b=ZKJ0ALGw;
 	arc=none smtp.remote-ip=211.75.126.72
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 28681F8027B
-	for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2026 03:42:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28681F8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id E72B4F801F5
+	for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2026 04:05:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E72B4F801F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
- header.s=dkim header.b=aZ7fjGmG
-X-SpamFilter-By: ArmorX SpamTrap 5.80 with qID 68O1g54w9792039,
+ header.s=dkim header.b=ZKJ0ALGw
+X-SpamFilter-By: ArmorX SpamTrap 5.80 with qID 68O25CO40805316,
  This message is accepted by code: ctloc85258
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=realtek.com; s=dkim;
-	t=1790214125; bh=hhi4GWSXUavabY78/XYNmgpvRTFO6W8rtoO3SSP3pKE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding:MIME-Version;
-	b=aZ7fjGmGqZ2Z2lO0BPyoubS+yLhcVAoAVMrRzzxOvSoAB27aXdJ5yomvQZbn0WI+e
-	 qD16U7s671rGMPvU4P7HViQa+H5wcK0BkqYDva7BLQyX7flSBzZwwuv1BjjQCjQ/lN
-	 THQS5aOFe0mLFa6oxOUtgBtkljBQqpzoDXt3YA5pV5BNzRaiAAJvWpvz9ol4MrRZ/O
-	 QyWSyD2JgTm35y2tlVzB4646x+L6T194iaYpJMAzO8nom+SlXhcvSDD0Ny7T0MXyUU
-	 OYCLG+9MKVV4gYRlfx6QBPNDWyxM199EKdTrSJfQIYmexnBLAI/MjfGS5s4lpe0vEr
-	 0/pkafq64nWew==
+	t=1790215513; bh=CQ8YWhQQcMRI84TK5wgSPkfkl7/tiBIsJTCa7jBpsv4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:
+	 Content-Transfer-Encoding:Content-Type;
+	b=ZKJ0ALGwMVUfW/+ctRqXxS5aoFU2CzwEJZBfnmLfO8WeqGrWY/HhesGyy1/AC5K+P
+	 Ff2b2gOgOq+nfo23HVgL2pZrN+1zNlCBJGmGJ1CU44uUi8U3oX4q8wJY+wfZaqwkVo
+	 MK8SSZ5uqLJFEis2vKLir8bvvLCvrbgXaU1L8IJax6hi4IoeH2vl4s3wT4MYrWvT6R
+	 L0xt7qUBBht6egzu234OEcqTykAHLnqG7SBjalIeHUxlBs8TQXN2yqI7w3yag6+I+M
+	 Jg0BM1FflV3PNHNBnfTh43wk0z5/6oW918+vCtzPopsZPbKyoBaTTGsJjvYx1LjUhY
+	 AfJ52+TYap0wA==
 Received: from mail.realtek.com (rtkexhmbs03.realtek.com.tw[10.21.1.53])
-	by rtits2.realtek.com.tw (8.15.2/3.29/5.94) with ESMTPS id 68O1g54w9792039
+	by rtits2.realtek.com.tw (8.15.2/3.29/5.94) with ESMTPS id 68O25CO40805316
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 24 Sep 2026 09:42:05 +0800
-Received: from RTKEXHMBS01.realtek.com.tw (172.21.6.40) by
+	Thu, 24 Sep 2026 10:05:12 +0800
+Received: from RTKEXHMBS06.realtek.com.tw (10.21.1.56) by
  RTKEXHMBS03.realtek.com.tw (10.21.1.53) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.49; Thu, 24 Sep 2026 09:42:05 +0800
-Received: from RTKEXHMBS04.realtek.com.tw (10.21.1.54) by
- RTKEXHMBS01.realtek.com.tw (172.21.6.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.49; Thu, 24 Sep 2026 09:42:05 +0800
-Received: from RTKEXHMBS04.realtek.com.tw ([::1]) by
- RTKEXHMBS04.realtek.com.tw ([fe80::bb07:3e09:fb44:8906%6]) with mapi id
- 15.02.2562.049; Thu, 24 Sep 2026 09:42:05 +0800
-From: Jack Yu <jack.yu@realtek.com>
-To: Mark Brown <broonie@kernel.org>
-CC: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org"
-	<alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>,
-	"Flove(HsinFu)" <flove@realtek.com>, Oder Chiou <oder_chiou@realtek.com>,
-	=?big5?B?U2h1bWluZyBbrVOu0bvKXQ==?= <shumingf@realtek.com>,
-	=?big5?B?RGVyZWsgW6TovHe4cV0=?= <derek.fang@realtek.com>
-Subject: RE: [PATCH] ASoC: rt1320: make SRAM registers readable to stop being
+ 15.2.2562.49; Thu, 24 Sep 2026 10:05:12 +0800
+Received: from sw-server.localdomain (172.24.54.4) by
+ RTKEXHMBS06.realtek.com.tw (10.21.1.56) with Microsoft SMTP Server id
+ 15.2.2562.49 via Frontend Transport; Thu, 24 Sep 2026 10:05:12 +0800
+From: <jack.yu@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+CC: <alsa-devel@alsa-project.org>, <lars@metafoo.de>, <flove@realtek.com>,
+	<oder_chiou@realtek.com>, <shumingf@realtek.com>, <derek.fang@realtek.com>,
+	Jack Yu <jack.yu@realtek.com>
+Subject: [PATCH v2] ASoC: rt1320: make SRAM registers readable to stop being
  cached
-Thread-Topic: [PATCH] ASoC: rt1320: make SRAM registers readable to stop being
- cached
-Thread-Index: AQHdSZrZw2ex64qVH0iyZYRbG7wZtrbYOOKAgAQ5leA=
-Date: Thu, 24 Sep 2026 01:42:05 +0000
-Message-ID: <30dee5ebf4bc4594be6655f3f1587dd7@realtek.com>
-References: <20260921072847.2929865-1-jack.yu@realtek.com>
- <arD0nQ4nTCuI2w0f@sirena.co.uk>
-In-Reply-To: <arD0nQ4nTCuI2w0f@sirena.co.uk>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.6.42]
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+Date: Thu, 24 Sep 2026 10:05:10 +0800
+Message-ID: <20260924020510.3551163-1-jack.yu@realtek.com>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-Message-ID-Hash: MRL3XPMQMWD43262X4A2JN6SADPGWIUA
-X-Message-ID-Hash: MRL3XPMQMWD43262X4A2JN6SADPGWIUA
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Message-ID-Hash: IPYMSJ4PGKCH47PLEUXSELTDB27Z5USQ
+X-Message-ID-Hash: IPYMSJ4PGKCH47PLEUXSELTDB27Z5USQ
 X-MailFrom: jack.yu@realtek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -124,7 +109,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MRL3XPMQMWD43262X4A2JN6SADPGWIUA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IPYMSJ4PGKCH47PLEUXSELTDB27Z5USQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -133,31 +118,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmsgQnJvd24gPGJyb29u
-aWVAa2VybmVsLm9yZz4NCj4gU2VudDogTW9uZGF5LCBTZXB0ZW1iZXIgMjEsIDIwMjYgNToxMSBQ
-TQ0KPiBUbzogSmFjayBZdSA8amFjay55dUByZWFsdGVrLmNvbT4NCj4gQ2M6IGxnaXJkd29vZEBn
-bWFpbC5jb207IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgbGFyc0BtZXRhZm9vLmRlOw0K
-PiBGbG92ZShIc2luRnUpIDxmbG92ZUByZWFsdGVrLmNvbT47IE9kZXIgQ2hpb3UgPG9kZXJfY2hp
-b3VAcmVhbHRlay5jb20+Ow0KPiBTaHVtaW5nIFutU67Ru8pdIDxzaHVtaW5nZkByZWFsdGVrLmNv
-bT47IERlcmVrIFuk6Lx3uHFdDQo+IDxkZXJlay5mYW5nQHJlYWx0ZWsuY29tPg0KPiBTdWJqZWN0
-OiBSZTogW1BBVENIXSBBU29DOiBydDEzMjA6IG1ha2UgU1JBTSByZWdpc3RlcnMgcmVhZGFibGUg
-dG8gc3RvcCBiZWluZw0KPiBjYWNoZWQNCj4gDQo+IE9uIE1vbiwgU2VwIDIxLCAyMDI2IGF0IDAz
-OjI4OjQ3UE0gKzA4MDAsIGphY2sueXVAcmVhbHRlay5jb20gd3JvdGU6DQo+ID4gRnJvbTogSmFj
-ayBZdSA8amFjay55dUByZWFsdGVrLmNvbT4NCj4gPg0KPiA+IHJ0MTMyMF92b2xhdGlsZV9yZWdp
-c3RlcigpIGxpc3RzIHRoZSBTUkFNIHJhbmdlcyAweDEwMDAwMDAwLTB4MTAwMDhmZmYNCj4gPiBh
-bmQgMHgxMDAwYzAwMC0weDEwMDBkZmZmIGFzIHZvbGF0aWxlLCBzbyB0aGV5IHNob3VsZCBuZXZl
-ciBiZSBjYWNoZWQuDQo+ID4gQnV0IHJlZ21hcCBvbmx5IGhvbm9ycyB0aGUgdm9sYXRpbGUgZmxh
-ZyBmb3IgYSByZWFkYWJsZSByZWdpc3RlciwgYW5kDQo+ID4gdGhlc2UgcmFuZ2VzIHdlcmUgbWlz
-c2luZyBmcm9tIHJ0MTMyMF9yZWFkYWJsZV9yZWdpc3RlcigpLg0KPiA+IFRoZXkgd2VyZSB0aGVy
-ZWZvcmUgY2FjaGVkIGF0IHByb2JlIGFuZCByZXBsYXllZCBvdmVyIFNvdW5kV2lyZSBvbg0KPiA+
-IGV2ZXJ5IHJ1bnRpbWUgcmVzdW1lLCBkZWxheWluZyB0aGUgZmlyc3QgUENNIG9wZW4gYWZ0ZXIg
-YXV0b3N1c3BlbmQgYnkNCj4gPiBhYm91dCBhIHNlY29uZC4NCj4gPg0KPiA+IEFkZCB0aGUgdHdv
-IHJhbmdlcyB0byBydDEzMjBfcmVhZGFibGVfcmVnaXN0ZXIoKSBzbyB0aGUgdm9sYXRpbGUgZmxh
-Zw0KPiA+IHRha2VzIGVmZmVjdCBhbmQgdGhlIFNSQU0gaXMgbm8gbG9uZ2VyIGNhY2hlZCBvciBy
-ZXBsYXllZC4NCj4gPiBUaGUgcmVtb3ZlZCBsaW5lcyBhcmUgYWxyZWFkeSBjb3ZlcmVkIGJ5IHRo
-ZSAgbmV3DQo+ID4gMHgxMDAwYzAwMC0weDEwMDBkZmZmIHJhbmdlLCBzbyBubyByZWdpc3RlciBs
-b3NlcyByZWFkYWJpbGl0eS4NCj4gDQo+IFRoZSBSQUUgbG9hZGVyIHNlZW1zIHRvIGV4cGVjdCB0
-aGF0IDB4MTAwMGQwMDAtMHgxMDAwZDdmZiBpcyBjYWNoZWQsIG9yIGF0DQpUaGFua3MgZm9yIHJl
-bWluZGluZyB0aGlzLCBJJ2xsIGV4Y2x1ZGUgdGhpcyByYW5nZSAweDEwMDBkMDAwLTB4MTAwMGQ3
-ZmYgb3V0IG9mIHRoZSB2b2xhdGlsZSByZWdpc3RlcnMuDQoNCj4gbGVhc3QgaXQncyBmaWRkbGlu
-ZyB3aXRoIHRoZSBjYWNoZSBieXBhc3MgZm9yIHRoYXQgcmFuZ2UuDQo=
+From: Jack Yu <jack.yu@realtek.com>
+
+rt1320_volatile_register() marks the SRAM ranges 0x10000000-0x10008fff
+and 0x1000c000-0x1000dfff as volatile, but regmap only honors that flag
+for a readable register and these ranges were missing from
+ rt1320_readable_register(). They were therefore cached at probe and
+replayed over SoundWire on every runtime resume, delaying the
+first PCM open after autosuspend by about a second.
+
+Make the ranges readable so the volatile flag takes effect and the SRAM
+is no longer cached. Exclude 0x1000d000-0x1000d7ff from both callbacks,
+since rt1320_rae_load() deliberately caches that tuning-tool window.
+
+Signed-off-by: Jack Yu <jack.yu@realtek.com>
+---
+ sound/soc/codecs/rt1320-sdw.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/rt1320-sdw.c b/sound/soc/codecs/rt1320-sdw.c
+index b13622e54ae0..fa89db096651 100644
+--- a/sound/soc/codecs/rt1320-sdw.c
++++ b/sound/soc/codecs/rt1320-sdw.c
+@@ -890,8 +890,9 @@ static bool rt1320_readable_register(struct device *dev, unsigned int reg)
+ 	case 0xf01e:
+ 	case 0xf717 ... 0xf719:
+ 	case 0xf720 ... 0xf723:
+-	case 0x1000cd91 ... 0x1000cd96:
+-	case RT1321_PATCH_MAIN_VER ... RT1321_PATCH_BETA_VER:
++	case 0x10000000 ... 0x10008fff:
++	case 0x1000c000 ... 0x1000cfff:
++	case 0x1000d800 ... 0x1000dfff:
+ 	case 0x1000f008:
+ 	case 0x1000f021:
+ 	case 0x20003000 ... 0x2000300f:
+@@ -996,7 +997,8 @@ static bool rt1320_volatile_register(struct device *dev, unsigned int reg)
+ 	case 0xf717 ... 0xf719:
+ 	case 0xf720 ... 0xf723:
+ 	case 0x10000000 ... 0x10008fff:
+-	case 0x1000c000 ... 0x1000dfff:
++	case 0x1000c000 ... 0x1000cfff:
++	case 0x1000d800 ... 0x1000dfff:
+ 	case 0x1000f008:
+ 	case 0x1000f021:
+ 	case 0x2000300e ... 0x2000300f:
+-- 
+2.55.0
+
