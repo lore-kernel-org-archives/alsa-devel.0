@@ -4,101 +4,173 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B434CA5FA1
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2026 11:18:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DADACA5FA5
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2026 13:11:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11ADA601E6;
-	Tue, 29 Sep 2026 13:18:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11ADA601E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id C474F601EA;
+	Tue, 29 Sep 2026 15:11:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C474F601EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1790680700;
-	bh=496BUFJ7uyxBszeY8YQ+BwB/b2S8ztjZvsPitaat9dk=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=I5Qddey8rMhdMWLa49Sw6cplAHpUC/Tpnng/55AsJlv92THeaYGNCjY6P/qCxWXYG
-	 piQRytDvqFVVffOJNEnMuBZMvMdfYxSehTpLU6YR61AoEj3+Wk9ycpbxX26yaIm1ZN
-	 ZYopyKRu4Ld28dk2nPc9/1J04Pb9O8WHKKBMUk/Y=
+	s=default; t=1790687476;
+	bh=ZvTVLjaC6ShH+AJvVo+tS6hpOJ8rm4CxsFWrSEWE5o4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=RkWyn3fZGIm4o4CyIOlGwQ8MA/1N4WDmROSTGdUg/vGQVGU574Bm9OdpdyQ05keQG
+	 Hwboq1rt/c96/AVQQqc4Tj65iQVzq/9yGJ8BXqkS5H3QGLS/JpsnDXwZriMKOtc0Ma
+	 tg7j4IFVw1d8tcYPdG93ZNvT90KjFxDPNynvAAq0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5ACB2F80600; Tue, 29 Sep 2026 13:17:43 +0200 (CEST)
+	id 73CD9F805F9; Tue, 29 Sep 2026 15:10:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BEBC0F80600;
-	Tue, 29 Sep 2026 13:17:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B929F805F9;
+	Tue, 29 Sep 2026 15:10:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 70E4CF8055C; Tue, 29 Sep 2026 13:17:38 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=211.75.126.72
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1790680656;
-	b=C7bL56zigqLOl9EJwpzWkuo7WE2Ax8/tidYogwLul8KXpqX56qtEnglK4SqWZcB+Do/1
-	 u7UIrscY5zotUW2u40f4QvYgqtK9k1v5Z4I59LquaToYvk75u3ORCUUHtFU2APGmHrF97
-	 9F960jCIYrt2PR+UqVDv0iGKmKRmll1fDDaJsHncYP+xrG7jV7E+RfjJ12i7glMnjVY+/
-	 vwcMR5AU2MGcjcwnwL4mMA8t/tqqHQnZr9emmo6Mko3xyrvIxI3CfDULzIEK8TuQZrHRs
-	 df3UbeuAiGcBuM3rxMOcFAAu3jOfJ0tIcyOYcvB442zhHEjtU4xOBXaS4Ch+F7ecRLw==
+	id 4680EF8055C; Tue, 29 Sep 2026 15:10:35 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=none smtp.remote-ip=195.135.223.130
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1790687433;
+	b=KjesSolQdUXqh57sP00tJkUaaJ08ePNCn3xjwNox6ys/LYyuQUYNt4MEMQbSr1fBexVO
+	 Qs863M0cYo9dnlU0H0yyPWvk8glNMsYlsrIZ+Bb6teUGS2UMwThVE+obwfhKPJw9mWXXE
+	 k2qB6pN0fabCD81c8rCeB2ExvF9Ym5jSaOipNNdxOxHkXI8awaj8I9NFJ35mXi8Vnwjqe
+	 93thxBGE1AkDQaj1LZk63XBlR6SdDZuOr1uy+4eg7NebCIOD9jubLDgIY7YwO86liE0MP
+	 FWImBcMfHSFgEK3YMUg2GtVbjj2j+8xsoBPmaUQyRTjP4s5vu4zPHjYQiwbpUZuRyLw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1790680656;
-	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=496BUFJ7uyxBszeY8YQ+BwB/b2S8ztjZvsPitaat9dk=;
-	b=JgCY8Xki35XzopZ/SzcyRxL1hHMwuuBeJ5Kq6cjyelOPhmE0xGJoUeT9xa9rhfymvXu1
-	 XzLOVHV5FtW7yTAgG9/HfcdJf5h9JyYTRuRd8i89OPgRWCvA8jczEGsxjMXzRA/TLGkbO
-	 TP4UkikpPdT5mLeN/Y+zdR1MfKdltiI4CxSDxAdNdm+54FFgACmOQ3VrPjE826cjcbEW2
-	 76ea10gtVuRPQPTQSwjq9LuZoCIMKL5lD3WTX+14eE1KdZuOKcx6/5TqWSJu4mcrMe2Ch
-	 L30fSf6a/bAoC4OgjppkDCdHbEk+vqjhHvrr7wzRFKCl63vWwu1UV0ye/JDBU1YaTVg==
+	c=relaxed/simple; t=1790687433;
+	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
+	 Message-ID:From:To:Subject:MIME-Version;
+	bh=ZvTVLjaC6ShH+AJvVo+tS6hpOJ8rm4CxsFWrSEWE5o4=;
+	b=CrrzjsshzF07GFx+2qX3nQdvK+HqRyHpqfgmcm65TIQNy+3dJnY1TkFsC42Eh1SB4oxK
+	 Nbdi71Lef7riWhvq9GHPCHAVeSZprEDk+k/QaLtS0G0zwaIhaIRg8NZmNnRuYkkU5AXSa
+	 NOL4HOw7GQbIh0Z5+AM+MjLOJveU3sTKm3dJZaRanhGoYWGGGaArfRh2c5jdYNKWqDi3H
+	 7vuWuEjGTamqqqcGzNubbMH3i2HLZm/JjHT2B3/Xi1JOp4Suh1R1i1og7jt0OfrHkRm22
+	 suFwrWAzF1VpxGjm+gZdY4YHKssAr/T50YSEcQoDeOPP23ODAJZ7MzbWuQMG9NTIBuw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
- header.s=dkim header.b=vv5jGsXT;
-	arc=none smtp.remote-ip=211.75.126.72
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=CZcfjlD9;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=3XvHiPYD;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=yWsfB835;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=ZRIHWzyv;
+	arc=none smtp.remote-ip=195.135.223.130
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C1E6CF80448
-	for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2026 13:17:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1E6CF80448
+	by alsa1.perex.cz (Postfix) with ESMTPS id AA4F6F80448
+	for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2026 15:10:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA4F6F80448
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
- header.s=dkim header.b=vv5jGsXT
-X-SpamFilter-By: ArmorX SpamTrap 5.80 with qID 68TBHQzbC1236497,
- This message is accepted by code: ctloc85258
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=realtek.com; s=dkim;
-	t=1790680646; bh=iMXB32/OaAFHKn0raM9FerIYYuWAXZNVzrZNvCX3FXs=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:
-	 Content-Transfer-Encoding:Content-Type;
-	b=vv5jGsXTuFRanQk3+lLZ3nAAYTGLJ227p8IGwNXgfhCnh2ltsv8dcn5kdV7FQbi+E
-	 tXFswSYj5x98Y0X+MPSqaOE2rkT3Qfa6eUpFou5JdllclYo8X5GpTN9Yhc7gpoyfB2
-	 sNv9lo+sCCtxJC2MP0oZ7qPVHK98F2ppp9wf9jhitG38uelJZOvnc6tapY2hUao8hM
-	 3SChFVJQi5stBBRrvGdL+dADGti4V1FDSkIYQH4O3nRBEgqg3w28vdsabxYFs2njtZ
-	 B3OV44VKqC9uk1liBoY51sBGxV5T2sGMw8CQy6p6HYyoQP5ybRTgtUHc5coS5+OcJo
-	 RLyxxRkf7wBPQ==
-Received: from mail.realtek.com (rtkexhmbs03.realtek.com.tw[10.21.1.53])
-	by rtits2.realtek.com.tw (8.15.2/3.29/5.94) with ESMTPS id 68TBHQzbC1236497
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 29 Sep 2026 19:17:26 +0800
-Received: from RTKEXHMBS06.realtek.com.tw (10.21.1.56) by
- RTKEXHMBS03.realtek.com.tw (10.21.1.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.49; Tue, 29 Sep 2026 19:17:11 +0800
-Received: from sw-server.localdomain (172.24.54.4) by
- RTKEXHMBS06.realtek.com.tw (10.21.1.56) with Microsoft SMTP Server id
- 15.2.2562.49 via Frontend Transport; Tue, 29 Sep 2026 19:17:11 +0800
-From: <jack.yu@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-CC: <alsa-devel@alsa-project.org>, <lars@metafoo.de>, <flove@realtek.com>,
-	<oder_chiou@realtek.com>, <shumingf@realtek.com>, <derek.fang@realtek.com>,
-	Jack Yu <jack.yu@realtek.com>
-Subject: [PATCH] ASoC: rt721-sdca: Adjust blindwrite flow to fix type
- detection issue
-Date: Tue, 29 Sep 2026 19:17:09 +0800
-Message-ID: <20260929111709.398548-1-jack.yu@realtek.com>
-X-Mailer: git-send-email 2.55.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Message-ID-Hash: 4QINTHXM6E3L5ZQTO255ZKQG3SXPQAJD
-X-Message-ID-Hash: 4QINTHXM6E3L5ZQTO255ZKQG3SXPQAJD
-X-MailFrom: jack.yu@realtek.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=CZcfjlD9;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=3XvHiPYD;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=yWsfB835;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=ZRIHWzyv
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 890F821C11;
+	Tue, 29 Sep 2026 13:10:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1790687427;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7tWC+Oy724WqUUyz6Q+GidZeg+BmYf3L3nKkwQ1FQcw=;
+	b=CZcfjlD9XDK9kWZkCjnIqDRVVfx7o8oJP2QOT6Ed/4X2nlIr+lYYeLoWH7GJijJ3jluRZd
+	4xhehJB96m3cJBEHIr6HduIYSRqC7mw60g7FK3R5YIQ3c2fL8EHua5qW3I1Q0vxqRD9iz1
+	E1LbvyBAYnafgsTlMj2QmG7xnAWoBKE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1790687427;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7tWC+Oy724WqUUyz6Q+GidZeg+BmYf3L3nKkwQ1FQcw=;
+	b=3XvHiPYDMSLu0Q+G5PNqSvRbiY+pFAY3YKDKNnEkAcm0XWwxlHgKckp0hupR8B8dbxQUr3
+	hYVQ1JRT2kcdFrCQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1790687423;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7tWC+Oy724WqUUyz6Q+GidZeg+BmYf3L3nKkwQ1FQcw=;
+	b=yWsfB835D1TmHm1l+nHOOoUPz6hiacBFk2Ln5HVv3ERJNwrD8zF4fGiYbL0sSQgbmHrcH6
+	+YdOXvnuXyzFu5dSGp8Qj5TahdeDQqc2i//Toc01OFPtuNmL4G4FIl9B0mliwTyZQHZ7f3
+	/xnq7SgEFR0vWjr+4iBo8c/h5pyg9wk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1790687423;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7tWC+Oy724WqUUyz6Q+GidZeg+BmYf3L3nKkwQ1FQcw=;
+	b=ZRIHWzyvbdvash2nIX/yA7qeA192TeKtYFVPt8EE7vNVH6qGTjPmwVypBUr5OQFNc9sc8/
+	SoKCLX2J6p0T4aAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 52C45136D1;
+	Tue, 29 Sep 2026 13:10:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id CYf9C7+4u2qPCAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Tue, 29 Sep 2026 13:10:23 +0000
+Date: Tue, 29 Sep 2026 15:10:14 +0200
+Message-ID: <87fqys19vt.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: dchristensen8 <dchristensen8@proton.me>
+Cc: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ALSA: hda/ca0132: Add Sound BlasterX AE-5 external RGB
+ LED strip support
+In-Reply-To: 
+ <eFYfxKMV2ei__fURd-elssegCIVmOuRDne6lj9PMaM2bEgnYkz7Tzf6JLrgEaPZtvrUC_wHnmnwaUZAOdg0uh24nt73FQqi6T65qvJebHJA=@proton.me>
+References: 
+ <eFYfxKMV2ei__fURd-elssegCIVmOuRDne6lj9PMaM2bEgnYkz7Tzf6JLrgEaPZtvrUC_wHnmnwaUZAOdg0uh24nt73FQqi6T65qvJebHJA=@proton.me>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-3.29 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.19)[-0.966];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid]
+Message-ID-Hash: 3KJDMNZX3R3ML4VMVG4ULRPNXS5MHWOQ
+X-Message-ID-Hash: 3KJDMNZX3R3ML4VMVG4ULRPNXS5MHWOQ
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -109,7 +181,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4QINTHXM6E3L5ZQTO255ZKQG3SXPQAJD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3KJDMNZX3R3ML4VMVG4ULRPNXS5MHWOQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,599 +190,243 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Jack Yu <jack.yu@realtek.com>
+On Mon, 28 Sep 2026 19:26:05 +0200,
+dchristensen8 wrote:
+> 
+>     Hi Takashi, Jaroslav,                                                                                             
+>                                                                                                                       
+>     Please find attached a patch adding support for the external addressable RGB LED strip header on the Creative Sound BlasterX AE-5 and AE-5 Plus.                                           
+>                                                                                                                       
+>     The patch is attached as a .patch file.                                                                                  
+>   
+>     The Sound BlasterX AE-5 and AE-5 Plus expose a 3-pin 5V addressable RGB header driven directly by the CA0113 PCIe-to-HD-Audio bridge. Rather than using the CA0132 DSP or MMIO GPIO, the CA0113 contains an autonomous HDA link sniffer that snoops a designated HDA DMA playback stream, extracts the 24-bit GRB color payload, and serializes it as 800 kHz single-wire NRZ pulses to the strip (WS2812B protocol).
+>   
+>     Expose the strip through a sysfs interface on the codec device:
+>     ae5_strip_leds: read current colors write a comma-deparated #RRGGBB or R,G,B list (a single color replicates across all active LEDs) 
+> 
+> ae5_strip_num_leds: get or set the active LED count (1..100)
+>   
+>     Writes allocate an idle HDA playback stream, format a 32 KB DMA buffer populated with repeating WS2812 frames (5-word zero preamble, 4 audio words per LED, and reset gap), configure the CA0113 BAR2 serializers and stream-tag pin mux, and pulse the stream long enough for the reset latch to fire. Access is serialized with a per-spec mutex, and the attributes are only registered on QUIRK_AE5 devices.
+>   
+>     Document the new sysfs attributes in documentation/ABI/testing.
+>   
+>     Signed-off-by: Devin Christensen <dchristensen8@proton.me>
+>     Testing & Subsystem Context:
+>      - Verified on physical Sound BlasterX AE-5 hardware.
+>      - Tested continuous 60 FPS streaming and dynamic strip resizing (10 -> 7 -> 10 LEDs)
+>        via the OpenRGB effects engine (MR: https://gitlab.com/CalcProgrammer1/OpenRGB/-/merge_requests/3658).         
+>      - Verified concurrent audio playback and LED updates without dropped samples or xruns.
+>      - Built clean against tiwai/sound for-next (commit 72107104d4f5).
+>      - Passes scripts/checkpatch.pl with 0 errors and 0 checks.
 
-Original blindwrite flow fail to support nokia type detection,
-but it's works normally in iphone type detection.
-We adjust the register settings to support both type detection.
+Thanks for the patch.
 
-Signed-off-by: Jack Yu <jack.yu@realtek.com>
----
- sound/soc/codecs/rt721-sdca-sdw.c |  40 ++++-
- sound/soc/codecs/rt721-sdca-sdw.h |   8 +
- sound/soc/codecs/rt721-sdca.c     | 285 ++++++++++++++++++++++++++----
- sound/soc/codecs/rt721-sdca.h     |  27 +++
- 4 files changed, 324 insertions(+), 36 deletions(-)
+It's an interesting stuff (rather surprising that they (ab)use
+HD-audio for such an interface :)
 
-diff --git a/sound/soc/codecs/rt721-sdca-sdw.c b/sound/soc/codecs/rt721-sdca-sdw.c
-index a8c7b42898db..7ab7b4ae801f 100644
---- a/sound/soc/codecs/rt721-sdca-sdw.c
-+++ b/sound/soc/codecs/rt721-sdca-sdw.c
-@@ -76,9 +76,16 @@ static bool rt721_sdca_mbq_readable_register(struct device *dev, unsigned int re
- {
- 	switch (reg) {
- 	case 0x0900004 ... 0x0900009:
-+	case 0x0910000:
-+	case 0x0910001:
-+	case 0x0910002:
-+	case 0x0910003:
-+	case 0x0910202:
- 	case 0x0a00005:
- 	case 0x0c00005:
- 	case 0x0d00014:
-+	case 0x0f00004:
-+	case 0x0f00005:
- 	case 0x0310100:
- 	case 0x2000000 ... 0x2000003:
- 	case 0x2000013:
-@@ -87,18 +94,25 @@ static bool rt721_sdca_mbq_readable_register(struct device *dev, unsigned int re
- 	case 0x200003c:
- 	case 0x2000046:
- 	case 0x5810000:
-+	case 0x5810033:
- 	case 0x5810036:
- 	case 0x5810037:
- 	case 0x5810038:
- 	case 0x5810039:
-+	case 0x581003a:
-+	case 0x581003b:
- 	case 0x5810100:
--	case 0x5b10018:
--	case 0x5b10019:
-+	case 0x5b10000 ... 0x5b10026:
-+	case 0x5b10100 ... 0x5b10103:
-+	case 0x5f00010:
-+	case 0x5f00043:
- 	case 0x5f00045:
- 	case 0x5f00048:
- 	case 0x6100000:
-+	case 0x6100002:
- 	case 0x6100005:
- 	case 0x6100006:
-+	case 0x6100007:
- 	case 0x610000d:
- 	case 0x6100010:
- 	case 0x6100011:
-@@ -152,6 +166,7 @@ static bool rt721_sdca_mbq_volatile_register(struct device *dev, unsigned int re
- 	case 0x0a00005:
- 	case 0x0c00005:
- 	case 0x0d00014:
-+	case 0x0f00004:
- 	case 0x2000000:
- 	case 0x200000d:
- 	case 0x2000019:
-@@ -168,9 +183,11 @@ static bool rt721_sdca_mbq_volatile_register(struct device *dev, unsigned int re
- 	case 0x5810037:
- 	case 0x5810038:
- 	case 0x5810039:
-+	case 0x581003a:
-+	case 0x581003b:
- 	case 0x5810100:
--	case 0x5b10018:
--	case 0x5b10019:
-+	case 0x5b10000 ... 0x5b10016:
-+	case 0x5b10018 ... 0x5b10026:
- 	case 0x6100006:
- 		return true;
- 	default:
-@@ -318,6 +335,11 @@ static int rt721_sdca_interrupt_callback(struct sdw_slave *slave,
- 	int count = 0, retry = 3;
- 	unsigned int sdca_cascade, scp_sdca_stat1, scp_sdca_stat2 = 0;
- 
-+	if (rt721->imp_sensing_ongoing && rt721->wf_id == RT721_S)
-+		dev_info(&slave->dev,
-+			"%s: IRQ arrived DURING impedance sensing\n",
-+			__func__);
-+
- 	if (cancel_delayed_work_sync(&rt721->jack_detect_work)) {
- 		dev_warn(&slave->dev, "%s the pending delayed_work was cancelled", __func__);
- 		/* avoid the HID owner doesn't change to device */
-@@ -395,9 +417,15 @@ static int rt721_sdca_interrupt_callback(struct sdw_slave *slave,
- 	ret = sdw_read_no_pm(rt721->slave, SDW_SCP_SDCA_INT1);
- 	ret = sdw_read_no_pm(rt721->slave, SDW_SCP_SDCA_INT2);
- 
--	if (status->sdca_cascade && !rt721->disable_irq)
-+	if (status->sdca_cascade && !rt721->disable_irq) {
-+		unsigned int delay_ms = 280;
-+
-+		if (rt721->imp_sensing_ongoing && rt721->wf_id == RT721_S)
-+			delay_ms = 800;
-+
- 		mod_delayed_work(system_power_efficient_wq,
--			&rt721->jack_detect_work, msecs_to_jiffies(280));
-+			&rt721->jack_detect_work, msecs_to_jiffies(delay_ms));
-+	}
- 
- 	mutex_unlock(&rt721->disable_irq_lock);
- 
-diff --git a/sound/soc/codecs/rt721-sdca-sdw.h b/sound/soc/codecs/rt721-sdca-sdw.h
-index 13d6227f3392..0f8a7e58499f 100644
---- a/sound/soc/codecs/rt721-sdca-sdw.h
-+++ b/sound/soc/codecs/rt721-sdca-sdw.h
-@@ -80,18 +80,26 @@ static const struct reg_default rt721_sdca_reg_defaults[] = {
- };
- 
- static const struct reg_default rt721_sdca_mbq_defaults[] = {
-+	{ 0x0900006, 0xe000 },
- 	{ 0x0900007, 0xc004 },
-+	{ 0x0910000, 0x00a1 },
-+	{ 0x0910001, 0x1256 },
-+	{ 0x0910002, 0x0000 },
-+	{ 0x0910003, 0x0000 },
-+	{ 0x0c00005, 0xf140 },
- 	{ 0x2000001, 0x0000 },
- 	{ 0x2000002, 0x0000 },
- 	{ 0x2000003, 0x0000 },
- 	{ 0x2000013, 0x8001 },
- 	{ 0x200003c, 0x0000 },
- 	{ 0x2000046, 0x3400 },
-+	{ 0x5b10017, 0x1b07 },
- 	{ 0x5f00044, 0x6040 },
- 	{ 0x5f00045, 0x3333 },
- 	{ 0x5f00048, 0x0000 },
- 	{ 0x6100005, 0x0005 },
- 	{ 0x6100006, 0x0000 },
-+	{ 0x6100007, 0x0007 },
- 	{ 0x610000d, 0x0051 },
- 	{ 0x6100010, 0x0180 },
- 	{ 0x6100011, 0x0000 },
-diff --git a/sound/soc/codecs/rt721-sdca.c b/sound/soc/codecs/rt721-sdca.c
-index ef003c93f533..8d315ca3448d 100644
---- a/sound/soc/codecs/rt721-sdca.c
-+++ b/sound/soc/codecs/rt721-sdca.c
-@@ -27,11 +27,68 @@
- #include "rt721-sdca.h"
- #include "rt-sdw-common.h"
- 
-+static void rt721_impedance_sensing(struct rt721_sdca_priv *rt721)
-+{
-+	unsigned int read_imp;
-+	int i, loop_cnt = 25;
-+	unsigned long cal_T;
-+	bool spk = false;
-+
-+	rt721->imp_sensing_ongoing = true;
-+
-+	rt_sdca_index_update_bits(rt721->mbq_regmap, RT721_HDA_SDCA_FLOAT,
-+			RT721_HDA_LEGACY_UAJ_CTL, 0x0048, 0x0000);
-+	rt_sdca_index_update_bits(rt721->mbq_regmap, RT721_CAP_PORT_CTRL,
-+			RT721_HP_AMP_2CH_CAL4, 0x0003, 0x0003);
-+
-+	cal_T = jiffies + msecs_to_jiffies(100);
-+
-+	for (i = 0; i < loop_cnt; i++) {
-+		regmap_read(rt721->mbq_regmap, RT721_IMP_SEN_CTRL13, &read_imp);
-+		read_imp = (read_imp >> 12) & 0xf;
-+		dev_dbg(&rt721->slave->dev, "%s, loop:%d, read_imp=0x%x\n",
-+			__func__, i, read_imp);
-+
-+		if (read_imp == 0x6 || read_imp == 0x7 ||
-+			read_imp == 0x8 || read_imp == 0x9) {
-+			spk = true;
-+			break;
-+		}
-+
-+		if (read_imp != 0 || i == loop_cnt - 1 ||
-+			time_after(jiffies, cal_T))
-+			break;
-+
-+		usleep_range(20000, 21000);
-+	}
-+
-+	if (spk) {
-+		rt_sdca_index_update_bits(rt721->mbq_regmap, RT721_CBJ_CTRL,
-+			RT721_CBJ_A0_GAT_CTRL1, 0x8c00, 0x8c00);
-+		usleep_range(50000, 51000);
-+		rt_sdca_index_update_bits(rt721->mbq_regmap, RT721_CBJ_CTRL,
-+			RT721_CBJ_A0_GAT_CTRL1, 0x8000, 0x0000);
-+	} else {
-+		rt_sdca_index_update_bits(rt721->mbq_regmap, RT721_CBJ_CTRL,
-+			RT721_CBJ_A0_GAT_CTRL1, 0x8c00, 0x8000);
-+		usleep_range(50000, 51000);
-+		rt_sdca_index_update_bits(rt721->mbq_regmap, RT721_CBJ_CTRL,
-+			RT721_CBJ_A0_GAT_CTRL1, 0x8000, 0x0000);
-+	}
-+
-+	rt_sdca_index_update_bits(rt721->mbq_regmap, RT721_HDA_SDCA_FLOAT,
-+			RT721_HDA_LEGACY_UAJ_CTL, 0x0048, 0x0048);
-+	rt721->int_cnt = 1;
-+}
-+
- static void rt721_sdca_jack_detect_handler(struct work_struct *work)
- {
- 	struct rt721_sdca_priv *rt721 =
- 		container_of(work, struct rt721_sdca_priv, jack_detect_work.work);
-+	unsigned int sta_mode = 0;
- 	int btn_type = 0;
-+	int retry, retry_loop = 40;
-+	int real_JD;
- 
- 	if (!rt721->hs_jack)
- 		return;
-@@ -39,12 +96,92 @@ static void rt721_sdca_jack_detect_handler(struct work_struct *work)
- 	if (!rt721->component->card || !rt721->component->card->instantiated)
- 		return;
- 
--	/* SDW_SCP_SDCA_INT_SDCA_6 is used for jack detection */
--	if (rt721->scp_sdca_stat1 & SDW_SCP_SDCA_INT_SDCA_0) {
--		rt721->jack_type = rt_sdca_headset_detect(rt721->regmap,
--							RT721_SDCA_ENT_GE49);
--		if (rt721->jack_type < 0)
-+	if (rt721->wf_id == RT721_S) {
-+		if (rt721->imp_sensing_ongoing) {
-+			dev_dbg(&rt721->slave->dev,
-+				"SKIP, imp_sensing_ongoing\n");
-+			return;
-+		}
-+
-+		rt_sdca_index_read(rt721->mbq_regmap, RT721_JD_CTRL,
-+			RT721_JD_1PIN_GAT_STA1, &real_JD);
-+		real_JD &= 0x1;
-+		if (real_JD == 0x0)
-+			rt721->imp_sensing_done = false;
-+
-+		if ((rt721->scp_sdca_stat1 & SDW_SCP_SDCA_INT_SDCA_0) &&
-+			!(rt721->scp_sdca_stat2 & SDW_SCP_SDCA_INT_SDCA_8) &&
-+			real_JD == 0x1 && rt721->int_cnt == 0 &&
-+			!rt721->imp_sensing_done && rt721->jack_type != 0) {
-+			dev_info(&rt721->slave->dev,
-+				"%s: resume with jack present, reuse jack_type=%d\n",
-+				__func__, rt721->jack_type);
-+			rt721->imp_sensing_done = true;
-+			rt721->last_real_JD = real_JD;
-+			snd_soc_jack_report(rt721->hs_jack, rt721->jack_type,
-+				SND_JACK_HEADSET |
-+				SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+				SND_JACK_BTN_2 | SND_JACK_BTN_3);
-+			return;
-+		}
-+
-+		if ((rt721->scp_sdca_stat1 & SDW_SCP_SDCA_INT_SDCA_0) &&
-+			!(rt721->scp_sdca_stat2 & SDW_SCP_SDCA_INT_SDCA_8) &&
-+			real_JD == rt721->last_real_JD && real_JD == 0x1 &&
-+			rt721->int_cnt == 0 && rt721->imp_sensing_done &&
-+			rt721->jack_type != 0) {
-+			dev_info(&rt721->slave->dev,
-+				"%s: state settled (JD=%d), skip redetect\n",
-+				__func__, real_JD);
-+			rt721->last_real_JD = real_JD;
- 			return;
-+		}
-+		rt721->last_real_JD = real_JD;
-+
-+		if ((rt721->scp_sdca_stat1 & SDW_SCP_SDCA_INT_SDCA_0) &&
-+			!(rt721->scp_sdca_stat2 & SDW_SCP_SDCA_INT_SDCA_8) &&
-+			rt721->int_cnt == 0 && real_JD == 0x1 &&
-+			!rt721->imp_sensing_done) {
-+			dev_info(&rt721->slave->dev,
-+				"%s: BRANCH impedance_sensing (SDCA_0 set, fresh pass)\n",
-+				__func__);
-+			rt721->imp_sensing_done = true;
-+			rt721_impedance_sensing(rt721);
-+			rt721->imp_sensing_ongoing = false;
-+			return;
-+		}
-+
-+		/* SDW_SCP_SDCA_INT_SDCA_0 is used for jack detection */
-+		if ((rt721->scp_sdca_stat1 & SDW_SCP_SDCA_INT_SDCA_0) &&
-+			(rt721->int_cnt == 1 || real_JD == 0x0)) {
-+			if (real_JD == 0x1) {
-+				for (retry = 0; retry < retry_loop; retry++) {
-+					regmap_read(rt721->regmap,
-+						SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC,
-+							RT721_SDCA_ENT_GE49,
-+							RT721_SDCA_CTL_DETECTED_MODE, 0),
-+						&sta_mode);
-+					if (sta_mode)
-+						break;
-+					usleep_range(20000, 21000);
-+				}
-+				dev_dbg(&rt721->slave->dev,
-+					"%s: detected_mode settled=0x%x, %d retries\n",
-+					__func__, sta_mode, retry);
-+			}
-+			rt721->jack_type = rt_sdca_headset_detect(rt721->regmap,
-+								RT721_SDCA_ENT_GE49);
-+			rt721->int_cnt = 0;
-+			if (rt721->jack_type < 0)
-+				return;
-+		}
-+	} else {
-+		if (rt721->scp_sdca_stat1 & SDW_SCP_SDCA_INT_SDCA_0) {
-+			rt721->jack_type = rt_sdca_headset_detect(rt721->regmap,
-+							RT721_SDCA_ENT_GE49);
-+			if (rt721->jack_type < 0)
-+				return;
-+		}
- 	}
- 
- 	/* SDW_SCP_SDCA_INT_SDCA_8 is used for button detection */
-@@ -253,6 +390,9 @@ static void rt721_sdca_amp_preset(struct rt721_sdca_priv *rt721)
- 
- static void rt721_sdca_jack_preset(struct rt721_sdca_priv *rt721)
- {
-+	unsigned int calib_val, calib_val2, calib_tmp = 0, calib_tmp2 = 0;
-+	unsigned int i, calib_loop = 10;
-+	unsigned int wait_calib_loop = 10;
- 	unsigned int jack_func_status;
- 	struct device *dev = &rt721->slave->dev;
- 
-@@ -268,6 +408,10 @@ static void rt721_sdca_jack_preset(struct rt721_sdca_priv *rt721)
- 			RT721_VREF1_HV_CTRL1, 0xe000);
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_VENDOR_ANA_CTL,
- 			RT721_MISC_POWER_CTL31, 0x8007);
-+		rt_sdca_index_write(rt721->mbq_regmap, RT721_CBJ_CTRL,
-+			RT721_CBJ_A0_GAT_CTRL1, 0xae05);
-+		rt_sdca_index_write(rt721->mbq_regmap, RT721_VENDOR_ANA_CTL,
-+			RT721_UAJ_TOP_TCON13, 0x6048);
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_HDA_SDCA_FLOAT,
- 			RT721_GE_REL_CTRL1, 0x8011);
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_HDA_SDCA_FLOAT,
-@@ -279,37 +423,30 @@ static void rt721_sdca_jack_preset(struct rt721_sdca_priv *rt721)
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_HDA_SDCA_FLOAT,
- 			RT721_UMP_HID_CTRL5, 0x0c12);
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_JD_CTRL,
--			RT721_JD_1PIN_GAT_CTRL2, 0xc002);
-+			RT721_JD_1PIN_GAT_CTRL2, 0xc004);
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_RC_CALIB_CTRL,
- 			RT721_RC_CALIB_CTRL0, 0x0b00);
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_RC_CALIB_CTRL,
- 			RT721_RC_CALIB_CTRL0, 0x0b40);
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_VENDOR_ANA_CTL,
--			RT721_UAJ_TOP_TCON14, 0x3333);
--		regmap_write(rt721->mbq_regmap, 0x5810035, 0x0036);
--		regmap_write(rt721->mbq_regmap, 0x5810030, 0xee00);
--		rt_sdca_index_write(rt721->mbq_regmap, RT721_CAP_PORT_CTRL,
--			RT721_HP_AMP_2CH_CAL1, 0x0140);
--		regmap_write(rt721->mbq_regmap, 0x5810000, 0x0021);
--		regmap_write(rt721->mbq_regmap, 0x5810000, 0x8021);
-+			RT721_UAJ_TOP_TCON14, 0x333b);
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_CAP_PORT_CTRL,
- 			RT721_HP_AMP_2CH_CAL18, 0x5522);
--		regmap_write(rt721->mbq_regmap, 0x5b10007, 0x2000);
--		regmap_write(rt721->mbq_regmap, 0x5B10017, 0x1b0f);
--		rt_sdca_index_write(rt721->mbq_regmap, RT721_CBJ_CTRL,
--			RT721_CBJ_A0_GAT_CTRL1, 0x2205);
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_CAP_PORT_CTRL,
--			RT721_HP_AMP_2CH_CAL4, 0xa105);
-+			RT721_HP_AMP_2CH_CAL1, 0x4540);
-+		rt_sdca_index_write(rt721->mbq_regmap, RT721_CAP_PORT_CTRL,
-+			RT721_HP_AMP_2CH_CAL4, 0xa107);
-+		regmap_write(rt721->mbq_regmap, 0x5B10017, 0x180f);
-+		rt_sdca_index_write(rt721->mbq_regmap, RT721_CAP_PORT_CTRL,
-+			RT721_HP_AMP_2CH_CAL27, 0x4400);
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_VENDOR_ANA_CTL,
--			RT721_UAJ_TOP_TCON14, 0x3b33);
-+			RT721_UAJ_TOP_TCON14, 0x3b3b);
- 		regmap_write(rt721->mbq_regmap, 0x310400, 0x3043);
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_VENDOR_ANA_CTL,
--			RT721_UAJ_TOP_TCON14, 0x3f33);
--		rt_sdca_index_write(rt721->mbq_regmap, RT721_VENDOR_ANA_CTL,
--			RT721_UAJ_TOP_TCON13, 0x6048);
-+			RT721_UAJ_TOP_TCON14, 0x3f3b);
- 		regmap_write(rt721->mbq_regmap, 0x310401, 0x3000);
- 		regmap_write(rt721->mbq_regmap, 0x310402, 0x1b00);
--		regmap_write(rt721->mbq_regmap, 0x310300, 0x000f);
-+		regmap_write(rt721->mbq_regmap, 0x310300, 0x000c);
- 		regmap_write(rt721->mbq_regmap, 0x310301, 0x3000);
- 		regmap_write(rt721->mbq_regmap, 0x310302, 0x1b00);
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_VENDOR_ANA_CTL,
-@@ -322,6 +459,12 @@ static void rt721_sdca_jack_preset(struct rt721_sdca_priv *rt721)
- 			RT721_MBIAS_LV_CTRL2, 0x6677);
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_ANA_POW_PART,
- 			RT721_VREF2_LV_CTRL1, 0x7600);
-+		regmap_write(rt721->mbq_regmap, 0x0910000, 0x00a1);
-+		rt_sdca_index_write(rt721->mbq_regmap, RT721_VENDOR_ANA_CTL,
-+			RT721_UAJ_TOP_TCON13, 0x6048);
-+		rt_sdca_index_write(rt721->mbq_regmap, RT721_BOOST_CTRL,
-+			RT721_BST_4CH_TOP_GATING_CTRL1, 0x002a);
-+
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_HDA_SDCA_FLOAT,
- 			RT721_ENT_FLOAT_CTL2, 0x1234);
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_HDA_SDCA_FLOAT,
-@@ -330,13 +473,93 @@ static void rt721_sdca_jack_preset(struct rt721_sdca_priv *rt721)
- 			RT721_ENT_FLOAT_CTL1, 0x4040);
- 		rt_sdca_index_write(rt721->mbq_regmap, RT721_HDA_SDCA_FLOAT,
- 			RT721_ENT_FLOAT_CTL4, 0x1201);
--		rt_sdca_index_write(rt721->mbq_regmap, RT721_BOOST_CTRL,
--			RT721_BST_4CH_TOP_GATING_CTRL1, 0x002a);
--		regmap_write(rt721->regmap, 0x2f58, 0x07);
--		regmap_write(rt721->regmap, 0x2f51, 0x00);
--		rt_sdca_index_write(rt721->mbq_regmap, RT721_HDA_SDCA_FLOAT,
--			RT721_MISC_CTL, 0x0004);
--		/* clear flag */
-+		regmap_write(rt721->regmap, 0x2f58, 0x01);
-+		regmap_write(rt721->regmap, 0x2f59, 0x01);
-+		rt_sdca_index_write(rt721->mbq_regmap, RT721_VENDOR_ANA_CTL,
-+			RT721_UAJ_TOP_TCON13, 0x6040);
-+		regmap_write(rt721->mbq_regmap, 0x0910001, 0x1256);
-+		regmap_write(rt721->mbq_regmap, 0x0910002, 0x0000);
-+		regmap_write(rt721->mbq_regmap, 0x0910003, 0x0000);
-+		regmap_write(rt721->mbq_regmap, 0x0910004, 0x7788);
-+		regmap_update_bits(rt721->mbq_regmap, RT721_ADC_BIAS_CTRL3,
-+			0x0004, 0x0004);
-+		rt_sdca_index_write(rt721->mbq_regmap, RT721_MIC_BIAS_CTRL,
-+			RT721_MIC_BIAS_TOP_CTRL2, 0xcc04);
-+		rt_sdca_index_write(rt721->mbq_regmap, RT721_CHARGE_PUMP_CTRL,
-+			RT721_CHGPMP_GAT_CTRL1, 0x0000);
-+		for (i = 0; i < wait_calib_loop; i++) {
-+			regmap_read(rt721->mbq_regmap, 0x0581003a, &calib_val);
-+			regmap_read(rt721->mbq_regmap, 0x0581003b, &calib_val2);
-+			calib_val &= 0x1f;
-+			calib_val2 &= 0xffff;
-+			if (calib_val == 0 || calib_val2 == 0 || calib_val != calib_tmp ||
-+				calib_val2 != calib_tmp2) {
-+				dev_dbg(&rt721->slave->dev, "%s: Keep calibration\n", __func__);
-+				usleep_range(10000, 11000);
-+			} else {
-+				dev_dbg(&rt721->slave->dev, "%s: Calibration done\n", __func__);
-+				break;
-+			}
-+			calib_tmp = calib_val;
-+			calib_tmp2 = calib_val2;
-+		}
-+		rt_sdca_index_write(rt721->mbq_regmap, RT721_CAP_PORT_CTRL,
-+			RT721_HP_AMP_2CH_CAL2, 0xd000);
-+		rt_sdca_index_write(rt721->mbq_regmap, RT721_VENDOR_ANA_CTL,
-+			RT721_UAJ_TOP_TCON_ANY, 0xc820);
-+			rt_sdca_index_write(rt721->mbq_regmap, RT721_CAP_PORT_CTRL,
-+				RT721_HP_AMP_2CH_CAL1, 0x0540);
-+		regmap_write(rt721->mbq_regmap, 0x5810030, 0xee00);
-+		regmap_write(rt721->mbq_regmap, 0x5810033, 0x6000);
-+		regmap_write(rt721->mbq_regmap, 0x5810035, 0x0036);
-+		regmap_write(rt721->mbq_regmap, 0x5810000, 0x0020);
-+		regmap_write(rt721->mbq_regmap, 0x5810000, 0x0021);
-+		regmap_write(rt721->mbq_regmap, 0x5810000, 0x8021);
-+		for (i = 0; i < calib_loop; i++) {
-+			regmap_read(rt721->mbq_regmap, 0x0581003a, &calib_val);
-+			regmap_read(rt721->mbq_regmap, 0x0581003b, &calib_val2);
-+			calib_val &= 0x1f;
-+			calib_val2 &= 0xffff;
-+			if (calib_val == 0 || calib_val2 == 0 || calib_val != calib_tmp ||
-+				calib_val2 != calib_tmp2) {
-+				dev_dbg(&rt721->slave->dev, "%s: Keep calibration\n", __func__);
-+				usleep_range(10000, 11000);
-+			} else {
-+				dev_dbg(&rt721->slave->dev, "%s: Calibration done\n", __func__);
-+				break;
-+			}
-+			calib_tmp = calib_val;
-+			calib_tmp2 = calib_val2;
-+		}
-+
-+		rt_sdca_index_write(rt721->mbq_regmap, RT721_CAP_PORT_CTRL,
-+			RT721_HP_AMP_2CH_CAL1, 0x4540);
-+		rt_sdca_index_write(rt721->mbq_regmap, RT721_CBJ_CTRL,
-+			RT721_CBJ_A0_GAT_CTRL1, 0x2e05);
-+		regmap_write(rt721->regmap, 0x40400188, 0x0);
-+		regmap_write(rt721->regmap, 0x40400688, 0x0);
-+		regmap_update_bits(rt721->regmap, 0x2f51, BIT(6), 0);
-+		regmap_update_bits(rt721->regmap, 0x2f51, BIT(5), 0);
-+		rt_sdca_index_update_bits(rt721->mbq_regmap, RT721_HDA_SDCA_FLOAT,
-+			RT721_MISC_CTL, BIT(1), 0);
-+		rt_sdca_index_update_bits(rt721->mbq_regmap, RT721_HDA_SDCA_FLOAT,
-+			RT721_MISC_CTL, BIT(0), 0);
-+		regmap_update_bits(rt721->regmap, 0x2f51, BIT(4), 0);
-+		regmap_update_bits(rt721->regmap, 0x2f51, BIT(3), 0);
-+		regmap_update_bits(rt721->regmap, 0x2f51, BIT(2), 0);
-+		regmap_update_bits(rt721->regmap, 0x2f51, BIT(1), 0);
-+		regmap_update_bits(rt721->regmap, 0x2f51, BIT(0), 0);
-+
-+		rt_sdca_index_update_bits(rt721->mbq_regmap, RT721_HDA_SDCA_FLOAT,
-+			RT721_HDA_LEGACY_UAJ_CTL, 0x1c00, 0x0000);
-+		rt_sdca_index_update_bits(rt721->mbq_regmap, RT721_JD_CTRL,
-+			RT721_JD_1PIN_GAT_CTRL1, 0xc000, 0xc000);
-+		regmap_update_bits(rt721->mbq_regmap, RT721_IMP_SEN_CTRL11,
-+			0x001c, 0x0004);
-+		rt_sdca_index_update_bits(rt721->mbq_regmap, RT721_JD_CTRL,
-+			RT721_JD_1PIN_GAT_CTRL2, 0x0007, 0x0004);
-+		rt_sdca_index_update_bits(rt721->mbq_regmap, RT721_CBJ_CTRL,
-+			RT721_CBJ_A0_GAT_CTRL1, 0x000f, 0x0003);
- 		regmap_write(rt721->regmap,
- 			SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT721_SDCA_ENT0,
- 			RT721_SDCA_CTL_FUNC_STATUS, 0), FUNCTION_NEEDS_INITIALIZATION);
-@@ -1704,6 +1927,8 @@ int rt721_sdca_io_init(struct device *dev, struct sdw_slave *slave)
- 	int val;
- 
- 	rt721->disable_irq = false;
-+	rt721->imp_sensing_done = false;
-+	rt721->last_real_JD = -1;
- 
- 	if (rt721->hw_init)
- 		return 0;
-diff --git a/sound/soc/codecs/rt721-sdca.h b/sound/soc/codecs/rt721-sdca.h
-index 16cf40cd88de..cc3bce0ba517 100644
---- a/sound/soc/codecs/rt721-sdca.h
-+++ b/sound/soc/codecs/rt721-sdca.h
-@@ -29,6 +29,10 @@ struct  rt721_sdca_priv {
- 	/* For Headset jack & Headphone */
- 	unsigned int scp_sdca_stat1;
- 	unsigned int scp_sdca_stat2;
-+	unsigned int int_cnt;
-+	bool imp_sensing_ongoing;
-+	bool imp_sensing_done;
-+	int last_real_JD;
- 	struct snd_soc_jack *hs_jack;
- 	struct delayed_work jack_detect_work;
- 	struct delayed_work jack_btn_check_work;
-@@ -54,8 +58,10 @@ struct rt721_sdca_dmic_kctrl_priv {
- /* NID */
- #define RT721_ANA_POW_PART			0x01
- #define RT721_DAC_CTRL				0x04
-+#define RT721_MIC_BIAS_CTRL			0x08
- #define RT721_JD_CTRL				0x09
- #define RT721_CBJ_CTRL				0x0a
-+#define RT721_CHARGE_PUMP_CTRL		0x0b
- #define RT721_CAP_PORT_CTRL			0x0c
- #define RT721_CLASD_AMP_CTRL			0x0d
- #define RT721_BOOST_CTRL			0x0f
-@@ -81,17 +87,28 @@ struct rt721_sdca_dmic_kctrl_priv {
- #define RT721_DAC_2CH_CTRL3			0x02
- #define RT721_DAC_2CH_CTRL4			0x03
- 
-+/* Index (NID:08h) */
-+#define RT721_MIC_BIAS_TOP_CTRL2		0x02
-+
- /* Index (NID:09h) */
-+#define RT721_JD_1PIN_TOP_CTRL3			0x04
-+#define RT721_JD_1PIN_GAT_CTRL1			0x06
- #define RT721_JD_1PIN_GAT_CTRL2			0x07
-+#define RT721_JD_1PIN_GAT_STA1			0x09
- 
- /* Index (NID:0ah) */
- #define RT721_CBJ_A0_GAT_CTRL1			0x04
- #define RT721_CBJ_A0_GAT_CTRL2			0x05
- 
-+/* Index (NID:0bh) */
-+#define RT721_CHGPMP_GAT_CTRL1			0x01
-+
- /* Index (NID:0Ch) */
- #define RT721_HP_AMP_2CH_CAL1			0x05
-+#define RT721_HP_AMP_2CH_CAL2			0x06
- #define RT721_HP_AMP_2CH_CAL4			0x08
- #define RT721_HP_AMP_2CH_CAL18			0x1b
-+#define RT721_HP_AMP_2CH_CAL27			0x24
- 
- /* Index (NID:0dh) */
- #define RT721_CLASD_AMP_2CH_CAL			0x14
-@@ -129,10 +146,13 @@ struct rt721_sdca_dmic_kctrl_priv {
- 
- /* Index (NID:5fh) */
- #define RT721_MISC_POWER_CTL0			0x00
-+#define RT721_MISC_POWER_CTL10			0x10
- #define RT721_MISC_POWER_CTL31			0x31
-+#define RT721_UAJ_TOP_TCON12			0x43
- #define RT721_UAJ_TOP_TCON13			0x44
- #define RT721_UAJ_TOP_TCON14			0x45
- #define RT721_UAJ_TOP_TCON17			0x48
-+#define RT721_UAJ_TOP_TCON_ANY			0x70
- 
- /* Index (NID:61h) */
- #define RT721_HDA_LEGACY_MUX_CTL0		0x00
-@@ -181,6 +201,13 @@ struct rt721_sdca_dmic_kctrl_priv {
- #define RT721_BUF_ADDR_HID1			0x44030000
- #define RT721_BUF_ADDR_HID2			0x44030020
- 
-+/* Impedance Sensing Control */
-+#define RT721_IMP_SEN_CTRL11		0x5b10017
-+#define RT721_IMP_SEN_CTRL13		0x5b1001b
-+
-+/* ADC Bias Control 3 */
-+#define RT721_ADC_BIAS_CTRL3		0x0910202
-+
- /* RT721 SDCA Control - function number */
- #define FUNC_NUM_JACK_CODEC			0x01
- #define FUNC_NUM_MIC_ARRAY			0x02
--- 
-2.55.0
+Through a quick glance, most of the code looks OK.
 
+So the question is rather the interface -- is the sysfs the best
+choice for this kind of display controls?  The implementation can be
+refactored at any time, but the interface must be set solid, so that's
+the most important question to be clarified.
+
+About the code:
+
+>  /*
+> - * Setup default parameters for the Sound BlasterX AE-5 DSP.
+> + * Sound BlasterX AE-5 External WS2812B RGB LED Strip Transport
+>   */
+> +static void ae5_strip_encode_24(u32 u, u32 *words)
+> +{
+> +	/* Bit-for-bit exact encoding matching CtxHda.sys FUN_00042944:
+> +	 * 24-bit pixel -> 4 x 32-bit audio words (6 bits per word).
+> +	 * Hardware audio serializer transmits MSB first (bits 31 down to 0).
+> +	 * For word i (i8 = 23, 17, 11, 5), bit_idx 0..5 (MSB to LSB within the word)
+> +	 * is placed at n = 29 - bit_idx * 4 (bits 29, 25, 21, 17, 13, 9):
+> +	 *   out |= (bit << n) | ((bit | 2) << (n + 1))
+> +	 * Bit 0 -> 0b010 (375ns high, 1042ns low)
+> +	 * Bit 1 -> 0b111 (1083ns high, 333ns low)
+> +	 */
+> +	int i8 = 23;
+> +	int i;
+> +
+> +	for (i = 0; i < 4; i++) {
+> +		u32 out = 0;
+> +		int bit_idx;
+> +
+> +		for (bit_idx = 0; bit_idx < 6; bit_idx++) {
+> +			int bit = (u >> (i8 - bit_idx)) & 1;
+> +			int n = 29 - bit_idx * 4;
+> +
+> +			out |= (u32)(bit << n) | ((u32)(bit | 2) << (n + 1));
+> +		}
+> +		words[i] = out;
+> +		i8 -= 6;
+> +	}
+
+I guess some BIT() macro or such could help in a bit cleaner form.
+
+
+> +static struct hdac_stream *ae5_strip_find_stream(struct hda_codec *codec)
+> +{
+> +	struct ca0132_spec *spec = codec->spec;
+> +	struct hdac_bus *bus = &codec->bus->core;
+> +	struct hdac_stream *s, *dsp = NULL, *first = NULL;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&bus->reg_lock, flags);
+> +	list_for_each_entry(s, &bus->stream_list, list) {
+> +		if (s->direction != SNDRV_PCM_STREAM_PLAYBACK)
+> +			continue;
+> +		if (s->running || s->locked)
+> +			continue;
+> +		if (!first)
+> +			first = s;
+> +		/* The DSP DMA consumes the DSP-loader stream (tag in dsp_stream_id). */
+> +		if (spec->dsp_stream_id && s->stream_tag == spec->dsp_stream_id)
+> +			dsp = s;
+> +	}
+> +	spin_unlock_irqrestore(&bus->reg_lock, flags);
+
+Try to use guard() instead of manual lock/unlock.
+
+
+> +/*
+> + * Caller must hold spec->ae5_strip_mutex.
+> + */
+
+You can put a lockdep assert to assure that in the actual code, too.
+
+> +static int ae5_strip_send_frame(struct hda_codec *codec, const u32 *grb_colors, int num_leds)
+> +{
+> +	struct ca0132_spec *spec = codec->spec;
+> +	struct snd_dma_buffer dmab;
+> +	struct hdac_stream *hstr = NULL;
+> +	unsigned int format, stream_tag;
+> +	u32 enc_words[4];
+> +	u32 *dst;
+> +	int total_words = 0x8000 / sizeof(u32); /* 8192 words (32KB) */
+
+It should be defined as a constant instead?
+
+> +	int word_idx = 0;
+> +	int frame_words;
+> +	int led, w;
+> +	int retries = 20; /* ~100ms max */
+> +	u8 orig_sd_ctl = 0;
+> +
+> +	if (!spec || !spec->mem_base)
+> +		return -ENODEV;
+> +	if (num_leds <= 0 || num_leds > AE5_STRIP_MAX_LEDS)
+> +		return -EINVAL;
+> +
+> +	snd_hda_power_up(codec);
+> +
+> +	/*
+> +	 * 44.1kHz, 24-bit, 2-channel format (0x4031) matches Windows CtxHda
+> +	 * HDAUDIO_STREAM_FORMAT.
+> +	 */
+> +	format = snd_hdac_stream_format(2, 24, 44100);
+> +
+> +	for (;;) {
+> +		hstr = ae5_strip_find_stream(codec);
+> +		if (!hstr) {
+> +			if (--retries <= 0) {
+> +				codec_warn(codec, "AE5 strip: no free azx stream after retries\n");
+> +				snd_hda_power_down(codec);
+> +				return -EBUSY;
+> +			}
+> +			usleep_range(5000, 10000);
+> +			continue;
+> +		}
+> +
+> +		stream_tag = snd_hdac_dsp_prepare(hstr, format, 0x8000, &dmab);
+> +		if ((int)stream_tag > 0)
+> +			break;
+> +
+> +		/* Prepare failed (e.g. -EBUSY due to race with playback starting); retry */
+> +		if (--retries <= 0) {
+> +			codec_warn(codec, "AE5 strip: snd_hdac_dsp_prepare failed %d\n",
+> +				   (int)stream_tag);
+> +			snd_hda_power_down(codec);
+> +			return (int)stream_tag;
+> +		}
+> +		usleep_range(5000, 10000);
+> +	}
+> +
+> +	/* Prevent interrupt storms during free-running LED stream, saving original control bits */
+> +	if (hstr->sd_addr) {
+> +		orig_sd_ctl = readb(hstr->sd_addr);
+> +		writeb(orig_sd_ctl & ~0x1c, hstr->sd_addr); /* Clear IOCE, FEIE, DEIE */
+> +	}
+> +
+> +	/* 1. Populate the 32KB DMA buffer with repeating WS2812 frames + reset gaps */
+> +	memset(dmab.area, 0, 0x8000);
+> +	dst = (u32 *)dmab.area;
+> +
+> +	/* Words per frame: 5 words zero preamble + num_leds * 4 words + 83 words reset gap */
+> +	frame_words = 5 + (num_leds * 4) + 83;
+> +
+> +	while (word_idx + frame_words <= total_words) {
+> +		/* 5-word zero preamble per Windows CtxHda FUN_00042944 */
+> +		for (w = 0; w < 5; w++) {
+> +			*dst++ = 0;
+> +			word_idx++;
+> +		}
+> +		/* LEDs */
+> +		for (led = 0; led < num_leds; led++) {
+> +			ae5_strip_encode_24(grb_colors[led], enc_words);
+> +			for (w = 0; w < 4; w++) {
+> +				*dst++ = enc_words[w];
+> +				word_idx++;
+> +			}
+> +		}
+> +		/* 83 words (> 1.8 ms) zero reset gap (WS2812 requires > 50 us low) */
+> +		for (w = 0; w < 83; w++) {
+
+Here, too.  Let's avoid magic numbers.
+
+> +			*dst++ = 0;
+> +			word_idx++;
+> +		}
+> +	}
+> +	while (word_idx < total_words) {
+> +		*dst++ = 0;
+> +		word_idx++;
+> +	}
+> +	/* Ensure DMA buffer writes are committed before triggering the HDA stream */
+> +	wmb();
+> +
+> +	/* 2. Configure CA0113 BAR2 hardware registers */
+> +	/* Power up clocks (CtxHdb 0x141b7 / 0x14210) */
+> +	writel(readl(spec->mem_base + 0xc04) | 0x7, spec->mem_base + 0xc04);
+> +
+> +	/* Base serializer initialization (CtxHdb 0x14ba4) */
+> +	writel(readl(spec->mem_base + 0x400) | 1, spec->mem_base + 0x400);
+> +	writel(readl(spec->mem_base + 0x42c) & ~1, spec->mem_base + 0x42c);
+> +	writel(readl(spec->mem_base + 0x46c) & ~1, spec->mem_base + 0x46c);
+> +	writel(readl(spec->mem_base + 0x4ac) & ~1, spec->mem_base + 0x4ac);
+> +	writel(readl(spec->mem_base + 0x4ec) & ~1, spec->mem_base + 0x4ec);
+> +	writel(0, spec->mem_base + 0x43c);
+> +	writel(0, spec->mem_base + 0x47c);
+> +	writel(0, spec->mem_base + 0x4bc);
+> +	writel(0, spec->mem_base + 0x4fc);
+> +	writel(readl(spec->mem_base + 0x408) | 1, spec->mem_base + 0x408);
+> +	writel(readl(spec->mem_base + 0x40c) | 1, spec->mem_base + 0x40c);
+> +	writel((readl(spec->mem_base + 0x410) & ~0xb) | 0x14, spec->mem_base + 0x410);
+> +
+> +	/* Configure serializers 0..3 clocking (CtxHdb 0x14a6c) */
+> +	writel(readl(spec->mem_base + 0x43c) | 0x33, spec->mem_base + 0x43c);
+> +	writel(readl(spec->mem_base + 0x47c) | 0x33, spec->mem_base + 0x47c);
+> +	writel(readl(spec->mem_base + 0x4bc) | 0x33, spec->mem_base + 0x4bc);
+> +	writel(readl(spec->mem_base + 0x4fc) | 0x33, spec->mem_base + 0x4fc);
+
+Some helpers or macros look deserving.
+
+I stop at this point, as we'd need to define the interface at first.
+
+
+thanks,
+
+Takashi
