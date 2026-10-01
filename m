@@ -4,188 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85718CA5FD2
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2026 15:21:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A27C2CA5FCE
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2026 18:58:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAA716027B;
-	Thu,  1 Oct 2026 17:21:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAA716027B
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC23460277;
+	Thu,  1 Oct 2026 20:58:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC23460277
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1790868079;
-	bh=78yNeHB58q99vx2v1kF/fBirmQ8KIdI0e9A0mQ0vZ/U=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=jbzQbI3IIPJMlXas1srfdGkMfFl1YRiEFwdpJcFCzNvg/LatqXOr8jeWIwbdBE+Cv
-	 mvEzdfPWSwtAhcNeGKDMe20+gHXYFkinNTmsqasfxSvIA/0s5MoAY0v8stmXfuThpb
-	 oEwRn+uoutDeUEnF59GTH+bZr6ImbowvePJKiNS8=
+	s=default; t=1790881119;
+	bh=8zkBzs2P5Loo4nIsjA1zLzkwmP7pfZ5vuF7R4IzlKF0=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=kynbjYjLg34h+sc5oxCfzP1oymaYGKcEmM1TDuf91SgaCDZPwl0RhHq+SYaXYHLOh
+	 lA+0bagqf8CCMqsBIVJ6QXeWqNhsCJb0ykdbmyVU+BDw7ilYdfFebeJ5klZempOuWV
+	 NPqBjMuj8ofGmU6tQuCAc8gDC4ATHU/m+2UX2U+g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6C91FF805F8; Thu,  1 Oct 2026 17:20:46 +0200 (CEST)
+	id B4096F80601; Thu,  1 Oct 2026 20:58:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2760AF804F3;
-	Thu,  1 Oct 2026 17:20:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08D67F805F1;
+	Thu,  1 Oct 2026 20:58:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B0503F8057F; Thu,  1 Oct 2026 17:20:40 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.131
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1790868036;
-	b=phvxCAaUAyzXBqE+zSbp9MkUbScWdvsSCSFLyz1g+U0UsLd8t1UzVvLujLDPMQ+BDUNw
-	 hos1ILsd+7YiDx2naIdouJUUzx5tBebpZhmbKceSo3v82na1bjODKED6qZKvFl7TjKDK8
-	 1IdN1ydKXCWxojhHrWOJSo8S3naq/g1mKAy3NgbdiVhi6Uqmq+E91nQLK1tqkHW01HVkd
-	 OeZcLUR0H0+SZjeHFBTEcOuw9pxurGb4auY4dzJFZrEYOWl6OaBrfkZ8hNH5d2gDsZh55
-	 Rm9sA8iTb++0WdZEqYnSU40qCM4DPjVZu+m62VUmLow2d2PGZWlHps4x6cfl/7fA7Ig==
+	id 88A6CF8057F; Thu,  1 Oct 2026 20:57:58 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1790881077;
+	b=eYH/6m1LfXXoh8e0MYBzRYVzTz9h985iInVloHcUXs/yufAe/PlyTaek7zMJk5/vfiJt
+	 5hIn3BLg6leNJczcDV4p2c/Q8edOQehgUVNwlJRy9+zWt5gtECtU7GbO8W+EiS2bbWF5f
+	 jjJzJS2bIYrAeeLpo4ji4SENyKHsrefj7fjOXeSf7JNgiYiFXyOmfe2Mg/ez4gdF5GNo9
+	 8puRKAW1dhkfBJI1S6FkgW4YEDLwdVF4GRUcEiZ2lVBBoHaQ1mT2b4FAzNfBpkreFRGdg
+	 4MKiZoCPjErtqL0BQTzVvq0qHQDJhPcgztsIwRMlAMtuu6k0QXCoMBxH53OCOd/K/NA==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1790868036;
-	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
-	 Message-ID:From:To:Subject:MIME-Version;
-	bh=78yNeHB58q99vx2v1kF/fBirmQ8KIdI0e9A0mQ0vZ/U=;
-	b=hE6L3XPsE20vj1u4tUnlGb1RikVocfJR+Nj6oKCS6rLeJRI4Pe7TzOKp3Ck8MSmPYNaD
-	 AerJ6F7KNjNWskTnQoDIlFlqkAnE2pTVun/HNJMAXd3C/c/Mo6MoQpr3R6w6pNoIBQNtM
-	 XXIJ6wKTgJY+Bcnv0THMcT3+qqWwPmriAkGiYHThvbmeLSsyjcNcswcISOMwACv/m/w43
-	 fvqsRYwp3hyJfOzapCx/IOIb4ynEc8pEkqFyOWmx8wl4kzfEbfAuRB/P54nv8qqvZmGlE
-	 NUlHKrzlkc0FJ4mzSoZywiNMQg59RUkrMthElDBak3x94NLF3YcPlN8AqSb3KCQhmkA==
+	c=relaxed/simple; t=1790881077;
+	h=MIME-Version:From:To:Message-Id:Subject;
+	bh=8zkBzs2P5Loo4nIsjA1zLzkwmP7pfZ5vuF7R4IzlKF0=;
+	b=V7XGra76D03b0nxLfIvZ385uezXrEeCEaHKdP66G0ZAqy0Bwcm9IV3DasQh7HwguWkHR
+	 HxzqaEXJ8nhulIhODYDBf+4tXfB/AJihe2oBomJ2X4eYJSh+XN37ylRKCO8d6WX8WZ9ma
+	 Fe7bZXanxaXnVkxnPI/6Q4a6uV2ygGr1haye+Xv0DNBpXLKCU2HwCuMCfwAktfxx4wcV5
+	 hv7QUKH8E59znWttqmQ7RKNg3jBKO3W4+HuBf0QNkGA5+GXSQYvYRd9MaSGjt8tjScM8V
+	 qs0Ji31Z6c9PnYCigH7aYUK2rfw3SIi2nRRrKiDbsHkeX/9fP9RehdYmh0ov+czzBgg==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=Pzvt0Dgc;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=gIPFKH6K;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=MQSG4Wej;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=8KJnqatC;
-	arc=none smtp.remote-ip=195.135.223.131
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 967A5F804F3
-	for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2026 17:20:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 967A5F804F3
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=Pzvt0Dgc;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=gIPFKH6K;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=MQSG4Wej;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=8KJnqatC
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B304E1FD04;
-	Thu,  1 Oct 2026 15:20:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1790868030;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZjtqkUq7SI0M01/7Cb90z3i51OFWZf6Uy2zt1XoQ220=;
-	b=Pzvt0DgcW10rSQf81wpHWFnlpZg8c+ute7IDRUTF4VvUh19D6BSiHteGVcHWbMTooTABIC
-	QlqnO+9WYxRBPdEO0xUZ7TBOS/RknnRkmr/G6kE1dGITCiAPZ3mRVDZu8xNWmLvHFlszgr
-	LQY1z5V9UaPJJ45OTAD+Xnia3GUsLX4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1790868030;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZjtqkUq7SI0M01/7Cb90z3i51OFWZf6Uy2zt1XoQ220=;
-	b=gIPFKH6KMwPgH5kbeFJwi7vjbVnF6V3gqb4HcuB+3wkqPMuKINWOLSk1Ojo0e7ixCbXq8+
-	DiWdkVRk7f/koACw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=MQSG4Wej;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=8KJnqatC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1790868026;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZjtqkUq7SI0M01/7Cb90z3i51OFWZf6Uy2zt1XoQ220=;
-	b=MQSG4WejpeGYd1DoAfV0rZSLFYv1A0bM4u5ESD+mDv5HVSoKnbnw3dTKTs2vjpTRMemQ3g
-	f48Ag6kAkCdv4nVxDUBhOUEf4ik3ayZGMehQCWEoXAqaVOe1NAlowxokGwCw+zcFG0gnAz
-	VjdSi0HqgeKpoBx9d+paKJ5CZ4eVNhA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1790868026;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZjtqkUq7SI0M01/7Cb90z3i51OFWZf6Uy2zt1XoQ220=;
-	b=8KJnqatC8m5d7Hm8B2Nr7FKibzeSFKPNeMfBTEfYNxIdWAJJK5aeeTHafPN69BXJ4nd8aD
-	cUacAASDth6l9pCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 60A1013B80;
-	Thu,  1 Oct 2026 15:20:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id /UTPDTp6vmouKgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 01 Oct 2026 15:20:26 +0000
-Date: Thu, 01 Oct 2026 17:20:25 +0200
-Message-ID: <87v77l1m86.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: dchristensen8 <dchristensen8@proton.me>
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
-	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ALSA: hda/ca0132: Add Sound BlasterX AE-5 external RGB
- LED strip support
-In-Reply-To: 
- <0zWxXXeew_rreqULhlodJWrfM8Ew1UwF-6S7mK25YzO6_w574QYRYOlTNbInKVbIWGVZ0ZnVPhyXchVsbgQnh6dOmle--tPNROUu6MAuhHk=@proton.me>
-References: 
- <eFYfxKMV2ei__fURd-elssegCIVmOuRDne6lj9PMaM2bEgnYkz7Tzf6JLrgEaPZtvrUC_wHnmnwaUZAOdg0uh24nt73FQqi6T65qvJebHJA=@proton.me>
-	<87fqys19vt.wl-tiwai@suse.de>
-	<0UViNKefxgxrLggTEzDgzIe9-kh2EqU2Pnip6zuyJl1sthZtgJ-OIai3KBgkltft587c-ryvum1IqQZt-awOQTdrohMWKh79F3X8u6JOjuo=@proton.me>
-	<87jyo24zu5.wl-tiwai@suse.de>
-	<0zWxXXeew_rreqULhlodJWrfM8Ew1UwF-6S7mK25YzO6_w574QYRYOlTNbInKVbIWGVZ0ZnVPhyXchVsbgQnh6dOmle--tPNROUu6MAuhHk=@proton.me>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim,suse.de:mid];
-	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim,suse.de:mid];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: B304E1FD04
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-Message-ID-Hash: USSLKVRKCN4M6YBVLH3IKRINTXHO4TMC
-X-Message-ID-Hash: USSLKVRKCN4M6YBVLH3IKRINTXHO4TMC
-X-MailFrom: tiwai@suse.de
+ arc=none smtp.remote-ip=45.14.194.44
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 22E15F804CC
+	for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2026 20:57:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22E15F804CC
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18da7cd96acc8700-webhooks-bot@alsa-project.org>
+In-Reply-To: <18da7cd96a94b800-webhooks-bot@alsa-project.org>
+References: <18da7cd96a94b800-webhooks-bot@alsa-project.org>
+Subject: sof-hda-dsp / HUAWEI MACHD-WXX9 (CX11880): Speaker profile mutes the
+ Headphone amp, which is what drives the internal speakers
+Date: Thu,  1 Oct 2026 20:57:58 +0200 (CEST)
+Message-ID-Hash: 2H7H2646VBVAFTSXJGP4MBB7GUCXZFI2
+X-Message-ID-Hash: 2H7H2646VBVAFTSXJGP4MBB7GUCXZFI2
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -196,7 +76,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/USSLKVRKCN4M6YBVLH3IKRINTXHO4TMC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2H7H2646VBVAFTSXJGP4MBB7GUCXZFI2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -205,28 +85,65 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 30 Sep 2026 18:09:54 +0200,
-dchristensen8 wrote:
-> 
-> Thats genius. I reworked it with an ALSA byte control instead of sysfs and rolled in all your code cleanups for v2.
-> 
-> I set up two controls using IFACE_CARD and volatile:
-> -AE-5 LED Strip": 300 bytes of RGB
-> -AE-5 LED Strip Count: integer for setting the active strip length
-> 
-> Attached the v2 patch file. If you'd prefer anything named or laid out differently, just let me know.
-
-I'm fine with those names.  Feel free to submit a proper patch for
-upstreaming.
-
-BTW, one more optimization: snd_hda_power_up() / _down() pair can be
-replaced with a single call of
-	CLASS(snd_hda_power_pm, pm)(codec);
-
-Then snd_hda_power_down() will be automatically called upon its end of
-code block.
-
-
-thanks,
-
-Takashi
+YWxzYS1wcm9qZWN0L2Fsc2EtdWNtLWNvbmYgaXNzdWUgIzg2MyB3YXMgb3BlbmVkIGZyb20gbWlz
+dGVyY3liM3I6CgojIyBTdW1tYXJ5CgpPbiBhIEhVQVdFSSAqKk1BQ0hELVdYWDkqKiAoTWF0ZUJv
+b2sgWCwgQ29uZXhhbnQgKipDWDExODgwKiopLCB0aGUgaW50ZXJuYWwgc3BlYWtlcnMgYXJlIHdp
+cmVkIHRvIHRoZSAqKmhlYWRwaG9uZSoqIGFtcGxpZmllci4gVGhlIGdlbmVyYXRlZCBgSGlGaSAo
+Li4uLCBTcGVha2VyKWAgcHJvZmlsZSBzd2l0Y2hlcyBvbiBgU3BlYWtlciBQbGF5YmFjayBTd2l0
+Y2hgLCB3aGljaCBjb250cm9scyBub3RoaW5nIGF1ZGlibGUgb24gdGhpcyBib2FyZCwgd2hpbGUg
+dGhlIGBIZWFkcGhvbmVzYCBkZXZpY2UncyBgRGlzYWJsZVNlcXVlbmNlYCBtdXRlcyBgSGVhZHBo
+b25lIFBsYXliYWNrIFN3aXRjaGAg4oCUIHRoZSBhbXBsaWZpZXIgdGhhdCBhY3R1YWxseSBkcml2
+ZXMgdGhlIGludGVybmFsIHNwZWFrZXJzLgoKUmVzdWx0OiB3aXRoIHRoZSBqYWNrIGVtcHR5IHRo
+ZSBpbnRlcm5hbCBzcGVha2VycyBhcmUgbmVhcmx5IHNpbGVudCwgd2hpbGUgd2l0aCB0aGUgamFj
+ayBpbnNlcnRlZCB0aGUgaGVhZHBob25lcyBhbmQgdGhlIGludGVybmFsIHNwZWFrZXJzIGJvdGgg
+cGxheSBhdCBmdWxsIGxldmVsLgoKIyMgRW52aXJvbm1lbnQKCnwgfCB8CnwtLS18LS0tfAp8IE1h
+Y2hpbmUgfCBIVUFXRUkgTUFDSEQtV1hYOSAocHJvZHVjdF9mYW1pbHkgYE1hdGVCb29rIFhgLCBi
+b2FyZCBgTUFDSEQtV1hYOS1QQ0ItQjFgKSB8CnwgQ29kZWMgfCBDb25leGFudCBDWDExODgwIChg
+MHgxNGYxMWY4NmApIHwKfCBEcml2ZXIgfCBgc29mLWhkYS1kc3BgIC8gYHNrbF9oZGFfZHNwX2dl
+bmVyaWNgIHwKfCBEaXN0cm8gfCBBcmNoIExpbnV4IC8gT21hcmNoeSwga2VybmVsIGA3LjIuNS0z
+LW9tYXJjaHlgIHwKfCBhbHNhLXVjbS1jb25mIHwgYDEuMi4xNi4xLTFgIHwKfCBhbHNhLWxpYiB8
+IGAxLjIuMTYuMS0xYCB8Cnwgc29mLWZpcm13YXJlIHwgYDIwMjUuMTIuMi0xYCB8CgpLZXJuZWwg
+YXV0b2NvbmZpZzoKCmBgYApzbmRfaGRhX2NvZGVjX2NvbmV4YW50IGVoZGF1ZGlvMEQwOiBhdXRv
+Y29uZmlnIGZvciBDWDExODgwOiBsaW5lX291dHM9MSAoMHgxNy8weDAvMHgwLzB4MC8weDApIHR5
+cGU6c3BlYWtlcgpzbmRfaGRhX2NvZGVjX2NvbmV4YW50IGVoZGF1ZGlvMEQwOiAgICBzcGVha2Vy
+X291dHM9MCAoMHgwLzB4MC8weDAvMHgwLzB4MCkKc25kX2hkYV9jb2RlY19jb25leGFudCBlaGRh
+dWRpbzBEMDogICAgaHBfb3V0cz0xICgweDE2LzB4MC8weDAvMHgwLzB4MCkKYGBgCgojIyBNZWFz
+dXJlZCBzdGF0ZSB0cmFuc2l0aW9ucyAoMSBzIHNhbXBsaW5nIGFjcm9zcyBwbHVnL3VucGx1ZykK
+CnwgamFjayB8IHBpbiAweDE2IChIUCkgUGluLWN0bHMgfCBwaW4gMHgxNyAoc3BrKSBQaW4tY3Rs
+cyB8IGBTcGVha2VyYCBjdGwgfCBgSGVhZHBob25lYCBjdGwgfCBhY3RpdmUgcHJvZmlsZSB8Cnwt
+LS18LS0tfC0tLXwtLS18LS0tfC0tLXwKfCBwbHVnZ2VkIHwgYDB4YzBgIChPVVQgSFApIHwgYDB4
+MDBgIChvZmYpIHwgb2ZmIHwgKipvbioqIHwgSGVhZHBob25lcyB8CnwgdW5wbHVnZ2VkIHwgYDB4
+YzBgIHwgYDB4NDBgIChPVVQpIHwgKipvbioqIHwgKipvZmYqKiB8IFNwZWFrZXIgfAoKIyMgRXZp
+ZGVuY2UgdGhhdCB0aGUgaW50ZXJuYWwgc3BlYWtlcnMgYXJlIG5vdCBvbiB0aGUgYFNwZWFrZXJg
+IHBhdGgKCi0gVG9nZ2xpbmcgYFNwZWFrZXIgUGxheWJhY2sgU3dpdGNoYCBwcm92YWJseSBtdXRl
+cyB0aGUgYW1wbGlmaWVyIGl0IG93bnMg4oCUIHRoZSBjb2RlYyBhbXAgcmVnaXN0ZXIgZmxpcHMg
+YDB4NGFgICh1bm11dGVkKSB0byBgMHhjYWAgKG11dGUgYml0IHNldCkg4oCUIHlldCB0aGUgaW50
+ZXJuYWwgc3BlYWtlcnMga2VlcCBwbGF5aW5nLgotIEFsbCBjb2RlYyBHUElPcyBhcmUgdW5jb25m
+aWd1cmVkOiBgR0VUX0dQSU9fTUFTS2AsIGBHRVRfR1BJT19ESVJFQ1RJT05gLCBgR0VUX0dQSU9f
+REFUQWAgYW5kIHRoZSBzdGlja3kvd2FrZSBtYXNrcyBhbGwgcmV0dXJuIGAweDBgLiBUaGVyZSBp
+cyBubyBHUElPLWJhc2VkIGV4dGVybmFsLWFtcGxpZmllciBtdXRlIHRvIGZhbGwgYmFjayBvbi4K
+LSBUaGlzIG1hdGNoZXMgcmVwb3J0cyBmb3Igb3RoZXIgSHVhd2VpIGJvYXJkcyB3aXRoIHRoZSBz
+YW1lIGNvZGVjL3dpcmluZzogaHR0cHM6Ly9naXRodWIuY29tL3BvcC1vcy9wb3AvaXNzdWVzLzQw
+NjQgYW5kIGh0dHBzOi8vZ2l0aHViLmNvbS90aGVzb2Zwcm9qZWN0L2xpbnV4L2lzc3Vlcy8zMzUw
+ICgiSGVhZHBob25lcyBhbmQgc3BlYWtlcnMgcGxheSBzaW11bHRhbmVvdXNseSB3aGVuIGhlYWRw
+aG9uZXMgYXJlIHBsdWdnZWQgaW4iKS4KCiMjIFdoeSB0aGlzIGlzIGEgVUNNIGlzc3VlIGFuZCBu
+b3QgYSBjb2RlYyBvbmUKClRoZSBqYWNrIGlzIGRldGVjdGVkIGNvcnJlY3RseSAoYEhlYWRwaG9u
+ZSBKYWNrYCB0b2dnbGVzIG9uL29mZiwgdGhlIHBvcnQgcmVwb3J0cyBgYXZhaWxhYmxlYCwgYW5k
+IFdpcmVQbHVtYmVyIHN3aXRjaGVzIHByb2ZpbGVzIGNvcnJlY3RseSkuIFRoZSBvbmx5IHdyb25n
+IHBhcnQgaXMgKndoaWNoKiBhbXBsaWZpZXIgdGhlIFNwZWFrZXIgcHJvZmlsZSB0b2dnbGVzIGZv
+ciB0aGlzIGJvYXJkLgoKIyMgU3VnZ2VzdGVkIGZpeAoKYEhpRmktc3BrLmNvbmZgJ3MgYFNwZWFr
+ZXJgIGRldmljZSBpcyBnZW5lcmljLCBzbyB0aGUgY2hhbmdlIG5lZWRzIGEgbWFjaGluZSBjb25k
+aXRpb24sIGUuZy4gaW4gdGhlIFNwZWFrZXIgYEVuYWJsZVNlcXVlbmNlYDoKCmBgYApJZi5odWF3
+ZWktbWFjaGQgewogICAgQ29uZGl0aW9uIHsgVHlwZSBTdHJpbmcgLi4uICIke3N5czpkZXZpY2Vz
+L3ZpcnR1YWwvZG1pL2lkL3Byb2R1Y3RfbmFtZX0iIC4uLiB9CiAgICBUcnVlIHsgY3NldCAibmFt
+ZT0nSGVhZHBob25lIFBsYXliYWNrIFN3aXRjaCcgb24iIH0KfQpgYGAKCihDb21tZW50OiBpdCB3
+b3VsZCBiZSB3b3J0aCBndWFyZGluZyBvbiBgcHJvZHVjdF9uYW1lID09ICJNQUNIRC1XWFg5ImAs
+IHBvc3NpYmx5IGFsc28gYHN5c192ZW5kb3IgPT0gIkhVQVdFSSJgLikKCiMjIEludGVyaW0gd29y
+a2Fyb3VuZAoKQSB1c2VyIHNlcnZpY2UgcmUtYXNzZXJ0cyBgYW1peGVyIC1jMCBzc2V0IEhlYWRw
+aG9uZSBvbmAgd2hlbmV2ZXIgdGhlIGphY2sgc3dpdGNoZXMsIHdoaWNoIHJlc3RvcmVzIGZ1bGwg
+c3BlYWtlciBsZXZlbCB3aGVuIHVucGx1Z2dlZC4gSGVhZHBob25lcy1vbmx5IHBsYXliYWNrIHdo
+aWxlIHBsdWdnZWQgaXMgbm90IGFjaGlldmFibGUgb24gdGhpcyBib2FyZCBpbiBzb2Z0d2FyZSDi
+gJQgdGhlIHNwZWFrZXJzIGFuZCB0aGUgamFjayBzaGFyZSBvbmUgYW1wbGlmaWVyIGFuZCB0aGVy
+ZSBpcyBubyBtdXRlIGxpbmUuCgpJc3N1ZSBVUkwgICAgIDogaHR0cHM6Ly9naXRodWIuY29tL2Fs
+c2EtcHJvamVjdC9hbHNhLXVjbS1jb25mL2lzc3Vlcy84NjMKUmVwb3NpdG9yeSBVUkw6IGh0dHBz
+Oi8vZ2l0aHViLmNvbS9hbHNhLXByb2plY3QvYWxzYS11Y20tY29uZgo=
