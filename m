@@ -4,154 +4,150 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68296CA5FF1
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2026 07:01:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A61ECA5FFF
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2026 07:01:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 82B7F6026E;
-	Wed,  7 Oct 2026 09:00:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82B7F6026E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3EC9D601E9;
+	Wed,  7 Oct 2026 09:01:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EC9D601E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1791356468;
-	bh=P4owZ2nh0s0WABbvJUG2IgV+zCYa+z04xnL5yOZZLMA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=tbQcDX8xxU7fa+5EQWvef6Ix50mchn4ibuthI8ORLCyErStUNgy/NU03ZrQttgtPS
-	 dWDGjjssuS/Hn+z1slCThTaKfsIU/6jWsnIymeN+hpr6x5WqYMDBo2W5tJ6apGhmIj
-	 T+YbOxZtrH4VGl2cwtfsAe6Hs6LC+mlovLJIyzFs=
+	s=default; t=1791356494;
+	bh=QjpUaQVU48vBi4duOOIwgeFCuHmFFIlfo8CKIONloGA=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=DW3O6vXT/rchiiNazgoEr01bwbB77mMjlYpk1vLH45hLEqRJXcwyRGTxYIidBfOF1
+	 MMnb6C8O0GGJgmQ+y7hOugMQHwIJtAVgFt5Y35U0zXtB+1Q16EjgU5gbf9I63+yI+W
+	 CVIzcPqY3C0LmDn72PsPf0iyB7Gryr4XLWBOEEGE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 81923F80686; Wed,  7 Oct 2026 08:59:03 +0200 (CEST)
+	id D7534F80687; Wed,  7 Oct 2026 08:59:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5DBA8F80774;
-	Wed,  7 Oct 2026 08:59:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D0BBEF8081B;
+	Wed,  7 Oct 2026 08:59:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B4A80F805EF; Sat,  3 Oct 2026 21:42:28 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=209.85.128.54
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791056534;
-	b=eugUtaz3Al4R7Dny37tLgqiTtdMXpusp3+jbKRIvRE1g7ZTW4RRXjhYl3gTny+CfXWmD
-	 jV/nlTqJfgYCO8o6tV5cd33i7LRwFZo3KVCCpcTcW8a0NWHNuYwIfqMyCmruityWRiTjC
-	 bnMqaynVvfRwvI75lAZUftD612j8wMspOwvK/P1ufSr/kD+JF0OUagqA/w8u4MzQ3OlP8
-	 hCUmDBGKE3Z4+N9jEBFjWsvO4PuO6gDivav/HavhOEkMfjCXY67Y7MfS7I7PDIxzBZA/p
-	 6f2sjUXklKkgLoGg54dWhGXIa3PHCOg1jpNdDkAl8OFfsLlWdnu0pyBLd41Pv6IVMuw==
-ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1791056534;
-	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=P4owZ2nh0s0WABbvJUG2IgV+zCYa+z04xnL5yOZZLMA=;
-	b=MtHy7KcHuyNUsEO33nAD+M85Th8D5UENzh77nBe2WA/vEoSBted64m+Oh1ZYyRpWRbAD
-	 d0wDBsujXIxtEW+ynB3wkfJ2wifYDFgM0if/pKovW+wbAegi1E/NuUnN9SxWMxiuKJz55
-	 ae1+t4G/rMol+Nm1ogCDSYBak6vwiTRUVdMlghJ/RVTrKbxh9qNq3aln7gNJR3BmqBDl/
-	 K96DMDQSh171PspalHkTITroxe+gsWm58wABZKaD4p5zLWSkBVeGJqafERBDg6XjpKItO
-	 Ihh+RpXViKt5TOwigIHa8K90ydy3IylyFtGIfqm7I+rkOoZem+G2RLyjPZfkLF0kzwg==
-ARC-Authentication-Results: i=1; alsa1.perex.cz;
+	id 87F10F80548; Sat,  3 Oct 2026 22:30:14 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.230.64
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1791059410;
+	b=SVV7BdNfpiDPQPWT/Ebd3khdmWm581CvbOXz09jNphtkQ9SzfMgCse4UCQn8wObIrFWx
+	 0MY1mKyBuCuAwgwxT67yxb7YNCuWqKoDHBjL+C57ov2zAxEUD5x+Peb8KVHZbPbi7MEDT
+	 +HytA84XNiVyiHMvFFkYPNLefw5vuB8v0A2+jp4/GdtqkbunAq7Il5gLycNWtcz7MvbBM
+	 1SH3hgew9CEqSpIAgdoWbtu+9xuga6I8jyOUyJF+/rhhYQtEjFxAkmseVTTBCBuVoubbf
+	 hJA9E6jsZLCT8EZX5r3kZlprQCO1wIk/MAzLLHIGsjcAGrTGTamqI323rHyaNiwPwnQ==
+ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1791059410;
+	h=DKIM-Signature:MIME-Version:From:Date:Message-ID:Subject:To;
+	bh=06wz/Az4QXKx1ZmuYFyMUJ+pR3h9Bm+6IlOL/rjN0oE=;
+	b=dZMqeegubcpSeqMLPVYCgwafCG7fRIlYbTEg7egCRq8LYhV6AOG1a3xvGYk1B+ixa7oO
+	 K4NAfiOdm5toSjPyu3SuePOBSgt7JvW5AbRgmnJwdiNPqfefxc5NXGMtBxTccU7v311KS
+	 VInSPjhobkWunS7Zc9cm338V53ChM8IMK0AxetiLHmJ/QjcoTMUSRvREObCpFdo7uWVmj
+	 BdCYgSyMPkT1sYVuflh8+XkKry0/quFYSVcc6tyvoNrJaMwY8YYPor473uM0mArBILXPX
+	 HfDL99411pZGEKKvmJi3l9cnM8vW0luNSJJGQwaeNeHVrc25aP2nQdRxW/vyPd8bPVw==
+ARC-Authentication-Results: i=2; alsa1.perex.cz;
  dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=Ik23I1FS;
-	arc=none smtp.remote-ip=209.85.128.54
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com
- [209.85.128.54])
+ header.s=20251104 header.b="jMs/Ivs/";
+	arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.230.64
+Received: from mail-lr2-f0.google.com (mail-lr2-f0.google.com [74.125.230.64])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 41A49F80246
-	for <alsa-devel@alsa-project.org>; Sat,  3 Oct 2026 21:42:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41A49F80246
+	by alsa1.perex.cz (Postfix) with ESMTPS id E2DF3F80246
+	for <alsa-devel@alsa-project.org>; Sat,  3 Oct 2026 22:30:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2DF3F80246
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=Ik23I1FS
-Received: by mail-wm1-f54.google.com with SMTP id
- 5b1f17b1804b1-4a0286c981dso6586165e9.2
+ header.s=20251104 header.b=jMs/Ivs/
+Received: by mail-lr2-f0.google.com with SMTP id
+ 38308e7fff4ca-3a76ab92890so6099751fa.1
         for <alsa-devel@alsa-project.org>;
- Sat, 03 Oct 2026 12:42:13 -0700 (PDT)
+ Sat, 03 Oct 2026 13:30:08 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1791059407; cv=none;
+        d=google.com; s=arc-20260327;
+        b=A14hB4Yz4cyQqUQEEDK2iOcxqdtCpuvilqlkzYFqMEJY5FEQUG0rRjJtgyamQ7Q0ey
+         mqQp9diA5WwGICQENIRGTe97PCQW1d3HlbOor+GLm93L8l3PCtTzK7KTN7MAEwvRwdZs
+         /mZH7HyBdYMMLzk7eY/2dLmY0tTmh9Nx9h099EcX0/FPIiSKUJSlPLqubfSgpHdCEJPv
+         xaOSOlf+2Ilz+9rIAfcUukgSmjCN4IMrGENaES/6Bl6stLFVjQjWcPnJ2rtwCI0rJzUV
+         6pOJQnCO3BPb3td7RstftgzKksW57zv+2ms0oY1NtS/jryoj01eD586u6drTVBGDTk3n
+         o/4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=nfmfZCCyRdwllPgf6cEawEg6t75KXGEMrZGt9POgDSw=;
+        fh=Wh53t5T7A6ynUYrBgCFa1yJCgnP5nKygwtt89q1T+04=;
+        b=N+7X94efeeBujeAbPpJ9NmBJAPkmt+VKBGKRMo8XQ7GALQGCP7hzzHB6r3OE+t+Jtn
+         HOHuWl0siXWfylnPRYUJhK8DpPioQLBIOuQ+YvK1uuzqaLUVi/D41kKZo/Uh5wTOcs24
+         HnNOyzKcpsxiJbQZtPOqgOzg0CM8eSU7k/mBD1RV6TJq4sXlT4mdbddvywFhkZokl9f7
+         YH97xlL49FcVz3D7tXbh9dVCH33FkFcj4RcxS086vAsB9VkNbSghG+CDeuiE0c2dRy0b
+         35Y3OhiXnGwsedhDx21r1VnXEht+O+c4zV7NYTWVI8ZUhEFhqVudGho4o3YRhmDByo7O
+         eRmw==;
+        darn=alsa-project.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791056532; x=1791661332;
+        d=gmail.com; s=20251104; t=1791059407; x=1791664207;
  darn=alsa-project.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=Fs/2x9B6vgEMOGNi4tcMPglLh+a6OD7ZgKR7xBWSVi4=;
-        b=Ik23I1FSW+OeupITH1dg9kjlbYDrMV0Mm/BWeJ0S39HiQQWmTy4qPPgxwXn57nT+06
-         ur0nJCqrOSzTYO+TgY2aI1mbgAKGsfstKuLetjuU9FFBL5Yn7ipTl4w6xupVutQ76Bix
-         paBnvG+3iRTRDKyUNb9B0p3/6+vM1OsUzmFxIMtZRMKJB6vjhpbCANcSuMZ/v9/Q8HA4
-         b9InNd4jy0WiRw1kCy3Aob0FHIaeWk5cTIiv/M/mZV+B9WKeIOmNyYpsIzT6sJcA9Wfu
-         Lr0JBDW+GSDEoLSSQU5sxOqeOAMsMKnxkvFoZ2M0sAzyIsOmTpcdqpTwKGTAyLU1ZLmf
-         fpJQ==
+        h=content-type:cc:to:subject:message-id:date:from:mime-version:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=nfmfZCCyRdwllPgf6cEawEg6t75KXGEMrZGt9POgDSw=;
+        b=jMs/Ivs/gqsFoElDpZXmLFlDeMZQPDIed+xWB3T9qIjkzdDYQb3FqWPUWmA6EAk6Yv
+         Yb1CcFQZ3xNaKV7ALd3PNGUholoeboUeXfOkRH43pQZNQbA/aQU0W3QgaFhVRMuWdV+5
+         ZW4o8dzGM3GkaFzllLhV145emUU3NxapkgT/iu89Ik+I5NNk7Cl28NLPs8VOnEjwPjj0
+         Kf25ta5bxQHMkf4ZSmAy/CysWECMs2ODvGwzf+V4lhfb9cWSud0FiMy5HjrhB3JHDGhO
+         pF7+OQRxKtLRAdPgeBXgBknXd+osgEMetcWXkr9FAnJEkRFPeqmEkWxvrhK5/R7lJdSP
+         ZOLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791056532; x=1791661332;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=Fs/2x9B6vgEMOGNi4tcMPglLh+a6OD7ZgKR7xBWSVi4=;
-        b=if3blIIKOL7c6siBiFJ+f2IlSrbQL9q1eHM6u2wbQ6qHmXpgDzQruP6SN2zL/ohgFD
-         r/23gbQO4cplMdp/Hm+AGPfqiqTD6YioEFoivId5CT/JUgu9a5P2ZxSqP9bq5vxpSuSF
-         Q7dv0O9XD/0qs3oET2V/jrdoXDGciaDgNddrCGz8Pq9cl32Rkjgi8vCPmO6gqZcHo4Dg
-         mnYH8R+r2xmbEMVNoYYyYBBhE/+UFhxkiknOzftE41A+Hkls9iZXyfmowUhxehBOAnoS
-         q/PTfJXsQHz5VQgsdQ/TMjC9zdVGwEuNWvdlFE3TrPkCvB5AdyFHm0M43hOuHa9yBk1c
-         jZLA==
-X-Forwarded-Encrypted: i=1;
- AKwUvBz67WsZGSbILkphgLXed0I/3OagKSveYFT49QGld5o8YPfJ+Yx/Q8DVyfMEcEt06WONf/tbs/5sz8//@alsa-project.org
-X-Gm-Message-State: AFuF++nsOOkwuvKAD+7rQvOji8YUKOLxXLiWFqk3dc8xMUjLPHiYXxnb
-	INlzKDF3S0c/h7L1kzuOlIjoPVeYH4tKBrLTTSGGZJ7dujNPJk5Ly1Jd
-X-Gm-Gg: AYBFou0p5EWBEL1+PGBJ5/Jz+SBOW1eWIjMDuWDejgATaa1qMZsi/E4EKHkP+qh2vna
-	3t36xJQQVTNOsHkQlISB7yb53FRnuDHicn2lzcYJV1CukjrMJ4158o7JNJUi487HFqDrJONnWLw
-	ETH43Zw5cn53MUKxYm5VrlSx68kye+wKMATEko4JO6y4TGikH8uS/L7cGPqJqZQhpnv7gjcUyMs
-	ouXiIz9eBA10os6O+4l20FBRGsGuD+BfAvqDNaMbe/jua8o+n37EC43/NN+IJTDDCRWNuTtCB0Q
-	ht0+Se/yiaV7gs9Okjs/Nj2AjC052TPOOgV7rY7gxmUjnl8zO4TcR4lMLeH2/7md6cAPsaZfmH7
-	6ggVk6+T4V7g0+ozjkl5X5zSQMB1gtvntVsOSipBoZiz+9qKCj+t/LfPMuEvfbMkyH51a1Zyvm8
-	qnMLl58cW5u0dFD/1ykD/DvNORmyHpA3EYZFUFd375AXfEPcSVI+tIawnxlP6b41lXvGKMqglY3
-	7GFdtXBnSWdp8zANjcgeQwwN6V+1yW3FZGKl8i/5x3XQa9780xHVdKfK5N5CIU9Z3z0K1gAS1Z9
-	cLyD0qHd2oviXVyFym/NlaUc
-X-Received: by 2002:a05:600c:a49:b0:4a0:eae0:769a with SMTP id
- 5b1f17b1804b1-4a168100e0dmr46701095e9.28.1791056531941;
-        Sat, 03 Oct 2026 12:42:11 -0700 (PDT)
-Received: from cachyos.home
- (2a01cb0c82caf900a186612f304bfea5.ipv6.abo.wanadoo.fr.
- [2a01:cb0c:82ca:f900:a186:612f:304b:fea5])
-        by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4a162e867e8sm161520495e9.15.2026.10.03.12.42.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2026 12:42:11 -0700 (PDT)
-From: =?UTF-8?q?Isma=C3=AFl=20Bahloul?= <i.bahloul01@gmail.com>
-To: linux-sound@vger.kernel.org
-Cc: tiwai@suse.com,
-	perex@perex.cz,
-	linux-usb@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	corbet@lwn.net,
-	skhan@linuxfoundation.org,
-	rdunlap@infradead.org,
-	linux-doc@vger.kernel.org,
-	=?UTF-8?q?Isma=C3=AFl=20Bahloul?= <i.bahloul01@gmail.com>,
-	David Fredman <davfre@gmail.com>
-Subject: [RFC PATCH v6 6/8] ALSA: usb: babyfacepro: add the front-panel poll
- and controls
-Date: Sat,  3 Oct 2026 21:41:35 +0200
-Message-ID: <20261003194137.86176-7-i.bahloul01@gmail.com>
-X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261003194137.86176-1-i.bahloul01@gmail.com>
-References: <20261003194137.86176-1-i.bahloul01@gmail.com>
+        d=1e100.net; s=20260707; t=1791059407; x=1791664207;
+        h=content-type:cc:to:subject:message-id:date:from:mime-version
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=nfmfZCCyRdwllPgf6cEawEg6t75KXGEMrZGt9POgDSw=;
+        b=a2P7+8jX4xixn3WF+IDm8HreJm4aylF8ZOTj4mD/YatDmVshguU8z5yII9KIPAPFDT
+         9dQ/H0Bgac0Ooy4iXTdqVR0YHx9oDpPawGowt1t6jIqY8pVaf1QG+rZwMBziiDgBQn8S
+         fVjGRkrwSXI3nQY9fhadslNX+qOKba0Wq04XX7oYgU7/vxbEPLq+UJU0LElbFfWZn5EP
+         48rPHJh7Xn8ND7ETsRHA8KoVLuGSiufO3F2WHNwCUyOTL9N8hLSS8NghsCv/0T6jYXBG
+         UdgqjTBh+LEMS5WWK053gHe5U/e5z2pqHIz4Vf7jCldmYA2G3YmXwvnrjurnnFQ0l54y
+         MHuA==
+X-Gm-Message-State: AFq9FYIH5KCsaTcd16aB/op9nDRqmKhaIA6qnkrtC10urxNZ8r8n0JAm
+	mtGkQMj089nIG7dHCtkAToOSS31VzEtTvIL6Ekoo4+wdV0PpfcqreHuSoCld2u9AqMVaR1nnhKl
+	4fL7Js7Bp8TwnDczed38tvA/449sHFPM=
+X-Gm-Gg: AYBFou0ZnNaPNqf5VHnIAIACQbnAnmwPmL4pQkRdSacfQWo8YKxE8G+CMQPBnWsiigi
+	2/bcG2TvJE1HFaHHNxFcLjPZJ+5Cun9/xZ3il+8JmeGsc/Mq2+2EsI5nNEVAysX1/IEP6Z21m68
+	nS9b76B5fFE94anCnNjw68Z3ta22xKI381Es9wRwEwsoSe96GE1MRFOM9UZuSucp448AmfseFP4
+	kTRHHWQtWB44R1r6/Tyx9N3PXYp0uK60HYLrDR1RB3prAJLbKhR3oR8UCjVKx4sF8IPCAu8sqIZ
+	ItufnsAO0WXmYnInaD6d9oaver4qB+SN5BKhwXX4TPmQoHDXhMTik2wXkx27ZIsnDWPt3zU8mYx
+	FRaE6e3na4CEv0dU=
+X-Received: by 2002:a05:6512:3b8a:b0:5ba:36b3:bd0a with SMTP id
+ 2adb3069b0e04-5bb9bc39bd0mr2193750e87.28.1791059407177; Sat, 03 Oct 2026
+ 13:30:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-MailFrom: i.bahloul01@gmail.com
+From: =?UTF-8?B?6buDMw==?= <3514217v3@gmail.com>
+Date: Sun, 4 Oct 2026 04:29:53 +0800
+X-Gm-Features: AclHuK8z1W384H24jGEKe-wLqeU3N9rwWvD2RRetuELJu_LEZY2EeEae4Ylu5mw
+Message-ID: 
+ <CABHunVOhafh1u6Q2jNh3FxusLrbGNE0kCo2F43pW8Qq+ZQB-AQ@mail.gmail.com>
+Subject: ALSA: hda/realtek: Fix internal mic for ASUS E402NA (ALC256,
+ 0x1043:0x1300)
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="000000000000bcaaf6065cf5831b"
+X-MailFrom: 3514217v3@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: HVE2V3Q55QEKF3Y4UD366T35N3FWFXBH
-X-Message-ID-Hash: HVE2V3Q55QEKF3Y4UD366T35N3FWFXBH
+Message-ID-Hash: QSVDZKFNDJR746RHG5AIYJWIA3SGYYFS
+X-Message-ID-Hash: QSVDZKFNDJR746RHG5AIYJWIA3SGYYFS
 X-Mailman-Approved-At: Wed, 07 Oct 2026 06:57:58 +0000
+X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HVE2V3Q55QEKF3Y4UD366T35N3FWFXBH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QSVDZKFNDJR746RHG5AIYJWIA3SGYYFS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -160,1636 +156,759 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In this mode the front panel is host-driven: the device reports its
-buttons, wheel and IN/OUT/SELECT/MIX/DIM state in a 4-byte readback
-(request 0x17), and the host software is expected to act on them, as
-TotalMix does.  Poll it (every 20 ms by default, panel_poll_ms) and
-expose the decoded state as read-only controls, notified on change.
+--000000000000bcaaf6065cf5831b
+Content-Type: text/plain; charset="UTF-8"
 
-The driver acts on SET (phantom power of the selected microphone, the
-host standing in for the unit's standalone function), MIX and the wheel:
+Hi Takashi and ALSA developers,
 
- - With OUT selected, the firmware moves the analog output level
-   itself on each click, smoothed over about 12 ms, by a step that
-   depends on the level and on how fast the wheel turns (0.5 to 3 dB,
-   doubled below a ~62 ms gap between clicks).  The driver follows it:
-   it writes only the 16-bit (digital) master during the gesture,
-   tracks the level per side in half-dB, polls every 5 ms for 200 ms
-   after a click to tell fast clicks apart, and writes the 8-bit
-   master once the wheel has rested for 150 ms, as TotalMix does at
-   the end of a gesture.  A muted output ignores the wheel.  The
-   volume controls are notified.
- - With IN selected, the wheel moves the gain of the selected input.
- - With SELECT held, the wheel moves the balance of the selected
-   output.
- - In MIX mode, the wheel moves the monitoring level of the selected
-   input into the selected output, and the input VU display follows.
+    I would like to report and submit a fix for the internal microphone on
+the ASUS
+  E402NA laptop equipped with Realtek ALC256 (PCI Subsystem ID:
+0x1043:0x1300).
 
-The controls these change - the output volumes, the preamp gain, the
-48V switches and the monitoring crosspoint - are notified, so that a
-mixer application follows the unit.
+    Hardware Details:
+    - Machine: ASUSTeK COMPUTER INC. E402NA (BIOS E402NA.317)
+    - Codec: Realtek ALC256 (0x10ec0256)
+    - Subsystem ID: 0x10431300
+    - OS: Ubuntu 26.04 LTS (Kernel 7.0.0-38-generic)
 
-The channel selection of SELECT (left, right, both, none) is not in the
-readback.  The unit keeps one per IN pair, across IN switches and power
-cycles; its LEDs go dark on an IN switch, and the next press only shows
-the selection again, later presses step it.  The driver follows the
-presses and exposes the selection of each pair as a "Front Panel
-Selection" control (index 0 is Ch 1/2, 1 Ch 3/4, 2 Opt), which is what
-alsactl keeps across boots.  A pair it has not been told starts
-unknown, and SET and the wheel then do nothing, with one message, rather
-than act on a channel that may not be the lit one.  A re-probe keeps
-what the driver had; the values alsactl restores after a probe are
-taken for a pair that is not known and ignored for one that is.
+    Problem Description:
+    By default, or when using model=alc256-asus-mic, the internal
+microphone does not
+  capture any audio (complete silence / samples are 0).
+    Investigation shows that node 0x13 is assigned as the primary "Internal
+Mic" (which
+  is an unconnected phantom pin), while the actual physical microphone is
+wired to node
+  0x1b.
+    Because PipeWire's default ACP profile only matches "Internal Mic" (and
+ignores
+  "Internal Mic 1"), PipeWire forcibly switches Capture Source back to 0x13
+on every
+  stream opening, resulting in all recordings being silent.
 
-A DIM press only increments "DIM Button Press Count", for a mixer
-application to act on; the driver changes no level on it.  The OUT
-selector reports 0/1/2 for Ch 1/2, Phones and Opt on both the Pro and
-the Pro FS.
+    Tested Working Solution:
+    We tested an ALSA firmware patch with the following pin overrides:
+    - 0x13: 0x411111f0 (disabled unconnected pin)
+    - 0x19: 0x04a11120 (headset mic)
+    - 0x1b: 0x90a70130 (fixed internal mic)
 
-The poll is stopped around a system suspend, and at disconnect before
-the mixer state is saved, since the poll worker writes that state.
+    After loading this pin configuration, the internal microphone captures
+clear audio,
+  and PipeWire operates smoothly without channel conflicts.
 
-Co-developed-by: David Fredman <davfre@gmail.com>
-Signed-off-by: David Fredman <davfre@gmail.com>
-Signed-off-by: Ismaïl Bahloul <i.bahloul01@gmail.com>
----
- sound/usb/babyfacepro/babyfacepro-ctl.c | 1235 ++++++++++++++++++++++-
- sound/usb/babyfacepro/babyfacepro.c     |   39 +-
- sound/usb/babyfacepro/babyfacepro.h     |  123 ++-
- 3 files changed, 1389 insertions(+), 8 deletions(-)
+    Attached is the alsa-info.txt output and below is the proposed patch to
+  sound/pci/hda/patch_realtek.c.
+    Could this quirk please be merged into the kernel?
 
-diff --git a/sound/usb/babyfacepro/babyfacepro-ctl.c b/sound/usb/babyfacepro/babyfacepro-ctl.c
-index f72879502..183647e25 100644
---- a/sound/usb/babyfacepro/babyfacepro-ctl.c
-+++ b/sound/usb/babyfacepro/babyfacepro-ctl.c
-@@ -3,7 +3,8 @@
-  * RME Babyface Pro / Pro FS - proprietary-mode USB audio driver
-  *
-  * ALSA control surface: the hardware mixer (output masters and mutes,
-- * the crosspoint matrix, preamps, routing flags, varispeed pitch).
-+ * the crosspoint matrix, preamps, routing flags, varispeed pitch),
-+ * and the front-panel poll and controls.
-  *
-  * See babyfacepro.h for the shared device state and register map,
-  * and babyfacepro.c for the core driver (protocol, PCM streaming,
-@@ -664,6 +665,7 @@ int babyface_create_xpoints(struct snd_usb_babyface *chip)
- 			err = snd_ctl_add(chip->card, kctl);
- 			if (err < 0)
- 				return err;
-+			chip->xpoint_kctl[out][src] = kctl;
- 		}
- 	}
- 
-@@ -1409,6 +1411,7 @@ int babyface_create_preamp(struct snd_usb_babyface *chip)
- 		err = snd_ctl_add(chip->card, kctl);
- 		if (err < 0)
- 			return err;
-+		chip->phantom_kctl[i] = kctl;
- 	}
- 
- 	for (i = 0; i < 2; i++) {
-@@ -1455,6 +1458,7 @@ int babyface_create_preamp(struct snd_usb_babyface *chip)
- 		err = snd_ctl_add(chip->card, kctl);
- 		if (err < 0)
- 			return err;
-+		chip->gain_kctl[i] = kctl;
- 	}
- 	return 0;
- }
-@@ -2098,3 +2102,1232 @@ int babyface_create_flags(struct snd_usb_babyface *chip)
- 	return 0;
- }
- 
-+/* Control indices in chip->panel_kctl[] (for snd_ctl_notify). */
-+enum {
-+	BF_PANEL_KCTL_BUTTON,
-+	BF_PANEL_KCTL_WHEEL,
-+	BF_PANEL_KCTL_IN,
-+	BF_PANEL_KCTL_OUT,
-+	BF_PANEL_KCTL_MIX,
-+	BF_PANEL_KCTL_DIM,
-+	BF_PANEL_KCTL_NUM,
-+};
-+
-+static const char *const bf_panel_in_texts[] = {
-+	"Unknown", "Ch 1/2", "Ch 3/4", "Opt", NULL
-+};
-+
-+static const char *const bf_panel_out_texts[] = {
-+	"Unknown", "Ch 1/2", "Phones", "Opt", NULL
-+};
-+
-+static const char *const bf_panel_select_texts[] = {
-+	"Left", "Right", "Both", "None", "Unknown", NULL
-+};
-+
-+/* byte3 button flash -> event code (0 = none).  The idle byte3 is 0x40;
-+ * a press flashes the value below the base for one or two poll frames.
-+ */
-+static int bf_panel_button_decode(u8 flash)
-+{
-+	switch (flash) {
-+	case BF_PANEL_FLASH_IN:		return BF_PANEL_BTN_IN;
-+	case BF_PANEL_FLASH_SET:	return BF_PANEL_BTN_SET;
-+	case BF_PANEL_FLASH_MIX:	return BF_PANEL_BTN_MIX;
-+	case BF_PANEL_FLASH_OUT:	return BF_PANEL_BTN_OUT;
-+	case BF_PANEL_FLASH_SELECT:	return BF_PANEL_BTN_SELECT;
-+	case BF_PANEL_FLASH_DIM:	return BF_PANEL_BTN_DIM;
-+	default:			return BF_PANEL_BTN_NONE;
-+	}
-+}
-+
-+/* (byte2 >> 4) & 7 = IN position 4/5/6 -> enum index (0 = not in range). */
-+static int bf_panel_in_decode(u8 nib)
-+{
-+	switch (nib) {
-+	case BF_PANEL_IN_CH12:		return 1;
-+	case BF_PANEL_IN_CH34:		return 2;
-+	case BF_PANEL_IN_OPT:		return 3;
-+	default:			return 0;
-+	}
-+}
-+
-+/* byte1 & 7 = OUT position.  0/1/2 for physical Ch 1/2 / Phones / Opt,
-+ * LED-correlated capture, hardware-verified on both an original
-+ * Babyface Pro and the Pro FS.
-+ */
-+static int bf_panel_out_decode(u8 v)
-+{
-+	switch (v) {
-+	case 0x00:
-+	case BF_PANEL_OUT_CH12:		return 1;
-+	case 0x01:
-+	case BF_PANEL_OUT_PHONES:	return 2;
-+	case 0x02:
-+	case BF_PANEL_OUT_OPT:		return 3;
-+	default:			return 0;
-+	}
-+}
-+
-+/* MIX-mode VU display law - monitoring dBx2 -> the 0x1A 0x000A display
-+ * value.  Piecewise-linear through the captured (dB, display) points
-+ * (cap_mix.pcap 2026-08-23: (-62,0) (-54,1) (-48,2) (-42.5,3)
-+ * (-35,4) (-28.4,5); cap_panel.pcap: (-7.4,10) (-6.7,11)
-+ * (-4.6,12)) - a log-ish VU scale (coarse at the bottom, ~1.4 dB/step
-+ * near 0).  The -28..-8 dB middle is interpolated; the exact law is
-+ * pending the cap_mixdisp.pcap full-range sweep (TODO 0g).
-+ */
-+static int bf_mix_display(int db2)
-+{
-+	static const struct {
-+		s16 db2;
-+		u8 disp;
-+	} pts[] = {
-+		{ -124, 0 }, { -108, 1 }, {  -96, 2 }, {  -85, 3 },
-+		{  -70, 4 }, {  -57, 5 }, {  -15, 10 }, {  -13, 11 },
-+		{   -9, 12 },
-+	};
-+	int i;
-+
-+	if (db2 <= pts[0].db2)
-+		return 0;
-+	for (i = 0; i < ARRAY_SIZE(pts) - 1; i++) {
-+		if (db2 <= pts[i + 1].db2) {
-+			u32 num = (u32)(db2 - pts[i].db2) *
-+				  (u32)(pts[i + 1].disp - pts[i].disp);
-+			u32 den = pts[i + 1].db2 - pts[i].db2;
-+
-+			return pts[i].disp + (int)((num + den / 2) / den);
-+		}
-+	}
-+	/* Above -4.6 dB: keep the last slope (2 dB/step) up to +6 dB. */
-+	return pts[ARRAY_SIZE(pts) - 1].disp +
-+	       clamp((db2 - pts[ARRAY_SIZE(pts) - 1].db2) / 4, 0, 12);
-+}
-+
-+/* Tell ALSA clients that the front panel changed a mixer control. */
-+static void bf_panel_notify_kctl(struct snd_usb_babyface *chip,
-+				 struct snd_kcontrol *kctl)
-+{
-+	if (kctl)
-+		snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE, &kctl->id);
-+}
-+
-+/* The selection of the IN pair now shown, from panel_sel[]. */
-+static void bf_panel_sel_load(struct snd_usb_babyface *chip)
-+{
-+	int pair = READ_ONCE(chip->panel_in) - 1;
-+	int sel = pair >= 0 && pair < 3 ? chip->panel_sel[pair] : -1;
-+
-+	chip->panel_select_known = sel >= 0;
-+	WRITE_ONCE(chip->panel_select, sel >= 0 ? sel : 3);
-+}
-+
-+/* SET and the wheel have nothing to act on while the selection is not
-+ * known: say so once, since the cause is not visible from the unit.
-+ */
-+static void bf_panel_sel_hint(struct snd_usb_babyface *chip)
-+{
-+	if (!chip->panel_select_known)
-+		dev_info_once(&chip->dev->dev,
-+			      "front panel: the SELECT channel selection is not known (the unit keeps it, and the driver cannot read it), so SET and the wheel do nothing; press SELECT to see it, then set the \"Front Panel Selection\" control of the IN pair shown (index 0 = Ch 1/2) to match\n");
-+}
-+
-+/* The kernel driver plays the TotalMix role for the MIX button (the
-+ * standalone emulator is hardware-validated in tuxmix-core/src/panel.rs
-+ * + usb.rs): one wheel click in fader mode = +/-0.5 dB on the SELECT-
-+ * chosen channel(s) of the IN-selected pair, into the OUT-selected
-+ * output's crosspoint block - the STANDARD map only (cap_mix.pcap /
-+ * cap_select2.pcap, no low-map mirror).  Mirrors the change into the
-+ * xpoint cache so the ALSA controls follow the wheel.  Takes the mutex
-+ * (the 0x12 writes cycle the transaction flag like the mixer puts).
-+ */
-+static void bf_panel_mix_wheel(struct snd_usb_babyface *chip, int delta)
-+{
-+	/* Canonical output of the OUT selection (enum 1 = Ch1/2,
-+	 * 2 = Phones, 3 = Opt): AN1/2, PH3/4, ADAT7/8 (the optical
-+	 * output) respectively.
-+	 */
-+	int out = READ_ONCE(chip->panel_out) == 3 ? 5 :
-+		  READ_ONCE(chip->panel_out) == 2 ? 1 : 0;
-+	unsigned int blk = bf_xpoint_block[out];
-+	u8 targets[2];
-+	int n = 0;
-+	int db2;
-+	u16 raw, flag;
-+	int i;
-+
-+	/* SELECT-chosen channel(s) of the IN pair (manual sec. 5.1: SELECT
-+	 * steps left/right/both; none = nothing selected = no-op wheel).
-+	 * Source indices: AN1/AN2 = 0/1, AN3/AN4 = 2/3, AS1/2 = 4.
-+	 */
-+	if (READ_ONCE(chip->panel_in) == 3) {
-+		targets[0] = 4;		/* Opt: the AS1/2 pair */
-+		n = 1;
-+	} else if (READ_ONCE(chip->panel_select) != 3) {
-+		int base = READ_ONCE(chip->panel_in) == 2 ? 2 : 0;
-+
-+		targets[0] = base + (READ_ONCE(chip->panel_select) == 1 ? 1 : 0);
-+		n = 1;
-+		if (READ_ONCE(chip->panel_select) == 2)
-+			targets[n++] = base + 1;
-+	} else {
-+		bf_panel_sel_hint(chip);
-+	}
-+
-+	mutex_lock(&chip->mutex);
-+	db2 = bf_fader_raw_to_db2(chip->panel_mix_raw);
-+	db2 = clamp(db2 + delta, BF_FADER_DB2_INF, 12);
-+	raw = bf_fader_db2_to_raw(db2);
-+	chip->panel_mix_raw = raw;
-+	for (i = 0; i < n; i++) {
-+		const struct bf_source *s = &bf_sources[targets[i]];
-+
-+		flag = bf_flag_cycle[chip->flag_cnt];
-+		chip->flag_cnt = (chip->flag_cnt + 1) & 3;
-+		bf_vendor_write(chip, BF_REQ_CROSSPOINT, raw,
-+				(BF_REG_CROSS_BASE_L + BF_REG_CROSS_STRIDE * blk +
-+				 s->idx_l) | flag);
-+		bf_vendor_write(chip, BF_REQ_CROSSPOINT, raw,
-+				(BF_REG_CROSS_BASE_R + BF_REG_CROSS_STRIDE * blk +
-+				 s->idx_r) | flag);
-+		chip->xpoint[out][targets[i]][0] = raw;
-+		chip->xpoint[out][targets[i]][1] = raw;
-+		bf_panel_notify_kctl(chip, chip->xpoint_kctl[out][targets[i]]);
-+		/* MIX-mode VU display shadow (0x1A 0x000A+mic): TotalMix
-+		 * mirrors the monitoring level into the panel display family
-+		 * (cap_mix/cap_panel.pcap) - the input VU segments follow it.
-+		 * Written only on change (the captures show TotalMix updating
-+		 * it on segment crossings).  Law = bf_mix_display (TODO 0g
-+		 * pending the exact full-range capture).
-+		 */
-+		if (targets[i] < 4) {
-+			int disp = bf_mix_display(db2);
-+
-+			if (disp != chip->panel_mix_disp[targets[i]]) {
-+				bf_vendor_write(chip, BF_REQ_GAIN,
-+						(u16)disp,
-+						BF_REG_PANEL_GAIN + targets[i]);
-+				chip->panel_mix_disp[targets[i]] = disp;
-+			}
-+		}
-+	}
-+	mutex_unlock(&chip->mutex);
-+}
-+
-+/* A muted output ignores the wheel, as it does under TotalMix.  The
-+ * firmware still moves the analog level by itself, up from the mute
-+ * code, so the output would become faintly audible while the mute switch
-+ * still reads off: put the mute back.  Caller holds the mutex.
-+ */
-+static void bf_panel_remute(struct snd_usb_babyface *chip, int out)
-+{
-+	bf_vendor_write(chip, BF_REQ_GAIN, BF_MASTER_MUTE,
-+			BF_REG_MASTER_8 + 2 * out);
-+	bf_vendor_write(chip, BF_REQ_GAIN, BF_MASTER_MUTE,
-+			BF_REG_MASTER_8 + 2 * out + 1);
-+}
-+
-+/* Write an output's L/R masters (8-bit companions + 16-bit with the
-+ * transaction flag) and mirror into the cache - used by the balance
-+ * wheel on an unmuted output.  Caller holds the mutex.
-+ */
-+static void bf_panel_write_master(struct snd_usb_babyface *chip, int out,
-+				  u16 l, u16 r)
-+{
-+	u16 flag;
-+
-+	flag = bf_flag_cycle[chip->flag_cnt];
-+	chip->flag_cnt = (chip->flag_cnt + 1) & 3;
-+	bf_vendor_write(chip, BF_REQ_GAIN, bf_master_8bit(l),
-+			BF_REG_MASTER_8 + 2 * out);
-+	bf_vendor_write(chip, BF_REQ_GAIN, bf_master_8bit(r),
-+			BF_REG_MASTER_8 + 2 * out + 1);
-+	bf_vendor_write(chip, BF_REQ_CROSSPOINT, l,
-+			(BF_REG_MASTER_16 + 2 * out) | flag);
-+	bf_vendor_write(chip, BF_REQ_CROSSPOINT, r,
-+			(BF_REG_MASTER_16 + 2 * out + 1) | flag);
-+	chip->master[out][0] = l;
-+	chip->master[out][1] = r;
-+	/* A Phones change while DIM is engaged re-bases the restore. */
-+	if (chip->dim && out == 1) {
-+		chip->dim_saved[0] = l;
-+		chip->dim_saved[1] = r;
-+	}
-+	if (chip->master_kctl[out])
-+		snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
-+			       &chip->master_kctl[out]->id);
-+}
-+
-+/* Front-panel OUT wheel, measured on hardware 2026-09-17 with a tone
-+ * looped from the headphone output into IN3/IN4:
-+ *
-+ *  - The firmware moves an analog output's level by itself when the
-+ *    wheel turns, with its own ~12 ms smoothing, even when the host
-+ *    writes nothing.  See bf_out_wheel_step() for the step size.
-+ *  - A host write to the 8-bit master (the analog gain) overrides that.
-+ *    Writing it on every poll from the host's own count made the level
-+ *    saw-tooth by 1-3 dB while turning, heard as heavy zipper noise.
-+ *  - The 16-bit master does not affect the analog level, but it is the
-+ *    digital outputs' level.  TotalMix writes only the 16-bit during a
-+ *    wheel gesture, and the 8-bit once the wheel is at rest.
-+ *
-+ * So while the wheel turns, only the 16-bit is written, and the cache
-+ * follows the firmware's own count so the ALSA controls read the real
-+ * level.  A muted output ignores the wheel (see bf_panel_remute()).
-+ * Both sides move by the louder side's step, so a balance (hold-SELECT)
-+ * is kept.  Same output mapping as the MIX wheel (Phones = canon 1,
-+ * Opt = ADAT7/8 = canon 5, else AN1/2).
-+ */
-+static void bf_panel_out_wheel_write(struct snd_usb_babyface *chip, int out,
-+				     u16 l, u16 r)
-+{
-+	u16 flag;
-+
-+	flag = bf_flag_cycle[chip->flag_cnt];
-+	chip->flag_cnt = (chip->flag_cnt + 1) & 3;
-+	bf_vendor_write(chip, BF_REQ_CROSSPOINT, l,
-+			(BF_REG_MASTER_16 + 2 * out) | flag);
-+	bf_vendor_write(chip, BF_REQ_CROSSPOINT, r,
-+			(BF_REG_MASTER_16 + 2 * out + 1) | flag);
-+	chip->master[out][0] = l;
-+	chip->master[out][1] = r;
-+	/* A Phones change while DIM is engaged re-bases the restore. */
-+	if (chip->dim && out == 1) {
-+		chip->dim_saved[0] = l;
-+		chip->dim_saved[1] = r;
-+	}
-+	if (chip->master_kctl[out])
-+		snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
-+			       &chip->master_kctl[out]->id);
-+}
-+
-+/* A click that follows the previous one within this gap moves twice as
-+ * far.  In the recordings the firmware doubled clicks up to 58 ms apart
-+ * and not from 67 ms.  A normal poll every ~21 ms can't tell those
-+ * apart, so after an OUT wheel click the panel is polled every
-+ * BF_PANEL_FAST_POLL_MS for BF_PANEL_FAST_HOLD_MS, and each click is
-+ * dated at the middle of the interval it was seen in.  A wrong guess is
-+ * fixed by the resync at rest below.
-+ */
-+#define BF_OUT_WHEEL_ACCEL_MS	62
-+#define BF_PANEL_FAST_POLL_MS	5
-+#define BF_PANEL_FAST_HOLD_MS	200
-+
-+/* Quiet time after the last click before the resync write. */
-+#define BF_OUT_WHEEL_RESYNC_MS	150
-+
-+/* The device's own OUT wheel range: below -90 dB a side is muted.
-+ * BF_OUT_WHEEL_MUTED is where a muted louder side is kept.
-+ */
-+#define BF_OUT_WHEEL_FLOOR	(-180)		/* half-dB */
-+#define BF_OUT_WHEEL_MUTED	(BF_OUT_WHEEL_FLOOR - 1)
-+/* Lowest level the 8-bit master is known to take (BF_MASTER_8_MIN). */
-+#define BF_OUT_WHEEL_8BIT_MIN	(BF_MASTER_8_MIN - BF_MASTER_8_0DB)
-+
-+/**
-+ * bf_out_wheel_step - the firmware's OUT wheel step, in half-dB
-+ * @half_db: the louder side's level before the click, in half-dB
-+ *
-+ * Measured on the headphone output (a tone looped into IN3/IN4, the
-+ * driver writing nothing):
-+ *
-+ *	-9.5 dB and up		0.5 dB per click
-+ *	-10 to -25.5 dB		1 dB
-+ *	-26 to -41.5 dB		1.5 dB
-+ *	-42 to -57.5 dB		2 dB
-+ *	-58 dB and down		3 dB
-+ *
-+ * A fast click moves twice as far.  Both sides move by the step of the
-+ * louder one, so a balance is kept.
-+ */
-+static int bf_out_wheel_step(int half_db)
-+{
-+	if (half_db >= -19)
-+		return 1;
-+	if (half_db >= -51)
-+		return 2;
-+	if (half_db >= -83)
-+		return 3;
-+	if (half_db >= -115)
-+		return 4;
-+	return 6;
-+}
-+
-+/* The wheel's view of one side: its own tracked level while the master
-+ * is still what the wheel wrote, else the master's level.
-+ */
-+static int bf_out_wheel_level(struct snd_usb_babyface *chip, int out, int ch)
-+{
-+	u16 raw = chip->master[out][ch];
-+
-+	if (raw == chip->panel_master_last[out][ch])
-+		return chip->panel_out_hdb[out][ch];
-+	if (!raw)
-+		return BF_OUT_WHEEL_MUTED;
-+	return bf_master_half_db(raw);
-+}
-+
-+/* One click on both sides.  They move together, so a balance is kept.
-+ * When the louder side would go below the floor, both stop there and the
-+ * louder side mutes; from mute, turning up continues from the floor
-+ * (-90 dB up one step is -87).  A quieter side below the floor is muted
-+ * but keeps its offset, so the balance comes back as the level rises.
-+ */
-+static void bf_out_wheel_click(int db[2], int step)
-+{
-+	int louder = max(db[0], db[1]);
-+	int shift = step;
-+
-+	if (louder < BF_OUT_WHEEL_FLOOR) {
-+		if (step < 0)
-+			return;
-+		shift = BF_OUT_WHEEL_FLOOR - louder + step;
-+	} else if (louder + step < BF_OUT_WHEEL_FLOOR) {
-+		shift = BF_OUT_WHEEL_MUTED - louder;
-+	} else if (louder + step > 12) {
-+		shift = 12 - louder;
-+	}
-+	db[0] += shift;
-+	db[1] += shift;
-+}
-+
-+static void bf_panel_out_wheel(struct snd_usb_babyface *chip, int delta)
-+{
-+	int out = READ_ONCE(chip->panel_out) == 3 ? 5 :
-+		  READ_ONCE(chip->panel_out) == 2 ? 1 : 0;
-+	int dir = delta > 0 ? 1 : -1;
-+	int clicks = abs(delta);
-+	ktime_t now = ktime_get();
-+	bool fast;
-+	int ch, i, step, louder;
-+	int db[2];
-+	u16 next[2];
-+
-+	chip->panel_fast_until = jiffies +
-+				 msecs_to_jiffies(BF_PANEL_FAST_HOLD_MS);
-+	/* The click came some time since the previous poll: take the
-+	 * middle.  Clicks after the first in this poll came within one
-+	 * interval, so only the first can be slow.  A reversal starts a
-+	 * new turn.
-+	 */
-+	if (chip->panel_poll_t)
-+		now = ktime_sub(now,
-+				ktime_divns(ktime_sub(now, chip->panel_poll_t), 2));
-+
-+	mutex_lock(&chip->mutex);
-+	if (chip->muted[out]) {
-+		bf_panel_remute(chip, out);
-+		mutex_unlock(&chip->mutex);
-+		return;
-+	}
-+	fast = chip->panel_out_wheel_t &&
-+	       dir == chip->panel_out_wheel_dir &&
-+	       out == chip->panel_out_wheel_out &&
-+	       ktime_ms_delta(now, chip->panel_out_wheel_t) <
-+	       BF_OUT_WHEEL_ACCEL_MS;
-+	for (ch = 0; ch < 2; ch++)
-+		db[ch] = bf_out_wheel_level(chip, out, ch);
-+	for (i = 0; i < clicks; i++) {
-+		/* Muted, the louder side counts as the floor. */
-+		louder = max3(db[0], db[1], BF_OUT_WHEEL_FLOOR);
-+		step = dir * bf_out_wheel_step(louder);
-+		if (fast || i)
-+			step *= 2;
-+		bf_out_wheel_click(db, step);
-+	}
-+	for (ch = 0; ch < 2; ch++)
-+		next[ch] = db[ch] < BF_OUT_WHEEL_FLOOR ? 0 :
-+			   bf_master_16bit(db[ch]);
-+	bf_panel_out_wheel_write(chip, out, next[0], next[1]);
-+	for (ch = 0; ch < 2; ch++) {
-+		chip->panel_master_last[out][ch] = next[ch];
-+		chip->panel_out_hdb[out][ch] = db[ch];
-+	}
-+	chip->panel_out_wheel_t = now;
-+	chip->panel_out_wheel_dir = dir;
-+	chip->panel_out_wheel_out = out;
-+	chip->panel_out_resync = true;
-+	mutex_unlock(&chip->mutex);
-+}
-+
-+/* Once the wheel has rested, write the wheel's level to the 8-bit (and
-+ * 16-bit) master, as TotalMix does at the end of a gesture.  The level
-+ * already follows the firmware's step rule, so this normally changes
-+ * nothing audible.  It fixes the rare click whose speed the driver
-+ * guessed wrong: one zone step per such click, smoothed by the
-+ * firmware.  Nothing is written below -64 dB, where the 8-bit codes the
-+ * device takes are unknown, nor after a mixer application has set the
-+ * master since (that write already set the device).
-+ */
-+static void bf_panel_out_resync(struct snd_usb_babyface *chip)
-+{
-+	int out, ch;
-+	int db[2];
-+	u16 flag;
-+
-+	if (!chip->panel_out_resync ||
-+	    ktime_ms_delta(ktime_get(), chip->panel_out_wheel_t) <
-+	    BF_OUT_WHEEL_RESYNC_MS)
-+		return;
-+
-+	mutex_lock(&chip->mutex);
-+	chip->panel_out_resync = false;
-+	out = chip->panel_out_wheel_out;
-+	for (ch = 0; ch < 2; ch++) {
-+		if (chip->master[out][ch] != chip->panel_master_last[out][ch])
-+			goto unlock;
-+		db[ch] = chip->panel_out_hdb[out][ch];
-+		if (db[ch] < BF_OUT_WHEEL_8BIT_MIN)
-+			goto unlock;
-+	}
-+	if (!chip->muted[out]) {
-+		flag = bf_flag_cycle[chip->flag_cnt];
-+		chip->flag_cnt = (chip->flag_cnt + 1) & 3;
-+		bf_vendor_write(chip, BF_REQ_GAIN, BF_MASTER_8_0DB + db[0],
-+				BF_REG_MASTER_8 + 2 * out);
-+		bf_vendor_write(chip, BF_REQ_GAIN, BF_MASTER_8_0DB + db[1],
-+				BF_REG_MASTER_8 + 2 * out + 1);
-+		bf_vendor_write(chip, BF_REQ_CROSSPOINT, chip->master[out][0],
-+				(BF_REG_MASTER_16 + 2 * out) | flag);
-+		bf_vendor_write(chip, BF_REQ_CROSSPOINT, chip->master[out][1],
-+				(BF_REG_MASTER_16 + 2 * out + 1) | flag);
-+	}
-+unlock:
-+	mutex_unlock(&chip->mutex);
-+}
-+
-+/* IN-mode wheel: the gain of the SELECT-chosen channel(s) of the
-+ * IN-selected pair, +/-1 dB per click (manual sec. 5.1: SELECT steps
-+ * left/right/both, then the wheel changes the gain).  Writes the PANEL
-+ * gain registers 0x1A 0x000A+mic (cap_select.pcap 2026-08-24 - the
-+ * "ADC gain" family, which drives the same preamp as the GUI
-+ * 0x0000+mic; the cache tracks the raw either way).  Opt has no
-+ * preamp and SELECT None = no target.
-+ */
-+static void bf_panel_gain_wheel(struct snd_usb_babyface *chip, int delta)
-+{
-+	u8 mics[2];
-+	int n = 0;
-+	int i;
-+
-+	if (READ_ONCE(chip->panel_in) == 3)
-+		return;
-+	if (READ_ONCE(chip->panel_select) == 3) {
-+		bf_panel_sel_hint(chip);
-+		return;
-+	}
-+	{
-+		int base = READ_ONCE(chip->panel_in) == 2 ? 2 : 0;
-+
-+		mics[0] = base + (READ_ONCE(chip->panel_select) == 1 ? 1 : 0);
-+		n = 1;
-+		if (READ_ONCE(chip->panel_select) == 2)
-+			mics[n++] = base + 1;
-+	}
-+
-+	mutex_lock(&chip->mutex);
-+	for (i = 0; i < n; i++) {
-+		int mic = mics[i];
-+		int db = clamp((int)chip->gain[mic] + delta,
-+				0, bf_gain_max_db(mic));
-+		u8 raw = bf_gain_raw(mic, db);
-+
-+		bf_vendor_write(chip, BF_REQ_GAIN, raw, BF_REG_PANEL_GAIN + mic);
-+		if (db != chip->gain[mic]) {
-+			chip->gain[mic] = db;
-+			bf_panel_notify_kctl(chip, chip->gain_kctl[mic]);
-+		}
-+	}
-+	mutex_unlock(&chip->mutex);
-+}
-+
-+/* OUT-balance wheel (hold SELECT + wheel - manual sec. 5.1 "Output
-+ * Balance"): moves the stereo image of the OUT-selected output by
-+ * attenuating ONE side, linear in raw (cap_pan_stereo.pcap: the varied
-+ * side = fixed*(1-|pan|), ~0x9C raw step per click at 0 dB - the PAN
-+ * of the stereo hardware output in TotalMix).  The balance position is
-+ * derived from the L/R master ratio (the louder side is the fixed
-+ * one), so the gesture needs no extra state - and the OUT wheel below
-+ * moves both sides by the same dB to preserve an existing balance.
-+ */
-+static void bf_panel_balance_wheel(struct snd_usb_babyface *chip, int delta)
-+{
-+	int out = READ_ONCE(chip->panel_out) == 3 ? 5 :
-+		  READ_ONCE(chip->panel_out) == 2 ? 1 : 0;
-+	u16 l, r;
-+	int bal;		/* -100..+100; + = image right (left varies) */
-+	u16 fixed, varied;
-+
-+	mutex_lock(&chip->mutex);
-+	if (chip->muted[out]) {
-+		bf_panel_remute(chip, out);
-+		mutex_unlock(&chip->mutex);
-+		return;
-+	}
-+	/* Read under the lock so the L/R pair is consistent with the
-+	 * master/mute/dim writers (they update chip->master[] under the
-+	 * same mutex).
-+	 */
-+	l = chip->master[out][0];
-+	r = chip->master[out][1];
-+	/* Balance from the L/R ratio: the louder side is the fixed one. */
-+	if (l >= r) {
-+		bal = r ? -(100 - (100 * r) / l) : -100;
-+		fixed = l;
-+	} else {
-+		bal = l ? (100 - (100 * l) / r) : 100;
-+		fixed = r;
-+	}
-+	bal = clamp(bal + delta * 2, -100, 100);
-+	varied = (u16)((u32)fixed * (100 - abs(bal)) / 100);
-+	l = bal >= 0 ? varied : fixed;
-+	r = bal >= 0 ? fixed : varied;
-+
-+	bf_panel_write_master(chip, out, l, r);
-+	mutex_unlock(&chip->mutex);
-+}
-+
-+/* SET press (byte3 0x42 flash): toggle 48V phantom on the
-+ * SELECT-chosen mic(s) of the IN-selected pair.  The hardware only
-+ * does this in standalone mode (online, TotalMix ignores SET - no USB
-+ * write in the captures), but the driver IS the host: it writes the
-+ * preamp state itself and the P48 LEDs follow (the tuxmix-core
-+ * emulator, hardware-verified).  Restricted to IN mode + Ch1/2 (the
-+ * phantom-capable pair); Opt/Ch3/4 and SELECT None = no target.
-+ */
-+static void bf_panel_set_phantom(struct snd_usb_babyface *chip)
-+{
-+	u16 bits = 0;
-+	u16 old;
-+	int m;
-+
-+	if (READ_ONCE(chip->panel_mix) || READ_ONCE(chip->panel_in) != 1)
-+		return;
-+	if (READ_ONCE(chip->panel_select) == 3) {
-+		bf_panel_sel_hint(chip);
-+		return;
-+	}
-+	if (READ_ONCE(chip->panel_select) != 1)
-+		bits |= BF_PREAMP_48V_MIC1;
-+	if (READ_ONCE(chip->panel_select) != 0)
-+		bits |= BF_PREAMP_48V_MIC2;
-+
-+	mutex_lock(&chip->mutex);
-+	old = chip->preamp;
-+	/* One channel selected: toggle it.  Both selected: ALIGN both to
-+	 * the same state, so repeated SET presses cycle all-on <-> all-off
-+	 * (a mixed phantom state cannot persist with both selected).
-+	 */
-+	if (READ_ONCE(chip->panel_select) == 2) {
-+		if ((chip->preamp & bits) == bits)
-+			chip->preamp &= ~bits;
-+		else
-+			chip->preamp |= bits;
-+	} else {
-+		chip->preamp ^= bits;
-+	}
-+	if (bf_preamp_state_write(chip) < 0)
-+		chip->preamp = old;
-+	if ((chip->preamp ^ old) & BF_PREAMP_48V_MIC1)
-+		bf_panel_notify_kctl(chip, chip->phantom_kctl[0]);
-+	if ((chip->preamp ^ old) & BF_PREAMP_48V_MIC2)
-+		bf_panel_notify_kctl(chip, chip->phantom_kctl[1]);
-+	for (m = 0; m < 4; m++)
-+		chip->panel_mix_disp[m] = 0;
-+	mutex_unlock(&chip->mutex);
-+}
-+
-+static void bf_panel_notify(struct snd_usb_babyface *chip, int ctl)
-+{
-+	if (chip->panel_kctl[ctl])
-+		snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
-+			       &chip->panel_kctl[ctl]->id);
-+}
-+
-+/* One 0x17 read + decode.  Called from the poll work.  The decoded state
-+ * (panel_button/wheel/in/out/select/mix/dim) is also read by the control
-+ * get callbacks, and panel_select is written by the SELECT control's
-+ * put(): those fields are shared between the worker and the ALSA control
-+ * layer, so every access to them goes through READ_ONCE()/WRITE_ONCE(),
-+ * which keeps the lock-free access defined and tear-free rather than a
-+ * plain data race (the worker is the only writer of the other fields).
-+ */
-+static void bf_panel_tick(struct snd_usb_babyface *chip)
-+{
-+	u8 st[4];
-+	int delta, in, out;
-+	bool dim;
-+	u8 cls, pcls;
-+	int btn;
-+	bool mix_flash, fader_now;
-+
-+	if (bf_vendor_read(chip, BF_REQ_PREAMP, BF_REG_PANEL_READ, st) < 0)
-+		return;	/* device gone / busy - retry next tick */
-+
-+	if (!chip->panel_seen) {
-+		chip->panel_seen = true;
-+		memcpy(chip->panel_prev, st, sizeof(st));
-+		/* Seed the state controls from the first snapshot. */
-+		in = bf_panel_in_decode((st[2] >> BF_PANEL_IN_SHIFT) & 0x7);
-+		if (in)
-+			WRITE_ONCE(chip->panel_in, in);
-+		/* The IN pair is only known from here on: pick up its
-+		 * selection (kept across a re-probe).
-+		 */
-+		bf_panel_sel_load(chip);
-+		out = bf_panel_out_decode(st[1] & 0x07);
-+		if (out)
-+			WRITE_ONCE(chip->panel_out, out);
-+		WRITE_ONCE(chip->panel_mix, !!(st[0] & 0x80));
-+		WRITE_ONCE(chip->panel_saw_fader, (st[2] >> 4) == 0x0);
-+		WRITE_ONCE(chip->panel_dim, !!(st[1] & 0x20));
-+		return;
-+	}
-+
-+	/* Button flash (byte3 over the 0x40 idle base).  Notify on the
-+	 * edge, as the other flash-driven controls do, so a subscriber sees
-+	 * each press once rather than on every poll while it is held.
-+	 */
-+	btn = bf_panel_button_decode(st[3]);
-+	if (btn && chip->panel_prev[3] != st[3]) {
-+		WRITE_ONCE(chip->panel_button, btn);
-+		bf_panel_notify(chip, BF_PANEL_KCTL_BUTTON);
-+	}
-+
-+	/* Wheel: signed 4-bit wrap delta of the byte2 low nibble - only
-+	 * while the mode class is unchanged.  A mode switch (IN 0x4x ->
-+	 * fader 0x0x on a MIX press, or the OUT counter carrying 0x8F ->
-+	 * 0x90 - the OUT counter is a full byte, cap_set2.pcap) must not
-+	 * be read as a wheel jump.  Class: 0 = fader (0x0x), 1 = OUT
-+	 * (0x8x/0x9x), 2 = IN (0x4x/0x5x/0x6x).
-+	 */
-+	cls = (st[2] >> 4) == 0x8 || (st[2] >> 4) == 0x9 ? 1 :
-+	      (st[2] >> 4) == 0x0 ? 0 : 2;
-+	pcls = (chip->panel_prev[2] >> 4) == 0x8 ||
-+	       (chip->panel_prev[2] >> 4) == 0x9 ? 1 :
-+	       (chip->panel_prev[2] >> 4) == 0x0 ? 0 : 2;
-+	delta = (int)(st[2] & 0x0f) - (int)(chip->panel_prev[2] & 0x0f);
-+	if (delta > 8)
-+		delta -= 16;
-+	else if (delta < -8)
-+		delta += 16;
-+	if (delta && cls == pcls) {
-+		WRITE_ONCE(chip->panel_wheel,
-+			   clamp(READ_ONCE(chip->panel_wheel) + delta,
-+				 SHRT_MIN, SHRT_MAX));
-+		bf_panel_notify(chip, BF_PANEL_KCTL_WHEEL);
-+		/* Wheel by mode (LINUX-VALIDATION sec. 12, the TotalMix
-+		 * emulator): MIX -> monitoring level, OUT (0x8x/0x9x) -> the
-+		 * selected output master (or its balance while SELECT is
-+		 * held), IN (0x4x/0x5x/0x6x) -> the SELECT-chosen preamp
-+		 * gain.
-+		 */
-+		if (READ_ONCE(chip->panel_mix))
-+			bf_panel_mix_wheel(chip, delta);
-+		else if (chip->panel_sel_hold >= 10 && cls == 1)
-+			bf_panel_balance_wheel(chip, delta);
-+		else if (cls == 1)
-+			bf_panel_out_wheel(chip, delta);
-+		else if (cls == 2)
-+			bf_panel_gain_wheel(chip, delta);
-+	}
-+	bf_panel_out_resync(chip);
-+
-+	/* Selections - keep the previous when the field is not in range
-+	 * (the fader-mode readback drops the IN position bits).
-+	 */
-+	in = bf_panel_in_decode((st[2] >> BF_PANEL_IN_SHIFT) & 0x7);
-+	if (in && in != READ_ONCE(chip->panel_in)) {
-+		WRITE_ONCE(chip->panel_in, in);
-+		/* The unit keeps one SELECT selection per IN pair, and an
-+		 * IN switch does not clear it (hardware-verified
-+		 * 2026-10-02: back on Ch 1/2 after a trip through Ch 3/4,
-+		 * the first SELECT press showed the L it had left, while
-+		 * Ch 3/4 showed nothing).  Switch to the new pair's.
-+		 */
-+		bf_panel_sel_load(chip);
-+		/* The LEDs go dark on an IN switch: the next SELECT press
-+		 * only shows the selection again (no step), the one after
-+		 * that steps it (user-verified 2026-08-28).
-+		 */
-+		chip->panel_select_armed = false;
-+		bf_panel_notify(chip, BF_PANEL_KCTL_IN);
-+	}
-+	out = bf_panel_out_decode(st[1] & 0x07);
-+	if (out && out != READ_ONCE(chip->panel_out)) {
-+		WRITE_ONCE(chip->panel_out, out);
-+		bf_panel_notify(chip, BF_PANEL_KCTL_OUT);
-+	}
-+
-+	/* SELECT press cycles the channel selection L -> R -> both -> none
-+	 * -> L (manual sec. 5.1).  The state is NOT in the readback
-+	 * (panelprobe 2026-08-24), so it is tracked host-side.
-+	 */
-+	if (st[3] == BF_PANEL_FLASH_SELECT &&
-+	    chip->panel_prev[3] != BF_PANEL_FLASH_SELECT &&
-+	    chip->panel_select_known) {
-+		if (!chip->panel_select_armed) {
-+			/* Disarmed (IN switch since the last step): the press
-+			 * only shows the selection - the device steps it on
-+			 * the NEXT press (user-verified 2026-08-28).
-+			 */
-+			chip->panel_select_armed = true;
-+		} else {
-+			int sel = (READ_ONCE(chip->panel_select) + 1) & 3;
-+			struct snd_kcontrol *kctl =
-+				chip->panel_select_kctl[READ_ONCE(chip->panel_in) - 1];
-+
-+			WRITE_ONCE(chip->panel_select, sel);
-+			chip->panel_sel[READ_ONCE(chip->panel_in) - 1] = sel;
-+			if (kctl)
-+				snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
-+					       &kctl->id);
-+		}
-+	}
-+	/* SELECT hold (the OUT-balance gesture, manual sec. 5.1 "Output
-+	 * Balance"): a tap flashes byte3 0x50 for ~2-3 frames at 20 Hz
-+	 * (~100-150 ms - selhold_probe2), a hold keeps it sustained, and
-+	 * byte0 does NOT gain the 0x80 engaged bit - so the duration is
-+	 * the only discriminator: >= 10 ticks (200 ms at 50 Hz) = held.
-+	 */
-+	if (st[3] == BF_PANEL_FLASH_SELECT)
-+		chip->panel_sel_hold++;
-+	else
-+		chip->panel_sel_hold = 0;
-+
-+	/* SET (A) press: host-side 48V phantom toggle on the
-+	 * SELECT-chosen mic(s) (see bf_panel_set_phantom).
-+	 */
-+	if (st[3] == BF_PANEL_FLASH_SET &&
-+	    chip->panel_prev[3] != BF_PANEL_FLASH_SET)
-+		bf_panel_set_phantom(chip);
-+
-+	/* DIM is a software-assignable button. Report presses without
-+	 * choosing a monitor output or changing any gain in the driver.
-+	 */
-+	if (st[3] == BF_PANEL_FLASH_DIM &&
-+	    chip->panel_prev[3] != BF_PANEL_FLASH_DIM) {
-+		chip->dim_press_count = (chip->dim_press_count + 1) & 0x7fffffff;
-+		if (chip->dim_press_kctl)
-+			snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
-+				       &chip->dim_press_kctl->id);
-+	}
-+
-+	/* MIX (fader mode) - HOST-latched, like TotalMix (cap_mix.pcap,
-+	 * cap_select2.pcap): the raw press readback is `0D 0D 41 44` -
-+	 * byte3 flash 0x44, NO engaged bit, byte2 still in the current
-+	 * mode.  The host acks the flash with `0x17 0x8480 0x8C80` -> the
-+	 * device latches fader mode (byte0/1 gain the 0x80 bit, byte2 =
-+	 * 0x00+n counter) and STAYS there after the physical release; the
-+	 * SECOND 0x44 flash exits it (`0x17 0x0400 0x8000` + `0x8080`).
-+	 * A mode button (IN/OUT/SET) pressed during MIX makes the device
-+	 * leave fader mode by itself -> same exit writes (the user: IN
-+	 * must return to gain control).  `panel_saw_fader` gates the
-+	 * device-driven exit so a pre-ack readback (byte2 still 0x4x
-+	 * while the 0x44 flash shows) never ends MIX before it started.
-+	 */
-+	mix_flash = st[3] == BF_PANEL_FLASH_MIX &&
-+		    chip->panel_prev[3] != BF_PANEL_FLASH_MIX;
-+	fader_now = (st[2] >> 4) == 0x0;
-+
-+	if (mix_flash) {
-+		if (READ_ONCE(chip->panel_mix)) {
-+			bf_vendor_write(chip, BF_REQ_PREAMP, 0x0400, 0x8000);
-+			bf_vendor_write(chip, BF_REQ_PREAMP, 0x0400, 0x8080);
-+			WRITE_ONCE(chip->panel_mix, false);
-+			WRITE_ONCE(chip->panel_saw_fader, false);
-+		} else {
-+			int ref, out;
-+			int m;
-+
-+			bf_vendor_write(chip, BF_REQ_PREAMP, 0x8480, 0x8c80);
-+			WRITE_ONCE(chip->panel_mix, true);
-+			/* Seed the monitoring level at the reference
-+			 * crosspoint's current value so the first wheel
-+			 * click doesn't jump from -inf (the reference =
-+			 * the first SELECT-chosen channel of the IN pair;
-+			 * Opt = the AS1/2 pair).
-+			 */
-+			out = READ_ONCE(chip->panel_out) == 3 ? 5 :
-+			      READ_ONCE(chip->panel_out) == 2 ? 1 : 0;
-+			ref = READ_ONCE(chip->panel_in) == 3 ? 4 :
-+			      (READ_ONCE(chip->panel_in) == 2 ? 2 : 0) +
-+			      (READ_ONCE(chip->panel_select) == 1 ? 1 : 0);
-+			chip->panel_mix_raw = chip->xpoint[out][ref][0];
-+			/* Seed the VU display shadow at the CURRENT level
-+			 * (cap_panel.pcap: TotalMix writes the display value of
-+			 * the current fader on engage - 10 in that session -
-+			 * not a hard 0; cap_mix's 0 was because the fader sat
-+			 * at the bottom).  Only the channels the wheel can move.
-+			 */
-+			for (m = 0; m < 4; m++)
-+				chip->panel_mix_disp[m] = 0;
-+			if (ref < 4) {
-+				int db2 = bf_fader_raw_to_db2(chip->panel_mix_raw);
-+				int disp = bf_mix_display(db2);
-+
-+				bf_vendor_write(chip, BF_REQ_GAIN, (u16)disp,
-+						BF_REG_PANEL_GAIN + ref);
-+				chip->panel_mix_disp[ref] = disp;
-+			}
-+		}
-+		bf_panel_notify(chip, BF_PANEL_KCTL_MIX);
-+	}
-+	if (fader_now) {
-+		WRITE_ONCE(chip->panel_saw_fader, true);
-+	} else if (READ_ONCE(chip->panel_mix) && READ_ONCE(chip->panel_saw_fader) &&
-+		   st[3] != BF_PANEL_FLASH_MIX) {
-+		/* device left fader mode by itself (IN/OUT/SET press) */
-+		bf_vendor_write(chip, BF_REQ_PREAMP, 0x0400, 0x8000);
-+		bf_vendor_write(chip, BF_REQ_PREAMP, 0x0400, 0x8080);
-+		WRITE_ONCE(chip->panel_mix, false);
-+		WRITE_ONCE(chip->panel_saw_fader, false);
-+		bf_panel_notify(chip, BF_PANEL_KCTL_MIX);
-+	}
-+
-+	dim = !!(st[1] & 0x20);
-+	if (dim != READ_ONCE(chip->panel_dim)) {
-+		WRITE_ONCE(chip->panel_dim, dim);
-+		bf_panel_notify(chip, BF_PANEL_KCTL_DIM);
-+	}
-+
-+	memcpy(chip->panel_prev, st, sizeof(st));
-+}
-+
-+void babyface_panel_work(struct work_struct *work)
-+{
-+	struct snd_usb_babyface *chip = container_of(work,
-+			struct snd_usb_babyface, panel_work.work);
-+	unsigned int ms;
-+
-+	if (chip->shutdown)
-+		return;
-+	bf_panel_tick(chip);
-+	chip->panel_poll_t = ktime_get();
-+	/* Poll fast for a moment after an OUT wheel click. */
-+	ms = time_before(jiffies, chip->panel_fast_until) ?
-+	     BF_PANEL_FAST_POLL_MS : chip->panel_poll_ms;
-+	schedule_delayed_work(&chip->panel_work, msecs_to_jiffies(ms));
-+}
-+
-+void babyface_panel_start(struct snd_usb_babyface *chip)
-+{
-+	chip->panel_seen = false;
-+	/* The SELECT channel selection is not in the readback, so the
-+	 * driver follows it from the presses.  The unit keeps one per IN
-+	 * pair across a driver reload and even a power cycle, with the LEDs
-+	 * dark until the next SELECT press, which shows it again instead of
-+	 * stepping (hardware-verified 2026-09-29: after an unplug, the
-+	 * first press lit both channels).  What panel_sel[] holds comes
-+	 * from before (a re-probe keeps it, see bf_saved) or is not known,
-+	 * and an unknown selection targets nothing: SET, the IN wheel and
-+	 * the MIX wheel then do nothing rather than act on the wrong
-+	 * channel, until "Front Panel Select" is set to what the LEDs show.
-+	 */
-+	bf_panel_sel_load(chip);
-+	chip->panel_select_armed = false;
-+	chip->panel_start = jiffies;
-+	chip->panel_fast_until = jiffies;
-+	chip->panel_poll_t = 0;
-+	/* No master holds 0xffff: the wheel starts from the masters. */
-+	memset(chip->panel_master_last, 0xff, sizeof(chip->panel_master_last));
-+	schedule_delayed_work(&chip->panel_work, 0);
-+}
-+
-+void babyface_panel_stop(struct snd_usb_babyface *chip)
-+{
-+	cancel_delayed_work_sync(&chip->panel_work);
-+}
-+
-+/* -- controls -------------------------- */
-+
-+/* The button/wheel controls hold the LATEST state and are NOT consumed
-+ * on read: wireplumber subscribes to every notifying control and reads
-+ * it, so a clear-on-get would let another reader eat the event.  Each
-+ * consumer tracks its own baseline and acts on changes (the button is a
-+ * last-press code, the wheel an accumulated signed delta).  VOLATILE
-+ * keeps alsactl from caching them.
-+ */
-+static int bf_panel_button_info(struct snd_kcontrol *kctl,
-+				struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = BF_PANEL_BTN_DIM;
-+	uinfo->value.integer.step = 1;
-+	return 0;
-+}
-+
-+static int bf_panel_button_get(struct snd_kcontrol *kctl,
-+			       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_usb_babyface *chip = snd_kcontrol_chip(kctl);
-+
-+	ucontrol->value.integer.value[0] = READ_ONCE(chip->panel_button);
-+	return 0;
-+}
-+
-+static int bf_panel_wheel_info(struct snd_kcontrol *kctl,
-+			       struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = SHRT_MIN;
-+	uinfo->value.integer.max = SHRT_MAX;
-+	uinfo->value.integer.step = 1;
-+	return 0;
-+}
-+
-+static int bf_panel_wheel_get(struct snd_kcontrol *kctl,
-+			      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_usb_babyface *chip = snd_kcontrol_chip(kctl);
-+
-+	ucontrol->value.integer.value[0] = READ_ONCE(chip->panel_wheel);
-+	return 0;
-+}
-+
-+static int bf_panel_in_info(struct snd_kcontrol *kctl,
-+			    struct snd_ctl_elem_info *uinfo)
-+{
-+	return snd_ctl_enum_info(uinfo, 1, 4, bf_panel_in_texts);
-+}
-+
-+static int bf_panel_in_get(struct snd_kcontrol *kctl,
-+			   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_usb_babyface *chip = snd_kcontrol_chip(kctl);
-+
-+	ucontrol->value.enumerated.item[0] = READ_ONCE(chip->panel_in);
-+	return 0;
-+}
-+
-+static int bf_panel_out_info(struct snd_kcontrol *kctl,
-+			     struct snd_ctl_elem_info *uinfo)
-+{
-+	return snd_ctl_enum_info(uinfo, 1, 4, bf_panel_out_texts);
-+}
-+
-+static int bf_panel_out_get(struct snd_kcontrol *kctl,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_usb_babyface *chip = snd_kcontrol_chip(kctl);
-+
-+	ucontrol->value.enumerated.item[0] = READ_ONCE(chip->panel_out);
-+	return 0;
-+}
-+
-+static int bf_panel_select_info(struct snd_kcontrol *kctl,
-+				struct snd_ctl_elem_info *uinfo)
-+{
-+	return snd_ctl_enum_info(uinfo, 1, 5, bf_panel_select_texts);
-+}
-+
-+static int bf_panel_select_get(struct snd_kcontrol *kctl,
-+			       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_usb_babyface *chip = snd_kcontrol_chip(kctl);
-+
-+	s8 sel = READ_ONCE(chip->panel_sel[kctl->private_value]);
-+
-+	ucontrol->value.enumerated.item[0] = sel >= 0 ? sel : 4;
-+	return 0;
-+}
-+
-+/* Writable so software (or the user, after a driver reload) can
-+ * re-sync the host-tracked SELECT state to the physical card - the
-+ * L/R/both/none state is NOT in the 0x17 readback, and the unit keeps
-+ * one per IN pair across reloads and power cycles, so the driver cannot
-+ * know it after a load.  Writing what the LEDs show for the pair now
-+ * selected tells it (TotalMix parity: it also lets software select
-+ * channels directly).
-+ */
-+static int bf_panel_select_put(struct snd_kcontrol *kctl,
-+			       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_usb_babyface *chip = snd_kcontrol_chip(kctl);
-+	unsigned int v = ucontrol->value.enumerated.item[0];
-+	int pair = kctl->private_value;
-+	/* alsactl restores the values stored at the last shutdown shortly
-+	 * after every probe.
-+	 */
-+	bool restore = time_is_after_jiffies(chip->panel_start + 3 * HZ);
-+	s8 sel = v < 4 ? v : -1;
-+
-+	if (v > 4)
-+		return -EINVAL;
-+	/* After a boot nothing is known and the stored values are what there
-+	 * is; after a re-probe the driver kept what it tracked, which is
-+	 * newer than anything stored.
-+	 */
-+	if (restore && chip->panel_sel[pair] >= 0)
-+		return 0;
-+	if (pair == READ_ONCE(chip->panel_in) - 1 && !restore && sel >= 0)
-+		/* Set while the LEDs show the selection: the next press steps
-+		 * it.
-+		 */
-+		chip->panel_select_armed = true;
-+	if (sel == chip->panel_sel[pair])
-+		return 0;
-+	chip->panel_sel[pair] = sel;
-+	if (pair == READ_ONCE(chip->panel_in) - 1)
-+		bf_panel_sel_load(chip);
-+	return 1;
-+}
-+
-+/* Shared boolean get - private_value selects mix (0) / dim (1). */
-+static int bf_panel_bool_get(struct snd_kcontrol *kctl,
-+			     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_usb_babyface *chip = snd_kcontrol_chip(kctl);
-+
-+	ucontrol->value.integer.value[0] =
-+		kctl->private_value ? READ_ONCE(chip->panel_dim) : READ_ONCE(chip->panel_mix);
-+	return 0;
-+}
-+
-+static int bf_dim_press_info(struct snd_kcontrol *kctl,
-+			     struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 0x7fffffff;
-+	return 0;
-+}
-+
-+static int bf_dim_press_get(struct snd_kcontrol *kctl,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_usb_babyface *chip = snd_kcontrol_chip(kctl);
-+
-+	ucontrol->value.integer.value[0] = READ_ONCE(chip->dim_press_count);
-+	return 0;
-+}
-+
-+int babyface_create_panel(struct snd_usb_babyface *chip)
-+{
-+	struct snd_kcontrol *kctl;
-+	int err, pair;
-+
-+	memset(chip->panel_kctl, 0, sizeof(chip->panel_kctl));
-+
-+	kctl = snd_ctl_new1(&(struct snd_kcontrol_new){
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Front Panel Button",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ |
-+			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = bf_panel_button_info,
-+		.get = bf_panel_button_get,
-+	}, chip);
-+	err = snd_ctl_add(chip->card, kctl);
-+	if (err < 0)
-+		return err;
-+	chip->panel_kctl[BF_PANEL_KCTL_BUTTON] = kctl;
-+
-+	kctl = snd_ctl_new1(&(struct snd_kcontrol_new){
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Front Panel Wheel",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ |
-+			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = bf_panel_wheel_info,
-+		.get = bf_panel_wheel_get,
-+	}, chip);
-+	err = snd_ctl_add(chip->card, kctl);
-+	if (err < 0)
-+		return err;
-+	chip->panel_kctl[BF_PANEL_KCTL_WHEEL] = kctl;
-+
-+	kctl = snd_ctl_new1(&(struct snd_kcontrol_new){
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Front Panel In",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ |
-+			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = bf_panel_in_info,
-+		.get = bf_panel_in_get,
-+	}, chip);
-+	err = snd_ctl_add(chip->card, kctl);
-+	if (err < 0)
-+		return err;
-+	chip->panel_kctl[BF_PANEL_KCTL_IN] = kctl;
-+
-+	kctl = snd_ctl_new1(&(struct snd_kcontrol_new){
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Front Panel Out",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ |
-+			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = bf_panel_out_info,
-+		.get = bf_panel_out_get,
-+	}, chip);
-+	err = snd_ctl_add(chip->card, kctl);
-+	if (err < 0)
-+		return err;
-+	chip->panel_kctl[BF_PANEL_KCTL_OUT] = kctl;
-+
-+	kctl = snd_ctl_new1(&(struct snd_kcontrol_new){
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Front Panel Mix",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ |
-+			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = snd_ctl_boolean_mono_info,
-+		.get = bf_panel_bool_get,
-+	}, chip);
-+	err = snd_ctl_add(chip->card, kctl);
-+	if (err < 0)
-+		return err;
-+	chip->panel_kctl[BF_PANEL_KCTL_MIX] = kctl;
-+
-+	kctl = snd_ctl_new1(&(struct snd_kcontrol_new){
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Front Panel Dim",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ |
-+			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = snd_ctl_boolean_mono_info,
-+		.get = bf_panel_bool_get,
-+		.private_value = 1,
-+	}, chip);
-+	err = snd_ctl_add(chip->card, kctl);
-+	if (err < 0)
-+		return err;
-+	chip->panel_kctl[BF_PANEL_KCTL_DIM] = kctl;
-+
-+	/* One per IN pair (index 0 = Ch 1/2, 1 = Ch 3/4, 2 = Opt): the
-+	 * unit keeps one selection per pair, and a plain control, not a
-+	 * volatile one, is what alsactl keeps across boots.  Named apart from
-+	 * the single volatile "Front Panel Select" this replaces, whose stored
-+	 * value alsactl must not apply.
-+	 */
-+	for (pair = 0; pair < 3; pair++) {
-+		kctl = snd_ctl_new1(&(struct snd_kcontrol_new){
-+			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+			.name = "Front Panel Selection",
-+			.index = pair,
-+			.info = bf_panel_select_info,
-+			.get = bf_panel_select_get,
-+			.put = bf_panel_select_put,
-+			.private_value = pair,
-+		}, chip);
-+		err = snd_ctl_add(chip->card, kctl);
-+		if (err < 0)
-+			return err;
-+		chip->panel_select_kctl[pair] = kctl;
-+	}
-+
-+	kctl = snd_ctl_new1(&(struct snd_kcontrol_new){
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "DIM Button Press Count",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ |
-+			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = bf_dim_press_info,
-+		.get = bf_dim_press_get,
-+	}, chip);
-+	err = snd_ctl_add(chip->card, kctl);
-+	if (err < 0)
-+		return err;
-+	chip->dim_press_kctl = kctl;
-+
-+	return 0;
-+}
-+
-diff --git a/sound/usb/babyfacepro/babyfacepro.c b/sound/usb/babyfacepro/babyfacepro.c
-index aaa74ee68..18b8ac08d 100644
---- a/sound/usb/babyfacepro/babyfacepro.c
-+++ b/sound/usb/babyfacepro/babyfacepro.c
-@@ -537,6 +537,7 @@ void bf_state_save(struct snd_usb_babyface *chip)
- 	s->width = chip->width;
- 	s->fx_send = chip->fx_send;
- 	s->dim = chip->dim;
-+	memcpy(s->panel_sel, chip->panel_sel, sizeof(s->panel_sel));
- 	mutex_unlock(&bf_saved_mutex);
- }
- 
-@@ -574,6 +575,7 @@ int bf_state_restore(struct snd_usb_babyface *chip)
- 		chip->width = s->width;
- 		chip->fx_send = s->fx_send;
- 		chip->dim = s->dim;
-+		memcpy(chip->panel_sel, s->panel_sel, sizeof(chip->panel_sel));
- 		ret = 1;
- 		break;
- 	}
-@@ -1582,6 +1584,7 @@ static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
- static int frames_per_urb = BF_FRAMES_PER_URB_DEFAULT;
- static int urb_frames_min = 32;
- static int nurbs = BF_NURBS_DEFAULT;
-+static int panel_poll_ms = BF_PANEL_POLL_MS_DEFAULT;
- 
- module_param_array(index, int, NULL, 0444);
- MODULE_PARM_DESC(index, "Index value for the Babyface Pro sound card.");
-@@ -1593,6 +1596,8 @@ module_param(urb_frames_min, int, 0444);
- MODULE_PARM_DESC(urb_frames_min, "Smallest URB in audio frames, 8..1024 (32 = default, 16 = low-latency floor).");
- module_param(nurbs, int, 0444);
- MODULE_PARM_DESC(nurbs, "Most URBs in flight per direction, 2..16 (8 = default).");
-+module_param(panel_poll_ms, int, 0444);
-+MODULE_PARM_DESC(panel_poll_ms, "Front-panel poll interval in ms, 10..1000 (20 = default, matches Windows' ~50 Hz).");
- 
- /* -- USB driver ------------------------- */
- 
-@@ -1671,11 +1676,12 @@ static int babyface_probe(struct usb_interface *intf,
- 	chip->dev = usb_get_dev(dev);
- 	/* USB autosuspend is untested: babyface_suspend()/_resume() don't
- 	 * check PMSG_IS_AUTO, and nothing in this driver holds a PM
--	 * reference while streaming, so an autosuspend request could race
--	 * a live stream.  Disable it explicitly rather than ship an
--	 * untested code path - full autosuspend support (correct
--	 * autopm_get/put pairing around the stream) is a deliberate
--	 * follow-up, not an oversight.
-+	 * reference while streaming or while the panel poll/keepalive
-+	 * timers are running, so an autosuspend request could race a
-+	 * live stream or panel tick. Disable it explicitly rather than
-+	 * ship an untested code path - full autosuspend support (correct
-+	 * autopm_get/put pairing around the stream and the panel/keepalive
-+	 * work) is a deliberate follow-up, not an oversight.
- 	 */
- 	usb_disable_autosuspend(chip->dev);
- 	chip->iface = intf;
-@@ -1690,10 +1696,13 @@ static int babyface_probe(struct usb_interface *intf,
- 	chip->alt = BF_ALT_1;
- 	chip->frame_bytes = 56;
- 	chip->preamp = BF_PREAMP_BASE;
-+	memset(chip->panel_sel, -1, sizeof(chip->panel_sel));
-+	chip->panel_poll_ms = clamp(panel_poll_ms, 10, 1000);
- 	mutex_init(&chip->mutex);
- 	spin_lock_init(&chip->lock);
- 	atomic_set(&chip->urb_err, 0);
- 	INIT_WORK(&chip->stream_work, babyface_stream_work);
-+	INIT_DELAYED_WORK(&chip->panel_work, babyface_panel_work);
- 	chip->card->private_free = babyface_private_free;
- 
- 	/* Model-neutral on purpose.  The FS and the original (2015)
-@@ -1856,12 +1865,23 @@ static int babyface_probe(struct usb_interface *intf,
- 		goto error;
- 	}
- 
-+	err = babyface_create_panel(chip);
-+	if (err < 0) {
-+		dev_err(&intf->dev, "front-panel control creation failed: %d\n", err);
-+		goto error;
-+	}
-+
- 	err = snd_card_register(chip->card);
- 	if (err < 0) {
- 		dev_err(&intf->dev, "snd_card_register failed: %d\n", err);
- 		goto error;
- 	}
- 
-+	/* The panel poll mirrors the physical buttons/wheel into the
-+	 * Front Panel controls; it runs for the whole card lifetime.
-+	 */
-+	babyface_panel_start(chip);
-+
- 	usb_set_intfdata(intf, chip);
- 	dev_info(&intf->dev,
- 		 "Babyface Pro: card %i, %u frames/URB, %u URBs/direction\n",
-@@ -1904,9 +1924,13 @@ static void babyface_disconnect(struct usb_interface *intf)
- 		babyface_stream_kill(chip);
- 	mutex_unlock(&chip->mutex);
- 	cancel_work_sync(&chip->stream_work);
-+	babyface_panel_stop(chip);
- 	/* Keep the mixer state for the next probe: a userspace usbfs claim
- 	 * (PipeWire sink grab, TuxMix daemon) detaches us and the cold init
--	 * of the re-probe would otherwise wipe the settings.
-+	 * of the re-probe would otherwise wipe the settings.  Saved after
-+	 * the panel poll is stopped: the worker writes master/gain/xpoint
-+	 * under chip->mutex and this copy does not take it, so an unplug
-+	 * during a wheel turn could otherwise snapshot a torn state.
- 	 */
- 	bf_state_save(chip);
- 	/* Balance the probe()-time usb_disable_autosuspend(): the usb_device
-@@ -1946,6 +1970,7 @@ static int babyface_suspend(struct usb_interface *intf, pm_message_t message)
- 		babyface_stream_kill(chip);
- 	mutex_unlock(&chip->mutex);
- 	cancel_work_sync(&chip->stream_work);
-+	babyface_panel_stop(chip);
- 	return 0;
- }
- 
-@@ -1975,6 +2000,8 @@ static int babyface_resume(struct usb_interface *intf)
- 	err = bf_state_apply_flags(chip);
- out:
- 	mutex_unlock(&chip->mutex);
-+	if (!err)
-+		babyface_panel_start(chip);
- 	return err;
- }
- 
-diff --git a/sound/usb/babyfacepro/babyfacepro.h b/sound/usb/babyfacepro/babyfacepro.h
-index e324e8411..1959bdf2e 100644
---- a/sound/usb/babyfacepro/babyfacepro.h
-+++ b/sound/usb/babyfacepro/babyfacepro.h
-@@ -14,7 +14,7 @@
-  * babyfacepro.c holds the card lifecycle, the PCM stream and the
-  * mixer-state persistence across re-probes and resume;
-  * babyfacepro-ctl.c holds the ALSA control surface - the hardware
-- * mixer.
-+ * mixer and the front panel.
-  *
-  * The protocol (vendor requests + 14x32-bit frame layout) was
-  * reverse-engineered from Windows captures and validated on hardware -
-@@ -49,6 +49,7 @@
-  *     bf_clock_write / bf_pitch_write.
-  */
- 
-+#include <linux/ktime.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
- #include <linux/unaligned.h>
-@@ -190,6 +191,53 @@
-  */
- #define BF_LOOPBACK_CHANNELS		30
- 
-+/* Front-panel poll interval default - Windows polls the 5-register
-+ * status set at ~50 cycles/s (20 ms); match that.  Tunable via the
-+ * panel_poll_ms module param for reviewers/distros who want a slower
-+ * (or faster) rate than the Windows-matching default.
-+ */
-+#define BF_PANEL_POLL_MS_DEFAULT	20
-+
-+/* Front-panel readback (babyfacepro-ctl.c): 0x17 read at wIdx 0x0000 - the index
-+ * the Windows driver polls (cap_buttons2.pcap).  byte0 = preamp 48V/PAD,
-+ * byte1 = OUT sel + DIM/MIX bits, byte2 = IN sel + wheel counter,
-+ * byte3 = button flash (see babyfacepro-ctl.c for the full layout).
-+ */
-+#define BF_REG_PANEL_READ		0x0000
-+#define BF_PANEL_IN_SHIFT		4
-+#define BF_PANEL_IN_CH12		0x04
-+#define BF_PANEL_IN_CH34		0x05
-+#define BF_PANEL_IN_OPT			0x06
-+/* OUT selection - the gain-display-mode encoding (cap_dim.pcap);
-+ * babyfacepro-ctl.c also accepts the base-mode 0x01/0x02 (cap_buttons.pcap).
-+ */
-+#define BF_PANEL_OUT_CH12		0x04
-+#define BF_PANEL_OUT_PHONES		0x05
-+#define BF_PANEL_OUT_OPT		0x06
-+#define BF_PANEL_FLASH_IN		0x41
-+#define BF_PANEL_FLASH_SET		0x42
-+#define BF_PANEL_FLASH_MIX		0x44
-+#define BF_PANEL_FLASH_OUT		0x48
-+#define BF_PANEL_FLASH_SELECT		0x50
-+#define BF_PANEL_FLASH_DIM		0x60
-+#define BF_PANEL_BTN_NONE		0
-+#define BF_PANEL_BTN_IN			1
-+#define BF_PANEL_BTN_SET		2
-+#define BF_PANEL_BTN_MIX		3
-+#define BF_PANEL_BTN_OUT		4
-+#define BF_PANEL_BTN_SELECT		5
-+#define BF_PANEL_BTN_DIM		6
-+
-+/* The front-panel gain/display family (0x1A, wIdx 0x000A + mic 0-3;
-+ * cap_panel/cap_mix.pcap): in gain mode the wheel writes the "ADC
-+ * gain" here (drives the same preamp as the GUI 0x0000+mic); in MIX
-+ * (fader) mode the same registers carry the VU DISPLAY shadow -
-+ * TotalMix writes the monitoring level display value (0..~31) and the
-+ * card lights the input VU segments accordingly (hardware-verified
-+ * 2026-08-26 live: sweeping 0x1A values moved the input VU).
-+ */
-+#define BF_REG_PANEL_GAIN		0x000a
-+
- /* The "cross" register block within each output: the L-registers sit at
-  * odd offsets 5..23 and the R-registers at even offsets 4..22 (the stereo
-  * source pairs that can be cross-linked).  bf_crosspoint_clear_cross()
-@@ -301,6 +349,12 @@ struct snd_usb_babyface {
- 	u16 master[6][2];		/* cached 16-bit masters */
- 	bool muted[6];
- 	u16 xpoint[6][14][2];		/* cached crosspoints (out, src, L/R) */
-+	/* The controls the front panel changes on its own (the MIX wheel,
-+	 * the IN wheel, SET), for snd_ctl_notify.
-+	 */
-+	struct snd_kcontrol *xpoint_kctl[6][14];
-+	struct snd_kcontrol *gain_kctl[4];
-+	struct snd_kcontrol *phantom_kctl[2];
- 	u16 preamp;			/* 48V/PAD bits, base 0x0c */
- 	u8 gain[4];			/* preamp gain in dB 0-65/9 (raw derived
- 					 * at write: mic packed coarse/fine,
-@@ -342,6 +396,68 @@ struct snd_usb_babyface {
- 	u16 dim_saved[2];		/* pre-DIM Phones master (out 1 L/R) */
- 	bool dim;			/* DIM engaged (fixed -20 dB on Phones) */
- 	struct snd_kcontrol *dim_kctl;      /* for snd_ctl_notify */
-+
-+	/* front panel (babyfacepro-ctl.c) - 0x17 readback poll */
-+	struct delayed_work panel_work;
-+	unsigned int panel_poll_ms;	/* front-panel poll interval, module param */
-+	u8 panel_prev[4];		/* last 0x17 snapshot */
-+	bool panel_seen;		/* first snapshot taken */
-+	bool panel_select_armed;	/* the LEDs show the selection: the next SELECT
-+					 * press steps it (an IN switch clears this)
-+					 */
-+	bool panel_select_known;	/* panel_select matches the unit */
-+	s8 panel_sel[3];		/* the SELECT selection of each IN pair (Ch 1/2,
-+					 * Ch 3/4, Opt): -1 not known, else as
-+					 * panel_select.  The unit keeps one per pair,
-+					 * across IN switches and power cycles; the
-+					 * "Front Panel Select" controls expose them
-+					 * so that alsactl can keep them across boots.
-+					 */
-+	unsigned long panel_start;	/* jiffies at panel_start (boot re-assert) */
-+	int panel_button;		/* latched button event (consumed on get) */
-+	int panel_wheel;		/* accumulated wheel delta (consumed on get) */
-+	int panel_in;			/* enum: 0 unknown, 1 Ch1/2, 2 Ch3/4, 3 Opt */
-+	int panel_out;			/* enum: 0 unknown, 1 Ch1/2, 2 Phones, 3 Opt */
-+	bool panel_mix;			/* MIX engaged - HOST-latched (like TotalMix):
-+					 * set by the 0x44 flash ack, NOT by the readback
-+					 * 0x80 bit (the raw press has none)
-+					 */
-+	bool panel_dim;			/* DIM sticky (byte1 bit 0x20) */
-+	bool panel_saw_fader;		/* device observed in fader mode (byte2 0x0x)
-+					 * - gates the device-driven MIX exit
-+					 */
-+	int panel_select;		/* SELECT state of the IN pair shown: 0 L, 1 R,
-+					 * 2 both, 3 none (3 too when not known);
-+					 * host-tracked, not in the readback
-+					 */
-+	int panel_sel_hold;		/* consecutive ticks with byte3 = 0x50
-+					 * (SELECT held > 200 ms = the OUT-balance
-+					 * gesture; a tap flashes only ~100-150 ms,
-+					 * selhold_probe2 - no engaged bit)
-+					 */
-+	/* The OUT wheel's own level per side, in half-dB, valid while the
-+	 * master still holds the value the wheel last wrote (the 16-bit
-+	 * value can't hold every half-dB step, nor the device's range
-+	 * below -64 dB, nor its mute).  0xffff = nothing written yet.
-+	 */
-+	u16 panel_master_last[6][2];
-+	s16 panel_out_hdb[6][2];
-+	/* OUT wheel acceleration and resync at rest (babyfacepro-ctl.c) */
-+	ktime_t panel_out_wheel_t;	/* estimated time of the last count */
-+	ktime_t panel_poll_t;		/* when the previous poll ran */
-+	unsigned long panel_fast_until;	/* jiffies: poll fast until then */
-+	int panel_out_wheel_dir;	/* its direction, +1 or -1 */
-+	int panel_out_wheel_out;	/* the output it moved */
-+	bool panel_out_resync;		/* 8-bit write due once at rest */
-+	u16 panel_mix_raw;		/* MIX-mode monitoring level (fader raw) */
-+	u8 panel_mix_disp[4];		/* MIX-mode VU display shadow per mic
-+					 * (0x1A 0x000A+mic - written on change
-+					 * so the input VU follows the wheel)
-+					 */
-+	struct snd_kcontrol *panel_kctl[6]; /* for snd_ctl_notify */
-+	struct snd_kcontrol *panel_select_kctl[3]; /* per IN pair, likewise */
-+	struct snd_kcontrol *dim_press_kctl;
-+	u32 dim_press_count;		/* front-panel DIM presses, wraps */
- };
- 
- /* The mixer state cached across interface re-probes/resume (see
-@@ -369,6 +485,7 @@ struct bf_saved {
- 	int width;
- 	u16 fx_send;
- 	bool dim;
-+	s8 panel_sel[3];
- };
- 
- struct bf_rate {
-@@ -424,6 +541,10 @@ int bf_gain_db(int mic, u8 raw);
- u8 bf_gain_raw(int mic, int db);
- int bf_loopback_write_map(struct snd_usb_babyface *chip, int out, bool on);
- int babyface_create_flags(struct snd_usb_babyface *chip);
-+int babyface_create_panel(struct snd_usb_babyface *chip);
-+void babyface_panel_start(struct snd_usb_babyface *chip);
-+void babyface_panel_stop(struct snd_usb_babyface *chip);
-+void babyface_panel_work(struct work_struct *work);
- 
- /* Master gain-law helpers (babyfacepro-ctl.c). */
- int bf_master_half_db(u16 vol16);	/* 16-bit master -> dBx2 */
--- 
-2.56.0
+    Thanks,
+    JCom <3514217v3@gmail.com>
 
+    ---
+
+    From: JCom <3514217v3@gmail.com>
+    Subject: [PATCH] ALSA: hda/realtek: Fix internal microphone for ASUS
+E402NA
+
+    Signed-off-by: JCom <3514217v3@gmail.com>
+    ---
+     sound/pci/hda/patch_realtek.c | 14 ++++++++++++++
+     1 file changed, 14 insertions(+)
+
+    diff --git a/sound/pci/hda/patch_realtek.c
+b/sound/pci/hda/patch_realtek.c
+    --- a/sound/pci/hda/patch_realtek.c
+    +++ b/sound/pci/hda/patch_realtek.c
+    @@ -8200,6 +8201,16 @@ static const struct hda_fixup alc269_fixups[] = {
+             .type = HDA_FIXUP_FUNC,
+             .v.func = alc256_fixup_asus_aio_gpio2,
+         },
+    +    [ALC256_FIXUP_ASUS_E402NA_PINS] = {
+    +        .type = HDA_FIXUP_PINS,
+    +        .v.pins = (const struct hda_pintbl[]) {
+    +            { 0x13, 0x411111f0 }, /* disable phantom pin */
+    +            { 0x19, 0x04a11120 }, /* headset mic */
+    +            { 0x1b, 0x90a70130 }, /* internal mic */
+    +            { }
+    +        },
+    +        .chained = true,
+    +        .chain_id = ALC256_FIXUP_ASUS_HEADSET_MODE
+    +    },
+     };
+
+     static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+    +    SND_PCI_QUIRK(0x1043, 0x1300, "ASUS E402NA",
+ALC256_FIXUP_ASUS_E402NA_PINS),
+    ---
+
+--000000000000bcaaf6065cf5831b
+Content-Type: text/plain; charset="US-ASCII"; name="alsa-info.txt"
+Content-Disposition: attachment; filename="alsa-info.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_musubouw0>
+X-Attachment-Id: f_musubouw0
+
+Y2F0OiAvdG1wL2Fsc2EtaW5mby5YbDNDOEFYMFFGL3Nkd3N0YXR1cy50bXA6IE5vIHN1Y2ggZmls
+ZSBvciBkaXJlY3RvcnkKL3Vzci9zYmluL2Fsc2EtaW5mbzogbGluZSA2Nzk6IHRyZWU6IGNvbW1h
+bmQgbm90IGZvdW5kCmRtZXNnOiByZWFkIGtlcm5lbCBidWZmZXIgZmFpbGVkOiBPcGVyYXRpb24g
+bm90IHBlcm1pdHRlZAp1cGxvYWQ9dHJ1ZSZzY3JpcHQ9dHJ1ZSZjYXJkaW5mbz0KISEjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwohIUFMU0EgSW5mb3JtYXRpb24gU2NyaXB0IHYgMC41
+LjMKISEjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwoKISFTY3JpcHQgcmFuIG9uOiBT
+YXQgT2N0ICAzIDIwOjE2OjAxIFVUQyAyMDI2CgoKISFMaW51eCBEaXN0cmlidXRpb24KISEtLS0t
+LS0tLS0tLS0tLS0tLS0KClVidW50dSAyNi4wNCBMVFMgXG4gXGwgRElTVFJJQl9JRD1VYnVudHUg
+RElTVFJJQl9ERVNDUklQVElPTj0iVWJ1bnR1IDI2LjA0IExUUyIgUFJFVFRZX05BTUU9IlVidW50
+dSAyNi4wNCBMVFMiIE5BTUU9IlVidW50dSIgSUQ9dWJ1bnR1IElEX0xJS0U9ZGViaWFuIEhPTUVf
+VVJMPSJodHRwczovL3d3dy51YnVudHUuY29tLyIgU1VQUE9SVF9VUkw9Imh0dHBzOi8vaGVscC51
+YnVudHUuY29tLyIgQlVHX1JFUE9SVF9VUkw9Imh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L3Vi
+dW50dS8iIFBSSVZBQ1lfUE9MSUNZX1VSTD0iaHR0cHM6Ly93d3cudWJ1bnR1LmNvbS9sZWdhbC90
+ZXJtcy1hbmQtcG9saWNpZXMvcHJpdmFjeS1wb2xpY3kiIFVCVU5UVV9DT0RFTkFNRT1yZXNvbHV0
+ZSBMT0dPPXVidW50dS1sb2dvCgoKISFETUkgSW5mb3JtYXRpb24KISEtLS0tLS0tLS0tLS0tLS0K
+Ck1hbnVmYWN0dXJlcjogICAgICBBU1VTVGVLIENPTVBVVEVSIElOQy4KUHJvZHVjdCBOYW1lOiAg
+ICAgIEU0MDJOQQpQcm9kdWN0IFZlcnNpb246ICAgMS4wICAgICAgIApGaXJtd2FyZSBWZXJzaW9u
+OiAgRTQwMk5BLjMxNwpTeXN0ZW0gU0tVOiAgICAgICAgCkJvYXJkIFZlbmRvcjogICAgICBBU1VT
+VGVLIENPTVBVVEVSIElOQy4KQm9hcmQgTmFtZTogICAgICAgIEU0MDJOQQoKCiEhQUNQSSBEZXZp
+Y2UgU3RhdHVzIEluZm9ybWF0aW9uCiEhLS0tLS0tLS0tLS0tLS0tCgovc3lzL2J1cy9hY3BpL2Rl
+dmljZXMvQVRLMzAwMTowMC9zdGF0dXMgCSAxNQovc3lzL2J1cy9hY3BpL2RldmljZXMvQVRLNDAw
+MjowMC9zdGF0dXMgCSAxNQovc3lzL2J1cy9hY3BpL2RldmljZXMvRUxBTjEyMDA6MDAvc3RhdHVz
+IAkgMTUKL3N5cy9idXMvYWNwaS9kZXZpY2VzL0lOVDMzQTE6MDAvc3RhdHVzIAkgMTUKL3N5cy9i
+dXMvYWNwaS9kZXZpY2VzL0lOVDM0MDA6MDAvc3RhdHVzIAkgMTUKL3N5cy9idXMvYWNwaS9kZXZp
+Y2VzL0lOVDM0MDM6MDIvc3RhdHVzIAkgMTUKL3N5cy9idXMvYWNwaS9kZXZpY2VzL0lOVDM0NTI6
+MDAvc3RhdHVzIAkgMTUKL3N5cy9idXMvYWNwaS9kZXZpY2VzL0lOVDM0NTI6MDEvc3RhdHVzIAkg
+MTUKL3N5cy9idXMvYWNwaS9kZXZpY2VzL0lOVDM0NTI6MDIvc3RhdHVzIAkgMTUKL3N5cy9idXMv
+YWNwaS9kZXZpY2VzL0lOVDM0NTI6MDMvc3RhdHVzIAkgMTUKL3N5cy9idXMvYWNwaS9kZXZpY2Vz
+L01TRlQwMTAxOjAwL3N0YXR1cyAJIDE1Ci9zeXMvYnVzL2FjcGkvZGV2aWNlcy9QTlAwMTAzOjAw
+L3N0YXR1cyAJIDE1Ci9zeXMvYnVzL2FjcGkvZGV2aWNlcy9QTlAwQzBBOjAyL3N0YXR1cyAJIDMx
+Ci9zeXMvYnVzL2FjcGkvZGV2aWNlcy9QTlAwQzBDOjAwL3N0YXR1cyAJIDE1Ci9zeXMvYnVzL2Fj
+cGkvZGV2aWNlcy9QTlAwQzBFOjAwL3N0YXR1cyAJIDExCi9zeXMvYnVzL2FjcGkvZGV2aWNlcy9Q
+TlAwQzBGOjAwL3N0YXR1cyAJIDkKL3N5cy9idXMvYWNwaS9kZXZpY2VzL1BOUDBDMEY6MDEvc3Rh
+dHVzIAkgOQovc3lzL2J1cy9hY3BpL2RldmljZXMvUE5QMEMwRjowMi9zdGF0dXMgCSA5Ci9zeXMv
+YnVzL2FjcGkvZGV2aWNlcy9QTlAwQzBGOjAzL3N0YXR1cyAJIDkKL3N5cy9idXMvYWNwaS9kZXZp
+Y2VzL1BOUDBDMEY6MDQvc3RhdHVzIAkgOQovc3lzL2J1cy9hY3BpL2RldmljZXMvUE5QMEMwRjow
+NS9zdGF0dXMgCSA5Ci9zeXMvYnVzL2FjcGkvZGV2aWNlcy9QTlAwQzBGOjA2L3N0YXR1cyAJIDkK
+L3N5cy9idXMvYWNwaS9kZXZpY2VzL1BOUDBDMEY6MDcvc3RhdHVzIAkgOQovc3lzL2J1cy9hY3Bp
+L2RldmljZXMvZGV2aWNlOjEyL3N0YXR1cyAJIDE1Ci9zeXMvYnVzL2FjcGkvZGV2aWNlcy9kZXZp
+Y2U6MWEvc3RhdHVzIAkgMTUKL3N5cy9idXMvYWNwaS9kZXZpY2VzL2RldmljZToxZC9zdGF0dXMg
+CSAxNQoKCiEhQUNQSSBTb3VuZFdpcmUgRGV2aWNlIFN0YXR1cyBJbmZvcm1hdGlvbgohIS0tLS0t
+LS0tLS0tLS0tLQoKCgohIUtlcm5lbCBJbmZvcm1hdGlvbgohIS0tLS0tLS0tLS0tLS0tLS0tLQoK
+S2VybmVsIHJlbGVhc2U6ICAgICMzOC1VYnVudHUgU01QIFBSRUVNUFRfRFlOQU1JQyBGcmkgU2Vw
+ICA0IDA5OjEwOjE0IFVUQyAyMDI2Ck9wZXJhdGluZyBTeXN0ZW06ICBHTlUvTGludXgKQXJjaGl0
+ZWN0dXJlOiAgICAgIHg4Nl82NApQcm9jZXNzb3I6ICAgICAgICAgdW5rbm93bgpTTVAgRW5hYmxl
+ZDogICAgICAgWWVzCgoKISFBTFNBIFZlcnNpb24KISEtLS0tLS0tLS0tLS0KCkRyaXZlciB2ZXJz
+aW9uOiAgICAgazcuMC4wLTM4LWdlbmVyaWMKTGlicmFyeSB2ZXJzaW9uOiAgICAKVXRpbGl0aWVz
+IHZlcnNpb246ICAxLjIuMTUuMgoKCiEhTG9hZGVkIEFMU0EgbW9kdWxlcwohIS0tLS0tLS0tLS0t
+LS0tLS0tLS0KCnNuZF9oZGFfaW50ZWwgKGNhcmQgMCkKCgohIVNvdW5kIFNlcnZlcnMgb24gdGhp
+cyBzeXN0ZW0KISEtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpQaXBlV2lyZToKICAgICAg
+SW5zdGFsbGVkIC0gWWVzICgvdXNyL2Jpbi9waXBld2lyZSkKICAgICAgUnVubmluZyAtIFllcwoK
+Tm8gc291bmQgc2VydmVycyBmb3VuZC4KCgohIVNvdW5kY2FyZHMgcmVjb2duaXNlZCBieSBBTFNB
+CiEhLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCiAwIFtQQ0ggICAgICAgICAgICBdOiBI
+REEtSW50ZWwgLSBIREEgSW50ZWwgUENICiAgICAgICAgICAgICAgICAgICAgICBIREEgSW50ZWwg
+UENIIGF0IDB4OTE0MTgwMDAgaXJxIDEzNwoKCiEhUENJIFNvdW5kY2FyZHMgaW5zdGFsbGVkIGlu
+IHRoZSBzeXN0ZW0KISEtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKMDA6
+MGUuMCBBdWRpbyBkZXZpY2UgWzA0MDNdOiBJbnRlbCBDb3Jwb3JhdGlvbiBDZWxlcm9uIE4zMzUw
+L1BlbnRpdW0gTjQyMDAvQXRvbSBFMzkwMCBTZXJpZXMgQXVkaW8gQ2x1c3RlciBbODA4Njo1YTk4
+XSAocmV2IDBiKSAocHJvZy1pZiAwMCBbSERBIGNvbXBhdGlibGVdKQoJU3Vic3lzdGVtOiBBU1VT
+VGVLIENvbXB1dGVyIEluYy4gRGV2aWNlIFsxMDQzOjEzMDBdCgoKISFNb2Rwcm9iZSBvcHRpb25z
+IChTb3VuZCByZWxhdGVkKQohIS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpzbmRf
+cGNzcDogaW5kZXg9LTIKc25kX2F0aWl4cF9tb2RlbTogaW5kZXg9LTIKc25kX2ludGVsOHgwbTog
+aW5kZXg9LTIKc25kX3ZpYTgyeHhfbW9kZW06IGluZGV4PS0yCnNuZF9oZGFfaW50ZWw6IHBhdGNo
+PWFsYzI1Ni1hc3VzLWU0MDJuYS5mdwoKCiEhTG9hZGVkIHNvdW5kIG1vZHVsZSBvcHRpb25zCiEh
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgohIU1vZHVsZTogc25kX2hkYV9pbnRlbAoJYWxp
+Z25fYnVmZmVyX3NpemUgOiAtMQoJYmRsX3Bvc19hZGogOiAtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
+MSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
+MSwtMSwtMSwtMSwtMSwtMQoJYmVlcF9tb2RlIDogTixOLE4sTixOLE4sTixOLE4sTixOLE4sTixO
+LE4sTixOLE4sTixOLE4sTixOLE4sTixOLE4sTixOLE4sTixOCgljdGxfZGV2X2lkIDogTgoJZG1p
+Y19kZXRlY3QgOiBZCgllbmFibGUgOiBZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFks
+WSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFkKCWVuYWJsZV9tc2kgOiAtMQoJaWQgOiAobnVs
+bCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxs
+KSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwp
+LChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCks
+KG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpCglpbmRleCA6
+IC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0x
+LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xCglqYWNrcG9sbF9tcyA6IDAs
+MCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCww
+LDAsMAoJbW9kZWwgOiAobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwo
+bnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChu
+dWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51
+bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVs
+bCksKG51bGwpCglwYXRjaCA6IGFsYzI1Ni1hc3VzLWU0MDJuYS5mdywobnVsbCksKG51bGwpLChu
+dWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51
+bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVs
+bCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxs
+KSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCkKCXBtX2JsYWNrbGlzdCA6IC0xCglwb3NpdGlv
+bl9maXggOiAtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
+MSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMQoJcG93ZXJfc2F2
+ZSA6IDEKCXBvd2VyX3NhdmVfY29udHJvbGxlciA6IFkKCXByb2JlX21hc2sgOiAtMSwtMSwtMSwt
+MSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
+MSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMQoJcHJvYmVfb25seSA6IDAsMCwwLDAsMCwwLDAs
+MCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMAoJc2luZ2xl
+X2NtZCA6IC0xCglzbm9vcCA6IC0xCgoKISFTeXNmcyBjYXJkIGluZm8KISEtLS0tLS0tLS0tLS0t
+LS0KCiEhQ2FyZDogL3N5cy9jbGFzcy9zb3VuZC9jYXJkMApEcml2ZXI6IC9zeXMvYnVzL3BjaS9k
+cml2ZXJzL3NuZF9oZGFfaW50ZWwKVHJlZToKCgohIUhEQS1JbnRlbCBDb2RlYyBpbmZvcm1hdGlv
+bgohIS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQotLXN0YXJ0Y29sbGFwc2UtLQoKQ29kZWM6
+IFJlYWx0ZWsgQUxDMjU2CkFkZHJlc3M6IDAKQUZHIEZ1bmN0aW9uIElkOiAweDEgKHVuc29sIDEp
+ClZlbmRvciBJZDogMHgxMGVjMDI1NgpTdWJzeXN0ZW0gSWQ6IDB4MTA0MzEzMDAKUmV2aXNpb24g
+SWQ6IDB4MTAwMDAyCk5vIE1vZGVtIEZ1bmN0aW9uIEdyb3VwIGZvdW5kCkRlZmF1bHQgUENNOgog
+ICAgcmF0ZXMgWzB4NTYwXTogNDQxMDAgNDgwMDAgOTYwMDAgMTkyMDAwCiAgICBiaXRzIFsweGVd
+OiAxNiAyMCAyNAogICAgZm9ybWF0cyBbMHgxXTogUENNCkRlZmF1bHQgQW1wLUluIGNhcHM6IE4v
+QQpEZWZhdWx0IEFtcC1PdXQgY2FwczogTi9BClN0YXRlIG9mIEFGRyBub2RlIDB4MDE6CiAgUG93
+ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRDNjb2xkIENMS1NUT1AgRVBTUwogIFBvd2VyOiBzZXR0
+aW5nPUQwLCBhY3R1YWw9RDAKR1BJTzogaW89Mywgbz0wLCBpPTAsIHVuc29saWNpdGVkPTEsIHdh
+a2U9MAogIElPWzBdOiBlbmFibGU9MCwgZGlyPTAsIHdha2U9MCwgc3RpY2t5PTAsIGRhdGE9MCwg
+dW5zb2w9MAogIElPWzFdOiBlbmFibGU9MCwgZGlyPTAsIHdha2U9MCwgc3RpY2t5PTAsIGRhdGE9
+MCwgdW5zb2w9MAogIElPWzJdOiBlbmFibGU9MCwgZGlyPTAsIHdha2U9MCwgc3RpY2t5PTAsIGRh
+dGE9MCwgdW5zb2w9MApOb2RlIDB4MDIgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0MWQ6IFN0ZXJl
+byBBbXAtT3V0CiAgQ29udHJvbDogbmFtZT0iU3BlYWtlciBQbGF5YmFjayBWb2x1bWUiLCBpbmRl
+eD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1PdXQsIGlkeD0wLCBvZnM9
+MAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4NTcsIG5zdGVwcz0weDU3LCBzdGVwc2l6ZT0weDAyLCBt
+dXRlPTAKICBBbXAtT3V0IHZhbHM6ICBbMHg0NiAweDQ2XQogIENvbnZlcnRlcjogc3RyZWFtPTAs
+IGNoYW5uZWw9MAogIFBDTToKICAgIHJhdGVzIFsweDU2MF06IDQ0MTAwIDQ4MDAwIDk2MDAwIDE5
+MjAwMAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZvcm1hdHMgWzB4MV06IFBDTQogIFBv
+d2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFs
+PUQwCk5vZGUgMHgwMyBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDQxZDogU3RlcmVvIEFtcC1PdXQK
+ICBDb250cm9sOiBuYW1lPSJIZWFkcGhvbmUgUGxheWJhY2sgVm9sdW1lIiwgaW5kZXg9MCwgZGV2
+aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKICBEZXZp
+Y2U6IG5hbWU9IkFMQzI1NiBBbmFsb2ciLCB0eXBlPSJBdWRpbyIsIGRldmljZT0wCiAgQW1wLU91
+dCBjYXBzOiBvZnM9MHg1NywgbnN0ZXBzPTB4NTcsIHN0ZXBzaXplPTB4MDIsIG11dGU9MAogIEFt
+cC1PdXQgdmFsczogIFsweDAwIDB4MDBdCiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0w
+CiAgUENNOgogICAgcmF0ZXMgWzB4NTYwXTogNDQxMDAgNDgwMDAgOTYwMDAgMTkyMDAwCiAgICBi
+aXRzIFsweGVdOiAxNiAyMCAyNAogICAgZm9ybWF0cyBbMHgxXTogUENNCiAgUG93ZXIgc3RhdGVz
+OiAgRDAgRDEgRDIgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKTm9kZSAw
+eDA0IFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBNb25vCk5vZGUgMHgw
+NSBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4MDYg
+W0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg2MTE6IFN0ZXJlbyBEaWdpdGFsCiAgQ29udmVydGVyOiBz
+dHJlYW09MCwgY2hhbm5lbD0wCiAgRGlnaXRhbDoKICBEaWdpdGFsIGNhdGVnb3J5OiAweDAKICBJ
+RUMgQ29kaW5nIFR5cGU6IDB4MAogIFBDTToKICAgIHJhdGVzIFsweDVlMF06IDQ0MTAwIDQ4MDAw
+IDg4MjAwIDk2MDAwIDE5MjAwMAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZvcm1hdHMg
+WzB4MV06IFBDTQogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKICBQb3dlcjogc2V0
+dGluZz1EMCwgYWN0dWFsPUQwCk5vZGUgMHgwNyBbQXVkaW8gSW5wdXRdIHdjYXBzIDB4MTAwNTFi
+OiBTdGVyZW8gQW1wLUluCiAgQW1wLUluIGNhcHM6IG9mcz0weDE3LCBuc3RlcHM9MHgzZiwgc3Rl
+cHNpemU9MHgwMiwgbXV0ZT0xCiAgQW1wLUluIHZhbHM6ICBbMHg5NyAweDk3XQogIENvbnZlcnRl
+cjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIFNESS1TZWxlY3Q6IDAKICBQQ006CiAgICByYXRlcyBb
+MHg1NjBdOiA0NDEwMCA0ODAwMCA5NjAwMCAxOTIwMDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0
+CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNT
+CiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rpb246IDEKICAgICAweDI0
+Ck5vZGUgMHgwOCBbQXVkaW8gSW5wdXRdIHdjYXBzIDB4MTAwNTFiOiBTdGVyZW8gQW1wLUluCiAg
+Q29udHJvbDogbmFtZT0iQ2FwdHVyZSBWb2x1bWUiLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29u
+dHJvbEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4PTAsIG9mcz0wCiAgQ29udHJvbDogbmFtZT0iQ2Fw
+dHVyZSBTd2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRp
+cj1JbiwgaWR4PTAsIG9mcz0wCiAgRGV2aWNlOiBuYW1lPSJBTEMyNTYgQW5hbG9nIiwgdHlwZT0i
+QXVkaW8iLCBkZXZpY2U9MAogIEFtcC1JbiBjYXBzOiBvZnM9MHgxNywgbnN0ZXBzPTB4M2YsIHN0
+ZXBzaXplPTB4MDIsIG11dGU9MQogIEFtcC1JbiB2YWxzOiAgWzB4M2YgMHgzZl0KICBDb252ZXJ0
+ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAKICBTREktU2VsZWN0OiAwCiAgUENNOgogICAgcmF0ZXMg
+WzB4NTYwXTogNDQxMDAgNDgwMDAgOTYwMDAgMTkyMDAwCiAgICBiaXRzIFsweGVdOiAxNiAyMCAy
+NAogICAgZm9ybWF0cyBbMHgxXTogUENNCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBT
+UwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgy
+MwpOb2RlIDB4MDkgW0F1ZGlvIElucHV0XSB3Y2FwcyAweDEwMDUxYjogU3RlcmVvIEFtcC1Jbgog
+IENvbnRyb2w6IG5hbWU9IkNhcHR1cmUgVm9sdW1lIiwgaW5kZXg9MSwgZGV2aWNlPTAKICAgIENv
+bnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD0wLCBvZnM9MAogIENvbnRyb2w6IG5hbWU9IkNh
+cHR1cmUgU3dpdGNoIiwgaW5kZXg9MSwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0zLCBk
+aXI9SW4sIGlkeD0wLCBvZnM9MAogIERldmljZTogbmFtZT0iQUxDMjU2IEFsdCBBbmFsb2ciLCB0
+eXBlPSJBdWRpbyIsIGRldmljZT0yCiAgQW1wLUluIGNhcHM6IG9mcz0weDE3LCBuc3RlcHM9MHgz
+Ziwgc3RlcHNpemU9MHgwMiwgbXV0ZT0xCiAgQW1wLUluIHZhbHM6ICBbMHg4MCAweDgwXQogIENv
+bnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIFNESS1TZWxlY3Q6IDAKICBQQ006CiAgICBy
+YXRlcyBbMHg1NjBdOiA0NDEwMCA0ODAwMCA5NjAwMCAxOTIwMDAKICAgIGJpdHMgWzB4ZV06IDE2
+IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBE
+MyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rpb246IDEKICAg
+ICAweDIyCk5vZGUgMHgwYSBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDog
+TW9ubwpOb2RlIDB4MGIgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1v
+bm8KTm9kZSAweDBjIFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBNb25v
+Ck5vZGUgMHgwZCBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpO
+b2RlIDB4MGUgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9k
+ZSAweDBmIFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBNb25vCk5vZGUg
+MHgxMCBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4
+MTEgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9kZSAweDEy
+IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA0MGI6IFN0ZXJlbyBBbXAtSW4KICBBbXAtSW4gY2Fw
+czogb2ZzPTB4MDAsIG5zdGVwcz0weDAzLCBzdGVwc2l6ZT0weDI3LCBtdXRlPTAKICBBbXAtSW4g
+dmFsczogIFsweDAwIDB4MDBdCiAgUGluY2FwIDB4MDAwMDAwMjA6IElOCiAgUGluIERlZmF1bHQg
+MHg0MDAwMDAwMDogW04vQV0gTGluZSBPdXQgYXQgRXh0IE4vQQogICAgQ29ubiA9IFVua25vd24s
+IENvbG9yID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRpb24gPSAweDAsIFNlcXVlbmNlID0gMHgw
+CiAgUGluLWN0bHM6IDB4MDA6CiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBv
+d2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKTm9kZSAweDEzIFtQaW4gQ29tcGxleF0gd2NhcHMg
+MHg0MDA0MGI6IFN0ZXJlbyBBbXAtSW4KICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0w
+eDAzLCBzdGVwc2l6ZT0weDI3LCBtdXRlPTAKICBBbXAtSW4gdmFsczogIFsweDAwIDB4MDBdCiAg
+UGluY2FwIDB4MDAwMDAwMjA6IElOCiAgUGluIERlZmF1bHQgMHg0MTExMTFmMDogW04vQV0gU3Bl
+YWtlciBhdCBFeHQgUmVhcgogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawogICAgRGVmQXNz
+b2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHgwCiAgICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQ
+aW4tY3RsczogMHgwMDoKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6
+IHNldHRpbmc9RDAsIGFjdHVhbD1EMApOb2RlIDB4MTQgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQw
+MDU4ZDogU3RlcmVvIEFtcC1PdXQKICBDb250cm9sOiBuYW1lPSJTcGVha2VyIFBsYXliYWNrIFN3
+aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPU91dCwg
+aWR4PTAsIG9mcz0wCiAgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBz
+aXplPTB4MDAsIG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDAwIDB4MDBdCiAgUGluY2FwIDB4
+MDAwMTAwMTQ6IE9VVCBFQVBEIERldGVjdAogIEVBUEQgMHgyOiBFQVBECiAgUGluIERlZmF1bHQg
+MHg5MDE3MDExMDogW0ZpeGVkXSBTcGVha2VyIGF0IEludCBOL0EKICAgIENvbm4gPSBBbmFsb2cs
+IENvbG9yID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRpb24gPSAweDEsIFNlcXVlbmNlID0gMHgw
+CiAgICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4tY3RsczogMHg0MDogT1VUCiAgVW5zb2xpY2l0
+ZWQ6IHRhZz0wMCwgZW5hYmxlZD0wCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwog
+IFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgwMgpO
+b2RlIDB4MTUgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9k
+ZSAweDE2IFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBNb25vCk5vZGUg
+MHgxNyBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4
+MTggW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDQ4YjogU3RlcmVvIEFtcC1JbgogIEFtcC1JbiBj
+YXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDMsIHN0ZXBzaXplPTB4MjcsIG11dGU9MAogIEFtcC1J
+biB2YWxzOiAgWzB4MDAgMHgwMF0KICBQaW5jYXAgMHgwMDAwMzcyNDogSU4gRGV0ZWN0CiAgICBW
+cmVmIGNhcHM6IEhJWiA1MCBHUkQgODAgMTAwCiAgUGluIERlZmF1bHQgMHg0MTExMTFmMDogW04v
+QV0gU3BlYWtlciBhdCBFeHQgUmVhcgogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawogICAg
+RGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHgwCiAgICBNaXNjID0gTk9fUFJFU0VO
+Q0UKICBQaW4tY3RsczogMHgyMDogSU4gVlJFRl9ISVoKICBVbnNvbGljaXRlZDogdGFnPTAwLCBl
+bmFibGVkPTAKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRp
+bmc9RDAsIGFjdHVhbD1EMApOb2RlIDB4MTkgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDQ4Yjog
+U3RlcmVvIEFtcC1JbgogIENvbnRyb2w6IG5hbWU9IkhlYWRzZXQgTWljIEJvb3N0IFZvbHVtZSIs
+IGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUluLCBpZHg9MCwg
+b2ZzPTAKICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAzLCBzdGVwc2l6ZT0weDI3
+LCBtdXRlPTAKICBBbXAtSW4gdmFsczogIFsweDAzIDB4MDNdCiAgUGluY2FwIDB4MDAwMDM3MjQ6
+IElOIERldGVjdAogICAgVnJlZiBjYXBzOiBISVogNTAgR1JEIDgwIDEwMAogIFBpbiBEZWZhdWx0
+IDB4NDExMTExZjA6IFtOL0FdIFNwZWFrZXIgYXQgRXh0IFJlYXIKICAgIENvbm4gPSAxLzgsIENv
+bG9yID0gQmxhY2sKICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1ZW5jZSA9IDB4MAogICAg
+TWlzYyA9IE5PX1BSRVNFTkNFCiAgUGluLWN0bHM6IDB4MjQ6IElOIFZSRUZfODAKICBVbnNvbGlj
+aXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNT
+CiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMApOb2RlIDB4MWEgW1BpbiBDb21wbGV4XSB3
+Y2FwcyAweDQwMDQ4YjogU3RlcmVvIEFtcC1JbgogIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0
+ZXBzPTB4MDMsIHN0ZXBzaXplPTB4MjcsIG11dGU9MAogIEFtcC1JbiB2YWxzOiAgWzB4MDAgMHgw
+MF0KICBQaW5jYXAgMHgwMDAwMzcyNDogSU4gRGV0ZWN0CiAgICBWcmVmIGNhcHM6IEhJWiA1MCBH
+UkQgODAgMTAwCiAgUGluIERlZmF1bHQgMHg0MTExMTFmMDogW04vQV0gU3BlYWtlciBhdCBFeHQg
+UmVhcgogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawogICAgRGVmQXNzb2NpYXRpb24gPSAw
+eGYsIFNlcXVlbmNlID0gMHgwCiAgICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4tY3RsczogMHgw
+MDogVlJFRl9ISVoKICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBQb3dlciBzdGF0
+ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMApOb2Rl
+IDB4MWIgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDU4ZjogU3RlcmVvIEFtcC1JbiBBbXAtT3V0
+CiAgQ29udHJvbDogbmFtZT0iSW50ZXJuYWwgTWljIEJvb3N0IFZvbHVtZSIsIGluZGV4PTAsIGRl
+dmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUluLCBpZHg9MCwgb2ZzPTAKICBBbXAt
+SW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAzLCBzdGVwc2l6ZT0weDI3LCBtdXRlPTAKICBB
+bXAtSW4gdmFsczogIFsweDAzIDB4MDNdCiAgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBz
+PTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDgwIDB4ODBd
+CiAgUGluY2FwIDB4MDAwMTM3MzQ6IElOIE9VVCBFQVBEIERldGVjdAogICAgVnJlZiBjYXBzOiBI
+SVogNTAgR1JEIDgwIDEwMAogIEVBUEQgMHgyOiBFQVBECiAgUGluIERlZmF1bHQgMHg5MGE3MDEz
+MDogW0ZpeGVkXSBNaWMgYXQgSW50IE4vQQogICAgQ29ubiA9IEFuYWxvZywgQ29sb3IgPSBVbmtu
+b3duCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MywgU2VxdWVuY2UgPSAweDAKICAgIE1pc2MgPSBO
+T19QUkVTRU5DRQogIFBpbi1jdGxzOiAweDI0OiBJTiBWUkVGXzgwCiAgVW5zb2xpY2l0ZWQ6IHRh
+Zz0wMCwgZW5hYmxlZD0wCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBvd2Vy
+OiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiAyCiAgICAgMHgwMiogMHgwMwpO
+b2RlIDB4MWMgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9k
+ZSAweDFkIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA0MDA6IE1vbm8KICBQaW5jYXAgMHgwMDAw
+MDAyMDogSU4KICBQaW4gRGVmYXVsdCAweDQwNDc5YjQ1OiBbTi9BXSBTUERJRiBPdXQgYXQgRXh0
+IE4vQQogICAgQ29ubiA9IEFuYWxvZywgQ29sb3IgPSBQaW5rCiAgICBEZWZBc3NvY2lhdGlvbiA9
+IDB4NCwgU2VxdWVuY2UgPSAweDUKICAgIE1pc2MgPSBOT19QUkVTRU5DRQogIFBpbi1jdGxzOiAw
+eDIwOiBJTgogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKICBQb3dlcjogc2V0dGlu
+Zz1EMCwgYWN0dWFsPUQwCk5vZGUgMHgxZSBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNzgxOiBT
+dGVyZW8gRGlnaXRhbAogIFBpbmNhcCAweDAwMDAwMDE0OiBPVVQgRGV0ZWN0CiAgUGluIERlZmF1
+bHQgMHg0MTExMTFmMDogW04vQV0gU3BlYWtlciBhdCBFeHQgUmVhcgogICAgQ29ubiA9IDEvOCwg
+Q29sb3IgPSBCbGFjawogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHgwCiAg
+ICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4tY3RsczogMHg0MDogT1VUCiAgVW5zb2xpY2l0ZWQ6
+IHRhZz0wMCwgZW5hYmxlZD0wCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBv
+d2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgwNgpOb2Rl
+IDB4MWYgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9kZSAw
+eDIwIFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDQwOiBNb25vCiAgUHJvY2Vz
+c2luZyBjYXBzOiBiZW5pZ249MCwgbmNvZWZmPTkxCk5vZGUgMHgyMSBbUGluIENvbXBsZXhdIHdj
+YXBzIDB4NDAwNThkOiBTdGVyZW8gQW1wLU91dAogIENvbnRyb2w6IG5hbWU9IkhlYWRwaG9uZSBQ
+bGF5YmFjayBTd2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMs
+IGRpcj1PdXQsIGlkeD0wLCBvZnM9MAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0w
+eDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtT3V0IHZhbHM6ICBbMHg4MCAweDgwXQog
+IFBpbmNhcCAweDAwMDEwMDFjOiBPVVQgSFAgRUFQRCBEZXRlY3QKICBFQVBEIDB4MjogRUFQRAog
+IFBpbiBEZWZhdWx0IDB4MDQyMTEwMjA6IFtKYWNrXSBIUCBPdXQgYXQgRXh0IFJpZ2h0CiAgICBD
+b25uID0gMS84LCBDb2xvciA9IEJsYWNrCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MiwgU2VxdWVu
+Y2UgPSAweDAKICBQaW4tY3RsczogMHhjMDogT1VUIEhQCiAgVW5zb2xpY2l0ZWQ6IHRhZz0wMSwg
+ZW5hYmxlZD0xCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBvd2VyOiBzZXR0
+aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiAyCiAgICAgMHgwMiAweDAzKgpOb2RlIDB4
+MjIgW0F1ZGlvIE1peGVyXSB3Y2FwcyAweDIwMDEwYjogU3RlcmVvIEFtcC1JbgogIEFtcC1JbiBj
+YXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQogIEFtcC1J
+biB2YWxzOiAgWzB4ODAgMHg4MF0gWzB4MDAgMHgwMF0gWzB4ODAgMHg4MF0gWzB4ODAgMHg4MF0g
+WzB4ODAgMHg4MF0KICBDb25uZWN0aW9uOiA1CiAgICAgMHgxOCAweDE5IDB4MWEgMHgxYiAweDFk
+Ck5vZGUgMHgyMyBbQXVkaW8gTWl4ZXJdIHdjYXBzIDB4MjAwMTBiOiBTdGVyZW8gQW1wLUluCiAg
+QW1wLUluIGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0x
+CiAgQW1wLUluIHZhbHM6ICBbMHg4MCAweDgwXSBbMHg4MCAweDgwXSBbMHg4MCAweDgwXSBbMHgw
+MCAweDAwXSBbMHg4MCAweDgwXSBbMHg4MCAweDgwXQogIENvbm5lY3Rpb246IDYKICAgICAweDE4
+IDB4MTkgMHgxYSAweDFiIDB4MWQgMHgxMgpOb2RlIDB4MjQgW0F1ZGlvIFNlbGVjdG9yXSB3Y2Fw
+cyAweDMwMDEwMTogU3RlcmVvCiAgQ29ubmVjdGlvbjogMgogICAgIDB4MTIqIDB4MTMKQ29kZWM6
+IEludGVsIEJyb3h0b24gSERNSQpBZGRyZXNzOiAyCkFGRyBGdW5jdGlvbiBJZDogMHgxICh1bnNv
+bCAwKQpWZW5kb3IgSWQ6IDB4ODA4NjI4MGEKU3Vic3lzdGVtIElkOiAweDgwODYwMTAxClJldmlz
+aW9uIElkOiAweDEwMDAwMApObyBNb2RlbSBGdW5jdGlvbiBHcm91cCBmb3VuZApEZWZhdWx0IFBD
+TToKICAgIHJhdGVzIFsweDBdOgogICAgYml0cyBbMHgwXToKICAgIGZvcm1hdHMgWzB4MF06CkRl
+ZmF1bHQgQW1wLUluIGNhcHM6IE4vQQpEZWZhdWx0IEFtcC1PdXQgY2FwczogTi9BClN0YXRlIG9m
+IEFGRyBub2RlIDB4MDE6CiAgUG93ZXIgc3RhdGVzOiAgRDAgRDMgQ0xLU1RPUCBFUFNTCiAgUG93
+ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMCwgQ2xvY2stc3RvcC1PSwpHUElPOiBpbz0wLCBvPTAs
+IGk9MCwgdW5zb2xpY2l0ZWQ9MCwgd2FrZT0wCk5vZGUgMHgwMiBbQXVkaW8gT3V0cHV0XSB3Y2Fw
+cyAweDY2MTE6IDgtQ2hhbm5lbHMgRGlnaXRhbAogIENvbnZlcnRlcjogc3RyZWFtPTAsIGNoYW5u
+ZWw9MAogIERpZ2l0YWw6IEVuYWJsZWQgS0FFCiAgRGlnaXRhbCBjYXRlZ29yeTogMHgwCiAgSUVD
+IENvZGluZyBUeXBlOiAweDAKICBQQ006CiAgICByYXRlcyBbMHg3ZjBdOiAzMjAwMCA0NDEwMCA0
+ODAwMCA4ODIwMCA5NjAwMCAxNzY0MDAgMTkyMDAwCiAgICBiaXRzIFsweDFhXTogMTYgMjQgMzIK
+ICAgIGZvcm1hdHMgWzB4NV06IFBDTSBBQzMKICBQb3dlciBzdGF0ZXM6ICBEMCBEMyBFUFNTCiAg
+UG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMApOb2RlIDB4MDMgW0F1ZGlvIE91dHB1dF0gd2Nh
+cHMgMHg2NjExOiA4LUNoYW5uZWxzIERpZ2l0YWwKICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFu
+bmVsPTAKICBEaWdpdGFsOiBFbmFibGVkIEtBRQogIERpZ2l0YWwgY2F0ZWdvcnk6IDB4MAogIElF
+QyBDb2RpbmcgVHlwZTogMHgwCiAgUENNOgogICAgcmF0ZXMgWzB4N2YwXTogMzIwMDAgNDQxMDAg
+NDgwMDAgODgyMDAgOTYwMDAgMTc2NDAwIDE5MjAwMAogICAgYml0cyBbMHgxYV06IDE2IDI0IDMy
+CiAgICBmb3JtYXRzIFsweDVdOiBQQ00gQUMzCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDMgRVBTUwog
+IFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKTm9kZSAweDA0IFtBdWRpbyBPdXRwdXRdIHdj
+YXBzIDB4NjYxMTogOC1DaGFubmVscyBEaWdpdGFsCiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hh
+bm5lbD0wCiAgRGlnaXRhbDogRW5hYmxlZCBLQUUKICBEaWdpdGFsIGNhdGVnb3J5OiAweDAKICBJ
+RUMgQ29kaW5nIFR5cGU6IDB4MAogIFBDTToKICAgIHJhdGVzIFsweDdmMF06IDMyMDAwIDQ0MTAw
+IDQ4MDAwIDg4MjAwIDk2MDAwIDE3NjQwMCAxOTIwMDAKICAgIGJpdHMgWzB4MWFdOiAxNiAyNCAz
+MgogICAgZm9ybWF0cyBbMHg1XTogUENNIEFDMwogIFBvd2VyIHN0YXRlczogIEQwIEQzIEVQU1MK
+ICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCk5vZGUgMHgwNSBbUGluIENvbXBsZXhdIHdj
+YXBzIDB4NDA3NzhkOiA4LUNoYW5uZWxzIERpZ2l0YWwgQW1wLU91dCBDUAogIEFtcC1PdXQgY2Fw
+czogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtT3V0
+IHZhbHM6ICBbMHgwMCAweDAwXQogIFBpbmNhcCAweDBiMDAwMDk0OiBPVVQgRGV0ZWN0IEhCUiBI
+RE1JIERQCiAgUGluIERlZmF1bHQgMHgxODU2MDAxMDogW0phY2tdIERpZ2l0YWwgT3V0IGF0IElu
+dCBIRE1JCiAgICBDb25uID0gRGlnaXRhbCwgQ29sb3IgPSBVbmtub3duCiAgICBEZWZBc3NvY2lh
+dGlvbiA9IDB4MSwgU2VxdWVuY2UgPSAweDAKICBQaW4tY3RsczogMHgwMDoKICBVbnNvbGljaXRl
+ZDogdGFnPTAwLCBlbmFibGVkPTAKICBQb3dlciBzdGF0ZXM6ICBEMCBEMyBFUFNTCiAgUG93ZXI6
+IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIERldmljZXM6IDAKICBDb25uZWN0aW9uOiAwCk5vZGUg
+MHgwNiBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDA3NzhkOiA4LUNoYW5uZWxzIERpZ2l0YWwgQW1w
+LU91dCBDUAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0w
+eDAwLCBtdXRlPTEKICBBbXAtT3V0IHZhbHM6ICBbMHgwMCAweDAwXQogIFBpbmNhcCAweDBiMDAw
+MDk0OiBPVVQgRGV0ZWN0IEhCUiBIRE1JIERQCiAgUGluIERlZmF1bHQgMHgxODU2MDAxMDogW0ph
+Y2tdIERpZ2l0YWwgT3V0IGF0IEludCBIRE1JCiAgICBDb25uID0gRGlnaXRhbCwgQ29sb3IgPSBV
+bmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MSwgU2VxdWVuY2UgPSAweDAKICBQaW4tY3Rs
+czogMHgwMDoKICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBQb3dlciBzdGF0ZXM6
+ICBEMCBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIERldmljZXM6IDAK
+ICBDb25uZWN0aW9uOiAwCk5vZGUgMHgwNyBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDA3NzhkOiA4
+LUNoYW5uZWxzIERpZ2l0YWwgQW1wLU91dCBDUAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5z
+dGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtT3V0IHZhbHM6ICBbMHgwMCAw
+eDAwXQogIFBpbmNhcCAweDBiMDAwMDk0OiBPVVQgRGV0ZWN0IEhCUiBIRE1JIERQCiAgUGluIERl
+ZmF1bHQgMHgxODU2MDAxMDogW0phY2tdIERpZ2l0YWwgT3V0IGF0IEludCBIRE1JCiAgICBDb25u
+ID0gRGlnaXRhbCwgQ29sb3IgPSBVbmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MSwgU2Vx
+dWVuY2UgPSAweDAKICBQaW4tY3RsczogMHgwMDoKICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFi
+bGVkPTAKICBQb3dlciBzdGF0ZXM6ICBEMCBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFj
+dHVhbD1EMAogIERldmljZXM6IDAKICBDb25uZWN0aW9uOiAwCk5vZGUgMHgwOCBbVmVuZG9yIERl
+ZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwotLWVuZGNvbGxhcHNlLS0KCgohIUFM
+U0EgRGV2aWNlIG5vZGVzCiEhLS0tLS0tLS0tLS0tLS0tLS0KCmNydy1ydy0tLS0rICAgICAgICAg
+ICAxIHJvb3QgYXVkaW8gMTE2LCAxMCBPY3QgIDQgMDQ6MTAgL2Rldi9zbmQvY29udHJvbEMwCmNy
+dy1ydy0tLS0rICAgICAgICAgICAxIHJvb3QgYXVkaW8gMTE2LCAgOCBPY3QgIDQgMDQ6MTAgL2Rl
+di9zbmQvaHdDMEQwCmNydy1ydy0tLS0rICAgICAgICAgICAxIHJvb3QgYXVkaW8gMTE2LCAgOSBP
+Y3QgIDQgMDQ6MTAgL2Rldi9zbmQvaHdDMEQyCmNydy1ydy0tLS0rICAgICAgICAgICAxIHJvb3Qg
+YXVkaW8gMTE2LCAgMyBPY3QgIDQgMDQ6MTUgL2Rldi9zbmQvcGNtQzBEMGMKY3J3LXJ3LS0tLSsg
+ICAgICAgICAgIDEgcm9vdCBhdWRpbyAxMTYsICAyIE9jdCAgNCAwNDoxMCAvZGV2L3NuZC9wY21D
+MEQwcApjcnctcnctLS0tKyAgICAgICAgICAgMSByb290IGF1ZGlvIDExNiwgIDQgT2N0ICA0IDA0
+OjEwIC9kZXYvc25kL3BjbUMwRDJjCmNydy1ydy0tLS0rICAgICAgICAgICAxIHJvb3QgYXVkaW8g
+MTE2LCAgNSBPY3QgIDQgMDQ6MTAgL2Rldi9zbmQvcGNtQzBEM3AKY3J3LXJ3LS0tLSsgICAgICAg
+ICAgIDEgcm9vdCBhdWRpbyAxMTYsICA2IE9jdCAgNCAwNDoxMCAvZGV2L3NuZC9wY21DMEQ3cApj
+cnctcnctLS0tKyAgICAgICAgICAgMSByb290IGF1ZGlvIDExNiwgIDcgT2N0ICA0IDA0OjEwIC9k
+ZXYvc25kL3BjbUMwRDhwCmNydy1ydy0tLS0rICAgICAgICAgICAxIHJvb3QgYXVkaW8gMTE2LCAg
+MSBPY3QgIDQgMDQ6MTAgL2Rldi9zbmQvc2VxCmNydy1ydy0tLS0rICAgICAgICAgICAxIHJvb3Qg
+YXVkaW8gMTE2LCAzMyBPY3QgIDQgMDQ6MTAgL2Rldi9zbmQvdGltZXIKCi9kZXYvc25kL2J5LXBh
+dGg6CnRvdGFsIDAKZHJ3eHIteHIteCAyIHJvb3Qgcm9vdCAgNjAgT2N0ICA0IDA0OjA5IC4KZHJ3
+eHIteHIteCAzIHJvb3Qgcm9vdCAyODAgT2N0ICA0IDA0OjA5IC4uCmxyd3hyd3hyd3grMSByb290
+IHJvb3QgIDEyIE9jdCAgNCAwNDowOSBwY2ktMDAwMDowMDowZS4wIC0+IC4uL2NvbnRyb2xDMAoK
+CiEhQXBsYXkvQXJlY29yZCBvdXRwdXQKISEtLS0tLS0tLS0tLS0tLS0tLS0tLQoKQVBMQVkKCioq
+KiogTGlzdCBvZiBQTEFZQkFDSyBIYXJkd2FyZSBEZXZpY2VzICoqKioKY2FyZCAwOiBQQ0ggW0hE
+QSBJbnRlbCBQQ0hdLCBkZXZpY2UgMDogQUxDMjU2IEFuYWxvZyBbQUxDMjU2IEFuYWxvZ10KICBT
+dWJkZXZpY2VzOiAxLzEKICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMApjYXJkIDA6IFBDSCBb
+SERBIEludGVsIFBDSF0sIGRldmljZSAzOiBIRE1JIDAgW0hETUkgMF0KICBTdWJkZXZpY2VzOiAx
+LzEKICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMApjYXJkIDA6IFBDSCBbSERBIEludGVsIFBD
+SF0sIGRldmljZSA3OiBIRE1JIDEgW0hETUkgMV0KICBTdWJkZXZpY2VzOiAxLzEKICBTdWJkZXZp
+Y2UgIzA6IHN1YmRldmljZSAjMApjYXJkIDA6IFBDSCBbSERBIEludGVsIFBDSF0sIGRldmljZSA4
+OiBIRE1JIDIgW0hETUkgMl0KICBTdWJkZXZpY2VzOiAxLzEKICBTdWJkZXZpY2UgIzA6IHN1YmRl
+dmljZSAjMAoKQVJFQ09SRAoKKioqKiBMaXN0IG9mIENBUFRVUkUgSGFyZHdhcmUgRGV2aWNlcyAq
+KioqCmNhcmQgMDogUENIIFtIREEgSW50ZWwgUENIXSwgZGV2aWNlIDA6IEFMQzI1NiBBbmFsb2cg
+W0FMQzI1NiBBbmFsb2ddCiAgU3ViZGV2aWNlczogMS8xCiAgU3ViZGV2aWNlICMwOiBzdWJkZXZp
+Y2UgIzAKY2FyZCAwOiBQQ0ggW0hEQSBJbnRlbCBQQ0hdLCBkZXZpY2UgMjogQUxDMjU2IEFsdCBB
+bmFsb2cgW0FMQzI1NiBBbHQgQW5hbG9nXQogIFN1YmRldmljZXM6IDEvMQogIFN1YmRldmljZSAj
+MDogc3ViZGV2aWNlICMwCgohIUFtaXhlciBvdXRwdXQKISEtLS0tLS0tLS0tLS0tCgohIS0tLS0t
+LS1NaXhlciBjb250cm9scyBmb3IgY2FyZCBQQ0gKCkNhcmQgc3lzZGVmYXVsdDowICdQQ0gnLydI
+REEgSW50ZWwgUENIIGF0IDB4OTE0MTgwMDAgaXJxIDEzNycKICBNaXhlciBuYW1lCTogJ1JlYWx0
+ZWsgQUxDMjU2JwogIENvbXBvbmVudHMJOiAnSERBOjEwZWMwMjU2LDEwNDMxMzAwLDAwMTAwMDAy
+IEhEQTo4MDg2MjgwYSw4MDg2MDEwMSwwMDEwMDAwMCcKICBDb250cm9scyAgICAgIDogNDQKICBT
+aW1wbGUgY3RybHMgIDogMTQKU2ltcGxlIG1peGVyIGNvbnRyb2wgJ01hc3RlcicsMAogIENhcGFi
+aWxpdGllczogcHZvbHVtZSBwdm9sdW1lLWpvaW5lZCBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAg
+UGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBMaW1pdHM6IFBsYXliYWNrIDAgLSA4NwogIE1vbm86
+IFBsYXliYWNrIDcwIFs4MCVdIFstMTIuNzVkQl0gW29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAn
+SGVhZHBob25lJywwCiAgQ2FwYWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gKICBQbGF5YmFjayBj
+aGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBQbGF5YmFjayAwIC0g
+ODcKICBNb25vOgogIEZyb250IExlZnQ6IFBsYXliYWNrIDAgWzAlXSBbLTY1LjI1ZEJdIFtvZmZd
+CiAgRnJvbnQgUmlnaHQ6IFBsYXliYWNrIDAgWzAlXSBbLTY1LjI1ZEJdIFtvZmZdClNpbXBsZSBt
+aXhlciBjb250cm9sICdTcGVha2VyJywwCiAgQ2FwYWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gK
+ICBQbGF5YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBQ
+bGF5YmFjayAwIC0gODcKICBNb25vOgogIEZyb250IExlZnQ6IFBsYXliYWNrIDg3IFsxMDAlXSBb
+MC4wMGRCXSBbb25dCiAgRnJvbnQgUmlnaHQ6IFBsYXliYWNrIDg3IFsxMDAlXSBbMC4wMGRCXSBb
+b25dClNpbXBsZSBtaXhlciBjb250cm9sICdQQ00nLDAKICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUK
+ICBQbGF5YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBQ
+bGF5YmFjayAwIC0gMjU1CiAgTW9ubzoKICBGcm9udCBMZWZ0OiBQbGF5YmFjayAyNTQgWzEwMCVd
+IFstMC4yMGRCXQogIEZyb250IFJpZ2h0OiBQbGF5YmFjayAyNTQgWzEwMCVdIFstMC4yMGRCXQpT
+aW1wbGUgbWl4ZXIgY29udHJvbCAnSUVDOTU4JywwCiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBz
+d2l0Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBNb25vOiBQbGF5YmFjayBb
+b2ZmXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSUVDOTU4JywxCiAgQ2FwYWJpbGl0aWVzOiBwc3dp
+dGNoIHBzd2l0Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBNb25vOiBQbGF5
+YmFjayBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdJRUM5NTgnLDIKICBDYXBhYmlsaXRpZXM6
+IHBzd2l0Y2ggcHN3aXRjaC1qb2luZWQKICBQbGF5YmFjayBjaGFubmVsczogTW9ubwogIE1vbm86
+IFBsYXliYWNrIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0NhcHR1cmUnLDAKICBDYXBhYmls
+aXRpZXM6IGN2b2x1bWUgY3N3aXRjaAogIENhcHR1cmUgY2hhbm5lbHM6IEZyb250IExlZnQgLSBG
+cm9udCBSaWdodAogIExpbWl0czogQ2FwdHVyZSAwIC0gNjMKICBGcm9udCBMZWZ0OiBDYXB0dXJl
+IDYzIFsxMDAlXSBbMzAuMDBkQl0gW29uXQogIEZyb250IFJpZ2h0OiBDYXB0dXJlIDYzIFsxMDAl
+XSBbMzAuMDBkQl0gW29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnQ2FwdHVyZScsMQogIENhcGFi
+aWxpdGllczogY3ZvbHVtZSBjc3dpdGNoCiAgQ2FwdHVyZSBjaGFubmVsczogRnJvbnQgTGVmdCAt
+IEZyb250IFJpZ2h0CiAgTGltaXRzOiBDYXB0dXJlIDAgLSA2MwogIEZyb250IExlZnQ6IENhcHR1
+cmUgMCBbMCVdIFstMTcuMjVkQl0gW29mZl0KICBGcm9udCBSaWdodDogQ2FwdHVyZSAwIFswJV0g
+Wy0xNy4yNWRCXSBbb2ZmXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnQXV0by1NdXRlIE1vZGUnLDAK
+ICBDYXBhYmlsaXRpZXM6IGVudW0KICBJdGVtczogJ0Rpc2FibGVkJyAnRW5hYmxlZCcKICBJdGVt
+MDogJ0Rpc2FibGVkJwpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSGVhZHNldCBNaWMgQm9vc3QnLDAK
+ICBDYXBhYmlsaXRpZXM6IHZvbHVtZQogIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0g
+RnJvbnQgUmlnaHQKICBDYXB0dXJlIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQK
+ICBMaW1pdHM6IDAgLSAzCiAgRnJvbnQgTGVmdDogMyBbMTAwJV0gWzMwLjAwZEJdCiAgRnJvbnQg
+UmlnaHQ6IDMgWzEwMCVdIFszMC4wMGRCXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSW5wdXQgU291
+cmNlJywwCiAgQ2FwYWJpbGl0aWVzOiBjZW51bQogIEl0ZW1zOiAnSGVhZHNldCBNaWMnICdJbnRl
+cm5hbCBNaWMnCiAgSXRlbTA6ICdJbnRlcm5hbCBNaWMnClNpbXBsZSBtaXhlciBjb250cm9sICdJ
+bnB1dCBTb3VyY2UnLDEKICBDYXBhYmlsaXRpZXM6IGNlbnVtCiAgSXRlbXM6ICdIZWFkc2V0IE1p
+YycgJ0ludGVybmFsIE1pYycKICBJdGVtMDogJ0hlYWRzZXQgTWljJwpTaW1wbGUgbWl4ZXIgY29u
+dHJvbCAnSW50ZXJuYWwgTWljIEJvb3N0JywwCiAgQ2FwYWJpbGl0aWVzOiB2b2x1bWUKICBQbGF5
+YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgQ2FwdHVyZSBjaGFubmVs
+czogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiAwIC0gMwogIEZyb250IExlZnQ6
+IDMgWzEwMCVdIFszMC4wMGRCXQogIEZyb250IFJpZ2h0OiAzIFsxMDAlXSBbMzAuMDBkQl0KCgoh
+IUFsc2FjdGwgb3V0cHV0CiEhLS0tLS0tLS0tLS0tLS0KCi0tc3RhcnRjb2xsYXBzZS0tCnN0YXRl
+LlBDSCB7Cgljb250cm9sLjEgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSGVhZHBob25lIFBsYXli
+YWNrIFZvbHVtZScKCQl2YWx1ZS4wIDAKCQl2YWx1ZS4xIDAKCQljb21tZW50IHsKCQkJYWNjZXNz
+ICdyZWFkIHdyaXRlJwoJCQl0eXBlIElOVEVHRVIKCQkJY291bnQgMgoJCQlyYW5nZSAnMCAtIDg3
+JwoJCQlkYm1pbiAtNjUyNQoJCQlkYm1heCAwCgkJCWRidmFsdWUuMCAtNjUyNQoJCQlkYnZhbHVl
+LjEgLTY1MjUKCQl9Cgl9Cgljb250cm9sLjIgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSGVhZHBo
+b25lIFBsYXliYWNrIFN3aXRjaCcKCQl2YWx1ZS4wIGZhbHNlCgkJdmFsdWUuMSBmYWxzZQoJCWNv
+bW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgQk9PTEVBTgoJCQljb3VudCAy
+CgkJfQoJfQoJY29udHJvbC4zIHsKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ1NwZWFrZXIgUGxheWJh
+Y2sgVm9sdW1lJwoJCXZhbHVlLjAgODcKCQl2YWx1ZS4xIDg3CgkJY29tbWVudCB7CgkJCWFjY2Vz
+cyAncmVhZCB3cml0ZScKCQkJdHlwZSBJTlRFR0VSCgkJCWNvdW50IDIKCQkJcmFuZ2UgJzAgLSA4
+NycKCQkJZGJtaW4gLTY1MjUKCQkJZGJtYXggMAoJCQlkYnZhbHVlLjAgMAoJCQlkYnZhbHVlLjEg
+MAoJCX0KCX0KCWNvbnRyb2wuNCB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdTcGVha2VyIFBsYXli
+YWNrIFN3aXRjaCcKCQl2YWx1ZS4wIHRydWUKCQl2YWx1ZS4xIHRydWUKCQljb21tZW50IHsKCQkJ
+YWNjZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMgoJCX0KCX0KCWNv
+bnRyb2wuNSB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdBdXRvLU11dGUgTW9kZScKCQl2YWx1ZSBE
+aXNhYmxlZAoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgRU5VTUVS
+QVRFRAoJCQljb3VudCAxCgkJCWl0ZW0uMCBEaXNhYmxlZAoJCQlpdGVtLjEgRW5hYmxlZAoJCX0K
+CX0KCWNvbnRyb2wuNiB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdJbnB1dCBTb3VyY2UnCgkJdmFs
+dWUgJ0ludGVybmFsIE1pYycKCQljb21tZW50IHsKCQkJYWNjZXNzICdyZWFkIHdyaXRlJwoJCQl0
+eXBlIEVOVU1FUkFURUQKCQkJY291bnQgMQoJCQlpdGVtLjAgJ0hlYWRzZXQgTWljJwoJCQlpdGVt
+LjEgJ0ludGVybmFsIE1pYycKCQl9Cgl9Cgljb250cm9sLjcgewoJCWlmYWNlIE1JWEVSCgkJbmFt
+ZSAnSW5wdXQgU291cmNlJwoJCWluZGV4IDEKCQl2YWx1ZSAnSGVhZHNldCBNaWMnCgkJY29tbWVu
+dCB7CgkJCWFjY2VzcyAncmVhZCB3cml0ZScKCQkJdHlwZSBFTlVNRVJBVEVECgkJCWNvdW50IDEK
+CQkJaXRlbS4wICdIZWFkc2V0IE1pYycKCQkJaXRlbS4xICdJbnRlcm5hbCBNaWMnCgkJfQoJfQoJ
+Y29udHJvbC44IHsKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0NhcHR1cmUgVm9sdW1lJwoJCXZhbHVl
+LjAgNjMKCQl2YWx1ZS4xIDYzCgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0ZScKCQkJ
+dHlwZSBJTlRFR0VSCgkJCWNvdW50IDIKCQkJcmFuZ2UgJzAgLSA2MycKCQkJZGJtaW4gLTE3MjUK
+CQkJZGJtYXggMzAwMAoJCQlkYnZhbHVlLjAgMzAwMAoJCQlkYnZhbHVlLjEgMzAwMAoJCX0KCX0K
+CWNvbnRyb2wuOSB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdDYXB0dXJlIFN3aXRjaCcKCQl2YWx1
+ZS4wIHRydWUKCQl2YWx1ZS4xIHRydWUKCQljb21tZW50IHsKCQkJYWNjZXNzICdyZWFkIHdyaXRl
+JwoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMgoJCX0KCX0KCWNvbnRyb2wuMTAgewoJCWlmYWNl
+IE1JWEVSCgkJbmFtZSAnQ2FwdHVyZSBWb2x1bWUnCgkJaW5kZXggMQoJCXZhbHVlLjAgMAoJCXZh
+bHVlLjEgMAoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5URUdF
+UgoJCQljb3VudCAyCgkJCXJhbmdlICcwIC0gNjMnCgkJCWRibWluIC0xNzI1CgkJCWRibWF4IDMw
+MDAKCQkJZGJ2YWx1ZS4wIC0xNzI1CgkJCWRidmFsdWUuMSAtMTcyNQoJCX0KCX0KCWNvbnRyb2wu
+MTEgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnQ2FwdHVyZSBTd2l0Y2gnCgkJaW5kZXggMQoJCXZh
+bHVlLjAgZmFsc2UKCQl2YWx1ZS4xIGZhbHNlCgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3
+cml0ZScKCQkJdHlwZSBCT09MRUFOCgkJCWNvdW50IDIKCQl9Cgl9Cgljb250cm9sLjEyIHsKCQlp
+ZmFjZSBNSVhFUgoJCW5hbWUgJ0hlYWRzZXQgTWljIEJvb3N0IFZvbHVtZScKCQl2YWx1ZS4wIDMK
+CQl2YWx1ZS4xIDMKCQljb21tZW50IHsKCQkJYWNjZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBlIElO
+VEVHRVIKCQkJY291bnQgMgoJCQlyYW5nZSAnMCAtIDMnCgkJCWRibWluIDAKCQkJZGJtYXggMzAw
+MAoJCQlkYnZhbHVlLjAgMzAwMAoJCQlkYnZhbHVlLjEgMzAwMAoJCX0KCX0KCWNvbnRyb2wuMTMg
+ewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSW50ZXJuYWwgTWljIEJvb3N0IFZvbHVtZScKCQl2YWx1
+ZS4wIDMKCQl2YWx1ZS4xIDMKCQljb21tZW50IHsKCQkJYWNjZXNzICdyZWFkIHdyaXRlJwoJCQl0
+eXBlIElOVEVHRVIKCQkJY291bnQgMgoJCQlyYW5nZSAnMCAtIDMnCgkJCWRibWluIDAKCQkJZGJt
+YXggMzAwMAoJCQlkYnZhbHVlLjAgMzAwMAoJCQlkYnZhbHVlLjEgMzAwMAoJCX0KCX0KCWNvbnRy
+b2wuMTQgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTWFzdGVyIFBsYXliYWNrIFZvbHVtZScKCQl2
+YWx1ZSA3MAoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5URUdF
+UgoJCQljb3VudCAxCgkJCXJhbmdlICcwIC0gODcnCgkJCWRibWluIC02NTI1CgkJCWRibWF4IDAK
+CQkJZGJ2YWx1ZS4wIC0xMjc1CgkJfQoJfQoJY29udHJvbC4xNSB7CgkJaWZhY2UgTUlYRVIKCQlu
+YW1lICdNYXN0ZXIgUGxheWJhY2sgU3dpdGNoJwoJCXZhbHVlIHRydWUKCQljb21tZW50IHsKCQkJ
+YWNjZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMQoJCX0KCX0KCWNv
+bnRyb2wuMTYgewoJCWlmYWNlIENBUkQKCQluYW1lICdIZWFkc2V0IE1pYyBQaGFudG9tIEphY2sn
+CgkJdmFsdWUgdHJ1ZQoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgcmVhZAoJCQl0eXBlIEJPT0xFQU4K
+CQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMTcgewoJCWlmYWNlIENBUkQKCQluYW1lICdJbnRl
+cm5hbCBNaWMgUGhhbnRvbSBKYWNrJwoJCXZhbHVlIHRydWUKCQljb21tZW50IHsKCQkJYWNjZXNz
+IHJlYWQKCQkJdHlwZSBCT09MRUFOCgkJCWNvdW50IDEKCQl9Cgl9Cgljb250cm9sLjE4IHsKCQlp
+ZmFjZSBDQVJECgkJbmFtZSAnSGVhZHBob25lIEphY2snCgkJdmFsdWUgZmFsc2UKCQljb21tZW50
+IHsKCQkJYWNjZXNzIHJlYWQKCQkJdHlwZSBCT09MRUFOCgkJCWNvdW50IDEKCQl9Cgl9Cgljb250
+cm9sLjE5IHsKCQlpZmFjZSBDQVJECgkJbmFtZSAnU3BlYWtlciBQaGFudG9tIEphY2snCgkJdmFs
+dWUgdHJ1ZQoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgcmVhZAoJCQl0eXBlIEJPT0xFQU4KCQkJY291
+bnQgMQoJCX0KCX0KCWNvbnRyb2wuMjAgewoJCWlmYWNlIFBDTQoJCW5hbWUgJ1BsYXliYWNrIENo
+YW5uZWwgTWFwJwoJCXZhbHVlLjAgMAoJCXZhbHVlLjEgMAoJCWNvbW1lbnQgewoJCQlhY2Nlc3Mg
+J3JlYWQgdm9sYXRpbGUnCgkJCXR5cGUgSU5URUdFUgoJCQljb3VudCAyCgkJCXJhbmdlICcwIC0g
+MzYnCgkJfQoJfQoJY29udHJvbC4yMSB7CgkJaWZhY2UgUENNCgkJbmFtZSAnQ2FwdHVyZSBDaGFu
+bmVsIE1hcCcKCQl2YWx1ZS4wIDAKCQl2YWx1ZS4xIDAKCQljb21tZW50IHsKCQkJYWNjZXNzICdy
+ZWFkIHZvbGF0aWxlJwoJCQl0eXBlIElOVEVHRVIKCQkJY291bnQgMgoJCQlyYW5nZSAnMCAtIDM2
+JwoJCX0KCX0KCWNvbnRyb2wuMjIgewoJCWlmYWNlIFBDTQoJCWRldmljZSAyCgkJbmFtZSAnQ2Fw
+dHVyZSBDaGFubmVsIE1hcCcKCQl2YWx1ZS4wIDAKCQl2YWx1ZS4xIDAKCQljb21tZW50IHsKCQkJ
+YWNjZXNzICdyZWFkIHZvbGF0aWxlJwoJCQl0eXBlIElOVEVHRVIKCQkJY291bnQgMgoJCQlyYW5n
+ZSAnMCAtIDM2JwoJCX0KCX0KCWNvbnRyb2wuMjMgewoJCWlmYWNlIENBUkQKCQluYW1lICdIRE1J
+L0RQLHBjbT0zIEphY2snCgkJdmFsdWUgZmFsc2UKCQljb21tZW50IHsKCQkJYWNjZXNzIHJlYWQK
+CQkJdHlwZSBCT09MRUFOCgkJCWNvdW50IDEKCQl9Cgl9Cgljb250cm9sLjI0IHsKCQlpZmFjZSBN
+SVhFUgoJCW5hbWUgJ0lFQzk1OCBQbGF5YmFjayBDb24gTWFzaycKCQl2YWx1ZSAnMGZmZjAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MCcKCQljb21tZW50IHsKCQkJYWNjZXNzIHJlYWQKCQkJdHlwZSBJRUM5NTgKCQkJY291bnQgMQoJ
+CX0KCX0KCWNvbnRyb2wuMjUgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSUVDOTU4IFBsYXliYWNr
+IFBybyBNYXNrJwoJCXZhbHVlICcwZjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwJwoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgcmVh
+ZAoJCQl0eXBlIElFQzk1OAoJCQljb3VudCAxCgkJfQoJfQoJY29udHJvbC4yNiB7CgkJaWZhY2Ug
+TUlYRVIKCQluYW1lICdJRUM5NTggUGxheWJhY2sgRGVmYXVsdCcKCQl2YWx1ZSAnMDQwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MCcKCQljb21tZW50IHsKCQkJYWNjZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBlIElFQzk1OAoJCQlj
+b3VudCAxCgkJfQoJfQoJY29udHJvbC4yNyB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5NTgg
+UGxheWJhY2sgU3dpdGNoJwoJCXZhbHVlIGZhbHNlCgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVh
+ZCB3cml0ZScKCQkJdHlwZSBCT09MRUFOCgkJCWNvdW50IDEKCQl9Cgl9Cgljb250cm9sLjI4IHsK
+CQlpZmFjZSBQQ00KCQlkZXZpY2UgMwoJCW5hbWUgRUxECgkJdmFsdWUgJycKCQljb21tZW50IHsK
+CQkJYWNjZXNzICdyZWFkIHZvbGF0aWxlJwoJCQl0eXBlIEJZVEVTCgkJCWNvdW50IDAKCQl9Cgl9
+Cgljb250cm9sLjI5IHsKCQlpZmFjZSBDQVJECgkJbmFtZSAnSERNSS9EUCxwY209NyBKYWNrJwoJ
+CXZhbHVlIGZhbHNlCgkJY29tbWVudCB7CgkJCWFjY2VzcyByZWFkCgkJCXR5cGUgQk9PTEVBTgoJ
+CQljb3VudCAxCgkJfQoJfQoJY29udHJvbC4zMCB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5
+NTggUGxheWJhY2sgQ29uIE1hc2snCgkJaW5kZXggMQoJCXZhbHVlICcwZmZmMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwJwoJCWNv
+bW1lbnQgewoJCQlhY2Nlc3MgcmVhZAoJCQl0eXBlIElFQzk1OAoJCQljb3VudCAxCgkJfQoJfQoJ
+Y29udHJvbC4zMSB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5NTggUGxheWJhY2sgUHJvIE1h
+c2snCgkJaW5kZXggMQoJCXZhbHVlICcwZjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwJwoJCWNvbW1lbnQgewoJCQlhY2Nlc3Mg
+cmVhZAoJCQl0eXBlIElFQzk1OAoJCQljb3VudCAxCgkJfQoJfQoJY29udHJvbC4zMiB7CgkJaWZh
+Y2UgTUlYRVIKCQluYW1lICdJRUM5NTggUGxheWJhY2sgRGVmYXVsdCcKCQlpbmRleCAxCgkJdmFs
+dWUgJzA0MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAnCgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0ZScKCQkJdHlw
+ZSBJRUM5NTgKCQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMzMgewoJCWlmYWNlIE1JWEVSCgkJ
+bmFtZSAnSUVDOTU4IFBsYXliYWNrIFN3aXRjaCcKCQlpbmRleCAxCgkJdmFsdWUgdHJ1ZQoJCWNv
+bW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgQk9PTEVBTgoJCQljb3VudCAx
+CgkJfQoJfQoJY29udHJvbC4zNCB7CgkJaWZhY2UgUENNCgkJZGV2aWNlIDcKCQluYW1lIEVMRAoJ
+CXZhbHVlICcnCgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB2b2xhdGlsZScKCQkJdHlwZSBC
+WVRFUwoJCQljb3VudCAwCgkJfQoJfQoJY29udHJvbC4zNSB7CgkJaWZhY2UgQ0FSRAoJCW5hbWUg
+J0hETUkvRFAscGNtPTggSmFjaycKCQl2YWx1ZSBmYWxzZQoJCWNvbW1lbnQgewoJCQlhY2Nlc3Mg
+cmVhZAoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMzYgewoJCWlm
+YWNlIE1JWEVSCgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIENvbiBNYXNrJwoJCWluZGV4IDIKCQl2
+YWx1ZSAnMGZmZjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMCcKCQljb21tZW50IHsKCQkJYWNjZXNzIHJlYWQKCQkJdHlwZSBJRUM5
+NTgKCQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMzcgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAn
+SUVDOTU4IFBsYXliYWNrIFBybyBNYXNrJwoJCWluZGV4IDIKCQl2YWx1ZSAnMGYwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCcK
+CQljb21tZW50IHsKCQkJYWNjZXNzIHJlYWQKCQkJdHlwZSBJRUM5NTgKCQkJY291bnQgMQoJCX0K
+CX0KCWNvbnRyb2wuMzggewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIERl
+ZmF1bHQnCgkJaW5kZXggMgoJCXZhbHVlICcwNDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwJwoJCWNvbW1lbnQgewoJCQlhY2Nl
+c3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSUVDOTU4CgkJCWNvdW50IDEKCQl9Cgl9Cgljb250cm9s
+LjM5IHsKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0lFQzk1OCBQbGF5YmFjayBTd2l0Y2gnCgkJaW5k
+ZXggMgoJCXZhbHVlIHRydWUKCQljb21tZW50IHsKCQkJYWNjZXNzICdyZWFkIHdyaXRlJwoJCQl0
+eXBlIEJPT0xFQU4KCQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuNDAgewoJCWlmYWNlIFBDTQoJ
+CWRldmljZSA4CgkJbmFtZSBFTEQKCQl2YWx1ZSAnJwoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3Jl
+YWQgdm9sYXRpbGUnCgkJCXR5cGUgQllURVMKCQkJY291bnQgMAoJCX0KCX0KCWNvbnRyb2wuNDEg
+ewoJCWlmYWNlIFBDTQoJCWRldmljZSAzCgkJbmFtZSAnUGxheWJhY2sgQ2hhbm5lbCBNYXAnCgkJ
+dmFsdWUuMCAwCgkJdmFsdWUuMSAwCgkJdmFsdWUuMiAwCgkJdmFsdWUuMyAwCgkJdmFsdWUuNCAw
+CgkJdmFsdWUuNSAwCgkJdmFsdWUuNiAwCgkJdmFsdWUuNyAwCgkJY29tbWVudCB7CgkJCWFjY2Vz
+cyAncmVhZCB3cml0ZSB2b2xhdGlsZScKCQkJdHlwZSBJTlRFR0VSCgkJCWNvdW50IDgKCQkJcmFu
+Z2UgJzAgLSAzNicKCQl9Cgl9Cgljb250cm9sLjQyIHsKCQlpZmFjZSBQQ00KCQlkZXZpY2UgNwoJ
+CW5hbWUgJ1BsYXliYWNrIENoYW5uZWwgTWFwJwoJCXZhbHVlLjAgMAoJCXZhbHVlLjEgMAoJCXZh
+bHVlLjIgMAoJCXZhbHVlLjMgMAoJCXZhbHVlLjQgMAoJCXZhbHVlLjUgMAoJCXZhbHVlLjYgMAoJ
+CXZhbHVlLjcgMAoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUgdm9sYXRpbGUnCgkJ
+CXR5cGUgSU5URUdFUgoJCQljb3VudCA4CgkJCXJhbmdlICcwIC0gMzYnCgkJfQoJfQoJY29udHJv
+bC40MyB7CgkJaWZhY2UgUENNCgkJZGV2aWNlIDgKCQluYW1lICdQbGF5YmFjayBDaGFubmVsIE1h
+cCcKCQl2YWx1ZS4wIDAKCQl2YWx1ZS4xIDAKCQl2YWx1ZS4yIDAKCQl2YWx1ZS4zIDAKCQl2YWx1
+ZS40IDAKCQl2YWx1ZS41IDAKCQl2YWx1ZS42IDAKCQl2YWx1ZS43IDAKCQljb21tZW50IHsKCQkJ
+YWNjZXNzICdyZWFkIHdyaXRlIHZvbGF0aWxlJwoJCQl0eXBlIElOVEVHRVIKCQkJY291bnQgOAoJ
+CQlyYW5nZSAnMCAtIDM2JwoJCX0KCX0KCWNvbnRyb2wuNDQgewoJCWlmYWNlIE1JWEVSCgkJbmFt
+ZSAnUENNIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZS4wIDI1NAoJCXZhbHVlLjEgMjU0CgkJY29t
+bWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0ZSB1c2VyJwoJCQl0eXBlIElOVEVHRVIKCQkJY291
+bnQgMgoJCQlyYW5nZSAnMCAtIDI1NScKCQkJdGx2ICcwMDAwMDAwMTAwMDAwMDA4ZmZmZmVjMTQw
+MDAwMDAxNCcKCQkJZGJtaW4gLTUxMDAKCQkJZGJtYXggMAoJCQlkYnZhbHVlLjAgLTIwCgkJCWRi
+dmFsdWUuMSAtMjAKCQl9Cgl9Cn0KLS1lbmRjb2xsYXBzZS0tCgoKISFBbGwgTG9hZGVkIE1vZHVs
+ZXMKISEtLS0tLS0tLS0tLS0tLS0tLS0KCmFjOTdfYnVzCmFjcGlfdGhlcm1hbF9yZWwKYWVzbmlf
+aW50ZWwKYWZfYWxnCmFoY2kKYWxnaWZfaGFzaAphbGdpZl9za2NpcGhlcgphc3VzX2FybW91cnkK
+YXN1c19uYl93bWkKYXN1c193aXJlbGVzcwphc3VzX3dtaQphdGgKYXRoMTBrX2NvcmUKYXRoMTBr
+X3BjaQphdXRvZnM0CmJpbmZtdF9taXNjCmJsdWV0b290aApibmVwCmJ0YmNtCmJ0aW50ZWwKYnRt
+dGsKYnRydGwKYnR1c2IKY2NtCmNlYwpjZmc4MDIxMQpjbWFjCmNtZGxpbmVwYXJ0CmNvcmV0ZW1w
+CmNxaGNpCmNyYzgKZG1pX3N5c2ZzCmRybV9idWRkeQpkcm1fZGlzcGxheV9oZWxwZXIKZWZpX3Bz
+dG9yZQpmaXJtd2FyZV9hdHRyaWJ1dGVzX2NsYXNzCmdoYXNoX2NsbXVsbmlfaW50ZWwKaGlkCmhp
+ZF9nZW5lcmljCmhpZF9tdWx0aXRvdWNoCmkyY19hbGdvX2JpdAppMmNfaGlkCmkyY19oaWRfYWNw
+aQppMmNfaTgwMQppMmNfbXV4CmkyY19zbWJ1cwppOTE1CmlkbWE2NAppbnB1dF9sZWRzCmludDM0
+MDBfdGhlcm1hbAppbnQzNDAzX3RoZXJtYWwKaW50MzQweF90aGVybWFsX3pvbmUKaW50ZWxfY3N0
+YXRlCmludGVsX2xwc3MKaW50ZWxfbHBzc19wY2kKaW50ZWxfcG1jX2J4dAppbnRlbF9wbWNfY29y
+ZQppbnRlbF9wbWNfc3NyYW1fdGVsZW1ldHJ5CmludGVsX3Bvd2VyY2xhbXAKaW50ZWxfcHVuaXRf
+aXBjCmludGVsX3JhcGxfY29tbW9uCmludGVsX3JhcGxfbXNyCmludGVsX3NvY19kdHNfaW9zZgpp
+bnRlbF90ZWxlbWV0cnlfY29yZQppbnRlbF90ZWxlbWV0cnlfcGx0ZHJ2CmludGVsX3ZzZWMKaW50
+ZWxfeGhjaV91c2Jfcm9sZV9zd2l0Y2gKaXJxYnlwYXNzCmpveWRldgprdm0Ka3ZtX2ludGVsCmxp
+YmFoY2kKbGliYXJjNApscApscGNfaWNoCm1hYzgwMjExCm1hY19oaWQKbWMKbWVpCm1laV9oZGNw
+Cm1laV9tZQptZWlfcHhwCm1mZF9hYWVvbgptbWNfYmxvY2sKbXNyCm10ZApuZm5ldGxpbmsKbmxz
+X2lzbzg4NTlfMQpwYXJwb3J0CnBhcnBvcnRfcGMKcGluY3RybF9icm94dG9uCnBsYXRmb3JtX3By
+b2ZpbGUKcGxhdGZvcm1fdGVtcGVyYXR1cmVfY29udHJvbApwbXRfY2xhc3MKcG10X2Rpc2NvdmVy
+eQpwbXRfdGVsZW1ldHJ5CnBwZGV2CnByb2Nlc3Nvcl90aGVybWFsX2RldmljZQpwcm9jZXNzb3Jf
+dGhlcm1hbF9kZXZpY2VfcGNpX2xlZ2FjeQpwcm9jZXNzb3JfdGhlcm1hbF9tYm94CnByb2Nlc3Nv
+cl90aGVybWFsX3Bvd2VyX2Zsb29yCnByb2Nlc3Nvcl90aGVybWFsX3JhcGwKcHJvY2Vzc29yX3Ro
+ZXJtYWxfcmZpbQpwcm9jZXNzb3JfdGhlcm1hbF9zb2Nfc2xpZGVyCnByb2Nlc3Nvcl90aGVybWFs
+X3d0X2hpbnQKcHJvY2Vzc29yX3RoZXJtYWxfd3RfcmVxCnFydHIKcjgxNjkKcmFwbApyY19jb3Jl
+CnJlYWx0ZWsKcmZjb21tCnJwbWJfY29yZQpydHN4X3BjaQpydHN4X3BjaV9zZG1tYwpzY2hfZnFf
+Y29kZWwKc2RoY2kKc2RoY2lfcGNpCnNkaGNpX3VoczIKc2VyaW9fcmF3CnNuZApzbmRfY29tcHJl
+c3MKc25kX2hkYV9jb2RlYwpzbmRfaGRhX2NvZGVjX2FsYzI2OQpzbmRfaGRhX2NvZGVjX2dlbmVy
+aWMKc25kX2hkYV9jb2RlY19oZG1pCnNuZF9oZGFfY29kZWNfaW50ZWxoZG1pCnNuZF9oZGFfY29k
+ZWNfcmVhbHRla19saWIKc25kX2hkYV9jb3JlCnNuZF9oZGFfZXh0X2NvcmUKc25kX2hkYV9pbnRl
+bApzbmRfaGRhX3Njb2RlY19jb21wb25lbnQKc25kX2hydGltZXIKc25kX2h3ZGVwCnNuZF9pbnRl
+bF9kc3BjZmcKc25kX2ludGVsX3Nkd19hY3BpCnNuZF9wY20Kc25kX3BjbV9kbWFlbmdpbmUKc25k
+X3NlcQpzbmRfc2VxX2RldmljZQpzbmRfc2VxX2R1bW15CnNuZF9zb2NfYWNwaQpzbmRfc29jX2Fj
+cGlfaW50ZWxfbWF0Y2gKc25kX3NvY19hY3BpX2ludGVsX3NkY2FfcXVpcmtzCnNuZF9zb2NfYXZz
+CnNuZF9zb2NfY29yZQpzbmRfc29jX2hkYV9jb2RlYwpzbmRfc29jX2hkYWNfaGRhCnNuZF9zb2Nf
+c2RjYQpzbmRfc29jX3Nkd191dGlscwpzbmRfc29mCnNuZF9zb2ZfaW50ZWxfaGRhCnNuZF9zb2Zf
+aW50ZWxfaGRhX2NvbW1vbgpzbmRfc29mX2ludGVsX2hkYV9nZW5lcmljCnNuZF9zb2ZfaW50ZWxf
+aGRhX21saW5rCnNuZF9zb2ZfaW50ZWxfaGRhX3Nkd19icHQKc25kX3NvZl9wY2kKc25kX3NvZl9w
+Y2lfaW50ZWxfYXBsCnNuZF9zb2ZfdXRpbHMKc25kX3NvZl94dGVuc2FfZHNwCnNuZF90aW1lcgpz
+b3VuZGNvcmUKc291bmR3aXJlX2J1cwpzb3VuZHdpcmVfY2FkZW5jZQpzb3VuZHdpcmVfZ2VuZXJp
+Y19hbGxvY2F0aW9uCnNvdW5kd2lyZV9pbnRlbApzcGFyc2Vfa2V5bWFwCnNwaV9pbnRlbApzcGlf
+aW50ZWxfcGxhdGZvcm0Kc3BpX25vcgp0dG0KdXNiaGlkCnV2Ywp1dmN2aWRlbwp2aWRlbwp2aWRl
+b2J1ZjJfY29tbW9uCnZpZGVvYnVmMl9tZW1vcHMKdmlkZW9idWYyX3Y0bDIKdmlkZW9idWYyX3Zt
+YWxsb2MKdmlkZW9kZXYKd21pCndtaV9ibW9mCng4Nl9wa2dfdGVtcF90aGVybWFsCgoKISFTeXNm
+cyBGaWxlcwohIS0tLS0tLS0tLS0tCgovc3lzL2NsYXNzL3NvdW5kL2h3QzBEMC9pbml0X3Bpbl9j
+b25maWdzOgoweDEyIDB4NDAwMDAwMDAKMHgxMyAweDQxMTExMWYwCjB4MTQgMHg5MDE3MDExMAow
+eDE4IDB4NDExMTExZjAKMHgxOSAweDQxMTExMWYwCjB4MWEgMHg0MTExMTFmMAoweDFiIDB4OTBh
+NzAxMzAKMHgxZCAweDQwNDc5YjQ1CjB4MWUgMHg0MTExMTFmMAoweDIxIDB4MDQyMTEwMjAKCi9z
+eXMvY2xhc3Mvc291bmQvaHdDMEQwL2RyaXZlcl9waW5fY29uZmlnczoKMHgxMyAweDkwYTYwMTYw
+CjB4MTkgMHgwNGExMTEyMAoKL3N5cy9jbGFzcy9zb3VuZC9od0MwRDAvdXNlcl9waW5fY29uZmln
+czoKMHgxMiAweDQwMDAwMDAwCjB4MTMgMHg0MTExMTFmMAoweDE0IDB4OTAxNzAxMTAKMHgxOCAw
+eDQxMTExMWYwCjB4MTkgMHgwNGExMTEyMAoweDFhIDB4NDExMTExZjAKMHgxYiAweDkwYTcwMTMw
+CjB4MWQgMHg0MDQ3OWI0NQoweDFlIDB4NDExMTExZjAKMHgyMSAweDA0MjExMDIwCgovc3lzL2Ns
+YXNzL3NvdW5kL2h3QzBEMC9pbml0X3ZlcmJzOgoKL3N5cy9jbGFzcy9zb3VuZC9od0MwRDAvaGlu
+dHM6Cgovc3lzL2NsYXNzL3NvdW5kL2h3QzBEMi9pbml0X3Bpbl9jb25maWdzOgoweDA1IDB4MTg1
+NjAwMTAKMHgwNiAweDE4NTYwMDEwCjB4MDcgMHgxODU2MDAxMAoKL3N5cy9jbGFzcy9zb3VuZC9o
+d0MwRDIvZHJpdmVyX3Bpbl9jb25maWdzOgoKL3N5cy9jbGFzcy9zb3VuZC9od0MwRDIvdXNlcl9w
+aW5fY29uZmlnczoKCi9zeXMvY2xhc3Mvc291bmQvaHdDMEQyL2luaXRfdmVyYnM6Cgovc3lzL2Ns
+YXNzL3NvdW5kL2h3QzBEMi9oaW50czoKCgohIUFMU0EvSERBIGRtZXNnCiEhLS0tLS0tLS0tLS0t
+LS0KCgoKISFQYWNrYWdlcyBpbnN0YWxsZWQKISEtLS0tLS0tLS0tLS0tLS0tLS0tLQoKaWkgIGFs
+c2EtdG9wb2xvZ3ktY29uZiAgICAgICAgICAgICAgICAgICAgICAgICAxLjIuNS4xLTNidWlsZDEg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgYWxsICAgICAgICAgIEFMU0EgdG9wb2xvZ3kgY29u
+ZmlndXJhdGlvbiBmaWxlcwppaSAgYWxzYS11Y20tY29uZiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIDEuMi4xNS4zLTF1YnVudHUxICAgICAgICAgICAgICAgICAgICAgICAgICBhbGwgICAg
+ICAgICAgQUxTQSBVc2UgQ2FzZSBNYW5hZ2VyIGNvbmZpZ3VyYXRpb24gZmlsZXMKaWkgIGFsc2Et
+dXRpbHMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAxLjIuMTUuMi0xdWJ1bnR1MSAg
+ICAgICAgICAgICAgICAgICAgICAgICAgYW1kNjQgICAgICAgIFV0aWxpdGllcyBmb3IgY29uZmln
+dXJpbmcgYW5kIHVzaW5nIEFMU0EKCg==
+--000000000000bcaaf6065cf5831b--
