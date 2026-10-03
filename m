@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5841CCA5FDD
-	for <alsa-devel@archiver.kernel.org>; Sat,  3 Oct 2026 07:53:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90CBACA5FDD
+	for <alsa-devel@archiver.kernel.org>; Sat,  3 Oct 2026 07:57:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A07896029F;
-	Sat,  3 Oct 2026 09:53:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A07896029F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61FF0602A8;
+	Sat,  3 Oct 2026 09:57:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61FF0602A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1791014021;
-	bh=yVcORQ/SI+eD6i2oz/HrJ6jHEXxTk376wKhfDONYQCI=;
+	s=default; t=1791014234;
+	bh=MfUVCVTVyqAyWWMciWYVlMIITc7gEW1gx50qars9mvI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bZszlN71pWcW/Ji6t3HgLxVEGHlCVIy70SWWJooH0A7UYuEyas4Ipq1kaEVX1KQHz
-	 Li97fGCpdaterB9TGdCX41JWPAI30KP1l7LfB4jEbfBvCsVDd7zHU24e53agpwDIXn
-	 5b1HHcJJ0IdgbveCXvBsxE23HF1LPDrLG2Va+Awg=
+	b=eMuskjvbeAwDWBNd9uGqBHeHzUxirEHUKeFWPASMalL8bBUCmTR1mhw8oH9efYK/x
+	 F6R9aDCluHKo/dzxHyiH4+7MgF0B4LT5x209c4KLND6JMVbK0OfdCEYTSUeP9U7qk4
+	 60A4HZXf3ERAgNUPWHOygvGY25tLBqACQg7WNxCM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D6FBF805F3; Sat,  3 Oct 2026 09:53:07 +0200 (CEST)
+	id 536E8F805FE; Sat,  3 Oct 2026 09:56:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 856A3F805FB;
-	Sat,  3 Oct 2026 09:53:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B750F805EF;
+	Sat,  3 Oct 2026 09:56:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D6AB3F80548; Sat,  3 Oct 2026 09:53:00 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791013979;
-	b=lJBKDl0dpK5YCzD/bZ5BLdB5crg8w8HEECRD6R/065tnCQvO+/T5FHf+Zy5QV1Dsqnsr
-	 n59ZEkw04GPEggQ8UJr/QL1VZScdvUaweGr+E7bUNLwNmW/WUaj3UXO5RbgJVd5KHsJhe
-	 CniD1UUNbBAYAylwmIWi7rRowAoMGri0F6cRZFT6PE6ohX9uAZtmSK+6NCgLQbqqCXptg
-	 scQqUt8Fv/R1L9UEGvsZxbqjn/RziEbkEiMn4koTYyYWqo2RcC/SHQi7kQ10PvCp24YzF
-	 gafWqG16/QVLQ4F1Ql2SGhmUodRP/Z1tWi8JOi6AXw9BKZTcTJUaUAcYi77HTSuM+rA==
+	id E95D3F80548; Sat,  3 Oct 2026 09:56:32 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791014192;
+	b=k5yQaPilCcBotH0AnecdenHrhUeKxu3avSlJqJJz3CajwYH3rgwViDvXVck09si9cWtZ
+	 Uo8b0Ht/Wiud4NhqVAZmQ+gfmJvVFbetv/zan8Dfq4ia1UxEyUJTJjVtQ2tCQXdwmca+D
+	 arjOn+qtoqLGlN8fGoOfsP2HOj5xw7eTJ/1Q6oesDoKUs/NSbx2OCAXua75hMVUS2g4QK
+	 Nr4cu4dFjjIEAUFTulEXftY0f3hEjUnuRz2AMAzKujWKiFg8QLherBL2dJ1fUS0TVt2YX
+	 QYPvtXYpWNHCr6x17xhrLINdSTQdcdE7rNPnX1U+BHVn4tfGpSJb6YaN3XmV9JlLiLw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1791013979;
+	c=relaxed/simple; t=1791014192;
 	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
-	bh=yVcORQ/SI+eD6i2oz/HrJ6jHEXxTk376wKhfDONYQCI=;
-	b=fyOIKWeycybm/PcXZrKg878Zgyzz/6SpYb7tWs8WV1ypT+HCjWyY6zvCagRu9VPeYOye
-	 BHmKJI68W+0iKruhmZPcy460Nnc5yj3V2fd3PVKgQUSr2Qw5AZd80dkpnBqckIC8OXm52
-	 mQjnwlLH3hHDJPVMztErfUh6Ewt6rhvKILgBi0/E4Zx/gHFpOOMGNvNxRFsWMzAry5bjV
-	 AYEc4uo9YJ51DuHizQvrLy0GrcrqhPq2gaYiKgLoPuc2AYLywHF6QGNBKH7L0zebx6oP7
-	 D3lFjm0r5SmF+FnScChzXb+bjyo3DDwFWzxqAfYm/Y7ZSDqhw1fc+iqYbXkZeqzbKcw==
+	bh=MfUVCVTVyqAyWWMciWYVlMIITc7gEW1gx50qars9mvI=;
+	b=c+c2uD7DMNCW8VEwwL08N92jJf+OMhr9Y7baLVMSPr6iNRLc6GuAt83DWFVKw7cVzQ3n
+	 A+2yih0Rw795ZWJG2gJucFD+O9uslLIqBDCtA8tnAtQN1vCP/zVLOU5QYhKoa83d8gG7K
+	 sMOXcjI6mf6RCs1BgmuQN1Nc30+9D9QV+7Q7ZWQjVUF1KkLqIpiXgFghqavWc94eop5He
+	 I3zxhOa9bPHsR5bzvrPemi5ULm3YlTBw9tOkRLKy8KlREE67X6xji3HEhQdVGA71N/PSw
+	 dKYxYQLLxgGOa3i4FFytKg5VUCidEvD7yWBgYCl9YMhGlzO3bXnVY4slxB+9CzWpz7g==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b="jDF/V3yi";
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+ header.s=k20260515 header.b=RSDO3b1W;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8B542F800E4
-	for <alsa-devel@alsa-project.org>; Sat,  3 Oct 2026 09:52:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B542F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id A15D0F80246
+	for <alsa-devel@alsa-project.org>; Sat,  3 Oct 2026 09:56:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A15D0F80246
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=jDF/V3yi
+ header.s=k20260515 header.b=RSDO3b1W
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0EC2560D8E;
-	Sat,  3 Oct 2026 07:52:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAF231F0089C;
-	Sat,  3 Oct 2026 07:52:54 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 4471641A22;
+	Sat,  3 Oct 2026 07:56:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ED021F0089B;
+	Sat,  3 Oct 2026 07:56:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791013975;
-	bh=SsZuLX1m5zBOGB/eTfR7O04naF7e4Rh6urcz2t1OfiM=;
+	s=k20260515; t=1791014186;
+	bh=ekxDdhOJckVynJQYk+c3362Q9E9XNDxkI9BNBdgVOuo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=jDF/V3yiAeZqLJ+4mM5sdB7kaKvqMGPe6A/ImYmXxZOrgRDv8QMiZBdRhZpDltKtx
-	 jiVRJ4RszghdYNtE53sc4ScaSg54p3HdXfKyWldFehfLC3IULNt4la9zWSVhee6dgF
-	 jG8TlcLPKLHkg8OuKdNMRIq0uuB7WT/1AtZvCX9XktZjAIW72JfOGCMSmq/He36Yjj
-	 FQ3NuM4epnWm+pUuH5YRUrG4dpmjwldOC42i01Qz+/E4wg/5vB7JSnC73tNy5STWGN
-	 z2xx4WWpDgclVDjQ0Pul9CoXRPLgM8LFpHGdo0k8wgAm8ivd7ftbV99qnP39b/iWVo
-	 QoLi16kLuEdHQ==
-Date: Sat, 3 Oct 2026 09:52:52 +0200
+	b=RSDO3b1WehYIXguH/T1Bm0GIc6mzcRHjxW14VlSyV2rxXtE1ZdOq8SsKYci4PFmL0
+	 76WiiuBQG4qcUYbnUOQh/kK/MxYxqfr2Lg/Q3L7cR11yHa43dSACvA7teGaQ9QzCQC
+	 Ff77V2i99iHR3RTLBx7MnIqP0JaALXEetFnEBwdlptjrCaBU2JJm6Q5OxLuyFQpNZ1
+	 t0BtN8zgplfOY3QY2puCn0FYFGVcwmMcsiDHYivxGELqkWIYYfE8MN0I/oIu0pKyeu
+	 0XdAEr26yJiuNhvAl2g4upxHLfLYaZlupScDphpMfkiDhTtqpVEJCJC9uzkQqOL33S
+	 zboeJwCuYnqFA==
+Date: Sat, 3 Oct 2026 09:56:23 +0200
 From: Vinod Koul <vkoul@kernel.org>
 To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Cc: broonie@kernel.org, alsa-devel@alsa-project.org,
@@ -85,17 +85,17 @@ Cc: broonie@kernel.org, alsa-devel@alsa-project.org,
 	venkataprasad.potturu@amd.com, Syed.SabaKareem@amd.com,
 	Mario.Limonciello@amd.com, Richard.Gong@amd.com,
 	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/9] soundwire: amd: allocate sdw_amd_ctx pdev array
- dynamically
-Message-ID: <asC0VC--CaFMJ_ow@parshuram>
+Subject: Re: [PATCH 6/9] soundwire: amd: introduce struct amd_sdw_hw_ops
+ dispatch framework
+Message-ID: <asC1JwByZaJ8B2Pr@parshuram>
 References: <20260917090407.3828816-1-Vijendar.Mukunda@amd.com>
- <20260917090407.3828816-4-Vijendar.Mukunda@amd.com>
+ <20260917090407.3828816-7-Vijendar.Mukunda@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260917090407.3828816-4-Vijendar.Mukunda@amd.com>
-Message-ID-Hash: QELIAFPDULUQMAHGWHTPLJDHKQ7REI2M
-X-Message-ID-Hash: QELIAFPDULUQMAHGWHTPLJDHKQ7REI2M
+In-Reply-To: <20260917090407.3828816-7-Vijendar.Mukunda@amd.com>
+Message-ID-Hash: WQAUE2PKURYQYXSSGLQBPWONR3N56IW3
+X-Message-ID-Hash: WQAUE2PKURYQYXSSGLQBPWONR3N56IW3
 X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -107,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QELIAFPDULUQMAHGWHTPLJDHKQ7REI2M/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WQAUE2PKURYQYXSSGLQBPWONR3N56IW3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,88 +117,91 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 17-09-26, 14:32, Vijendar Mukunda wrote:
-> Replace the fixed-size pdev[AMD_ACP63_SDW_MAX_MANAGER_COUNT] member of
-> struct sdw_amd_ctx with a dynamically allocated pointer array. The array
-> is sized by max_manager_count via kcalloc() in sdw_amd_probe_controller()
-> and freed on all error paths and in sdw_amd_cleanup().
+> Add struct amd_sdw_hw_ops, a function-pointer dispatch table for
+> hardware-revision-specific SoundWire manager operations. Add inline
+> dispatch helpers for each callback and a const hw_ops pointer in
+> struct amd_sdw_manager.
+> 
+> The irq_thread and update_slave_status_work slots take
+> struct amd_sdw_manager * so that different ACP revisions can register
+> different handler logic. hw_ops is populated and call sites are wired
+> through the dispatch helpers in subsequent patches.
+
+Lets solve with one more level! Do you really need this...
+
 > 
 > Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 > ---
->  drivers/soundwire/amd_init.c      | 12 ++++++++++++
->  include/linux/soundwire/sdw_amd.h |  2 +-
->  2 files changed, 13 insertions(+), 1 deletion(-)
+>  drivers/soundwire/amd_manager.h   | 193 ++++++++++++++++++++++++++++++
+>  include/linux/soundwire/sdw_amd.h |   4 +
+>  2 files changed, 197 insertions(+)
 > 
-> diff --git a/drivers/soundwire/amd_init.c b/drivers/soundwire/amd_init.c
-> index 15d117172bdb..94d766b3f8af 100644
-> --- a/drivers/soundwire/amd_init.c
-> +++ b/drivers/soundwire/amd_init.c
-> @@ -62,6 +62,7 @@ static int sdw_amd_cleanup(struct sdw_amd_ctx *ctx)
->  			continue;
->  		platform_device_unregister(ctx->pdev[i]);
->  	}
-> +	kfree(ctx->pdev);
->  
->  	return 0;
->  }
-> @@ -116,8 +117,16 @@ static struct sdw_amd_ctx *sdw_amd_probe_controller(struct sdw_amd_res *res)
->  
->  	ctx->count = count;
->  	ctx->link_mask = res->link_mask;
-> +
-> +	ctx->pdev = kcalloc(max_manager_count, sizeof(*ctx->pdev), GFP_KERNEL);
-
-why not use managed api for this?
-
-> +	if (!ctx->pdev) {
-> +		kfree(ctx);
-> +		return NULL;
-> +	}
-> +
->  	struct resource *sdw_res __free(kfree) = kzalloc_obj(*sdw_res);
->  	if (!sdw_res) {
-> +		kfree(ctx->pdev);
->  		kfree(ctx);
->  		return NULL;
->  	}
-> @@ -127,6 +136,7 @@ static struct sdw_amd_ctx *sdw_amd_probe_controller(struct sdw_amd_res *res)
->  
->  	sdw_pdata = kcalloc(max_manager_count, sizeof(*sdw_pdata), GFP_KERNEL);
->  	if (!sdw_pdata) {
-> +		kfree(ctx->pdev);
->  		kfree(ctx);
->  		return NULL;
->  	}
-> @@ -134,6 +144,7 @@ static struct sdw_amd_ctx *sdw_amd_probe_controller(struct sdw_amd_res *res)
->  	pdevinfo = kcalloc(max_manager_count, sizeof(*pdevinfo), GFP_KERNEL);
->  	if (!pdevinfo) {
->  		kfree(sdw_pdata);
-> +		kfree(ctx->pdev);
->  		kfree(ctx);
->  		return NULL;
->  	}
-> @@ -171,6 +182,7 @@ static struct sdw_amd_ctx *sdw_amd_probe_controller(struct sdw_amd_res *res)
->  
->  	kfree(pdevinfo);
->  	kfree(sdw_pdata);
-> +	kfree(ctx->pdev);
->  	kfree(ctx);
->  	return NULL;
->  }
-> diff --git a/include/linux/soundwire/sdw_amd.h b/include/linux/soundwire/sdw_amd.h
-> index 40ba84c3b2cc..476de2c30389 100644
-> --- a/include/linux/soundwire/sdw_amd.h
-> +++ b/include/linux/soundwire/sdw_amd.h
-> @@ -139,7 +139,7 @@ struct sdw_amd_acpi_info {
->  struct sdw_amd_ctx {
->  	int count;
->  	u32 link_mask;
-> -	struct platform_device *pdev[AMD_ACP63_SDW_MAX_MANAGER_COUNT];
-> +	struct platform_device **pdev;
->  	struct sdw_peripherals *peripherals;
+> diff --git a/drivers/soundwire/amd_manager.h b/drivers/soundwire/amd_manager.h
+> index 63fecff62079..2d08c6edd018 100644
+> --- a/drivers/soundwire/amd_manager.h
+> +++ b/drivers/soundwire/amd_manager.h
+> @@ -274,4 +274,197 @@ static u32 sdw_manager_reg_mask_array[AMD_ACP63_SDW_MAX_MANAGER_COUNT] =  {
+>  		AMD_SDW0_EXT_INTR_MASK,
+>  		AMD_SDW1_EXT_INTR_MASK
 >  };
->  
-> -- 
-> 2.48.1
+> +
+> +#define AMD_SDW_HW_OPS(amd_manager, cb)	((amd_manager)->hw_ops->cb)
+> +
+> +/**
+> + * struct amd_sdw_hw_ops - hardware-revision-specific SoundWire manager ops
+> + *
+> + * @init_sdw_manager: enable the SoundWire manager hardware and perform bus reset
+> + * @enable_sdw_manager: set the manager enable bit and wait for it to assert
+> + * @disable_sdw_manager: clear the manager enable bit and wait for it to deassert
+> + * @enable_sdw_interrupts: unmask ACP-level and per-manager interrupt bits
+> + * @disable_sdw_interrupts: mask ACP-level and per-manager interrupt bits
+> + * @set_frameshape: write the row/column frame-shape register
+> + * @send_cmd_get_resp: issue an immediate command and return the response;
+> + *   returns 0 on success with the raw u64 response in @response,
+> + *   or negative on hardware timeout
+> + * @wake_enable: enable or disable the in-band SoundWire wake interrupt
+> + * @host_wake_enable: enable or disable the host-side wake interrupt
+> + * @set_device_state: write the D0/D3 device power state for the manager instance
+> + * @read_and_process_ping_status: issue a PING command and process the slave
+> + *   attach/detach status; called from the IRQ work path
+> + * @process_wake_event: handle an in-band wake notification from a slave
+> + * @irq_thread: hw_ops callback invoked by the thin work_struct wrapper on
+> + *   each interrupt; reads status registers and dispatches slave events
+> + * @update_slave_status_work: hw_ops callback invoked by the status-update
+> + *   work item; reads slave status and updates the SoundWire core
+> + * @clk_init_ctrl: set the clock divider and update the frame shape registers
+> + *   based on the current bus clock frequency
+> + * @clock_stop_exit: restart the SoundWire bus clock after a CLK_STOP_MODE
+> + *   suspend; implementation differs across ACP revisions
+> + * @suspend: system-suspend hook; stops the bus and powers down the manager
+> + * @suspend_runtime: runtime-suspend hook; same sequence as @suspend
+> + * @resume_runtime: runtime-resume hook; reinitialises the manager and restarts
+> + *   the bus after a POWER_OFF_MODE or CLK_STOP_MODE suspend
+> + */
+> +struct amd_sdw_hw_ops {
+> +	int (*init_sdw_manager)(struct amd_sdw_manager *amd_manager);
+> +	int (*enable_sdw_manager)(struct amd_sdw_manager *amd_manager);
+> +	int (*disable_sdw_manager)(struct amd_sdw_manager *amd_manager);
+> +	void (*enable_sdw_interrupts)(struct amd_sdw_manager *amd_manager);
+> +	void (*disable_sdw_interrupts)(struct amd_sdw_manager *amd_manager);
+> +	void (*set_frameshape)(struct amd_sdw_manager *amd_manager);
+> +	int (*send_cmd_get_resp)(struct amd_sdw_manager *amd_manager, u32 lower_data,
+> +				 u32 upper_data, u64 *response);
+> +	void (*wake_enable)(struct amd_sdw_manager *amd_manager, bool enable);
+> +	int (*host_wake_enable)(struct amd_sdw_manager *amd_manager, bool enable);
+> +	int (*set_device_state)(struct amd_sdw_manager *amd_manager, u32 target_device_state);
+> +	void (*read_and_process_ping_status)(struct amd_sdw_manager *amd_manager);
+> +	void (*process_wake_event)(struct amd_sdw_manager *amd_manager);
+> +	void (*irq_thread)(struct amd_sdw_manager *amd_manager);
+> +	void (*update_slave_status_work)(struct amd_sdw_manager *amd_manager);
+> +	int (*clk_init_ctrl)(struct amd_sdw_manager *amd_manager);
+> +	int (*clock_stop_exit)(struct amd_sdw_manager *amd_manager);
+> +	int (*suspend)(struct amd_sdw_manager *amd_manager);
+> +	int (*suspend_runtime)(struct amd_sdw_manager *amd_manager);
+> +	int (*resume_runtime)(struct amd_sdw_manager *amd_manager);
+
+I would suggest splitting the driver and add common code to a lib and
+have specific drivers for older and new gen platforms...
 
 -- 
 ~Vinod
