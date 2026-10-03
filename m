@@ -4,109 +4,149 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C219BCA5FF1
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2026 06:58:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33EE3CA5FF1
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2026 06:58:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC24260220;
-	Wed,  7 Oct 2026 08:58:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC24260220
+	by alsa0.perex.cz (Postfix) with ESMTPS id E98D260212;
+	Wed,  7 Oct 2026 08:58:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E98D260212
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1791356297;
-	bh=8dmL0LukSpRiln6yna50c+zTlXYL+Z9rs/NNHq7/NQc=;
-	h=Date:To:From:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=ukRIv7YDN6cMEytr+3S/SJzmLv1Y3hO/Lw28wIiM8VKAooIvDl3voAuPBm8SZGIgo
-	 P1x+WUv3RC4aaJ1F7LF7oMHckmVISsVyZG5E7kgTv+Lf0Uunfu1Lk4qzCImk3OwTA2
-	 qldUQcaPa44tZTt6G+wRKRwzCv/1KIPcryhONPX4=
+	s=default; t=1791356319;
+	bh=/iDGyIPoKrBXhqTX+xBXowT9bq0uWZA7SUBkTYlzxzo=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=IDbv5IYCiUtAVGa/33t/PM3uoOV2iH4UX6v1bJ497gJkAUoeyY0/qivRd7ST7+yr6
+	 bL19cP+uMmoD9odNlP/h291YXqDigoYL3JygsUiN6iS6RkSZlUVkueyIW51OD5oSVV
+	 oeuIpmrmOTZjBvhB8S1ISSrYVehertb74+GmkQEA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 711DEF8065E; Wed,  7 Oct 2026 08:57:28 +0200 (CEST)
+	id 0ADEAF80619; Wed,  7 Oct 2026 08:58:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F291F80641;
-	Wed,  7 Oct 2026 08:57:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6D5F1F805F3;
+	Wed,  7 Oct 2026 08:58:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 10D04F80548; Sat,  3 Oct 2026 03:42:00 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=79.135.106.102
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1790991718;
-	b=KYJ1vKQ0xyAqzIto0oqo2Nh6gljAmovcwVJQdegpUzMApUX27HBTycXMgw1fyCaJzB/y
-	 BXW7zjPk4l4bKt6WHXG3A73OKUn4GB/ZMyIsfMn8HVImr3DvDYJCq2Sab8NKL6vaP7hD4
-	 GVUtXV8XZwkiehOD2mx3v+Ug76GHYy2a2+B5H0vgPrpweaOqFwAD/Cq4M1+YmjOZfoXnX
-	 IK8BAGvcB7tuRFRFOx37cOTmvjSJnV1w4WbCCG+Go32+nh6fCsHy/47p3CDCGmvV2lrb6
-	 rtG3yTfKgsXP+hOl40tmaWUqN1Uf1noLKZKcC6zpQ2Uqlgq1QM8KvSskztbi1g2eZgA==
+	id 3C9D9F805C6; Sat,  3 Oct 2026 21:42:12 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=74.125.225.140
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791056528;
+	b=AqfkhzX2SANHjcwhf0m56GJO/mzOhQ+d9ZlooCR2sh1uzOHkLolmPxOKzuWCMTq0Cwot
+	 0KdzN+EMI6kX+NCXSpak0FAAjr2OtNU8OQeIVqxVjJwfBMaHNYh3fN3XrKj8j8pvT+A3p
+	 wYI2zWObo8nm2AWXcdE1DM0TMdB1A7dHWVrUpiFdxyHjtgUOTlyVdvjF6upDbc2qk+rjH
+	 bFNedgUUyoT+/wS7DQM26b7v46XxbJoggu7heUKnfe+ANU/AwluGuu755kPtLEj1VjFZC
+	 WJV+72boDh6hm31kKUWok8JgLUOgbQET1w5dLZggU16BFyi8cFFvCl6XeBen0nqeVQw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1790991718;
-	h=DKIM-Signature:Date:To:From:Subject:Message-ID:MIME-Version;
-	bh=avIZ3xIOrNERBwVT/Y0tKRuVUWKhOPgUjqQnLM/kQTk=;
-	b=mzfkKQCcAyaTDr3hVQdqIZI8CaSUVZU2bk2u1PE0VgU3RV95r826MF6EUeDVbqXgbdYk
-	 H+dhjnOmue+Nu6TwTfJW9lw3gyRTo7g+J51o5iXvq1YZ0lh7Y/78nXnzqT60+MrV/adLe
-	 3AUOLULwYR7ahJvu+bLBf7SAf+FEulh1LWCsKkgZ4/Lg3UsNZVDf6zOjr1yeeL2uke5N7
-	 IsY79R1tkISZ7u+4N4Dg3OYuuwr4RzrRDSYMRoGl44530tMrpPwt1Is4JbzD4VktIE0N7
-	 AC5UEsY3uHYFVteD2YndEENJKON5SDzawPketGroSIrmJMokabnF6mL0I33hWI/5WQA==
+	c=relaxed/simple; t=1791056528;
+	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=/iDGyIPoKrBXhqTX+xBXowT9bq0uWZA7SUBkTYlzxzo=;
+	b=Bw0uKx6lgC3r8jkD1s9LafMV2dHPAqWnMNRDIa/TzBKWmnQS5oNnSUER1L/m9kOdG8hR
+	 o0MiP6fyXEC+W2VXjbJkl0XEM22lcrpHGApNqx18+/1LpnvpcevaQKTNgBXPnQvLhQThh
+	 PMx0hZ4l/GB3iyG9UQznOWNAiz86NNQrWDFAFUEVTP469tOfyIqlv1BOPAIjrJyGVetmf
+	 ctpn1sy4iY0k8C8zySKdzn1lEwX6L+cTis5WMhBofYBBlC6bfhBpjNWyzfWvkAVKtQIIn
+	 h/iYTjgoMgOR3JP2b0x/fQz/vTZN6YFh2EosZHyA5X2b+Wd46EyaUuvmVZ9nt+MJz3A==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=proton.me header.i=@proton.me header.a=rsa-sha256
- header.s=rzmy4uojrzajzovvod53ou5aoq.protonmail2 header.b=IjrG22TV;
-	arc=none smtp.remote-ip=79.135.106.102
-Received: from mail-106102.protonmail.ch (mail-106102.protonmail.ch
- [79.135.106.102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=paMrWxVz;
+	arc=none smtp.remote-ip=74.125.225.140
+Received: from mail-wm2-f12.google.com (mail-wm2-f12.google.com
+ [74.125.225.140])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 28AE2F80246
-	for <alsa-devel@alsa-project.org>; Sat,  3 Oct 2026 03:41:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28AE2F80246
+	by alsa1.perex.cz (Postfix) with ESMTPS id D2F0EF80246
+	for <alsa-devel@alsa-project.org>; Sat,  3 Oct 2026 21:42:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2F0EF80246
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=proton.me header.i=@proton.me header.a=rsa-sha256
- header.s=rzmy4uojrzajzovvod53ou5aoq.protonmail2 header.b=IjrG22TV
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=rzmy4uojrzajzovvod53ou5aoq.protonmail2; t=1790991715;
-	x=1791250915; bh=ns7+f9A0rXK/RMXn0r3RsErrjH5JxWXOliIgUCJ5RRY=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=IjrG22TVX3kOH8UJbGvnSUbk0yLHDPKT1Rzww0Fg39QpHaypXgWYqV1vEzLcU0853
-	 +LOv9EbT0fzqBF+mLphx2oqWhnXlFet6WaIl++Kv2TuNh9DXPqBsfs2nWIZmt9W/u0
-	 kyb3XTIH6wm1fJu53GovwPr6unqY6HgL4UQ/qBJoYaCrFAS9OtBoGTWzXP4HtGaid5
-	 t2K0kqSgXnUE1wU+FM/iLJRwAkewfS4EGb6lU25ypO1ofcLPqcRHACfJxxFI+Ic/S2
-	 TsBLJ53rI7uo5s5n2qQwrzaJcfBl9oeIGEKydsGkh8tr/Pc3AWQKKJWvlnAtEg6CGK
-	 5bMy/i6NcIc8Q==
-Date: Sat, 03 Oct 2026 01:41:51 +0000
-To: Takashi Iwai <tiwai@suse.de>
-From: dchristensen8 <dchristensen8@proton.me>
-Cc: "tiwai@suse.com" <tiwai@suse.com>, "perex@perex.cz" <perex@perex.cz>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
-Subject: Re: [PATCH v2] ALSA: hda/ca0132: Add Sound BlasterX AE-5 external RGB
- LED strip support
-Message-ID: 
- <qOF5tUXvi5MWOfDFTuE8fU0Wiqk3eTZMHhdWpsxR-JFuTXCwEeayR_yxgYmAQ6SIHogQmMkvtM8otTM9z1Wi4KIujjj6LtQPORGuegUuRmM=@proton.me>
-In-Reply-To: <87ik3kyy0h.wl-tiwai@suse.de>
-References: 
- <I690osvh2wujN3P04R4abtKFqOqtIiC-qin2ZEFs9q8kKU7-qfIg2cya4BuHS7Vg83Wkon6BCJGtVIxeJVfRZ8nG07laTUlv-fJjELMgp1Y=@proton.me>
- <87ik3kyy0h.wl-tiwai@suse.de>
-Feedback-ID: 45895322:user:proton
-X-Pm-Message-ID: 1459dfcaa834d432a8a0a0749aabeb3f1b6e4c98
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=paMrWxVz
+Received: by mail-wm2-f12.google.com with SMTP id
+ 5b1f17b1804b1-4a003bd18e5so4196155e9.0
+        for <alsa-devel@alsa-project.org>;
+ Sat, 03 Oct 2026 12:42:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1791056527; x=1791661327;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:content-type:mime-version:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=7tsAe5aIFshgubUUdqgrKg7NfoQD6aHl738yHlYnd58=;
+        b=paMrWxVzZVvvR+nGe1NIcR3IZHBYauhFGvfpENHVFcs+05Qyeo3n2Mhi+s696JAcFl
+         o2dqn//xWT7AFNE/hvZSiFFlllg8dDhiTSlQcxvWlAthBIuwtAi0w4nPJLp334mz5cZc
+         wihRC0UP69qCSv5RreU892F7Iwye6ccbEQQFlr9EmBgAwVIy3pn674WPaUe3YDfeiC4d
+         7iHifsd5fpJtFkpX3nVWwqo7Vfg6scetta8AiOT3QITolda2aWvOhheRkdIreapEqwKi
+         vpVD2zWHaf/d7Gu9r+y6Ae7teThFiy+0q/RbSKAF8lBqQ1/xLblpYhLxK5QqnyrGJRUw
+         NDWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1791056527; x=1791661327;
+        h=content-transfer-encoding:content-type:mime-version:message-id:date
+         :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=7tsAe5aIFshgubUUdqgrKg7NfoQD6aHl738yHlYnd58=;
+        b=WS3T4DvjqGOwrHL/ivB2T7INuExubw/MYcVXFL0jeefmMr1sJ9YhDdSYrfYMZfDCHo
+         /IOHzKKNQsupkCipfpnsbYgIEOB31d6ttJ/jjek1Js6nrY1Cf7dpslD6rzsgDCpN2l4b
+         l8RxgJQ8LX5kajjKXyS34Tu5GVVmVGfNPkL/oMNQMmaT9G64FirWRf/P/FJixGi7Eh+/
+         ZGKiPYYuVAJkNA4vq6j5PZ738pn+eeKwxoSAjuhCifPDF6tiEjhBvI5t9HL0+EmE1PaB
+         gkFnZPSbejOq0qcuYEP4KYdNBZbnl7Udf6m83G1N0SIVWFzmRMLUEVOq1VNXq3xn1nDH
+         qICw==
+X-Forwarded-Encrypted: i=1;
+ AKwUvBwuQifXnl6Mii1uvjst8mwUr+Tj8Nl3UzJh1VT0LNI/9VR8Xw8luQ2W2OlwIxEzJwYkpEnND+iVozZf@alsa-project.org
+X-Gm-Message-State: AFuF++lA8eZPDxPSkkKVb+lnatFcA2OGnk4gfu3rEFkD03ToNnH15ClW
+	ns9DPlb1WGxr8YBh22xhG67iie1QUG+zeQcEMTw3oSwTLd9QRItroe+B
+X-Gm-Gg: AYBFou3lAQguEqfWSdLqAhpaBuZ5pfADlEAl4eIvBk57IGYDRwtmjHjLTdeXQNpDfG1
+	rzr2zDsJBaadtzEA9xcJiQq9q+Hay31WyktqCr9ccBe5FfPLZ4NlJRyL9uVzFQKI8hRLhAGQPHX
+	8fWFyabNbiLJxxn+fnJQGA9y/2xvhH5yjjqafszoqJy80DtaFcnJZ+agZ7RKd1C6NCrUjKcn85B
+	N1LXikDz845CRjtlhnHFYP1gp69WvgY8OAANp11syz0ahjtH32RMpJ2KUk5eQ+ldoPzyymYj1Iw
+	tDgOeWs0WDgWU/ZUzsRMieE4zY4wYw/OnwboS8jLeT/fD12Xthba5wYKmN1fUAHKDMKauwhob+C
+	BC7loPUIgj7iTPiPvADse3YKqw7QBcdj4Ty0Ak9fADCw0Ll9ttIcd0V5XUgtEyammedv12SopNs
+	l1KXRvOVP8fBISd8KmeBpt+BuVcp7CewhngUrd/eHm4QgqiRPvBzInMKUmMoAOgs6DRff/KQN5g
+	nkZy0WjaQHFWvglkep3Z8CZHbBpAlcq8TzA9PxfjQhhLcoQd6+GwYkVo7r2PepSzdRqCP3p2apr
+	DJsTWC21BIwn7AfyqzV8yHDD
+X-Received: by 2002:a05:600c:8b88:b0:4a0:258a:b25c with SMTP id
+ 5b1f17b1804b1-4a0276abde3mr103801915e9.29.1791056526607;
+        Sat, 03 Oct 2026 12:42:06 -0700 (PDT)
+Received: from cachyos.home
+ (2a01cb0c82caf900a186612f304bfea5.ipv6.abo.wanadoo.fr.
+ [2a01:cb0c:82ca:f900:a186:612f:304b:fea5])
+        by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4a162e867e8sm161520495e9.15.2026.10.03.12.42.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Oct 2026 12:42:06 -0700 (PDT)
+From: =?UTF-8?q?Isma=C3=AFl=20Bahloul?= <i.bahloul01@gmail.com>
+To: linux-sound@vger.kernel.org
+Cc: tiwai@suse.com,
+	perex@perex.cz,
+	linux-usb@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	corbet@lwn.net,
+	skhan@linuxfoundation.org,
+	rdunlap@infradead.org,
+	linux-doc@vger.kernel.org,
+	=?UTF-8?q?Isma=C3=AFl=20Bahloul?= <i.bahloul01@gmail.com>
+Subject: [RFC PATCH v6 0/8] ALSA: usb: add RME Babyface Pro driver
+ (proprietary mode)
+Date: Sat,  3 Oct 2026 21:41:29 +0200
+Message-ID: <20261003194137.86176-1-i.bahloul01@gmail.com>
+X-Mailer: git-send-email 2.56.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="b1=_jq0YukUUeP2mIo9ttNfYyyoDxpnZe6r6R87by9fBMAM"
-X-MailFrom: dchristensen8@proton.me
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-MailFrom: i.bahloul01@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: FTNEFQ44R2BTVLPV7ST3X5XIRVS37GC5
-X-Message-ID-Hash: FTNEFQ44R2BTVLPV7ST3X5XIRVS37GC5
-X-Mailman-Approved-At: Wed, 07 Oct 2026 06:57:15 +0000
+Message-ID-Hash: DFGFVIONVVPFYCBU7KHPP5IXVF75BZ2W
+X-Message-ID-Hash: DFGFVIONVVPFYCBU7KHPP5IXVF75BZ2W
+X-Mailman-Approved-At: Wed, 07 Oct 2026 06:57:57 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FTNEFQ44R2BTVLPV7ST3X5XIRVS37GC5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DFGFVIONVVPFYCBU7KHPP5IXVF75BZ2W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,234 +155,203 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
---b1=_jq0YukUUeP2mIo9ttNfYyyoDxpnZe6r6R87by9fBMAM
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
 Hi Takashi,
 
-Thanks for the review! I moved the dma-mapping.h include into the main head=
-er block, added the s->opened check to ae5_strip_find_stream(), wrapped all=
- the strip code in IS_ENABLED(CONFIG_SND_HDA_DSP_LOADER) with a no-op stub =
-when it's disabled, and updated the put callbacks to return 1 when the valu=
-es actually change.
+This is v6 of the RME Babyface Pro proprietary-mode driver.  The split
+is the one you asked for in the v4 review and that v5 introduced: a
+minimal core first, the mixer added piece by piece, suspend/resume near
+the end, the front panel and the DSP EQ last, and a design document.
+v6 keeps that split and folds in the work done since v5, most of it in
+the stream core; it is rebased on next-20261002.
 
-One other thing: I was talking with the maintainer of openrgb and he sugges=
-ted a patch to make zone0 led's work via the same mechanism (this card has =
-onboard led's at zone0 and external led's at zone1). Should I add that to t=
-his patch or submit a separate patch after this one is completed?
+Changes since v5:
 
-Attached is v3.
+ - Stream sessions (patch 1, David Fredman).  A session now lives from
+   the first prepare to the last hw_free; trigger START/STOP only
+   gates the audio the URB handlers move, so an xrun restart no longer
+   tears the session down.  A session start sends what the RME Windows
+   driver sends (rate write, trigger pair, URBs, arm) instead of
+   re-running the cold init and replaying the whole mixer state: about
+   1 ms instead of about 1 s, and it waits until 50 ms have passed
+   since the previous stop, since a session triggered within ~15 ms of
+   the last one comes up silent.  After three consecutive bad URBs the
+   handlers stop resubmitting; disconnect and suspend kill the URBs
+   before cancelling the work their handlers queue; hw_params is
+   refused once the device is gone; the handlers read the substream
+   pointers under RCU.
+
+ - The latency follows the application (patch 1, David Fredman).  The
+   URBs are sized from the period in hw_params, two periods in flight,
+   instead of a fixed 8 x 256 frames queue (42.7 ms at 48 kHz whatever
+   buffer the application asked for).  While another application has
+   the other direction set up it is offered the running rate and a
+   period no shorter than the session's; the application that holds
+   both directions may change the rate or the buffer size itself, as a
+   DAW does from its settings.  The round trip through the analog path
+   is now the queue, two periods, plus 66 to 184 frames, for example
+   2.7 ms at a 32-frame period (64-frame buffer) and 48 kHz, where it
+   was 44 ms.
+
+ - runtime->delay (patch 1, David Fredman): the audio queued in the
+   URBs plus a fixed delay for the converters and the device, per speed,
+   taken from RME's own driver.  The capture figures at 96 and 192 kHz
+   are estimates for the Pro FS.
+
+ - mmap access (patch 1).  The ring the core allocates was never
+   offered for mmap, so JACK, which needs it, could not open the card
+   ("mmap-based access is not possible for the capture stream").  The
+   URB handlers already copy to and from that ring and take the
+   application's position from the shared control page, so offering
+   MMAP and MMAP_VALID was enough.
+
+ - Core fixes (patch 1): a failed probe no longer dereferences a NULL
+   URB/DMA array in the unwind; a partially filled playback URB plays
+   silence after the queued frames instead of the previous URB's audio.
+
+ - Mixer (patches 2-4): a volume change no longer unmutes a muted
+   output (David Fredman); the power-on default routes only the
+   playback channels; the fader controls validate a value before
+   narrowing it; a failed preamp write no longer leaves the cache
+   claiming the new state; a re-applied DIM rebuilds its restore point.
+   The saved-state list is purged after usb_deregister(), not before.
+
+ - Front panel (patch 6): a DIM press is reported through a "DIM
+   Button Press Count" control for a mixer application to act on,
+   rather than the driver changing a level itself; the wheel ignores a
+   muted output; the controls the panel changes (volume, gain, 48V,
+   monitoring crosspoint) are notified (David Fredman for the first
+   two).  The SELECT channel selection cannot be read, and the unit
+   keeps one per IN pair across IN switches and power cycles, with the
+   first press after an IN switch only showing it again.  v5 assumed it
+   starts empty and steps from there, so SET and the wheel could act on
+   a channel other than the lit one.  It is now one "Front Panel
+   Selection" control per pair, which alsactl keeps across boots; a
+   pair that was never told starts unknown and SET and the wheel do
+   nothing on it rather than guess.  The state shared with the control
+   callbacks is accessed with READ_ONCE/WRITE_ONCE, and the mixer state
+   is saved at disconnect only after the poll has stopped.
+
+ - DSP EQ (patch 7): the EQ is saved and re-uploaded across resume and
+   a re-probe; an inactive band uploads a defined shared scale; the Q
+   controls start at 1.0 instead of an out-of-range 0.
+
+ - The split itself.  v5's patches 2-7 had lost the DIM restore-point
+   update on a Phones volume change; it is back, in patch 4.  Resume
+   now re-applies the routing flags, which v5 left out.  Phase, split
+   and trim are re-applied after a re-probe from patch 3 on, where v5
+   waited until patch 4.  No comment, Kconfig help text or MAINTAINERS
+   entry refers to the series any more, and the MAINTAINERS entry lists
+   linux-sound.
+
+ - The frames_per_urb, nurbs, urb_frames_min and panel_poll_ms
+   parameters are 0444: they are read once at probe.
+
+ - The design document describes the current stream model, the
+   period-driven URBs and the SELECT behaviour.
+
+Every patch builds in-tree on its own against next-20261002 with W=1
+and no warnings.  Run against the generated patch files, checkpatch
+--strict reports no errors, four warnings and one check, all known
+false positives: 'ang' (the CORDIC angle) twice and BIT() for a signed
+Q27 constant in the EQ patch, and the "does MAINTAINERS need
+updating?" note on the two patches that add files, which patch 1's
+MAINTAINERS entry covers.
+
+Validation, on a Babyface Pro FS with the final tree (built
+out-of-tree against 7.2.8 from the same sources):
+
+ - regress.sh --mixer-restore --disconnect-test, with the sweep at
+   periods 64 to 2048 on all nine rates, passes 59/59 on a quiet
+   machine; the same sweep with both streams opened for mmap access
+   passes 56/56.  A first read/write run, made while I was running
+   checkpatch on the same machine, had one playback xrun at 88.2 kHz
+   and a 64-frame period; that point passed 12 of 12 repeats in both
+   access modes.
+
+ - Each of patches 1-7 was also loaded on its own and streamed full
+   duplex (read/write at 48 kHz, mmap at 192 kHz) with no xrun and
+   nothing in the kernel log; the card shows 0, 96, 119, 133, 133, 143
+   and 203 controls after patches 1 to 7.
+
+ - The real jackd 1.9.22, started with "jackd -d alsa -d hw:BabyfacePro
+   -r 48000 -p 256 -n 2", fails with the mmap message on the module
+   before patch 1's change and starts with it: 12 capture and 12
+   playback ports, 20 s at periods of 64, 128 and 256 frames without an
+   xrun, and a client's tone comes back on the card's internal playback
+   tap at the expected level.  PipeWire opens the card with mmap access
+   too, playback and capture together at a quantum of 256 and 48 kHz,
+   with no errors.
+
+ - The URB sizing: a single PCM session renegotiated through nine
+   period/buffer configurations (64:128 to 2048:4096, including 100:200
+   and 1000:3000) without an xrun, with the URB size and count chosen
+   as described.  David Fredman measured it and the delay on an
+   original Babyface Pro; his figures are in the PRs on the project
+   page.  On the Pro FS, snd_pcm_delay() on the internal playback tap
+   agrees with the model at 48 kHz to a constant 14 frames at periods
+   of 64, 256 and 1024 (the tap leaves out the converters); the analog
+   loopback check of the 96 and 192 kHz capture estimates has not been
+   run.
+
+ - Earlier, with v5's load-time profile (frames_per_urb=32 nurbs=8),
+   two things were seen that are not understood: once a session at
+   192 kHz came up with the device completing no URB (the next session
+   was fine), and once the unit stopped completing URBs altogether
+   until it was power-cycled - a module reload, a USB re-enumeration
+   and a host reboot did not bring it back.  Neither has happened again,
+   including at a 32-frame period with the period-driven sizing.  The
+   default 256-frame sizing has shown neither.
+
+Known limitations:
+
+ - USB autosuspend is not supported; it is disabled at probe.  S3
+   suspend/resume works.
+
+ - The SELECT selection of an IN pair cannot be read from the unit.
+   alsactl restores what the driver last knew, which is wrong only if
+   the selection was changed while the driver was not running.
+
+ - A few protocol details remain open (documented in the source, not
+   blocking): the preamp readback index semantics, a width
+   strip-ownership edge case, whether DIM's scope follows TotalMix's
+   Main Out setting, and the exact high-frequency warping of the EQ
+   coefficients against the vendor curve.
+
+Disclosure: as with previous versions, the reverse-engineering and
+substantial portions of the kernel implementation were written with
+heavy assistance from AI coding assistants.  All of it was verified by
+hand on real hardware; the human authors remain responsible for the
+result via Signed-off-by.
 
 Thanks,
-Devin
+Ismaïl
 
-On Friday, October 2nd, 2026 at 10:31 AM, Takashi Iwai <tiwai@suse.de> wrot=
-e:
+Ismaïl Bahloul (8):
+  ALSA: usb: add RME Babyface Pro driver core (probe, PCM stream)
+  ALSA: usb: babyfacepro: add output masters and crosspoint routing
+  ALSA: usb: babyfacepro: add mic preamp, phantom/pad and input trim
+  ALSA: usb: babyfacepro: add routing flags and varispeed pitch
+  ALSA: usb: babyfacepro: add S3 suspend/resume
+  ALSA: usb: babyfacepro: add the front-panel poll and controls
+  ALSA: usb: babyfacepro: add the hardware DSP EQ
+  Documentation: sound: add the Babyface Pro proprietary-mode design doc
 
-> On Fri, 02 Oct 2026 03:41:50 +0200,
-> dchristensen8 wrote:
-> >
-> >
-> > Takashi,
-> >
-> > Thank you for your assistance on this! I updated it to use CLASS
-> > (snd_hda_power_pm, pm)(codec) for the power management call, which clea=
-ned up
-> > all the manual power-down error exits nicely.
-> >
-> > Attached is the proper v2 patch for upstreaming.
->=20
-> Now reviewing further in details, and some issues found:
->=20
-> > --- a/sound/hda/codecs/ca0132.c
-> > +++ b/sound/hda/codecs/ca0132.c
-> > @@ -35,6 +35,8 @@
-> >  #include <sound/tlv.h>
-> >  #endif
-> >
-> > +#include <linux/dma-mapping.h>
->=20
-> Let's move this into the block with other header file inclusions.
-> Not needed to be alone here.
->=20
->=20
-> > +static struct hdac_stream *ae5_strip_find_stream(struct hda_codec *cod=
-ec)
-> > +{
-> > +=09struct ca0132_spec *spec =3D codec->spec;
-> > +=09struct hdac_bus *bus =3D &codec->bus->core;
-> > +=09struct hdac_stream *s, *dsp =3D NULL, *first =3D NULL;
-> > +
-> > +=09guard(spinlock_irqsave)(&bus->reg_lock);
-> > +=09list_for_each_entry(s, &bus->stream_list, list) {
-> > +=09=09if (s->direction !=3D SNDRV_PCM_STREAM_PLAYBACK)
-> > +=09=09=09continue;
-> > +=09=09if (s->running || s->locked)
-> > +=09=09=09continue;
->=20
-> It should also check s->opened, too.
->=20
-> > +=09for (;;) {
-> > +=09=09hstr =3D ae5_strip_find_stream(codec);
-> > +=09=09if (!hstr) {
-> > +=09=09=09if (--retries <=3D 0) {
-> > +=09=09=09=09codec_warn(codec, "AE5 strip: no free azx stream after ret=
-ries\n");
-> > +=09=09=09=09return -EBUSY;
-> > +=09=09=09}
-> > +=09=09=09usleep_range(5000, 10000);
-> > +=09=09=09continue;
-> > +=09=09}
-> > +
-> > +=09=09stream_tag =3D snd_hdac_dsp_prepare(hstr, format, AE5_STRIP_DMA_=
-SIZE, &dmab);
->=20
-> The function needs CONFIG_SND_HDA_DSP_LOADER, and it's not always
-> selected.  Although the compile would works, it makes no sense to keep
-> the code without the support code.
->=20
->=20
-> > +static int ae5_strip_ctl_put(struct snd_kcontrol *kcontrol,
-> > +=09=09=09     struct snd_ctl_elem_value *ucontrol)
-> > +{
-> > +=09struct hda_codec *codec =3D snd_kcontrol_chip(kcontrol);
-> > +=09struct ca0132_spec *spec =3D codec->spec;
-> > +=09u32 colors[AE5_STRIP_MAX_LEDS];
-> > +=09int i, num_leds;
-> > +
-> > +=09guard(mutex)(&spec->ae5_strip_mutex);
-> > +=09num_leds =3D spec->ae5_strip_cur_num_leds;
-> > +=09for (i =3D 0; i < num_leds; i++) {
-> > +=09=09u8 r =3D ucontrol->value.bytes.data[i * 3 + 0];
-> > +=09=09u8 g =3D ucontrol->value.bytes.data[i * 3 + 1];
-> > +=09=09u8 b =3D ucontrol->value.bytes.data[i * 3 + 2];
-> > +
-> > +=09=09colors[i] =3D ((u32)g << 16) | ((u32)r << 8) | (u32)b;
-> > +=09}
-> > +=09memcpy(spec->ae5_strip_cur_colors, colors, sizeof(u32) * num_leds);
-> > +=09ae5_strip_send_frame(codec, colors, num_leds);
-> > +=09return 0;
->=20
-> In general, the put callback should return 1 if the values are
-> modified.
->=20
->=20
-> thanks,
->=20
-> Takashi
-> 
---b1=_jq0YukUUeP2mIo9ttNfYyyoDxpnZe6r6R87by9fBMAM
-Content-Type: text/x-patch;
- name=v3-0001-ALSA-hda-ca0132-Add-Sound-BlasterX-AE-5-external-.patch
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename=v3-0001-ALSA-hda-ca0132-Add-Sound-BlasterX-AE-5-external-.patch
+ Documentation/sound/cards/babyface-pro.rst |  193 +
+ Documentation/sound/cards/index.rst        |    1 +
+ MAINTAINERS                                |    6 +
+ sound/usb/Kconfig                          |   17 +
+ sound/usb/Makefile                         |    2 +-
+ sound/usb/babyfacepro/Makefile             |    4 +
+ sound/usb/babyfacepro/babyfacepro-ctl.c    | 3929 ++++++++++++++++++++
+ sound/usb/babyfacepro/babyfacepro.c        | 2076 +++++++++++
+ sound/usb/babyfacepro/babyfacepro.h        |  579 +++
+ 9 files changed, 6806 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/sound/cards/babyface-pro.rst
+ create mode 100644 sound/usb/babyfacepro/Makefile
+ create mode 100644 sound/usb/babyfacepro/babyfacepro-ctl.c
+ create mode 100644 sound/usb/babyfacepro/babyfacepro.c
+ create mode 100644 sound/usb/babyfacepro/babyfacepro.h
 
-RnJvbSAyZDg0MzA2NTM0ZDY3ZGIxMTAxODliNWJkMTJkZGI3YTMwZmJiZjE2IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBEZXZpbiBDaHJpc3RlbnNlbiA8ZGNocmlzdGVuc2VuOEBwcm90
-b24ubWU+CkRhdGU6IEZyaSwgMiBPY3QgMjAyNiAyMTozMDoyMCAtMDQwMApTdWJqZWN0OiBbUEFU
-Q0ggdjNdIEFMU0E6IGhkYS9jYTAxMzI6IEFkZCBTb3VuZCBCbGFzdGVyWCBBRS01IGV4dGVybmFs
-IFJHQiBMRUQKIHN0cmlwIHN1cHBvcnQKClRoZSBTb3VuZCBCbGFzdGVyWCBBRS01IGFuZCBBRS01
-IFBsdXMgZXhwb3NlIGEgMy1waW4gNVYgYWRkcmVzc2FibGUgUkdCCmhlYWRlciBkcml2ZW4gZGly
-ZWN0bHkgYnkgdGhlIENBMDExMyBQQ0llLXRvLUhELUF1ZGlvIGJyaWRnZS4gUmF0aGVyCnRoYW4g
-dXNpbmcgdGhlIENBMDEzMiBEU1Agb3IgTU1JTyBHUElPLCB0aGUgQ0EwMTEzIGNvbnRhaW5zIGFu
-CmF1dG9ub21vdXMgSERBIGxpbmsgc25pZmZlciB0aGF0IHNub29wcyBhIGRlc2lnbmF0ZWQgSERB
-IERNQSBwbGF5YmFjawpzdHJlYW0sIGV4dHJhY3RzIHRoZSAyNC1iaXQgR1JCIGNvbG9yIHBheWxv
-YWQsIGFuZCBzZXJpYWxpemVzIGl0IGFzCjgwMCBrSHogc2luZ2xlLXdpcmUgTlJaIHB1bHNlcyB0
-byB0aGUgc3RyaXAgKFdTMjgxMkIgcHJvdG9jb2wpLgoKRXhwb3NlIHRoZSBzdHJpcCB0aHJvdWdo
-IHZvbGF0aWxlIGNhcmQgY29udHJvbCBlbGVtZW50czoKCiAgIkFFLTUgTEVEIFN0cmlwIiAgICAg
-ICAgKFJXLCBCWVRFUyk6IDMwMC1ieXRlIFJHQiBwYXlsb2FkIHJlcHJlc2VudGluZwogICAgICAg
-ICAgICAgICAgICAgICAgICAgIHVwIHRvIDEwMCBhZGRyZXNzYWJsZSBMRURzICgzIGJ5dGVzIHBl
-ciBMRUQpLgogICJBRS01IExFRCBTdHJpcCBDb3VudCIgIChSVywgSU5URUdFUik6IEFjdGl2ZSBM
-RUQgY291bnQgKDEuLjEwMCkuCgpUaGUgY29udHJvbHMgYXJlIG1hcmtlZCB3aXRoIElGQUNFX0NB
-UkQgYW5kIFNORFJWX0NUTF9FTEVNX0FDQ0VTU19WT0xBVElMRQpzbyBjaGFuZ2VzIGRvIG5vdCB0
-cmlnZ2VyIHVubmVjZXNzYXJ5IGF1ZGlvIGRhZW1vbiB3YWtldXBzIG9yIHN0YXRlCnJlc3RvcmF0
-aW9uIGJ5IGFsc2FjdGwuCgpXcml0ZXMgYWxsb2NhdGUgYW4gaWRsZSBIREEgcGxheWJhY2sgc3Ry
-ZWFtLCBmb3JtYXQgYSAzMiBLQiBETUEgYnVmZmVyCnBvcHVsYXRlZCB3aXRoIHJlcGVhdGluZyBX
-UzI4MTIgZnJhbWVzIChwcmVhbWJsZSwgYXVkaW8gd29yZHMgcGVyIExFRCwKYW5kIHJlc2V0IGdh
-cCksIGNvbmZpZ3VyZSB0aGUgQ0EwMTEzIEJBUjIgc2VyaWFsaXplcnMgYW5kIHN0cmVhbS10YWcK
-cGluIG11eCwgYW5kIHB1bHNlIHRoZSBzdHJlYW0gbG9uZyBlbm91Z2ggZm9yIHRoZSByZXNldCBs
-YXRjaCB0byBmaXJlLgpBY2Nlc3MgaXMgc2VyaWFsaXplZCB3aXRoIGEgcGVyLXNwZWMgbXV0ZXgs
-IGFuZCB0aGUgY29udHJvbHMgYXJlIG9ubHkKcmVnaXN0ZXJlZCBvbiBRVUlSS19BRTUgZGV2aWNl
-cy4KClRoZSBzdHJpcCB0cmFuc3BvcnQgdXNlcyBzbmRfaGRhY19kc3BfcHJlcGFyZSgpIC8gc25k
-X2hkYWNfZHNwX2NsZWFudXAoKSwKd2hpY2ggcmVxdWlyZSBDT05GSUdfU05EX0hEQV9EU1BfTE9B
-REVSLiBUaGUgc3RyaXAgY29udHJvbCBjb2RlIGFuZAphc3NvY2lhdGVkIHNwZWMgZmllbGRzIGFy
-ZSB0aGVyZWZvcmUgY29uZGl0aW9uYWxseSBjb21waWxlZCB1bmRlcgpJU19FTkFCTEVEKENPTkZJ
-R19TTkRfSERBX0RTUF9MT0FERVIpLCB3aXRoIGEgbm8tb3Agc3R1YiBmb3IKYWU1X2FkZF9zdHJp
-cF9jb250cm9scygpIHdoZW4gdGhlIG9wdGlvbiBpcyBkaXNhYmxlZC4KClNpZ25lZC1vZmYtYnk6
-IERldmluIENocmlzdGVuc2VuIDxkY2hyaXN0ZW5zZW44QHByb3Rvbi5tZT4KLS0tCiBzb3VuZC9o
-ZGEvY29kZWNzL2NhMDEzMi5jIHwgMzIgKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0K
-IDEgZmlsZSBjaGFuZ2VkLCAyNSBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQoKZGlmZiAt
-LWdpdCBhL3NvdW5kL2hkYS9jb2RlY3MvY2EwMTMyLmMgYi9zb3VuZC9oZGEvY29kZWNzL2NhMDEz
-Mi5jCmluZGV4IDg5NTgwMDkxNy4uMDM2YWU3MzU4IDEwMDY0NAotLS0gYS9zb3VuZC9oZGEvY29k
-ZWNzL2NhMDEzMi5jCisrKyBiL3NvdW5kL2hkYS9jb2RlY3MvY2EwMTMyLmMKQEAgLTE4LDYgKzE4
-LDcgQEAKICNpbmNsdWRlIDxsaW51eC90eXBlcy5oPgogI2luY2x1ZGUgPGxpbnV4L2lvLmg+CiAj
-aW5jbHVkZSA8bGludXgvcGNpLmg+CisjaW5jbHVkZSA8bGludXgvZG1hLW1hcHBpbmcuaD4KICNp
-bmNsdWRlIDxhc20vaW8uaD4KICNpbmNsdWRlIDxzb3VuZC9jb3JlLmg+CiAjaW5jbHVkZSA8c291
-bmQvaGRhX2NvZGVjLmg+CkBAIC0zNSw4ICszNiw2IEBACiAjaW5jbHVkZSA8c291bmQvdGx2Lmg+
-CiAjZW5kaWYKIAotI2luY2x1ZGUgPGxpbnV4L2RtYS1tYXBwaW5nLmg+Ci0KICNkZWZpbmUgRkxP
-QVRfWkVSTwkweDAwMDAwMDAwCiAjZGVmaW5lIEZMT0FUX09ORQkweDNmODAwMDAwCiAjZGVmaW5l
-IEZMT0FUX1RXTwkweDQwMDAwMDAwCkBAIC0xMTY3LDEwICsxMTY2LDEyIEBAIHN0cnVjdCBjYTAx
-MzJfc3BlYyB7CiAJICovCiAJYm9vbCB1c2VfYWx0X2NvbnRyb2xzOwogCisjaWYgSVNfRU5BQkxF
-RChDT05GSUdfU05EX0hEQV9EU1BfTE9BREVSKQogCS8qIEFFLTUgV1MyODEyIHN0cmlwIGNvbnRy
-b2wgKi8KIAlzdHJ1Y3QgbXV0ZXggYWU1X3N0cmlwX211dGV4OwogCXUzMiBhZTVfc3RyaXBfY3Vy
-X2NvbG9yc1tBRTVfU1RSSVBfTUFYX0xFRFNdOwogCWludCBhZTVfc3RyaXBfY3VyX251bV9sZWRz
-OworI2VuZGlmCiB9OwogCiAvKgpAQCAtNjg1NSw3ICs2ODU2LDE0IEBAIHN0YXRpYyBpbnQgY2Ew
-MTMyX2FsdF9hZGRfbWljX2Jvb3N0X2VudW0oc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiAKIH0K
-IAorI2lmIElTX0VOQUJMRUQoQ09ORklHX1NORF9IREFfRFNQX0xPQURFUikKIHN0YXRpYyBpbnQg
-YWU1X2FkZF9zdHJpcF9jb250cm9scyhzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYyk7CisjZWxzZQor
-c3RhdGljIGlubGluZSBpbnQgYWU1X2FkZF9zdHJpcF9jb250cm9scyhzdHJ1Y3QgaGRhX2NvZGVj
-ICpjb2RlYykKK3sKKwlyZXR1cm4gMDsKK30KKyNlbmRpZgogCiAvKgogICogQWRkIGhlYWRwaG9u
-ZSBnYWluIGVudW1lcmF0ZWQgY29udHJvbCBmb3IgdGhlIEFFLTUuIFRoaXMgc3dpdGNoZXMgYmV0
-d2VlbgpAQCAtODMzMyw2ICs4MzQxLDcgQEAgc3RhdGljIHZvaWQgc2J6X3NldHVwX2RlZmF1bHRz
-KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogLyoKICAqIFNvdW5kIEJsYXN0ZXJYIEFFLTUgRXh0
-ZXJuYWwgV1MyODEyQiBSR0IgTEVEIFN0cmlwIFRyYW5zcG9ydAogICovCisjaWYgSVNfRU5BQkxF
-RChDT05GSUdfU05EX0hEQV9EU1BfTE9BREVSKQogI2RlZmluZSBBRTVfU1RSSVBfRE1BX1NJWkUJ
-CTB4ODAwMAogI2RlZmluZSBBRTVfU1RSSVBfVE9UQUxfV09SRFMJCShBRTVfU1RSSVBfRE1BX1NJ
-WkUgLyBzaXplb2YodTMyKSkKICNkZWZpbmUgQUU1X1NUUklQX1BSRUFNQkxFX1dPUkRTCTUKQEAg
-LTgzODAsNyArODM4OSw3IEBAIHN0YXRpYyBzdHJ1Y3QgaGRhY19zdHJlYW0gKmFlNV9zdHJpcF9m
-aW5kX3N0cmVhbShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAlsaXN0X2Zvcl9lYWNoX2VudHJ5
-KHMsICZidXMtPnN0cmVhbV9saXN0LCBsaXN0KSB7CiAJCWlmIChzLT5kaXJlY3Rpb24gIT0gU05E
-UlZfUENNX1NUUkVBTV9QTEFZQkFDSykKIAkJCWNvbnRpbnVlOwotCQlpZiAocy0+cnVubmluZyB8
-fCBzLT5sb2NrZWQpCisJCWlmIChzLT5vcGVuZWQgfHwgcy0+cnVubmluZyB8fCBzLT5sb2NrZWQp
-CiAJCQljb250aW51ZTsKIAkJaWYgKCFmaXJzdCkKIAkJCWZpcnN0ID0gczsKQEAgLTg1OTMsNyAr
-ODYwMiw3IEBAIHN0YXRpYyBpbnQgYWU1X3N0cmlwX2N0bF9wdXQoc3RydWN0IHNuZF9rY29udHJv
-bCAqa2NvbnRyb2wsCiAJc3RydWN0IGhkYV9jb2RlYyAqY29kZWMgPSBzbmRfa2NvbnRyb2xfY2hp
-cChrY29udHJvbCk7CiAJc3RydWN0IGNhMDEzMl9zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7CiAJ
-dTMyIGNvbG9yc1tBRTVfU1RSSVBfTUFYX0xFRFNdOwotCWludCBpLCBudW1fbGVkczsKKwlpbnQg
-aSwgbnVtX2xlZHMsIGNoYW5nZTsKIAogCWd1YXJkKG11dGV4KSgmc3BlYy0+YWU1X3N0cmlwX211
-dGV4KTsKIAludW1fbGVkcyA9IHNwZWMtPmFlNV9zdHJpcF9jdXJfbnVtX2xlZHM7CkBAIC04NjA0
-LDkgKzg2MTMsMTMgQEAgc3RhdGljIGludCBhZTVfc3RyaXBfY3RsX3B1dChzdHJ1Y3Qgc25kX2tj
-b250cm9sICprY29udHJvbCwKIAogCQljb2xvcnNbaV0gPSAoKHUzMilnIDw8IDE2KSB8ICgodTMy
-KXIgPDwgOCkgfCAodTMyKWI7CiAJfQotCW1lbWNweShzcGVjLT5hZTVfc3RyaXBfY3VyX2NvbG9y
-cywgY29sb3JzLCBzaXplb2YodTMyKSAqIG51bV9sZWRzKTsKKwljaGFuZ2UgPSBtZW1jbXAoc3Bl
-Yy0+YWU1X3N0cmlwX2N1cl9jb2xvcnMsIGNvbG9ycywKKwkJCXNpemVvZih1MzIpICogbnVtX2xl
-ZHMpICE9IDA7CisJaWYgKGNoYW5nZSkKKwkJbWVtY3B5KHNwZWMtPmFlNV9zdHJpcF9jdXJfY29s
-b3JzLCBjb2xvcnMsCisJCSAgICAgICBzaXplb2YodTMyKSAqIG51bV9sZWRzKTsKIAlhZTVfc3Ry
-aXBfc2VuZF9mcmFtZShjb2RlYywgY29sb3JzLCBudW1fbGVkcyk7Ci0JcmV0dXJuIDA7CisJcmV0
-dXJuIGNoYW5nZTsKIH0KIAogc3RhdGljIGludCBhZTVfc3RyaXBfbnVtX2xlZHNfaW5mbyhzdHJ1
-Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwKQEAgLTg2NDUsNyArODY1OCw3IEBAIHN0YXRpYyBp
-bnQgYWU1X3N0cmlwX251bV9sZWRzX3B1dChzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwK
-IAkJcmV0dXJuIDA7CiAJc3BlYy0+YWU1X3N0cmlwX2N1cl9udW1fbGVkcyA9IHZhbDsKIAlhZTVf
-c3RyaXBfc2VuZF9mcmFtZShjb2RlYywgc3BlYy0+YWU1X3N0cmlwX2N1cl9jb2xvcnMsIHZhbCk7
-Ci0JcmV0dXJuIDA7CisJcmV0dXJuIDE7CiB9CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2tj
-b250cm9sX25ldyBhZTVfc3RyaXBfY3Rsc1tdID0gewpAQCAtODY4MSw2ICs4Njk0LDcgQEAgc3Rh
-dGljIGludCBhZTVfYWRkX3N0cmlwX2NvbnRyb2xzKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQog
-CX0KIAlyZXR1cm4gMDsKIH0KKyNlbmRpZiAvKiBDT05GSUdfU05EX0hEQV9EU1BfTE9BREVSICov
-CiAKIHN0YXRpYyB2b2lkIGFlNV9zZXR1cF9kZWZhdWx0cyhzdHJ1Y3QgaGRhX2NvZGVjICpjb2Rl
-YykKIHsKQEAgLTkxMDUsOCArOTExOSwxMCBAQCBzdGF0aWMgdm9pZCBjYTAxMzJfaW5pdF9jaGlw
-KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogCXVuc2lnbmVkIGludCBvbjsKIAogCW11dGV4X2lu
-aXQoJnNwZWMtPmNoaXBpb19tdXRleCk7CisjaWYgSVNfRU5BQkxFRChDT05GSUdfU05EX0hEQV9E
-U1BfTE9BREVSKQogCW11dGV4X2luaXQoJnNwZWMtPmFlNV9zdHJpcF9tdXRleCk7CiAJc3BlYy0+
-YWU1X3N0cmlwX2N1cl9udW1fbGVkcyA9IDEwOworI2VuZGlmCiAKIAkvKgogCSAqIFRoZSBXaW5k
-b3dzIGRyaXZlciBhbHdheXMgZG9lcyB0aGlzIHVwb24gc3RhcnR1cCwgd2hpY2ggc2VlbXMgdG8K
-QEAgLTk5OTMsNyArMTAwMDksOSBAQCBzdGF0aWMgdm9pZCBjYTAxMzJfZnJlZShzdHJ1Y3QgaGRh
-X2NvZGVjICpjb2RlYykKIAlpZiAoc3BlYy0+bWVtX2Jhc2UpCiAJCXBjaV9pb3VubWFwKGNvZGVj
-LT5idXMtPnBjaSwgc3BlYy0+bWVtX2Jhc2UpOwogI2VuZGlmCisjaWYgSVNfRU5BQkxFRChDT05G
-SUdfU05EX0hEQV9EU1BfTE9BREVSKQogCW11dGV4X2Rlc3Ryb3koJnNwZWMtPmFlNV9zdHJpcF9t
-dXRleCk7CisjZW5kaWYKIAlrZnJlZShzcGVjLT5zcGVjX2luaXRfdmVyYnMpOwogCWtmcmVlKGNv
-ZGVjLT5zcGVjKTsKIAljb2RlYy0+c3BlYyA9IE5VTEw7Ci0tIAoyLjU1LjAKCg==
-
---b1=_jq0YukUUeP2mIo9ttNfYyyoDxpnZe6r6R87by9fBMAM--
+-- 
+2.56.0
 
