@@ -4,143 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F9F8CA5FFF
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2026 07:01:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE05FCA6002
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2026 07:02:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E435F60289;
-	Wed,  7 Oct 2026 09:01:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E435F60289
+	by alsa0.perex.cz (Postfix) with ESMTPS id B38216025B;
+	Wed,  7 Oct 2026 09:01:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B38216025B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1791356511;
-	bh=lLLDfF/AamNmWwJC2yvJCvQe71O8cjuMC3ddkYxWWGM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=vh62uHlMDcnWNkBwbpitPNrKUCuQ24YPhkHBpY0fXXTgQNpdGK86YksSebdxdhPU9
-	 1/dB8nSaHaDPDiz6jaXPVqRuFr2Yqiidst4fKRAnYERWvGwNU1uf/Md7HHUEpLW9lW
-	 9eWbDkGjoYxhI1LVRGS5WUA6iIS46k5ksMl2c26Y=
+	s=default; t=1791356528;
+	bh=yDdqInFk3YpdDUiRGSXuiC/zzCHwu67hYsiL6JTzZlI=;
+	h=Subject:Cc:From:To:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ZJxl89QMXFLE/Vg6NdPFdSKqqA7vlk4l/XfMBVPXRM74Ed+cq8D861rGQGi1nffk4
+	 GqxtX6w/VwePHpEDjbfUDWlAQXjpXBkXIGafZLPlDzUtIN5bSPvgVPcS5+aA2N6fRm
+	 ZcydyM7HXLjnMbEdLiGKR7aMsJA8OM7nPsPEUM4Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0DDB7F808AF; Wed,  7 Oct 2026 08:59:13 +0200 (CEST)
+	id D6295F80BF3; Wed,  7 Oct 2026 08:59:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 587EAF80878;
-	Wed,  7 Oct 2026 08:59:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A803FF80C08;
+	Wed,  7 Oct 2026 08:59:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D13ADF8026D; Sun,  4 Oct 2026 09:11:24 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=74.125.225.97
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791097883;
-	b=ZhJ2KTHplt95YUimPOazXycHfJw1aEv/4Up68JcGaN4rrii0r+by/iwU0QRW0ox801ih
-	 /C+2hJ5gVTcZO9kH+hiMsZ0P64z5lfovEtD4iFrXWRs0jkcgPxzVjG6d5dMOFGQDVs28e
-	 HTLlA6I9RPtrQKHAYnPty9BfXs61E/uuKT4yRcmigXD/j15f/Z6PNPCb6eJjmHzvpiCbl
-	 W24s8v2MRVNxEbJzz6JmsFVMq+VAIxdhVh8fmB2xgMNqAxHm4LzLnHt93Zv5dvFWbmHUt
-	 l+5biTZAfBL+zP6NJd/gG5oxACPET0jTMdIOIuIwaMljAIAL3Q36Tf4A5gbjTKW40/w==
+	id 53DB9F80588; Mon,  5 Oct 2026 14:35:38 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=none smtp.remote-ip=131.246.120.220
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791203734;
+	b=lWa1o9bnC0nePqGbNQIRKbDtHrinGffqCJEOC4VQLBeiazy1zXLzqzzqjyLPpSrp2avR
+	 M17DmRgplne4WFw/QaTY51ruydyXppFO2A3PCGzjq4XwZn1UssHuPyXlTvz6d6BqTM3rC
+	 RczZnb9KRQ1rDEYaaCeawNpuxzva5rksfwtXN5tH1JoYdHFiKxW1iD97ES9m3nH5SyhIV
+	 5F+I6wvbixXPiEUZu36l5DLL1694kySRd5hWtkvjWXytAUx+wDZ5+SgdeD4ZL9qUhnxVT
+	 vvfHRJBlwnbfvB5GZh6dOsxL9a40GYmJgQyLtP9vqCysrDezD4H1ISnXn9irGzb938w==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1791097883;
-	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=lLLDfF/AamNmWwJC2yvJCvQe71O8cjuMC3ddkYxWWGM=;
-	b=Bb0sCotktn/LlhNee6EUK7nPZilPU2pvT8mdmYtCXBdjXaoLQ83OZk+n0EsasDlBu9nm
-	 R4mf2eWzI5q9oH1YZN+eDibSz30oyfx46zhqzLhz8WknKYYkC3holEZI8hEpXFVHOBJbH
-	 bg7AtyY4TM5Vpafk0Jwv4TzqpbvIlEC5FU6apYg5RIQXPbLEoJnLDBk1+WSN0/I1NHlYM
-	 8dJFmcu4VPZ/NmkqfM0fprZKVuql3hmOw7YCFLhIwB5sIDQgWZPu24W8QlFUhoqnw0zrA
-	 fuJQDjWqM5fRAA5hVWs22YtYv6bYSGFQZCsbvMrngJmufqkFHRyoAHUTVSVOg0xiv9g==
+	c=relaxed/simple; t=1791203734;
+	h=Subject:MIME-Version:From:To:Date:Message-ID:DKIM-Signature;
+	bh=yDdqInFk3YpdDUiRGSXuiC/zzCHwu67hYsiL6JTzZlI=;
+	b=orwnAHBFSHfgB+8e5oD/t2crxX3tCBQ4jDi0rEJJuzcXv0md7vk114O00ybylxe0uoWK
+	 vv9Z3uQeeexLubxaLlU/Ojv6jZTKUL0mD4Hatl1tX+Amd/bCYagj90Zk3/ap3UQsXeL1v
+	 JQWo6+8wnKPBG9ll8tyUe1BUXlqCNQGXRjX8lKSP5i/D0V6kNMZGbCUpEVRdxWN0gomda
+	 dceSuYg0UCi9XU1F1L247zB8714OWBbOMHc5p2JH8xPGPXVTL7PL/q4nOsbdzl68Z+qbh
+	 ioFN0tbWU1UgaF2T+LmjIChAq2iU7EjkZmL7RCVyRUNYq7qbdgpADdjLzfz5QiTqptA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=aWsLMiUp;
-	arc=none smtp.remote-ip=74.125.225.97
-Received: from mail-wr2-f33.google.com (mail-wr2-f33.google.com
- [74.125.225.97])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ dkim=pass header.d=rptu.de header.i=@rptu.de header.a=rsa-sha256
+ header.s=rptu2026 header.b=HMkk8ytz;
+	arc=none smtp.remote-ip=131.246.120.220
+Received: from mailgw1.uni-kl.de (mailgw1.uni-kl.de [131.246.120.220])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 90A58F800E4
-	for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2026 09:11:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90A58F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 453CAF8007E
+	for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2026 14:35:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 453CAF8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=aWsLMiUp
-Received: by mail-wr2-f33.google.com with SMTP id
- ffacd0b85a97d-48b104f6aa3so350537f8f.0
-        for <alsa-devel@alsa-project.org>;
- Sun, 04 Oct 2026 00:11:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791097881; x=1791702681;
- darn=alsa-project.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=2D6QjoTaBCt2jh1EB0BpFFMcn92myTfBG8HvdrcaiOM=;
-        b=aWsLMiUpAaK3lco96tRwLeK3SAb8lXt/WI9Lw/pX/XlOgc9yJNti6pRy7wsML8DNXU
-         Ofp1z23h8uN+2vfJgq1UPX0+dZhfbgtSVIBwhpgrvLcFXm1DngeSq2Qvjwq5cuvGhpzU
-         wjV8JEBUvMF3EEGTmokbxOCNaTvX9Q5xnYdUcK8kgb135WrLEMlgYTP9VBfRNZzl8Heb
-         m9CanAf6TPw1GKFf/1eQ2ToxDZ2rc4is+/FQlf7hrK9TfJyRNbvLKgBbzFjh23Bhs1QM
-         FzMcpKmDkDdkwqh50cmmmhIcChTQQN+UcPVAn/KVwWgIrwjnijelSA1Az1Fhy3n/jx3T
-         8gCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791097881; x=1791702681;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=2D6QjoTaBCt2jh1EB0BpFFMcn92myTfBG8HvdrcaiOM=;
-        b=zoGqBJCIvqNidjGiqaKnCqqpAdSvk1Pog5mqgOf4IbpcY2Mfik4HfIf4AYyLs67CPf
-         tTqLlfZ/4imZ4p+Wudja5v57jZBWURuZcRVRLrr+oh0RjGdTb1br7blg2WHYi3txXsoX
-         CvYkYSGBsi0ib0fP11Lw0CGVIO76VllzoeC+SEzUrpRAdYaQB+bxhZVoVjQxVcYyDZv/
-         NQrS9xEBrfv1EGy0nsKZKUjrMeaTXO5dN6qspFOs/VdoENu+4K95v0JznYVP6l6u4+Sw
-         GY2MAd9aLw8dnzlW9+TsPGIuXajj2lSx9/u4XGUEZdaHIQKOQZSjVOOgZbEEw1yKdkBQ
-         Ytjw==
-X-Gm-Message-State: AFq9FYIqMtkcK/zpvHYJtMbvyll0J/UCZ1umFAfNurhJg+UZXYBCiWJY
-	FPdLCwaSdrdn3EV3JR+y3U8etRIR8mnA0IHarlq6nSZHU9QjtmLGoNo=
-X-Gm-Gg: AYBFou2LSmdxVfQpUJjMZknHRuvUIDoLpv7AXtecXvB6qe+5IyV7Lx9a6LulINmdW+H
-	pbVlfWhjffjMlU3BF6YWwwOdw2JRRRigWMLqjF3MzSrLWvC2+mQxLyEVqK6H4lLCZFgMqB1VCFl
-	j1PUIsoH0ABa7tD1fhxaVj0QwQTdSKoHjAxoSmO2G6XEcAf8TyAXsMlCVMpgIurTX8/j1SIzDSW
-	u562rIbA+OnOX6PqQNlbgNoFKYMOhoWZG+aNLdhn03744KxneT1ybzwWJvcw251gwgtDgfAuDTa
-	dS0z0u/q+UiTToqv3JLSZi2AUX0blorNUhNn41i1dBSra5IZnZxgGWEMA751mCfnCPw2RWLzv/+
-	1+euJHcBTNv5cAfE4M9mO75hM5awF0bVpLru5/AKS1eNqvyAaLoES5CqKP+SKpaC31PLhTyiTc+
-	unsMirviX8zp/yijf8rmb62cFp6LAIMr+sXQfxO2dDJxQnTB+HP+1ed0U2fLBEnKTJ6Cky25ids
-	F0eufpQ3HqUICLVtUa14zyjEc9TygKGvkwGmBRUrwH9z8V1z1rMVkXGigbQCIra
-X-Received: by 2002:a05:6000:1846:b0:48b:1bf:ffb1 with SMTP id
- ffacd0b85a97d-48b12775c61mr14876646f8f.54.1791097880928;
-        Sun, 04 Oct 2026 00:11:20 -0700 (PDT)
-Received: from yoga.fritz.box
- (p200300f3cf01bb00103cf82222a83fe3.dip0.t-ipconnect.de.
- [2003:f3:cf01:bb00:103c:f822:22a8:3fe3])
-        by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-48b382f8c4asm18004720f8f.37.2026.10.04.00.11.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2026 00:11:20 -0700 (PDT)
-From: Georg Wenzel <g.wenzel@gmail.com>
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Georg Wenzel <g.wenzel@gmail.com>
-Subject: [PATCH v2] ALSA: hda/tas2781: Enable bass speakers support
-Date: Sun,  4 Oct 2026 09:12:00 +0200
-Message-ID: <20261004071202.89116-1-g.wenzel@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <87cxtw2y8b.wl-tiwai@suse.de>
-References: <87cxtw2y8b.wl-tiwai@suse.de>
+ unprotected) header.d=rptu.de header.i=@rptu.de header.a=rsa-sha256
+ header.s=rptu2026 header.b=HMkk8ytz
+Received: from uni-kl.de (mail.uni-kl.de [131.246.120.212])
+	by mailgw1.uni-kl.de (8.18.1/8.18.1/Debian-6) with ESMTPS id 695CZPFW1272843
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+	for <alsa-devel@alsa-project.org>; Mon, 5 Oct 2026 14:35:25 +0200
+Received: from [2003:f6:2713:f52:6111:977:9049:d446] (account
+ fyw21nur@rptu.de)
+  by rptu.de (CommuniGate Pro XIMSS 6.3.11)
+  with HTTPU id 325891654; Mon, 05 Oct 2026 14:35:25 +0200
+X-Mailer: Samoware HTML5 6.3.6509139
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for LG gram 16 (16Z90SP)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Cc: tiwai@suse.de, stable@vger.kernel.org
+From: "Prateek Yadav" <fyw21nur@rptu.de>
+To: alsa-devel@alsa-project.org
+Date: Mon, 05 Oct 2026 14:35:25 +0200
+Message-ID: <ximss-325891667@mail1.uni-kl.de>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
 Content-Transfer-Encoding: 8bit
-X-MailFrom: g.wenzel@gmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=rptu.de;
+ h=subject:mime-version:cc:from:to:date:message-id:content-type:content-transfer-encoding;
+ s=rptu2026; bh=yDdqInFk3YpdDUiRGSXuiC/zzCHwu67hYsiL6JTzZlI=;
+ b=HMkk8ytzlzH/3i9a46OPWDcjCpHbFFXV0GCrddbdDFOteY1TPNbb3RLsf2fTDRT++U2z3NyWhMUYFh6AdZZXEsCppM9cAxZzMOYDylHy3UrjPyevj+ej2t5682Iuw/sA0UCZpISUnlRBqKmjIvReVUSfP8m9/Qd/VcgKu2gxKhQh+5kbRY/RQEa/qE+Gqs2f169OdH4Uf/aUxoXsg+XP19qGSZ943L9/CHx3LvjO8RrcPdf3KfwKkI3zNMHehK/EwzL0h56k/FMN4bVEjMViticfHiiW0OLiAWqCfHOb6ZHDMEb7UTDHNTtxXtcRVfRqTEYTb6SDg8FB1UXvSo4xSg==
+X-MailFrom: fyw21nur@rptu.de
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: S2BJFAAHN3JWT3YNHWGI6APCU6WXT5BJ
-X-Message-ID-Hash: S2BJFAAHN3JWT3YNHWGI6APCU6WXT5BJ
-X-Mailman-Approved-At: Wed, 07 Oct 2026 06:58:30 +0000
+Message-ID-Hash: 4MWH7XYG5JUDTKVZLLGZNZB36KCL3IBS
+X-Message-ID-Hash: 4MWH7XYG5JUDTKVZLLGZNZB36KCL3IBS
+X-Mailman-Approved-At: Wed, 07 Oct 2026 06:58:31 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S2BJFAAHN3JWT3YNHWGI6APCU6WXT5BJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4MWH7XYG5JUDTKVZLLGZNZB36KCL3IBS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -149,183 +105,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Configure the driver to correctly initialize and enable the bass speakers
-on devices utilizing the TAS2781 amplifier. Without this change, only the
-tweeters or main speakers are active, leading to thin audio output.
+The LG gram 16 (16Z90SP, SSID 1854:053b) drives its internal speakers
+through Samsung-style smart amplifiers on an ALC298. Nothing
+initialises them, so the internal speakers are silent after a cold
+boot, while headphones, HDMI and the microphones work. A warm reboot
+masks the problem, as the amps stay initialised.
 
-Set up the required register sequences and routing to ensure the bass
-channels are properly powered and mixed into the audio stream.
+Evidence (kernel 7.2.5-3-omarchy, sof-firmware 2025.12.2-1,
+PipeWire 1.6.8):
+- aplay -D plughw:0,0 completes with exit 0 but no audible output.
+- During playback the codec shows Node 0x03 Converter stream=1,
+   Amp-Out vals [0x69 0x69] unmuted, and Pin 0x17 OUT with EAPD on —
+   the digital path is correct, the amps simply never start.
+- Headphone Jack reports off, Speaker Phantom Jack reports on.
+- Running the known 4-amp hda-verb init sequence
+   (amps 0x38/0x39/0x3C/0x3D, cf. joshuagrisham/galaxy-book2-pro-linux
+   necessary-verbs.sh) restores speaker output immediately.
+- Machine dual-boots Windows, which explains cold-boot-only silence.
 
-Signed-off-by: Georg Wenzel <g.wenzel@gmail.com>
----
-v2:
-  - Rebased onto sound/for-next (Takashi Iwai).
-  - Removed non-ASCII characters in comments (Takashi Iwai).
-  
- include/sound/tas2781.h                       | 12 +++
- .../hda/codecs/side-codecs/tas2781_hda_i2c.c  | 98 +++++++++++++++++++
- 2 files changed, 110 insertions(+)
+This mirrors the 16Z90TR (1854:0554) case fixed with
+ALC298_FIXUP_SAMSUNG_AMP_V2_2_AMPS, and the 16" 16Z90R-A (1854:0489)
+which uses the 4-amp variant. I verified the 4-amp init works on this
+machine; please adjust to _2_AMPS if COEF 0x22 indicates two amps.
 
-diff --git a/include/sound/tas2781.h b/include/sound/tas2781.h
-index b763da613769..ccc0142fbad5 100644
---- a/include/sound/tas2781.h
-+++ b/include/sound/tas2781.h
-@@ -91,6 +91,18 @@
- /* prm_TE_1_Beta1 */
- #define TAS2563_TE_DT_REG		TASDEVICE_REG(0x00, 0x0f, 0x70)
- 
-+/* TAS2563 ASI (Audio Serial Interface) Register Definitions */
-+#define TAS2563_ASI_CFG_REG			TASDEVICE_REG(0x00, 0x00, 0x06)
-+#define TAS2563_ASI_SR_REG			TASDEVICE_REG(0x00, 0x00, 0x07)
-+#define TAS2563_ASI_FS_REG			TASDEVICE_REG(0x00, 0x00, 0x08)
-+#define TAS2563_ASI_DA_REG			TASDEVICE_REG(0x00, 0x00, 0x0a)
-+#define TAS2563_ASI_TDM_REG			TASDEVICE_REG(0x00, 0x00, 0x0b)
-+#define TAS2563_ASI_DL_REG			TASDEVICE_REG(0x00, 0x00, 0x0c)
-+#define TAS2563_ASI_SLOT_REG		TASDEVICE_REG(0x00, 0x00, 0x30)
-+
-+/* TAS2563 ASI Apply Register (triggers configuration update) */
-+#define TAS2563_ASI_APPLY_REG			TASDEVICE_REG(0x00, 0x00, 0x02)
-+
- #define TAS2781_PRM_INT_MASK_REG	TASDEVICE_REG(0x00, 0x00, 0x3b)
- #define TAS2781_PRM_CLK_CFG_REG		TASDEVICE_REG(0x00, 0x00, 0x5c)
- #define TAS2781_PRM_RSVD_REG		TASDEVICE_REG(0x00, 0x01, 0x19)
-diff --git a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-index 5e5f46c9fb6b..cef33159eba4 100644
---- a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-+++ b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-@@ -46,6 +46,83 @@
- #define TAS2563_CAL_TLIM		TASDEVICE_REG(0, 0x10, 0x14)
- #define TAS2563_CAL_R0			TASDEVICE_REG(0, 0x0f, 0x34)
- 
-+/*
-+ * TAS2563 Post-Firmware ASI Configuration.
-+ *
-+ * The DSP firmware loading can overwrite the ASI (Audio Serial Interface)
-+ * registers that configure the I2S/TDM audio path to the amplifier.
-+ * This function re-applies the correct ASI configuration after firmware load,
-+ * matching the reference initialization sequence used by the vendor script:
-+ *   - Software reset
-+ *   - ASI_CFG  = 0x09 (I2S mode, master/slave config)
-+ *   - ASI_SR   = 0x02 (sample rate divider for 48 kHz)
-+ *   - ASI_DA   = 0xf1 (data alignment / slot assignment)
-+ *   - ASI_TDM  = 0x02 (TDM mode select)
-+ *   - ASI_DL   = 0x00 (delay line off)
-+ *   - ASI_SLOT = 0x99 (slot enable mask for 2-channel stereo)
-+ *   - CHNL_0   = 0x02 (channel mapping)
-+ *   - ASI_FS   = 0x1e or 0x2e (frame sync, device-specific: bit4 selects
-+ *                which of the two devices is the "primary" for FS generation)
-+ *   - ASI_APPLY= 0x00 (trigger configuration update)
-+ */
-+static void tas2563_post_fw_init(struct tasdevice_priv *tas_priv)
-+{
-+	int i, ret;
-+
-+	dev_info(tas_priv->dev, "%s: ndev=%d, chip_id=%d\n",
-+		 __func__, tas_priv->ndev, tas_priv->chip_id);
-+
-+	for (i = 0; i < tas_priv->ndev; i++) {
-+		struct tasdevice *tasdev = &tas_priv->tasdevice[i];
-+		u8 fs_val;
-+
-+		dev_info(tas_priv->dev,
-+			 "%s: device[%d] dev_addr=0x%02x\n",
-+			 __func__, i, tasdev->dev_addr);
-+
-+		/* Step 1: Software reset (matches script: 0x01 = 0x01) */
-+		ret = tasdevice_dev_write(tas_priv, i, TASDEVICE_REG_SWRESET,
-+					  TASDEVICE_REG_SWRESET_RESET);
-+		dev_info(tas_priv->dev,
-+			 "%s: chn=%d SWRESET ret=%d\n", __func__, i, ret);
-+		usleep_range(1000, 2000);
-+
-+		/* Step 2: ASI configuration registers */
-+		ret = tasdevice_dev_write(tas_priv, i, TAS2563_ASI_CFG_REG, 0x09);
-+		dev_info(tas_priv->dev, "%s: chn=%d ASI_CFG=0x09 ret=%d\n", __func__, i, ret);
-+
-+		ret = tasdevice_dev_write(tas_priv, i, TAS2563_ASI_SR_REG, 0x02);
-+		dev_info(tas_priv->dev, "%s: chn=%d ASI_SR=0x02 ret=%d\n", __func__, i, ret);
-+
-+		ret = tasdevice_dev_write(tas_priv, i, TAS2563_ASI_DA_REG, 0xf1);
-+		dev_info(tas_priv->dev, "%s: chn=%d ASI_DA=0xf1 ret=%d\n", __func__, i, ret);
-+
-+		ret = tasdevice_dev_write(tas_priv, i, TAS2563_ASI_TDM_REG, 0x02);
-+		dev_info(tas_priv->dev, "%s: chn=%d ASI_TDM=0x02 ret=%d\n", __func__, i, ret);
-+
-+		ret = tasdevice_dev_write(tas_priv, i, TAS2563_ASI_DL_REG, 0x00);
-+		dev_info(tas_priv->dev, "%s: chn=%d ASI_DL=0x00 ret=%d\n", __func__, i, ret);
-+
-+		ret = tasdevice_dev_write(tas_priv, i, TAS2563_ASI_SLOT_REG, 0x99);
-+		dev_info(tas_priv->dev, "%s: chn=%d ASI_SLOT=0x99 ret=%d\n", __func__, i, ret);
-+
-+		ret = tasdevice_dev_write(tas_priv, i, TAS2781_PRM_CHNL_0_REG, 0x02);
-+		dev_info(tas_priv->dev, "%s: chn=%d CHNL_0=0x02 ret=%d\n", __func__, i, ret);
-+
-+		/* Step 3: Device-specific frame sync (0x1e for dev0, 0x2e for dev1) */
-+		fs_val = 0x1e | ((i & 0x01) << 4);
-+		ret = tasdevice_dev_write(tas_priv, i, TAS2563_ASI_FS_REG, fs_val);
-+		dev_info(tas_priv->dev, "%s: chn=%d ASI_FS=0x%02x ret=%d\n",
-+				__func__, i, fs_val, ret);
-+
-+		/* Step 4: Apply ASI configuration */
-+		ret = tasdevice_dev_write(tas_priv, i, TAS2563_ASI_APPLY_REG, 0x00);
-+		dev_info(tas_priv->dev, "%s: chn=%d ASI_APPLY ret=%d\n", __func__, i, ret);
-+
-+		usleep_range(1000, 2000);
-+	}
-+}
-+
- enum device_chip_id {
- 	HDA_TAS2563,
- 	HDA_TAS2770,
-@@ -172,6 +249,13 @@ static void tas2781_hda_playback_hook(struct device *dev, int action)
- 		pm_runtime_get_sync(dev);
- 		scoped_guard(mutex, &tas_hda->priv->codec_lock) {
- 			tasdevice_tuning_switch(tas_hda->priv, 0, false);
-+			/* Re-apply ASI configuration for TAS2563 after
-+			 * tuning switch - DSP firmware loading can
-+			 * overwrite ASI registers.
-+			 */
-+			if (tas_hda->priv->chip_id == TAS2563)
-+				tas2563_post_fw_init(tas_hda->priv);
-+
- 			tas_hda->priv->playback_started = true;
- 		}
- 		break;
-@@ -475,6 +559,12 @@ static void tasdevice_dspfw_init(void *context)
- 			tas_priv->rcabin.init_profile_id,
- 			TASDEVICE_BIN_BLK_PRE_POWER_UP);
- 
-+	/* Apply ASI configuration for TAS2563 after firmware load.
-+	 * DSP firmware loading can overwrite ASI registers.
-+	 */
-+	if (tas_hda->priv->chip_id == TAS2563)
-+		tas2563_post_fw_init(tas_hda->priv);
-+
- 	/* If calibrated data occurs error, dsp will still works with default
- 	 * calibrated data inside algo.
- 	 */
-@@ -659,6 +749,7 @@ static int tas2781_hda_i2c_probe(struct i2c_client *clt)
- 		 */
- 		device_name = "INT8866";
- 		hda_priv->hda_chip_id = HDA_TAS2563;
-+		tas_hda->priv->chip_id = TAS2563;
- 		hda_priv->save_calibration = tas2563_save_calibration;
- 		tas_hda->priv->global_addr = TAS2563_GLOBAL_ADDR;
- 	} else if (strstarts(dev_name(&clt->dev), "i2c-TXNW5825")) {
-@@ -782,6 +873,13 @@ static int tas2781_system_resume(struct device *dev)
- 			tas_hda->priv->rcabin.init_profile_id,
- 			TASDEVICE_BIN_BLK_PRE_POWER_UP);
- 
-+	/* Re-apply ASI configuration for TAS2563 after system sleep
-+	 * resume — amplifiers may lose their register state during
-+	 * suspend-to-ram or suspend-to-disk regardless of playback state.
-+	 */
-+	if (tas_hda->priv->chip_id == TAS2563)
-+		tas2563_post_fw_init(tas_hda->priv);
-+
- 	if (tas_hda->priv->playback_started)
- 		tasdevice_tuning_switch(tas_hda->priv, 0, false);
- 
--- 
-2.55.0
+  sound/hda/codecs/realtek/alc269.c | 1 +
+  1 file changed, 1 insertion(+)
 
+diff --git a/sound/hda/codecs/realtek/alc269.c 
+b/sound/hda/codecs/realtek/alc269.c
+--- a/sound/hda/codecs/realtek/alc269.c
++++ b/sound/hda/codecs/realtek/alc269.c
+@@ -8114,6 +8114,7 @@ static const struct hda_quirk alc269_fixup_tbl[] = {
+      SND_PCI_QUIRK(0x1854, 0x0489, "LG gram 16 (16Z90R-A)", 
+ALC298_FIXUP_SAMSUNG_AMP_V2_4_AMPS),
+      SND_PCI_QUIRK(0x1854, 0x048a, "LG gram 17 (17ZD90R)", 
+ALC298_FIXUP_SAMSUNG_AMP_V2_4_AMPS),
+      SND_PCI_QUIRK(0x1854, 0x0490, "LG Gram Style 14 (14Z90RS)", 
+ALC298_FIXUP_LG_GRAM_STYLE_14),
++    SND_PCI_QUIRK(0x1854, 0x053b, "LG gram 16 (16Z90SP)", 
+ALC298_FIXUP_SAMSUNG_AMP_V2_4_AMPS),
+      SND_PCI_QUIRK(0x1854, 0x0554, "LG gram 16 (16Z90TR)", 
+ALC298_FIXUP_SAMSUNG_AMP_V2_2_AMPS),
+
+Hardware: LG 16Z90SP-A.AD7BG, Intel Meteor Lake-P HD Audio [8086:7e28],
+Realtek ALC298 [10ec:0298] rev 0x100103, SSID 1854:053b.
+ALSA info: 
+https://alsa-project.org/db/?f=7e8c49270f1b902ebb9fa76a4695f8301db040cf
+
+
+Signed-off-by: Prateek prateek.yadav@edu.rptu.de
