@@ -4,68 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABCC4CA5FF1
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2026 10:40:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C0AACA5FFC
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2026 11:35:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA560601DB;
-	Wed,  7 Oct 2026 12:39:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA560601DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4C37601E4;
+	Wed,  7 Oct 2026 13:35:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4C37601E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1791369603;
-	bh=SZgjvGAb5fQIh5t7nOaafX1yhw720D8I277QGczLHrQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=AOdjVMIs7phaB5y4Q5CouHSvvxJ1QVubAU8O0wdoY7u5RfRs6M4M8lH2yc+rcPlzG
-	 yEukna+YmaGIxRamnOQQZ9tjlKujLNlaS4+Q+Emf1H1LOApd9okiHBihs0PwgOFOls
-	 4gBZV46TU/p5zb1jcoVpmeq5NvI1JE+Qua2W0tOc=
+	s=default; t=1791372913;
+	bh=bmer4zo5i3MF/+SBZHwQ1Gwak4NUPrHOd9hhApaX9sQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=JLdyGfWngtLj+7GlACT2SsRwiFLfK+PJQfKeWlaycJKF69bAT/fiexXl47tXfUcPU
+	 T5IkQRpjKV/1WTG1gQ0AjKyPFLxk3a5sJS7lWG0EtRKJ54MJpZd7CP6N0il2dbzpf3
+	 OnFf3CTPIqYv6aSr8M+penS7j/bvG3ReUvR00AIE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A7BD1F80153; Wed,  7 Oct 2026 12:39:40 +0200 (CEST)
+	id 9CAA0F805F6; Wed,  7 Oct 2026 13:34:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A048F80601;
-	Wed,  7 Oct 2026 12:39:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22BD5F80605;
+	Wed,  7 Oct 2026 13:34:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 545A3F8051E; Wed,  7 Oct 2026 12:39:33 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791369569;
-	b=RPutNBOycB0PSMMVQcy3ufmvrQvikBbAMh4jjvt1/sGVGb6VmlGlgltAwuYhNhRUd3lR
-	 pN6tSZZN3btP3yISvjzcuxE6XeftCc+oL8uuyYF9bCgU8I7jsU5hra+Wi9cLO2pShZK88
-	 CrN13MKk8uI32oNLnJ1IoR7UMeEwltMVSOuIZg0zf+gY5gB9NGVWRxOQ23goUqSgs//6R
-	 GsIOBq5GNGENKdH5cLZPf02OBpS+PIB5g+wVLKKJn16ovR7wxU1YY8CqfJiN8yBcPI3uM
-	 uWLBzk4juPbyC62f+DXlW5hM+5/2bzArazFAtjHkQ1GsVQ+RM2hmmbVx7SEy+KkHtxQ==
+	id ABFB7F8051E; Wed,  7 Oct 2026 13:34:33 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791372873;
+	b=i28FnSCt1tzhlAKf0F9uOyt0ccj+nH1tE9cBkFU3MYzWRgb2lMJRY2Z0HoPqq6G1dhxH
+	 FGaacJoPKdWRYqK1JOKxRNRI8FKZuorRLD34UEQ7wY1C8XSoKBNm23h7Z4YRe5LgALHi+
+	 6MODkd8AY8sgWIhTwztIvhrmjvHrHzmWLurZE0w+865IS4w+aM5iigHlaCWnqNaCLePEi
+	 9M5mhXg+G5XVUwBhQnLsORvmOYRtg++1Hg6/hKT29RQTgd4PwkO0XSstyqtF4SCyu5X5n
+	 DoMObiPjbyQ0t5BZlpqESGmtWi+UKbnWYbVJU4T/G6wodRApAi2vV2k5NGzA8OU0lRg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1791369569;
-	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=SZgjvGAb5fQIh5t7nOaafX1yhw720D8I277QGczLHrQ=;
-	b=mboagb8LgxNkFqj9ah7zmLgp53aRWQLu5tCsKUAGV0Xgd++V8hUeK4EAMaxtSq6jmmsb
-	 oALAvB11LYTmo08p983GWSaOJJP0L7wSiFJIozY+G/BRg+mDP9czMvDy8x4oJupxypEWU
-	 t+jRUpyJ/lZbRIE2U5VW9UEkqnhL7j5trj29vBZsRfvGNPZ+ZIMX2VtMUGT9ZVGyPd07C
-	 PZeDbk5Izq5ukhgc68PPHUgqoC9qDA/3/MlRieJbSVchgO/rtaVnxP0ebXKnP9CVLQKva
-	 EXN8Vc5bRUjEN+HlQrtDd72frHkgUS3Lui43rxLPhWaPzDpBlXiEjxqwCAfCy1KXVUQ==
+	c=relaxed/simple; t=1791372873;
+	h=DKIM-Signature:From:To:Subject:Message-Id:Date:MIME-Version;
+	bh=bmer4zo5i3MF/+SBZHwQ1Gwak4NUPrHOd9hhApaX9sQ=;
+	b=GLEeDL++cweFTTCnHflpPu7jfcCiJ8EyRsN9+ZTXAw2rXa9AMz3OuxUIilPad/IS8pl8
+	 y/PwCZ9CYSPXwr0MzfFbZF/tqHIANI4AY7A4ZXlpbXExWZBiQ68QDk7GqbFQ5Mn51vLCR
+	 K7Kdf9YPiLtRlg1S6o2J3rBNyq2yxjrUs5eEmV+2PXug13NamGXl8HyKY6BPvAsy1kORg
+	 145eqtUcBGQQW7PRvXy6KHQsdUrCxDYuKtsym+8G8NCoPj58CWJca+dn12begowGke7sr
+	 ulzh10G8ztDI8RZy7Gm/8D6MpwiQHol3qiOiliHAVfWMKJJN9Q2aBqLH43MXm+n5MuQ==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=45.14.194.44
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0FD79F8007E
-	for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2026 12:39:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FD79F8007E
+ dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b="Vtlj0/TU";
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id D4EF7F8007E
+	for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2026 13:34:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4EF7F8007E
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=Vtlj0/TU
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 8ADCF42A43;
+	Wed,  7 Oct 2026 11:34:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 236521F0089D;
+	Wed,  7 Oct 2026 11:34:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1791372868;
+	bh=kgOi+4BuX9MleURHmIMwd5AVwaGn+Cj54SB0kpt/DAI=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date;
+	b=Vtlj0/TUEycj9dENkVv76YSeU0uKPGOpW1tSAkW7Uzucbxln85Qpx1sFF25t6eeX0
+	 0MZtCzw0+pN2gq6eo1vWLgY+3lD3bC9WrgbuJX31i2sYeW/cYM6+N1gW5HsG2RBAkU
+	 4mTqhdxz8BfQWimXQgNPHbk7HckdYN0w4Ih/9wHJLJJqIa5k7Sl6pDmJqTt1W3BGZG
+	 CI0kMM/Pl/x7p5PlN4qB2TLJIU9MmNSG25rJ9hGjC+FdPfHHfE9n3DSb7ZzyBwjaKl
+	 PCjtpMv5ep6RLQJlIq+zZieH+sGd1iZZXijFA6Kwwac1L23w7g3IKe+YDbkYrCqFsr
+	 Ffn7bNAgq35uA==
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, jack.yu@realtek.com
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com,
+ oder_chiou@realtek.com, shumingf@realtek.com, derek.fang@realtek.com
+In-Reply-To: <20261001024657.739186-1-jack.yu@realtek.com>
+References: <20261001024657.739186-1-jack.yu@realtek.com>
+Subject: Re: [PATCH v2] ASoC: rt721-sdca: Adjust blindwrite flow to fix
+ type detection issue
+Message-Id: <179130256812.150114.6173207753938230873.b4-ty@b4>
+Date: Tue, 06 Oct 2026 18:02:48 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <18dc39215776f800-webhooks-bot@alsa-project.org>
-In-Reply-To: <18dc39215743b200-webhooks-bot@alsa-project.org>
-References: <18dc39215743b200-webhooks-bot@alsa-project.org>
-Subject: Distorted/garbled sound on high channel count USB audio interface
- (class compliant) at certain altsets
-Date: Wed,  7 Oct 2026 12:39:33 +0200 (CEST)
-Message-ID-Hash: 2WE4AT5J6I5PUR3XOQWHRI6KBIVZK6ZQ
-X-Message-ID-Hash: 2WE4AT5J6I5PUR3XOQWHRI6KBIVZK6ZQ
-X-MailFrom: github@alsa-project.org
+X-Mailer: b4 0.17-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1161; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=bmer4zo5i3MF/+SBZHwQ1Gwak4NUPrHOd9hhApaX9sQ=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBqxi4+BipkrxEPbW+PVn9eAQP+os7bJ5n4spv2w
+ aBvJZcK2DqJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCasYuPgAKCRAk1otyXVSH
+ 0FkZB/4j2/X1lSkvQ1ORKD+8aZxodPTdKzU25WuG/XUkVI2j3gqj37DdfL2z4aJCzXL28cxc+k9
+ DwEkS1r/MabX2sobOel5pY9Qu3sGJNuzwudtiHMa+pzhiGON1elC3hZwWc3FmT3xUJei192LTiC
+ DAu6ry58KsR1pS9rRmoQznnRFsyPcYKA1yG28xJ1W17qTYactS2jI84D/aJuegSG+7BPwOhOAaP
+ XMdKKi8nFubZ2WexxNM5GBe7bf9npl8vNWQNcA1U7o4DLH4po2tRNOEiUZd/VCI1zB6U/HWSRid
+ 6c7gqgkrag+onmelOpqDXlmL49triiR3FJ2rq67apQV/c96T
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Message-ID-Hash: VJHE4J2FA5U6ECOIJOGNLXKKQGT65UDX
+X-Message-ID-Hash: VJHE4J2FA5U6ECOIJOGNLXKKQGT65UDX
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -76,7 +114,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2WE4AT5J6I5PUR3XOQWHRI6KBIVZK6ZQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VJHE4J2FA5U6ECOIJOGNLXKKQGT65UDX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,101 +123,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #529 was opened from fripholm:
+On Thu, 01 Oct 2026 10:46:57 +0800, jack.yu@realtek.com wrote:
+> ASoC: rt721-sdca: Adjust blindwrite flow to fix type detection issue
 
-I don't know if I'm in the right place to address this issue here. If not, please feel free to point me in the right direction.
+Applied to
 
-I recently purchased an RME Madiface XT II, which is (among others) a class compliant USB audio interface with a channel count of up to 196 input and 198 output channels over three MADI connections plus Phones Out, one AES I/O and one Stereo Analog I/O. I'm on Debian based MX 25.3, running liquorix kernel 7.2.8. My digital audio workstation is Reaper, native Linux build, running on ALSA, as pipewire(-jack) currently doesn't support more than 128 channels.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-7.4
 
-The interface offers 3 different altsets to ALSA for each set of sample rates. 
+Thanks!
 
-At 44.1/48kHz: setting Reaper to the device's native channel count (I: 196/O: 198) it switches to altset 3, on I: 100/O: 102 to altset 2 and on I: 52/O: 54 to altset 1. Altsets 1 and 2 work fine but as soon as altset 3 is active, the audio is heavily distorted and sounds like a bitcrushed, modulated, glitchy mess. This is what `/proc/asound/card2/stream0` looks like when Reaper is running:
+[1/1] ASoC: rt721-sdca: Adjust blindwrite flow to fix type detection issue
+      https://git.kernel.org/broonie/sound/c/e2eb4873b901
 
-```
-RME MADIface XT (xxxxxxxx) at usb-0000:00:14.0-1, super speed : USB Audio
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Playback:
-  Status: Running
-    Interface = 1
-    Altset = 3
-    Packet Size = 4096
-    Momentary freq = 48000 Hz (0x6.0000)
-  Interface 1
-    Altset 1
-    Format: S32_LE
-    Channels: 54
-    Endpoint: 0x02 (2 OUT) (ASYNC)
-    Rates: 44100, 48000, 88200, 96000, 176400, 192000
-    Data packet interval: 125 us
-    Bits: 24
-    Sync Endpoint: 0x82 (2 IN)
-    Sync EP Interface: 1
-    Sync EP Altset: 1
-    Implicit Feedback Mode: No
-  Interface 1
-    Altset 2
-    Format: S32_LE
-    Channels: 102
-    Endpoint: 0x02 (2 OUT) (ASYNC)
-    Rates: 44100, 48000, 88200, 96000, 176400, 192000
-    Data packet interval: 125 us
-    Bits: 24
-    Sync Endpoint: 0x82 (2 IN)
-    Sync EP Interface: 1
-    Sync EP Altset: 2
-    Implicit Feedback Mode: No
-  Interface 1
-    Altset 3
-    Format: S32_LE
-    Channels: 198
-    Endpoint: 0x02 (2 OUT) (ASYNC)
-    Rates: 44100, 48000, 88200, 96000, 176400, 192000
-    Data packet interval: 125 us
-    Bits: 24
-    Sync Endpoint: 0x82 (2 IN)
-    Sync EP Interface: 1
-    Sync EP Altset: 3
-    Implicit Feedback Mode: No
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Capture:
-  Status: Running
-    Interface = 2
-    Altset = 3
-    Packet Size = 4096
-    Momentary freq = 48000 Hz (0x6.0000)
-  Interface 2
-    Altset 1
-    Format: S32_LE
-    Channels: 52
-    Endpoint: 0x81 (1 IN) (ASYNC)
-    Rates: 44100, 48000, 88200, 96000, 176400, 192000
-    Data packet interval: 125 us
-    Bits: 24
-  Interface 2
-    Altset 2
-    Format: S32_LE
-    Channels: 100
-    Endpoint: 0x81 (1 IN) (ASYNC)
-    Rates: 44100, 48000, 88200, 96000, 176400, 192000
-    Data packet interval: 125 us
-    Bits: 24
-  Interface 2
-    Altset 3
-    Format: S32_LE
-    Channels: 196
-    Endpoint: 0x81 (1 IN) (ASYNC)
-    Rates: 44100, 48000, 88200, 96000, 176400, 192000
-    Data packet interval: 125 us
-    Bits: 24
-```
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-At higher sample rates, only altset 1 works and obviously the channel count is further reduced.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-According to the hardware developer, the device is confirmed to be working fine in class compliant mode on all three altsets on MacOS (although it also has native Mac drivers), so everything points to some incompatibility/bug with ALSA.
+Thanks,
+Mark
 
-There are several topics on RME's Linux sub forum about this, if more info is needed.
-[https://forum.rme-audio.de/viewtopic.php?id=41751](url)
-On the following thread, the relevant part starts at post no. 12: [https://forum.rme-audio.de/viewtopic.php?id=31000](url)
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/529
-Repository URL: https://github.com/alsa-project/alsa-lib
