@@ -4,162 +4,194 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B4A0CA9EC0
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Oct 2026 19:42:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 436A1CA9EC0
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Oct 2026 19:42:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A09C460217;
-	Sat, 10 Oct 2026 21:41:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A09C460217
+	by alsa0.perex.cz (Postfix) with ESMTPS id E9C686024D;
+	Sat, 10 Oct 2026 21:42:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9C686024D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1791661321;
-	bh=NV297hPhL0HERbs2IyoZwWWLUO44XQvPJKokBPrQwBI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1791661344;
+	bh=BvLG/Sqj/xDDjCJpnlp2ylGcaCRNdXP18h9H5v3PNSg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=M+YNxQMffdx1O5WoAgnUM4z7YSRcG6sdinwcjgIMF/wBdo7AtxIr3oT/LcJNssa7N
-	 NdW+NS7ksEw0JkLRyRckEwKW/f4rGFYsDtotQbJ1cz5eAX0wIzfBAaD5VWoXRwWRQz
-	 8Xdii61ZU4+k5Q6gE99d6VIIVRUApVEAnfM4WDTE=
+	b=anksaw3ESAoAPyim/y6UbNXzEP0ymb2iZfFv9bBjhNcnkCeKJxJjnYF9eI/lHwrRX
+	 SUe07H/syFwVbKHzCSyzMyVjvPAMB7IXOuw52UKhjAatLVrsTGUexO2XfXAzkOhWki
+	 4PSzhGI3SSQjJ1EWlECXHqhMlmjEiievEAo2sr+Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F236CF80651; Sat, 10 Oct 2026 21:41:00 +0200 (CEST)
+	id 77F12F80686; Sat, 10 Oct 2026 21:41:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A8A6F80639;
-	Sat, 10 Oct 2026 21:41:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED8BBF8068C;
+	Sat, 10 Oct 2026 21:41:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E7758F805F2; Thu,  8 Oct 2026 21:01:25 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=74.125.82.173
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791486084;
-	b=TqSeBZegetqr/uPkuOCh1WAUkTJ6KgAxf8yyWb0uBHdR0cpK96YeBNU/M7fSOVJC20ap
-	 x8abQAyUQKw8sSnxBpKjsVctqqvAPkdBtAP9TLX/LMw2jquFDiinkvRW1j/FzvJQ4OT0+
-	 Jbm9TA4WmBKdtyBkz8q0iyCkBk5s7Y5ShlGv7ZpdEnMvqhvVvgpRBckyGFL4Ccdc1vLkc
-	 uHV8IoQuJxhrf7ehejD9DHqbpuUJij4S/OkWrJcV8uo+HjVPn6KOfKP6xiHhYwvh44n+H
-	 d46YhGvxRNMJP2dLfB/YVwyh5+wuP+RkVMMbJoZisp8GHVBalSLuSbx18zu/Tatkdrw==
+	id 08F00F80571; Thu,  8 Oct 2026 14:47:09 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=none smtp.remote-ip=205.220.180.131
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791463624;
+	b=byMzbF10DT1cOgLQfspO3TLS0WxrxFef/lnyFpV/BfBazO+lSLQQdqDMsGRdGE3+EnVY
+	 jTU10TPkoihxaRVW3KZRGGlyYXwBeb1MuUBvkA/zH7hoKsers6qrbVYt519ZNw+e/LQ1T
+	 cMHCqcYlbkYYAmFYaiQmQfHLGRAlsaFZnGSPtb/FXbOUnmVR9H2fLCc3he80n40xqy3i2
+	 mVt/w0lQBqduSKTBQSqgfq+91I6aNf0/91QmekGuDPmWJhOXo7pa5orACynVTtuPTbiFy
+	 OGs46UYsOc7qs1qbGotw+PNFb9Z+v1UqPxbeRItHKn8W89q4IV0AbO60EwMJwrBcXYw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1791486084;
-	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=NV297hPhL0HERbs2IyoZwWWLUO44XQvPJKokBPrQwBI=;
-	b=NeuyyYvhruoGZldzg7mhTUGyxblVB3emrWDdLmaS77Aqxp62cp+9qJbFBk/rvGIAODlg
-	 XVUNwlEG84oWdjNypwHPhYQC5mkaLdUklmR1ZTXffKP5fFP2eld4954WS2+pMmd4sgPM7
-	 O5YnXPScz5EuVAz0VHuAcpIH1yKGjBofVhyDrKyAPip5v7c+9KQwLV5wwWq12Ut1kIpgx
-	 qAVEI96vydW9a59kUUBScJ9i/S5E6PsZ5DoojbaVAmR+wGgkAnFArvMjsMDLcPzCKPtwJ
-	 DK/N7yNfAt6ifOUeenRzdkbKieqJUgA3Uk53Zs7pv6qHviL+pbyeaM+zF3hBV0FSEvw==
+	c=relaxed/simple; t=1791463624;
+	h=DKIM-Signature:DKIM-Signature:Message-ID:Date:MIME-Version:Subject:
+	 To:From;
+	bh=BvLG/Sqj/xDDjCJpnlp2ylGcaCRNdXP18h9H5v3PNSg=;
+	b=bL1H8w7sFwsQ6q8uZRbWzHx9BIIq8qRi2x4BwFxcmFBX/8MaCoO+e+kp1zZwjVSsFq85
+	 9yuKMUxZYj+xqJ4EMHR3sWHlW5bDvv1QSxoPD7HzqhykU4/3Dj53YNqoFTqtMHHaQbBZR
+	 iRr8brpp8EOG72Xt+zORbvtUNE6b0n0rW7j4sA/YFfrVT+wbbgev9Iuub/m54GTkoYoGI
+	 o4+2HECTbQdKDsum5fQB0PUmk8XGWJf+DXI+cyM8w3R9K7PLPGTcualGmuKfnbvvakpHQ
+	 kox9c/RqlH6+oF+t+jS1gj0IXP++lEaiHenuGoqnRyCbmdXCccEU4Om9kdO9HU5UUww==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=trailofbits.com header.i=@trailofbits.com
- header.a=rsa-sha256 header.s=google header.b=b2yUqLRh;
-	arc=none smtp.remote-ip=74.125.82.173
-Received: from mail-dy1-f173.google.com (mail-dy1-f173.google.com
- [74.125.82.173])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ dkim=pass header.d=qualcomm.com header.i=@qualcomm.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=Eum4qv4G;
+	dkim=pass header.d=oss.qualcomm.com header.i=@oss.qualcomm.com
+ header.a=rsa-sha256 header.s=google header.b="g/qq4JB4";
+	arc=none smtp.remote-ip=205.220.180.131
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D9EF4F8007E
-	for <sound-open-firmware@alsa-project.org>;
- Thu,  8 Oct 2026 21:01:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9EF4F8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 36A54F8007E
+	for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2026 14:47:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36A54F8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=trailofbits.com header.i=@trailofbits.com
- header.a=rsa-sha256 header.s=google header.b=b2yUqLRh
-Received: by mail-dy1-f173.google.com with SMTP id
- 5a478bee46e88-3514e7cbbbaso6941411eec.1
-        for <sound-open-firmware@alsa-project.org>;
- Thu, 08 Oct 2026 12:01:19 -0700 (PDT)
+ unprotected) header.d=qualcomm.com header.i=@qualcomm.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=Eum4qv4G;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com
+ header.a=rsa-sha256 header.s=google header.b=g/qq4JB4
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 698BK7Mf2383952
+	for <alsa-devel@alsa-project.org>; Thu, 8 Oct 2026 12:47:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	6/0JMiE5zxmyIy8hgrC4A+8ABRxBbiN2qZjcEtxUs8Y=; b=Eum4qv4GzCYivSWc
+	moqokcmj/zMIpcetIIxc5bxQIt35youHg8jzj3JH79Qv07TgHvTbnYqoVhHVFeK0
+	YmdwSESAcR9/RvjxoSm+n+LI9yKdN2vHMqeYZ9fXtO0RGDhiZOfXC1UUeLnkrMJz
+	VgvxPPWv9E6+f3ZdH/jQL4nGWb0fdStzuz/g3CDgnn7UCFD6R2SFGBdmmv77M7Qh
+	MkObH20DKCZ0UXzrz0hBEUUR9sO8VXNf9n5g5GokjtbzhQc7RvRK9axDsx18efkr
+	3zGeuE3Emg56qAsNp+NTEj9fXJrVqw/YnOVHZsKpxrZSY1M0tNd/clMQAnCQmMID
+	wzaiNg==
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4h5xe3k0k4-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <alsa-devel@alsa-project.org>; Thu, 08 Oct 2026 12:47:00 +0000 (GMT)
+Received: by mail-qk1-f197.google.com with SMTP id
+ af79cd13be357-93a082c014aso260500085a.0
+        for <alsa-devel@alsa-project.org>;
+ Thu, 08 Oct 2026 05:47:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=trailofbits.com; s=google; t=1791486078; x=1792090878;
+        d=oss.qualcomm.com; s=google; t=1791463620; x=1792068420;
  darn=alsa-project.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=ZaD67jW1zaHMwLOSmvc/1aeKMLwK1RpzPD9+yhLQ1do=;
-        b=b2yUqLRhPkpEe6PLOWzmeU70LsEhhxIbyB8pJ118VtFBprIRfc9U4gdWshhgCjbACy
-         6vhy+4ViLZyiWs53tAuE4C41m/w31w9spQg7XYTRz/A6Kc4+bu22iI1zNCdTua7mytGY
-         UnLZ8hCQ17Qr2pvkKcVyJ/FW4Ts5YPCvnD7tjfPT0UWu3Uk1NAINGvmaN4T3snJZm120
-         WA3G3HjsR0dwUyQWTwAWayQyDJQut9xyRpKIGerCE3pYiLFGmcvv+oLVsBLJI0J6oDla
-         1RYMIx0QA77S91ehfE3fVzh53HT5YszdIAjNwmYXyBrGDVXsiR9myWRSWlIfdIGDN9lh
-         fWlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791486078; x=1792090878;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=ZaD67jW1zaHMwLOSmvc/1aeKMLwK1RpzPD9+yhLQ1do=;
-        b=m+8Mo5den/8cJmI+zVRzBSQGU/SA+UwY0F5A9PYozrw+nVMcUNrTD2NQK0B9cZndCZ
-         zrqtkwkNcEOceOoPFowQOxfgMuTBp2EvGCfhhmuHpodGN0LmmleY9C9dl2CbZk4ihuYq
-         GS0GLYidfLTojVDq+sUz9EZr3UfuVSeHV0IlEGzIfyV+y52EqnHV46ISi/RiZ0zGRm1d
-         AOreIt4Q0VQ7po7q1BYwI1o6OgBBme9dSL4q/OkJM+PUgz9nk2RFH+UXq29BJxlExQ4f
-         FLA85NfAwJ6EP/WGwQePbqTPeDoVpuCgcMfx6iqS28M0hc6H19m7IhdgigEbiOCcLgxu
-         a7rg==
-X-Forwarded-Encrypted: i=1;
- AKwUvBybdovYjG86DdiEGVwk/psTmRDMVDC8n3RcXqPQ8X/ScGuiasCj2o3EAWO+AEzLlywOVSLLSZGpfiQ4rNQdGfE5gFlL@alsa-project.org
-X-Gm-Message-State: AFq9FYK2NxcWoTNN460pa423IVd72x0yGSMJ1qtNGIuWH0DbY0PqS2r4
-	3ZibKPHPMU7gxKcpfhvTcSlsG1UJNh9BR0Grmy5CE94rHPJWtggVN0Cafb3zfCNaPWM=
-X-Gm-Gg: AYBFou1+KXD5olG0q9Hr29Qt+RRRKymXuZdeezNAaVWYK4g8OskCNk7/rG4zE/RFLtV
-	ejLed9Wkzp46hZAAQbuj8DDUqPulqtiwbQaVeQcd88ZbnUmxMXKSDZ5MMS9STiXachioGTlRgdu
-	NbMYhYnZAHAnWI+LpdJOdsHfrMSjAaCQDh+MmWX56GGeEIXoRJQ3Ys6/J2LhLbOLx9/ZdxumEx6
-	mthI76FpPXvDZ/TERgnqnd6jFcymOkz7NSFqM7EQAKekK3QGJPKlA/VQTEk5P32oEWHmWN2CPPM
-	GUisN3Dw80aNyoi8ndLeUx64DWPRl30WCPFLCY6HGvAXbFCUeTJw6vwztnv4GqhPe7X5BiW/+pw
-	/gDmceKlX/BXpUzY6BpX/cccd3BwzwOlzsco2n5H+4GoeyP3bD3aGt2Y14/kA5kblJMDid19oU/
-	DROCEptoe2npQ1yHAtdP+l+UvDLd+Brv5zO5ReDq4kZOGtXVlrZeBcGgZ0nm336Cas1qcgl/Pi3
-	rXTnFGQKpAx+90UG8hEZFxC2j9YkDDL6kX5NC7S74dhzq1AX36m2JZGLuYNBXbzRnuAcPg=
-X-Received: by 2002:a05:7301:7305:b0:351:31c7:ab1d with SMTP id
- 5a478bee46e88-3515dda8789mr6908917eec.16.1791486076904;
-        Thu, 08 Oct 2026 12:01:16 -0700 (PDT)
-Received: from localhost.localdomain
- ([2603:8001:5f01:8bab:bc88:5ec1:4f8a:5b23])
-        by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-3537b3eccebsm405691eec.12.2026.10.08.12.01.14
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 08 Oct 2026 12:01:15 -0700 (PDT)
-From: Artem Dinaburg <artem@trailofbits.com>
-To: stable@vger.kernel.org
-Cc: Artem Dinaburg <artem@trailofbits.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sasha Levin <sashal@kernel.org>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	=?utf-8?q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Daniel Baluta <daniel.baluta@nxp.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	sound-open-firmware@alsa-project.org,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.dev>,
-	Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-	linux-sound@vger.kernel.org
-Subject: [PATCH 6.6.y 1/2] ASoC: SOF: topology: Parse DAI type token for
- dspless mode
-Date: Thu,  8 Oct 2026 15:01:03 -0400
-Message-ID: <20261008190108.96660-2-artem@trailofbits.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20261008190108.96660-1-artem@trailofbits.com>
-References: <20261008190108.96660-1-artem@trailofbits.com>
+        bh=6/0JMiE5zxmyIy8hgrC4A+8ABRxBbiN2qZjcEtxUs8Y=;
+        b=g/qq4JB4UsfceYk5tntOPxouiU86GKpp+EvKr8VUBnESCcUgn3XzKIseqqOhrFim6v
+         D3qFO2B3RJoRJRHd6T6tsUAizYGampF+6+PQZr46Mdxc/FT4Blj6l9GJz8zNITEV/3TR
+         0TVD6TNhcv7IRudZs89/KeClmHiLYw6hQIK+GbuS6OZRGhDUNhMFIkpZZeDRqWO4uoCO
+         qhqAXW2G/2II1n8UoiSM9P242L8QS6x6KlQ9e/rtjYttckxT/4tuLhs9aAd3cGhHQZDL
+         sK6G/yHHGk/mhIaoM5FTbvpuL+kPg6jwPyrFf+6i/H1AIh+TL2dhD5Xgw0l1QfCywOIm
+         s3oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1791463620; x=1792068420;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=6/0JMiE5zxmyIy8hgrC4A+8ABRxBbiN2qZjcEtxUs8Y=;
+        b=KwgjJa9iTi44LPBgCCk/UEWeubS47/SjLRxo+NV5IzerbJDQU31FMtcBCv5GhOdFfc
+         s2JLvtxrv2fVLxT3y4WX+91u6na/ID0y5vFjx371vuFuXl20bsykv1EZqu8EGON6v02j
+         LLsRXotsLsUZFmitJdQxbPEWHh6B0/o8lQBkbqEiAJI+H4qJpTX0mm7aKx3365uRPIh9
+         c0Z83I/07WYdBSkqwFqSKb9Jd1oub/wE09DdCyIUmDFkY6IMW9uE9cgWcUBnnDICpXWS
+         2TvC4SROr8YMkmReKSRwtFDvfZ+Fu4XpqOmQgyhf6U/e9LYNl1CeDD4vYCoSJdj2DP4D
+         NnXw==
+X-Gm-Message-State: AFuF++lBgE+uoYV4NqsMiKqA/RL4hlrciQAmbtvY3RkNRHP5KtS4dnPs
+	YBTE3svhXzqtee2cmM/CpGzCyjjF7BFE2EUo/r+04TwQ2lpphoLQJ4YObUDkCswk1/llj337JR5
+	NDWt+BCM9Rj/TSmaGLkizpNiLE+5dE3rHyuJzDMgV2zzaMCsMWZpWknKlodaD95qDKQ==
+X-Gm-Gg: AYBFou2uKUA62s1MuW6JdpduzIj67QbKiNpNqjLac17V/IgybUjj45nBks2s0TjForB
+	4LQkNwmhlksKtDuVoLHmt9wsfvjh3Rwl0A6Re14LWkdPgXNusN+4FyxUA9r2Y2XEUuqR1fa2y3T
+	YNA8gJk3zEg/HLg75X+Q2+VecJYdBhab3iVojprEVrsQIggU+MOy0K1aJrSdnhfKyFhQrqxSvRW
+	pKqz9PDZmf+eKjrsE7vjnfbm4l99FM0iDdV9IrAp6Bz7ghtwiX501o/PphgAyUbMc01tnpwc172
+	8o7U0XIg3c9thFOgiLp+TOfhAwRb5PjCes7uEnf65VUKu17vN8P6+brIBBh1gd7PMh9U993+Qv/
+	30BarpV24EQMqDTfMn4MNZG3aHU2s9QwU0fdFABmDFUln5h86
+X-Received: by 2002:a05:620a:4413:b0:93e:64ac:5dfd with SMTP id
+ af79cd13be357-93eaacd6540mr407615185a.3.1791463619720;
+        Thu, 08 Oct 2026 05:46:59 -0700 (PDT)
+X-Received: by 2002:a05:620a:4413:b0:93e:64ac:5dfd with SMTP id
+ af79cd13be357-93eaacd6540mr407610185a.3.1791463619033;
+        Thu, 08 Oct 2026 05:46:59 -0700 (PDT)
+Received: from [192.168.137.143] (90-182-211-1.rcp.o2.cz. [90.182.211.1])
+        by smtp.googlemail.com with ESMTPSA id
+ a640c23a62f3a-c317c32af4fsm214517966b.63.2026.10.08.05.46.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Oct 2026 05:46:58 -0700 (PDT)
+Message-ID: <7678c37d-9f42-4e3e-b054-762688cd8077@oss.qualcomm.com>
+Date: Thu, 8 Oct 2026 13:46:57 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Linux-audio BoF at Linux Plumbers Conference?
+To: Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
+References: <871pbsnce8.wl-tiwai@suse.de>
+Content-Language: en-US
+From: Srinivas Kandagatla <srinivas.kandagatla@oss.qualcomm.com>
+In-Reply-To: <871pbsnce8.wl-tiwai@suse.de>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-MailFrom: artem@trailofbits.com
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMDA4MDA1MCBTYWx0ZWRfXx8WblCcztXMC
+ hfhMZ+K0Qs+BsAqL4AATdM+W8g4cNx/JCCargbzFsntd1qsJWxTVHUbCOzxdJ8mljXvC3Tluxxq
+ g2MOPScOAYMoJuPE79mbCo79wodHP7w=
+X-Proofpoint-ORIG-GUID: hEbDbGs3muE39Ux_ziA9G2gZ9oX5fICn
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDA4MDA1MCBTYWx0ZWRfXxS8qq7SP625I
+ IpM5nVEitzyTJ1rQFNZPG/7p2nozZT50Gb3YB4XLaX/2OVReWPYTTiOmvZw82dpdCPyP1b4Jaqn
+ g5R9RGz5pjrVYMOr1IIxcMYRC2nkZ8GkUOFNgvOqap8ujO5L7B+rcJTl6MLVCbVHZsx2V+QdBAP
+ +p5ak+HPlC7u6YT04Sb5ETsKG2OKWczFRNtmGf7bIOkDE6y3x14/SRC4mxl3w8Xc6DWsScA3GfO
+ jXS7RBp99LURWEg8U5I62HD1FF9eC4xsisoGe8u7njUHZ3q9CAaB/6ebneXmLPzn8tg2TcroOjH
+ QSWmZb7zSKtIhkjFFcTRokv3ixdpJ//quaaOP6+pDbMrC6yqWEm/tZqgUFF+OHcA8M1t2HMJ6DW
+ SHwWpihYrpjNNH2Ij3J2DdarxgdLn+lcA/zFsz3hCQTG1wM25GwXGiAr2+SmCWy1Iz3NWz61ilO
+ j6W3fNFvNhAoqOhzaCQ==
+X-Authority-Analysis: v=2.4 cv=IIuXmQvG c=1 sm=1 tr=0 ts=6ac790c4 cx=c_pps
+ a=50t2pK5VMbmlHzFWWp8p/g==:117 a=zRh97aRZNhiOMYVz81Er1w==:17
+ a=IkcTkHD0fZMA:10 a=660iZSQnnn4A:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=ZpdpYltYx_vBUK5n70dp:22
+ a=lxOuNqB-r1SHsHFSKiAA:9 a=QEXdDO2ut3YA:10 a=IoWCM6iH3mJn3m4BftBB:22
+X-Proofpoint-GUID: hEbDbGs3muE39Ux_ziA9G2gZ9oX5fICn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-10-08_04,2026-10-08_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 lowpriorityscore=0 impostorscore=0 bulkscore=0 adultscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 clxscore=1011 phishscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2610020000 definitions=main-2610080050
+X-MailFrom: srinivas.kandagatla@oss.qualcomm.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
- banned-address; header-match-sound-open-firmware.alsa-project.org-0;
- header-match-sound-open-firmware.alsa-project.org-1; emergency;
- member-moderation
-Message-ID-Hash: ID2ILPRRTKAZOG3UPAJJQJRWC6NLM4UV
-X-Message-ID-Hash: ID2ILPRRTKAZOG3UPAJJQJRWC6NLM4UV
-X-Mailman-Approved-At: Sat, 10 Oct 2026 19:40:49 +0000
+ banned-address; header-match-alsa-devel.alsa-project.org-0;
+ header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
+Message-ID-Hash: A3WJLHMYLLSGRGQBW5LLDDE3SWSWBEGP
+X-Message-ID-Hash: A3WJLHMYLLSGRGQBW5LLDDE3SWSWBEGP
+X-Mailman-Approved-At: Sat, 10 Oct 2026 19:41:03 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ID2ILPRRTKAZOG3UPAJJQJRWC6NLM4UV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A3WJLHMYLLSGRGQBW5LLDDE3SWSWBEGP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -168,96 +200,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+On 8/20/26 2:34 PM, Takashi Iwai wrote:
+> Hi,
+> 
+> a few people including Mark and me have talked about holding a small
+> meeting for the Linux audio stuff (finally again!) during the next
+> Linux Plumbers Conference (on Oct 5-7 at Prague).
+> 
+> Has anyone already planned to attend there and is interested to join?
+> If we have enough people, we can try an official BoF session.
+> Otherwise, we can just have an unofficial session at lunch time or
+> such, too.  Just let us know.
+> 
 
-[ Upstream commit f9618ff105a0f6f5a6beed3edc557ea6a7d26df6 ]
+Thankyou Takashi and Mark for setting up this meeting,
 
-Starting with LunarLake, the dspless mode can handle SoundWire/ALH,
-DMIC and SSPs, so we need to identify the dai type from topology.
+Here is some Meeting Notes, please add if I missed anything.
 
-[ Backport to 6.6.y: 6.6.y still uses a stack-allocated snd_sof_dai in
-  the dspless topology path; parse the DAI type into that existing object
-  before connecting it. ]
+-SDCA
+Discussed gaps in the MIPI SDCA specification for platforms that don't
+use ACPI.
+Action item: @Srini to engage more actively with MIPI to help shape
+future versions of the spec.
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Link: https://msgid.link/r/20240213101247.28887-12-peter.ujfalusi@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Assisted-by: LLM
-Signed-off-by: Artem Dinaburg <artem@trailofbits.com>
----
-This is patch 1 of 2 in the ordered 6.6.y backport series.
-This is the prerequisite needed for the CVE-2025-21870 backport. Stores and
-populates each SOF DAI type so the following ALH hardening can distinguish
-ALH DAI widgets from same-name non-DAI or non-ALH widgets.
-This needed a target-specific adjustment; I called it out in the bracketed
-backport note above.
+-Compressed Offload and End-to-End Testing
+Concern raised that compressed audio support gets little or no testing,
+since it can currently only be exercised from the command line.
+Proposals:
+Integrate tinycompress into alsa-lib.
+Explore options for supporting compress offload in UCM.
+Action item: @vinod or @Jaroslav for merge
+	@Jaroslav to look at offload UCM.
+	@Srini to look into player support for e2e testing
 
-The fix is already present in 6.12.y, 6.18.y, and 7.2.y, but not in 6.6.y.
-This fix also affects 6.1.y, which will need a separate backport; this
-submission contains only the 6.6.y patch.
+-Speaker Protection
+Brief discussion on whether a standard framework or user-space utilities
+exist for performing speaker calibration or applying calibration data.
+Action Item:
 
- sound/soc/sof/ipc4-topology.c |  1 +
- sound/soc/sof/sof-audio.h     |  1 +
- sound/soc/sof/topology.c      | 11 +++++++++++
- 3 files changed, 13 insertions(+)
+-ASoC Componentization
+Discussed the current status of ASoC componentization.
+The work could move faster with extra help; volunteers for development
+and testing are welcome.
 
-diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-index 39e4f0fdd5e4..18096aefce13 100644
---- a/sound/soc/sof/ipc4-topology.c
-+++ b/sound/soc/sof/ipc4-topology.c
-@@ -534,6 +534,7 @@ static int sof_ipc4_widget_setup_comp_dai(struct snd_sof_widget *swidget)
- 	dev_dbg(scomp->dev, "dai %s node_type %u dai_type %u dai_index %d\n", swidget->widget->name,
- 		node_type, ipc4_copier->dai_type, ipc4_copier->dai_index);
- 
-+	dai->type = ipc4_copier->dai_type;
- 	ipc4_copier->data.gtw_cfg.node_id = SOF_IPC4_NODE_TYPE(node_type);
- 
- 	pipe_widget = swidget->spipe->pipe_widget;
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index 7620596ead07..13b9026ffd4d 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -514,6 +514,7 @@ struct snd_sof_route {
- struct snd_sof_dai {
- 	struct snd_soc_component *scomp;
- 	const char *name;
-+	u32 type;
- 
- 	int number_configs;
- 	int current_config;
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 7eb8eb35b137..011095722a80 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -2364,7 +2364,10 @@ static int sof_dspless_widget_ready(struct snd_soc_component *scomp, int index,
- 				    struct snd_soc_tplg_dapm_widget *tw)
- {
- 	if (WIDGET_IS_DAI(w->id)) {
-+		static const struct sof_topology_token dai_tokens[] = {
-+			{SOF_TKN_DAI_TYPE, SND_SOC_TPLG_TUPLE_TYPE_STRING, get_token_dai_type, 0}};
- 		struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
-+		struct snd_soc_tplg_private *priv = &tw->priv;
- 		struct snd_sof_widget *swidget;
- 		struct snd_sof_dai dai;
- 		int ret;
-@@ -2375,6 +2378,14 @@ static int sof_dspless_widget_ready(struct snd_soc_component *scomp, int index,
- 
- 		memset(&dai, 0, sizeof(dai));
- 
-+		ret = sof_parse_tokens(scomp, &dai.type, dai_tokens, ARRAY_SIZE(dai_tokens),
-+				       priv->array, le32_to_cpu(priv->size));
-+		if (ret < 0) {
-+			dev_err(scomp->dev, "Failed to parse DAI tokens for %s\n", tw->name);
-+			kfree(swidget);
-+			return ret;
-+		}
-+
- 		ret = sof_connect_dai_widget(scomp, w, tw, &dai);
- 		if (ret) {
- 			kfree(swidget);
--- 
-2.39.5
+-Sashiko Reviews
+Takashi proposed enabling Sashiko reviews on the sound mailing list.
+Everyone agreed, with some changes to the default configuration (e.g.,
+cool-off period for responses).
+
+-Quarterly Meetings
+Takashi proposed holding a virtual meeting every quarter.
+Action item: @Takashi to send invite.
+
+-Next LPC
+Agreed that a dedicated Audio BoF at LPC would be beneficial.
+Action item: @Srini and @Vinod to set this up.
+
+
+Thanks,
+Srini
+
+
+> 
+> Thanks!
+> 
+> Takashi
+> 
 
