@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4689ACA6011
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Oct 2026 17:18:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56940CA600D
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Oct 2026 17:23:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E549601E6;
-	Thu,  8 Oct 2026 19:17:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E549601E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2239860200;
+	Thu,  8 Oct 2026 19:23:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2239860200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1791479884;
-	bh=FE/Dw96fnjwsP+WenqVLHk0Misr7L1HT1QR7o67IcNs=;
+	s=default; t=1791480227;
+	bh=nSydQOVqzY7SmtE3PA9Qcc9FavCI1VyVUSekqfzjyl0=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=YTf/CKzlWCxCHn34fUbPqYQ4l3zV5YmABGqey7To5fM2+AQ662MxnX8XTqNy9LP7v
-	 GhQANDunTX9ii6SG9ph2KH22LocBn2X6Ra/XUlKEl2WMpHJL+073IL3TFc+8LSN5QR
-	 4IbTad7ov04E1Iiu3itsblqlAjDjmyTmwa0EqVTM=
+	b=VvkMNULztV32pg3sRrhpIomVk744VoFP/MWZK3393zvACD+QHYmeQiwi9Er5UnwHo
+	 LoVGHt9LfYSlEKfwvN3IG1M1xebtr3GYjkicDIeH+s7rKbIWXLvsrGu+UU5O/iebTD
+	 TOYHviCpgPzK29NFBIZ2jx+PadGrFpsc9K73+tGU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D32BCF805FB; Thu,  8 Oct 2026 19:17:31 +0200 (CEST)
+	id 8ED40F805F2; Thu,  8 Oct 2026 19:23:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 845D1F805EF;
-	Thu,  8 Oct 2026 19:17:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 207BAF80602;
+	Thu,  8 Oct 2026 19:23:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AB0FDF80571; Thu,  8 Oct 2026 19:17:24 +0200 (CEST)
+	id ECABFF80571; Thu,  8 Oct 2026 19:23:06 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791479844;
-	b=mTgTsERttzrPRzsMaZAztR+vIwC/RJDD3Q8U2pnKHz7OTIMynFobNwDXWjSv6J0pu7fc
-	 7qfmeIoWCr5AdE8i1K83lCp3qVRusxdzrereA8grGN2jHexVRYl9xSw5Cl3nBUGjpZvGy
-	 O8wUc+xYNLYHXdoNN2l2oUvglAcd63hwALD6N94mhrDS1zJ5rp8tBtKH7XkP4Z+dzMjz9
-	 +yPSHYEYVHKeWc5b2kl3EZzm3esn/bp7eHxgZXUgLYvA6NQnj6b5vcM4lMj/7Oz9jX1bx
-	 O62wKzX1jES7INzutXObzmYTGaEYHFWLmcGBohv+ayTkmLnhLq9xbQ5Oz0gLnIZ+A7A==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791480186;
+	b=JHcV0cTvrNhppwHnv0Gls430kOJ5OAfauGvu3CTTyW1B01nmaxqoPG48L3Bf6o23EtNG
+	 XacxSmxoSOuc8Sfv35Car8At2hZN1kOlH3/9LrVfP/boWMjuUhPiOo4bxlmAol3Y1BVHG
+	 v4cIj/FBzPNVlOMoXmy4rKD9Yjk8NDiXmYsjFyc7q9WrxSoW6QAI7CZCdVL06IJjblWCm
+	 XLOzSzQ2jkS+YeiouX6QjInsZjFVnEdZ+pEi2V1hlT5UIskCUP21Zl4MVzMaayt1uBwGK
+	 mRsUgzcJagt5nFAA0kEudjed7qQZJjcFthGBOSUGOEVmSXKXOJPqhKtQI5wF6qfXkLw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1791479844;
+	c=relaxed/simple; t=1791480186;
 	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=FE/Dw96fnjwsP+WenqVLHk0Misr7L1HT1QR7o67IcNs=;
-	b=DBMu8d+aqh5qa1R6PNPentvezzJvUJJJzmCySF/EHYDXCUPFrk4dGEq/RcuW/xWncrMh
-	 I0GlfXY3SF0d5wpGZ6AdW3PYAK3OLNJiI12tRxaWcqteClYDF32ztOtt75h/2DNkBITi1
-	 56B4RFKlnkopc/0GewfIH7GHLTpSutwywCdad8kTEGOCfAxPBLYecoMfyczrpz0CpgyZm
-	 XdDnaWRrwX/z2cYOmAG9p+sAN9bImoGFLz9vCCmM15OurJID8+N+aUgUYx0dXr5qNycPE
-	 sWv2Bvxbvl2FaOfwDHDyXL3nICfPI7MSLsu6QhMJ5zmFidEPFxcUIckWTJw0S3MD/Ig==
+	bh=nSydQOVqzY7SmtE3PA9Qcc9FavCI1VyVUSekqfzjyl0=;
+	b=fBpDDHkPQfAlnEUIUHH8JavCVlRqJz6mDo4G6W+6gPKUUzASmrqe1d2NPNZwDL99XH2a
+	 0HL4S9NLPUlGSWBsV2ckTHwjeVibVXn3fDBIfM85gRiNaqaMLdHQ/MY3FxifE0ASPmxwv
+	 0gLdx03Ey4bFv731dLB2o1OC8jzH9buB2JJdt2sCiy3X+Rw+//z4JKmw9hZQ3vEggvnwt
+	 9roDnJn+KLlWrnu+3EBDckajovz2u+eQgcR8TEPS0RR8TWSh5IVX0sB2cAm6/N2Hi6Y76
+	 M1LwLhf+JS0GMChRTi3nj2uDiWT/dR8bzdXNYXiV7IGhYAgqBplpiQzFE5LZSNqzFYA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  arc=none smtp.remote-ip=45.14.194.44
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1C7CF8007E
-	for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2026 19:17:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1C7CF8007E
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C150F8007E
+	for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2026 19:23:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C150F8007E
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18dc9d6cd2966c00-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-ucm-conf/pr/868@alsa-project.org>
-References: <alsa-project/alsa-ucm-conf/pr/868@alsa-project.org>
-Subject: Add UCM2 configs for uboot variant of the Qualcomm variant Kodiak /
- Talos/ Lemans & Monaco.
-Date: Thu,  8 Oct 2026 19:17:24 +0200 (CEST)
-Message-ID-Hash: YXMQ3IPLEESYL773RMAHJE22CWFUQSRE
-X-Message-ID-Hash: YXMQ3IPLEESYL773RMAHJE22CWFUQSRE
+Message-Id: <18dc9dbc857add00-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/869@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/869@alsa-project.org>
+Subject: sof-soundwire: add ES9356 device files
+Date: Thu,  8 Oct 2026 19:23:06 +0200 (CEST)
+Message-ID-Hash: NPGKHVEEVMLBI2WXMDCKFXV2J7Y2HEJO
+X-Message-ID-Hash: NPGKHVEEVMLBI2WXMDCKFXV2J7Y2HEJO
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -76,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YXMQ3IPLEESYL773RMAHJE22CWFUQSRE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NPGKHVEEVMLBI2WXMDCKFXV2J7Y2HEJO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,10 +84,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #868 was opened from kumarsingh-art:
+alsa-project/alsa-ucm-conf pull request #869 was opened from kannoy2024:
 
-Add UCM2 configs for uboot variant of the Qualcomm variant Kodiak / Talos/ Lemans & Monaco.
+Boards using the Everest Semiconductor ES9356 SDCA codec (for example the MECHREVO WUJIE 14SAH with AMD ACP6.3) report the component string
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/868
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/868.patch
+    cfg-amp:1 hs:es9356 mic:es9356-dmic spk:es9356-spk spk:es9356
+
+so sof-soundwire resolves the device files to es9356-spk, es9356-dmic and es9356. Those files do not exist, UCM loading fails, and WirePlumber falls back to the "stereo-fallback" profile, which only exposes the first PCM of the card (device 0, the headset output). Desktop audio is silent even though the kernel side works.
+
+Add the three device files, using the PCM layout of these boards: device 0 headset playback, device 1 headset capture, device 2 speaker playback, device 4 internal DMIC capture.
+
+Tested on a MECHREVO WUJIE 14SAH (Ryzen 7 H 255, ACP6.3 rev 63, ES9356 on SoundWire link 0) with mainline 7.2.9: with these files Speaker, Headphones, Internal Microphone and Headset Mic all appear in PipeWire and playback plus recording work.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=222092
+Link: https://lore.kernel.org/linux-sound/20261007193038.2473068-1-mario.limonciello@amd.com/
+Link: https://lore.kernel.org/linux-sound/179145019931.16888.9682263186729943710@gmail.com/
+
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/869
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/869.patch
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
