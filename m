@@ -4,101 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 781FECA600D
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Oct 2026 19:20:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD9CFCA5FED
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2026 04:53:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5A35C601FF;
-	Thu,  8 Oct 2026 21:20:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A35C601FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3B5B601E9;
+	Fri,  9 Oct 2026 06:52:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3B5B601E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1791487255;
-	bh=cGNMcgMWMv9ITyRA7sMxqUtUt5yrffZFpLvJj0fzZxA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=KtrP1kFRNAbmbynmUYPM+SKKkE09cSSIvPx8vcelNJPGkx8Fh0BqtanuYuGSTrbg/
-	 T0lY9/QWBKd2Q71qXXIFtLav+B/XBGlx25BFfPIwmVtEBJKPTpCpcrR0/nBZhcjQcl
-	 WMeLtF90+PJu9VmKiRkpTC58/NeZGqTt3vv15piA=
+	s=default; t=1791521584;
+	bh=yQKVqfMknWlVUfiGpr6FHtE7pQtpNFcgbX04BIQvv1M=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=Hu9+aRx1lgmjBFQ49GEg5HEL1skugwf+tytPQIl2IBdH7I58SQbRWTWlrAR9aCJmK
+	 tqbZZPeUpsMdWb6WiNVtEjK83DKrEktVxiV7yLmXKnN7HVpNWwlB7aKqLzY22ovJbN
+	 ChGVbalFQsPG/x6D8DPelK1x3x0s0uwyyUy8gvEk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 863ABF805FC; Thu,  8 Oct 2026 21:20:20 +0200 (CEST)
+	id 58132F80601; Fri,  9 Oct 2026 06:52:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0BD9F80603;
-	Thu,  8 Oct 2026 21:20:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 246FCF805EF;
+	Fri,  9 Oct 2026 06:52:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 13DA3F80571; Thu,  8 Oct 2026 21:20:13 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.130
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791487211;
-	b=PKYHmDfgIE51PVOKt6lUxW7I8UwjajuQzEJ1Qp1U+hb9WaFuhuwEkcDkrRfdY/rmwdm0
-	 gbSi2304pCavPgMODA9Hx3JsyW1iVS5GeLJ5B2hMFSp//c+CXwQeamtSCa5+uDCDSEMyz
-	 nQh8KDFKt9JrNxgUMA+MxhLeUpJFh7TB1l0ay/+OmMTMSgpi5jjNyQ3PeVObXdXUq1hDY
-	 52AigJFuAHUmvRWOh9+nsMONHMRjMbj35b0Rloejpv8mNnVH65mWKwv3NFNxwF+/2SW0J
-	 FSPCAuyqfgicZ/P4niogLzkanQafIH2RZ6RD+C4mVJi+v1vTd6Nx+ByDQCgMS/AVFcQ==
+	id 821BAF80557; Fri,  9 Oct 2026 06:52:23 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791521542;
+	b=fM99M/8SXqgpfA1p+/q2c95ZOpSO0Ux9oquBZhVi4l3JSiSzOPEEaZIJkJCGmDXKYXOt
+	 JRDQjlCqsup43QjiPXsmPI2tal9ydjl58/Vj2r310eRpt1rcSq/rdIFsoccy6jiaUQbmU
+	 o+Qb3XFtyEHksHQE8Kcuc0Z34bSN06QQcecyaYETQ3W3r8X1ojZbEVC5tvcnQCNEpusQj
+	 58SQFDjBY+ILCgn8rRyZ990hsGu8+oRo2S/eQlTeTNPBVChGNz00fwX6R8/O/8o3dmoct
+	 NMurkcd6++gOSa+RfTEUfUuwqE+TyRH4xTD4LLjLJzFNyYb6J/j5wdJAADCVGgEPLJg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1791487211;
-	h=Date:Message-ID:From:To:Subject:MIME-Version;
-	bh=cGNMcgMWMv9ITyRA7sMxqUtUt5yrffZFpLvJj0fzZxA=;
-	b=RhGS6C2m6EswCBwu72A46vGxMbNc9DHoi/NQwJlf1tAgetlK4q/SZNUXcAyfdkyTbWxd
-	 SEWkBDGWlbxuRJMIUvMxfsz1ybphR+CDlwgmkoh9Pbk2b6h7ydndAaR2+yWdVlmdYBuVc
-	 OWIfvAJVlLT69i2Vy6xG/FFn3vI6poGwssGPVJo4FaTS0EHXLzzTpTNeNAGj2V4Po0nia
-	 QAEzngO8RcIK+Gn3tKlEhwhP5WIlPeusYrteu8J0uQb06fAvsr2HZT3wUZl+N+nXIpCcy
-	 48ebnWDSQ/zV5FHL7zReR7Wx47wyLgH8bY61LIxZE7DHCVRw4FhXp6BuyMtYnR8Jgfg==
+	c=relaxed/simple; t=1791521542;
+	h=MIME-Version:From:To:Message-Id:Subject;
+	bh=yQKVqfMknWlVUfiGpr6FHtE7pQtpNFcgbX04BIQvv1M=;
+	b=dv1P4/UuEo2nM86ckPH2pk266ZxfH+8LCLKS307qfLNTBv5Uadg7X9X/UqDecBr6Zdst
+	 4n7+85RLrvmMCiuiffSUW46x7rDnQX13Fr6NWDgIf8Y+jJLgPDNqQVYtOJzyXoViTSYCQ
+	 cHjF9q31tNj0qiXpr3lWWHMLaTZZIRqgQRcF9HvIl6IbOR8VTV5OY5CXjmgjo4vdGnSeK
+	 hM3WU8iXY443UiZTQGx5GwG6UZ5fZjDfJ9JBliF3DrDSrLPxDzV/yTzejBeRIDtOtZz63
+	 fOsm7+ejfQRU7p7g2sCwEm/PbdbdKontl4WonUmbvQ6Lb6QusD+pFlZ6rCo/FvnhXWA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.130
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 08250F8007E
-	for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2026 21:20:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08250F8007E
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D931D21C32;
-	Thu,  8 Oct 2026 19:20:08 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9A5431339F;
-	Thu,  8 Oct 2026 19:20:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id XxcqHOjsx2oYAgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 08 Oct 2026 19:20:08 +0000
-Date: Thu, 08 Oct 2026 21:20:08 +0200
-Message-ID: <878q48579z.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Srinivas Kandagatla <srinivas.kandagatla@oss.qualcomm.com>
-Cc: linux-sound@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: Re: Linux-audio BoF at Linux Plumbers Conference?
-In-Reply-To: <7678c37d-9f42-4e3e-b054-762688cd8077@oss.qualcomm.com>
-References: <871pbsnce8.wl-tiwai@suse.de>
-	<7678c37d-9f42-4e3e-b054-762688cd8077@oss.qualcomm.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Rspamd-Pre-Result: action=no action;
-	module=Unknown lua;
-	unknown reason
-X-Rspamd-Pre-Result: action=no action;
-	module=Unknown lua;
-	unknown reason
-X-Spamd-Result: default: False [0.00 / 50.00]
-Message-ID-Hash: 42SHJZNWMQGX7WOQY7QA5DQREZ6DMW2B
-X-Message-ID-Hash: 42SHJZNWMQGX7WOQY7QA5DQREZ6DMW2B
-X-MailFrom: tiwai@suse.de
+ arc=none smtp.remote-ip=45.14.194.44
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BDA2F8025A
+	for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2026 06:52:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BDA2F8025A
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18dcc35975a17100-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/870@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/870@alsa-project.org>
+Subject: ucm2: Qualcomm: x1e80100: add DisplayPort 2 playback
+Date: Fri,  9 Oct 2026 06:52:23 +0200 (CEST)
+Message-ID-Hash: C2W5RCRE4YXN7NMNPBRGM5WCCUBVC3D2
+X-Message-ID-Hash: C2W5RCRE4YXN7NMNPBRGM5WCCUBVC3D2
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -109,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/42SHJZNWMQGX7WOQY7QA5DQREZ6DMW2B/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C2W5RCRE4YXN7NMNPBRGM5WCCUBVC3D2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,71 +84,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 08 Oct 2026 14:46:57 +0200,
-Srinivas Kandagatla wrote:
-> 
-> On 8/20/26 2:34 PM, Takashi Iwai wrote:
-> > Hi,
-> > 
-> > a few people including Mark and me have talked about holding a small
-> > meeting for the Linux audio stuff (finally again!) during the next
-> > Linux Plumbers Conference (on Oct 5-7 at Prague).
-> > 
-> > Has anyone already planned to attend there and is interested to join?
-> > If we have enough people, we can try an official BoF session.
-> > Otherwise, we can just have an unofficial session at lunch time or
-> > such, too.  Just let us know.
-> > 
-> 
-> Thankyou Takashi and Mark for setting up this meeting,
-> 
-> Here is some Meeting Notes, please add if I missed anything.
-> 
-> -SDCA
-> Discussed gaps in the MIPI SDCA specification for platforms that don't
-> use ACPI.
-> Action item: @Srini to engage more actively with MIPI to help shape
-> future versions of the spec.
-> 
-> -Compressed Offload and End-to-End Testing
-> Concern raised that compressed audio support gets little or no testing,
-> since it can currently only be exercised from the command line.
-> Proposals:
-> Integrate tinycompress into alsa-lib.
-> Explore options for supporting compress offload in UCM.
-> Action item: @vinod or @Jaroslav for merge
-> 	@Jaroslav to look at offload UCM.
-> 	@Srini to look into player support for e2e testing
-> 
-> -Speaker Protection
-> Brief discussion on whether a standard framework or user-space utilities
-> exist for performing speaker calibration or applying calibration data.
-> Action Item:
-> 
-> -ASoC Componentization
-> Discussed the current status of ASoC componentization.
-> The work could move faster with extra help; volunteers for development
-> and testing are welcome.
-> 
-> -Sashiko Reviews
-> Takashi proposed enabling Sashiko reviews on the sound mailing list.
-> Everyone agreed, with some changes to the default configuration (e.g.,
-> cool-off period for responses).
-> 
-> -Quarterly Meetings
-> Takashi proposed holding a virtual meeting every quarter.
-> Action item: @Takashi to send invite.
-> 
-> -Next LPC
-> Agreed that a dedicated Audio BoF at LPC would be beneficial.
-> Action item: @Srini and @Vinod to set this up.
+alsa-project/alsa-ucm-conf pull request #870 was opened from QTI-Quill:
 
-Thanks Srini!  It was really nice to meet you guys there.
+Add an HDMI2 device for DISPLAY_PORT_RX_2 using MultiMedia7 with the "DP2 Jack" control.
 
-One topic I talked was about Rust support:
-I asked whether there are any interests of Rust support for sound
-subsystem.  As I worked on an early prototype with the help of AI, and
-I'll show the material for discussion on ML.
-
-
-Takashi
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/870
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/870.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
