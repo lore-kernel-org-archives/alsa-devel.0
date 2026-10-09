@@ -4,67 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 044D3CA6019
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2026 13:01:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E009CA601E
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2026 13:07:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B581601FA;
-	Fri,  9 Oct 2026 15:01:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B581601FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id C25DF601FA;
+	Fri,  9 Oct 2026 15:07:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C25DF601FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1791550902;
-	bh=iED8NM8/MUPtdkWk2aTyM0YUZsrhhvxAgbIc1Wy7SAk=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=IBGR8Lem/1AyI2O+KiLWP2hNgeFOGWq3zJQWXAXfeCd6fTrxTiXn79S3hJSo2J1ge
-	 uoUmbmI+/BcPkNvPssVNywHcp6XT1EVJJ2mY+01dBXmRTeTeSb4bNeF6MTT/ehTdM9
-	 45Ooes+6B4y513Fd0nsbwJfTT+Xw2X8priwXlDsU=
+	s=default; t=1791551259;
+	bh=4iqX4CvMtOj9yjXsd2TdSfg942NUgO6LRv+HGNdGYt4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=YYSr+B+NzmoWYrNCXMYbGXaeWj2vwDN8eFRaxjljX/eRz3/2RVdgSbGe6z6wc5MgS
+	 Gf75GGMO/oJ1iutxkm/ZOGnwRL3T8EfSW3KGikJYSA/GXAHoRGRmX3lS5auWg87z95
+	 mDrV2zah3wfWuCfwlIvVVQf5pwsdidtPx2y8yUbE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D9E10F805FD; Fri,  9 Oct 2026 15:01:08 +0200 (CEST)
+	id 453EAF80602; Fri,  9 Oct 2026 15:07:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9940BF805FA;
-	Fri,  9 Oct 2026 15:01:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D71A0F80589;
+	Fri,  9 Oct 2026 15:07:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 93A3AF80557; Fri,  9 Oct 2026 15:01:02 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791550862;
-	b=n3kIOaD63U62vuNzUseWiCqrAzVqGpDRo8kfnoUkYQqhJVQHsP3G/4rBMqC6UNQ+zlUM
-	 kjOnIVhAOzMO2QxfEOfDBwjsFMk5sy1U4BHQTvg7Kq1/KwH9gZnAT9zLFQ/t/bfLcg0bm
-	 nNT0d8hrumB6YtJicvMP1tBI8gGci5MMEbv1yERyxz20ADai9du7O+2+D4cENo0ksvoSR
-	 HNBnyq/EwMEV47RNuldzdI2HaijhQ1kCYHr11eO2kPyxE2uD2q9fYq9vC7ucuqaexPPKv
-	 YdQZ0LT2fPrlXkEgfKA9B1vqugDryh3p6iBaW353wFg41WfvR6YAvm2yhuGvhLFNEMw==
+	id A3849F80557; Fri,  9 Oct 2026 15:07:00 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=none smtp.remote-ip=195.135.223.130
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791551219;
+	b=Qv16yFeNaD0pLQ65w8cPJmhQghwCCv55YGs3n8uNi2IS9CWPInN32HFLDGtCwFpThs5p
+	 fH4WujFHznRUAzLV0Dky23a3CvOLpXarzPKeuI2CLd8pq1j2qgy+K9TiGEL5Lq3CISan7
+	 HcByRqbXsNsWYXDQnik783/eLsFQk0W05NY8hhOGaxSDOy2YgMbMSdf1H1uBfOsCZpWRS
+	 YUy4JDFz0JJZgVXnrv2RA8O/sqsoCJp4OEVzGXALAoBSiWP9HNdd3DB+diGvrgxoRUMdt
+	 v6OnyZ3y+4ybX+u/sr3crsmG8SWO1ZZmQ4NRYODayvxL8OxrSKldzIaS5+V6OuM9xsQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1791550862;
-	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=iED8NM8/MUPtdkWk2aTyM0YUZsrhhvxAgbIc1Wy7SAk=;
-	b=SPiKdU4RsGw8xQp4JztF2s+If4egRIC6D1mvROU1ALGoFReFzLNWfzxoE8PkFX+csYdQ
-	 uC+MrpQOUUMez7GUiE+gn+6a0PwBM2fNflPHHJ2PiOXNmLW0OrP+JzW5Zzz9h5GfDinri
-	 nX6jrLPXJufCBILwvkeWgsyZ5LWQO1veliD1DkfYIPOsPuxR4xl/6TqmD2VLfZBe7MY3o
-	 CTDveYtcefIV8HOq3q0P0dcg5oObFokybHvVweW45tYS4syC5HSqYM/QJbLeWAziD4dyY
-	 y8YHrM66r0W8jEMTP1MZOh4YUIEiFmDe8gKahYyQ+CfcVLePbLQkIRnIgHoi0/bBSNA==
+	c=relaxed/simple; t=1791551219;
+	h=Date:Message-ID:From:To:Subject:MIME-Version;
+	bh=4iqX4CvMtOj9yjXsd2TdSfg942NUgO6LRv+HGNdGYt4=;
+	b=KNAo6tq0Jlx545ZETntYA32Q/6GCJrKlldgsuZXnSnOhyvRsSTQBG1XT0DAoICaCPUwT
+	 PPD1ZbHcXpfLv7K/gIh+7WhJxyC2S4uLH2j1eEZvzvAn3g7YlegFebtgFYg0QdFhWdnri
+	 IbInYOlQstKNNLPSaSQWeTCQhtcPHZBqJP2KRBFFJhI8Q3joX7d11TmMekfkJNOpkAOo+
+	 oYFP8bR3pj/4aEnMiymQh1AcS8jU+9TgZNmVK9JNVZVc0KoMxAFYzQORNTLDDYDyvn+LP
+	 OGdS+XfNZOcwZYsVCQGyj2I2rx/vMCDQpKL7EyDNa9rWSs/wVYRCgCw+8H/0AOnLNGQ==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=45.14.194.44
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3699F8026A
-	for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2026 15:00:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3699F8026A
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <18dcde02a0542e00-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-utils/pr/337@alsa-project.org>
-References: <alsa-project/alsa-utils/pr/337@alsa-project.org>
-Subject: topology: alsatplg: add double-expansion for global defines
-Date: Fri,  9 Oct 2026 15:01:02 +0200 (CEST)
-Message-ID-Hash: OOZKDNWE4ZQNBYSSAI43U3OWMDMW4ZYO
-X-Message-ID-Hash: OOZKDNWE4ZQNBYSSAI43U3OWMDMW4ZYO
-X-MailFrom: github@alsa-project.org
+ arc=none smtp.remote-ip=195.135.223.130
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9C349F8026A
+	for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2026 15:06:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C349F8026A
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0302621C26;
+	Fri,  9 Oct 2026 13:06:58 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A76FA1326D;
+	Fri,  9 Oct 2026 13:06:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id +b9XH/HmyGq2SQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 09 Oct 2026 13:06:57 +0000
+Date: Fri, 09 Oct 2026 15:06:57 +0200
+Message-ID: <87pkxj3tvy.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Olivier Kaloudoff <olivier.kaloudoff@gmail.com>
+Cc: alsa-devel@alsa-project.org,
+	tiwai@suse.com,
+	perex@perex.cz,
+	linux-usb@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] ALSA: usb-audio: Add mic resolution quirk for Logitech
+ Webcam C200
+In-Reply-To: <20261008230844.11246-1-olivier.kaloudoff@gmail.com>
+References: <20261008230844.11246-1-olivier.kaloudoff@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Rspamd-Pre-Result: action=no action;
+	module=Unknown lua;
+	unknown reason
+X-Spamd-Bar: /
+X-Rspamd-Queue-Id: 0302621C26
+X-Rspamd-Pre-Result: action=no action;
+	module=Unknown lua;
+	unknown reason
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [0.00 / 50.00];
+	TAGGED_RCPT(0.00)[]
+Message-ID-Hash: FNXLHP46JTPXFSF6A3SCMVCFU7GC7CSQ
+X-Message-ID-Hash: FNXLHP46JTPXFSF6A3SCMVCFU7GC7CSQ
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -75,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OOZKDNWE4ZQNBYSSAI43U3OWMDMW4ZYO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FNXLHP46JTPXFSF6A3SCMVCFU7GC7CSQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,18 +127,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-utils pull request #337 was opened from kv2019i:
+On Fri, 09 Oct 2026 01:08:44 +0200,
+Olivier Kaloudoff wrote:
+> 
+> The C200 (046d:0802) reports a mic capture volume range of
+> 1536..7680 with a resolution of 1 (6144 steps), triggering
+> "Warning! Unlikely big volume step count (=6144), linear volume or
+> wrong cval->res?" at probe and exposing a uselessly fine-grained
+> mixer control.  This is the same firmware behavior as the other
+> UVC-era Logitech webcams already carrying QUIRK_FLAG_MIC_RES_384
+> (C500, C600, C210, C270, C310, C510, C525, ...), so apply the same
+> quirk: CTL_MSG_DELAY_1M (which the Logitech VENDOR_FLG would provide
+> if the device-specific entry did not short-circuit the lookup) plus
+> MIC_RES_384.
+> 
+> Verified on real hardware: with the quirk the warning disappears and
+> the driver logs "set resolution quirk: cval->res = 384".
+> 
+> Signed-off-by: Olivier Kaloudoff <olivier.kaloudoff@gmail.com>
+> Cc: stable@vger.kernel.org
 
-Add support for following definition for global variables:
+Applied to for-next branch now.  Thanks.
 
-  IncludeByKey.SDW_DMIC_PCM_CHANNELS {
-    "1" { Define { SDW_DMIC_CHANNEL_CFG $CHANNEL_CONFIG_MONO } }
-  }
 
-This doesn't currently work as the pre-processor merges the nested Define into the global define registry as a STRING value ("$CHANNEL_CONFIG_MONO").  Later, during object attribute expansion, pre_process_object_variables_expand_fcn finds the variable in the global defines and returns immediately with that unresolved string.  The caller then passes "$CHANNEL_CONFIG_MONO" to the token encoder, which cannot parse it as an integer and silently substitutes 0.
-
-Add support for double expansion for such global defines. This is similar to how local variables are already handled (see commit 0029ab7cc7c7 ("topology: Expand attribute references inside $[] expressions")), and will help to reduce repeated IncludeByKey statements in topology files.
-
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/337
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/337.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
+Takashi
