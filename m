@@ -4,110 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E009CA601E
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2026 13:07:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 718E0CA9EBD
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2026 17:11:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C25DF601FA;
-	Fri,  9 Oct 2026 15:07:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C25DF601FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA280601F1;
+	Fri,  9 Oct 2026 19:10:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA280601F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1791551259;
-	bh=4iqX4CvMtOj9yjXsd2TdSfg942NUgO6LRv+HGNdGYt4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1791565869;
+	bh=vY6L4NTvm/on6IWMnloYlwQJX0aRNJuGQuYsvtVGC40=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YYSr+B+NzmoWYrNCXMYbGXaeWj2vwDN8eFRaxjljX/eRz3/2RVdgSbGe6z6wc5MgS
-	 Gf75GGMO/oJ1iutxkm/ZOGnwRL3T8EfSW3KGikJYSA/GXAHoRGRmX3lS5auWg87z95
-	 mDrV2zah3wfWuCfwlIvVVQf5pwsdidtPx2y8yUbE=
+	b=JpSt7XLLOGJfDCpGGA4KqNJayjbo7QGcZBSklMYJghBLKxdrMlwgqyqwXcGlzQiMC
+	 HatnCrHGJe5v0+SWk7+zWcjdXrlYhaYKR5ESt6mrXEhabjKvvFxFaiSZyYGTbDZqul
+	 ArptXsJ8svoy4SeFV6qT+FQNr8JXDcMV8PfZ9dFY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 453EAF80602; Fri,  9 Oct 2026 15:07:06 +0200 (CEST)
+	id A6647F80601; Fri,  9 Oct 2026 19:10:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D71A0F80589;
-	Fri,  9 Oct 2026 15:07:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C01ABF80600;
+	Fri,  9 Oct 2026 19:10:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A3849F80557; Fri,  9 Oct 2026 15:07:00 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.130
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791551219;
-	b=Qv16yFeNaD0pLQ65w8cPJmhQghwCCv55YGs3n8uNi2IS9CWPInN32HFLDGtCwFpThs5p
-	 fH4WujFHznRUAzLV0Dky23a3CvOLpXarzPKeuI2CLd8pq1j2qgy+K9TiGEL5Lq3CISan7
-	 HcByRqbXsNsWYXDQnik783/eLsFQk0W05NY8hhOGaxSDOy2YgMbMSdf1H1uBfOsCZpWRS
-	 YUy4JDFz0JJZgVXnrv2RA8O/sqsoCJp4OEVzGXALAoBSiWP9HNdd3DB+diGvrgxoRUMdt
-	 v6OnyZ3y+4ybX+u/sr3crsmG8SWO1ZZmQ4NRYODayvxL8OxrSKldzIaS5+V6OuM9xsQ==
+	id 989C7F80557; Fri,  9 Oct 2026 19:10:29 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791565829;
+	b=bmy9e97c+4fYOjyrQyyrk1ZgVY1H/EzFXlpCKBJH4QXS8axUXw1YWkGvhYoDkKAuYygm
+	 JSTv7IKEEKNseHmZryHJIwvD2CTUqjMAoKc9jqD0FMJMwf4DqiJSFpSL8RpP5XRHDdxep
+	 cPrjob+hmFPWODSXo0YhyBJl0AUX3tiyDYASbv99ncc3hH1uj4kYGQjaf3F8dWVNJ02JQ
+	 U2KLszslmVrrlZgg2/CzjcM/w2vVjpaCLAJSdNsq+c8kIiVMQWk9spn6svGHAmko+6gBV
+	 +UFHE/+vCAJ3QLxhZCZElACOr1L/AG065Ec5YV+Ouh+LmZ5D7tHdqZMmsLOEB8cYQRg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1791551219;
-	h=Date:Message-ID:From:To:Subject:MIME-Version;
-	bh=4iqX4CvMtOj9yjXsd2TdSfg942NUgO6LRv+HGNdGYt4=;
-	b=KNAo6tq0Jlx545ZETntYA32Q/6GCJrKlldgsuZXnSnOhyvRsSTQBG1XT0DAoICaCPUwT
-	 PPD1ZbHcXpfLv7K/gIh+7WhJxyC2S4uLH2j1eEZvzvAn3g7YlegFebtgFYg0QdFhWdnri
-	 IbInYOlQstKNNLPSaSQWeTCQhtcPHZBqJP2KRBFFJhI8Q3joX7d11TmMekfkJNOpkAOo+
-	 oYFP8bR3pj/4aEnMiymQh1AcS8jU+9TgZNmVK9JNVZVc0KoMxAFYzQORNTLDDYDyvn+LP
-	 OGdS+XfNZOcwZYsVCQGyj2I2rx/vMCDQpKL7EyDNa9rWSs/wVYRCgCw+8H/0AOnLNGQ==
+	c=relaxed/simple; t=1791565829;
+	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=vY6L4NTvm/on6IWMnloYlwQJX0aRNJuGQuYsvtVGC40=;
+	b=E3tSGrh855/WUGiGJLVZBXCKn8OsEBrExBl6/y6X1sZ7hskyQ2y40uMvWLmCMz5QS8VY
+	 7OHsvR/y3zGfTQ/lgfTQj/lz4Mne0T9nQUI7Wzj7T6C5+GxnPuFJK+hvqmrlF2EyeN758
+	 xT8gPylUQLSlRPqnkITMoKHw/kkz4+NgYhnwuIH/eCraRkD2uUaoxD7fmDGt82e+XPOFL
+	 +5aPfH0v51s1dukuDsXW0nHJ55h8cuzi3zQQCY5CbgyKYr+tpQ52d5ggmm1hXoaTex2ZY
+	 rKw0M83aSilsFObRZm2+GNcJBs58UWwmy+52XOkYfFfU0B1AvLQA7lcd5MLzfMFpguw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.130
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=YixGXwa3;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9C349F8026A
-	for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2026 15:06:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C349F8026A
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0302621C26;
-	Fri,  9 Oct 2026 13:06:58 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A76FA1326D;
-	Fri,  9 Oct 2026 13:06:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +b9XH/HmyGq2SQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Fri, 09 Oct 2026 13:06:57 +0000
-Date: Fri, 09 Oct 2026 15:06:57 +0200
-Message-ID: <87pkxj3tvy.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Olivier Kaloudoff <olivier.kaloudoff@gmail.com>
-Cc: alsa-devel@alsa-project.org,
-	tiwai@suse.com,
-	perex@perex.cz,
-	linux-usb@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] ALSA: usb-audio: Add mic resolution quirk for Logitech
- Webcam C200
-In-Reply-To: <20261008230844.11246-1-olivier.kaloudoff@gmail.com>
-References: <20261008230844.11246-1-olivier.kaloudoff@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Rspamd-Pre-Result: action=no action;
-	module=Unknown lua;
-	unknown reason
-X-Spamd-Bar: /
-X-Rspamd-Queue-Id: 0302621C26
-X-Rspamd-Pre-Result: action=no action;
-	module=Unknown lua;
-	unknown reason
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [0.00 / 50.00];
-	TAGGED_RCPT(0.00)[]
-Message-ID-Hash: FNXLHP46JTPXFSF6A3SCMVCFU7GC7CSQ
-X-Message-ID-Hash: FNXLHP46JTPXFSF6A3SCMVCFU7GC7CSQ
-X-MailFrom: tiwai@suse.de
+	by alsa1.perex.cz (Postfix) with ESMTPS id CD9E2F8025A;
+	Fri,  9 Oct 2026 19:10:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD9E2F8025A
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=YixGXwa3
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id EF01443D3F;
+	Fri,  9 Oct 2026 17:10:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4448F1F0089A;
+	Fri,  9 Oct 2026 17:10:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1791565823;
+	bh=dmxj2lj4Q4GvWHDzZDgnLPWqXygKdSJybIHJoEn8ViA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=YixGXwa3MLom9Js4zQIUKVFQdomaKuo9cj7RvEu0/wb0JhokZZMOEaTvxvCCpjvKE
+	 OPZi7RwFAxnMSyrVUQEF+ez1UumpLy+NM8vTQlpd7Znls15GLowiQYFfmI8DUTsSX7
+	 N3UX30F/lGzfORtfhFMy6rfYAmXg5lH3p53zliBjjaHfO2Tt3gteffSCAZJMCpfFgV
+	 5AO9iYgk0Rap9dp3jxVbL/nOq/cbqmCfdSXoQL8rE6gt4rMW3lz2eBzX3kc5mbHEuC
+	 9msIKk6MfZFAFyEmVhr2cIw8bVkN9jenTDbtOz/htkGYjPUfpSPPbUR5KKOlvNtgYG
+	 SbgHQ+LVYgWQw==
+From: Sasha Levin <sashal@kernel.org>
+To: stable@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>,
+	Artem Dinaburg <artem@trailofbits.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	sound-open-firmware@alsa-project.org,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.dev>,
+	Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+	linux-sound@vger.kernel.org,
+	Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>,
+	Liam Girdwood <liam.r.girdwood@intel.com>
+Subject: Re: [PATCH 6.6.y 0/2] asoc: backport CVE-2025-21870
+Date: Fri,  9 Oct 2026 13:09:44 -0400
+Message-ID: 
+ <2026-10-09-1-daily-reply-0007-sof-alh-cve-2025-21870-6-6@kernel.org>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20261008190108.96660-1-artem@trailofbits.com>
+References: <20261008190108.96660-1-artem@trailofbits.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: 42565YVHUEIDTMHYYV5DHX6KK4KC37RT
+X-Message-ID-Hash: 42565YVHUEIDTMHYYV5DHX6KK4KC37RT
+X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -118,7 +121,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FNXLHP46JTPXFSF6A3SCMVCFU7GC7CSQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/42565YVHUEIDTMHYYV5DHX6KK4KC37RT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,27 +130,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 09 Oct 2026 01:08:44 +0200,
-Olivier Kaloudoff wrote:
-> 
-> The C200 (046d:0802) reports a mic capture volume range of
-> 1536..7680 with a resolution of 1 (6144 steps), triggering
-> "Warning! Unlikely big volume step count (=6144), linear volume or
-> wrong cval->res?" at probe and exposing a uselessly fine-grained
-> mixer control.  This is the same firmware behavior as the other
-> UVC-era Logitech webcams already carrying QUIRK_FLAG_MIC_RES_384
-> (C500, C600, C210, C270, C310, C510, C525, ...), so apply the same
-> quirk: CTL_MSG_DELAY_1M (which the Logitech VENDOR_FLG would provide
-> if the device-specific entry did not short-circuit the lookup) plus
-> MIC_RES_384.
-> 
-> Verified on real hardware: with the quirk the warning disappears and
-> the driver logs "set resolution quirk: cval->res = 384".
-> 
-> Signed-off-by: Olivier Kaloudoff <olivier.kaloudoff@gmail.com>
-> Cc: stable@vger.kernel.org
+> Could you please consider this series for 6.6.y?
 
-Applied to for-next branch now.  Thanks.
+Queued the series for 6.6, thanks.
 
-
-Takashi
+-- 
+Thanks,
+Sasha
