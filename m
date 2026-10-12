@@ -4,172 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A1E0CA9EC5
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2026 07:42:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D732CA9ED0
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2026 10:59:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 71DB460200;
-	Mon, 12 Oct 2026 09:42:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71DB460200
+	by alsa0.perex.cz (Postfix) with ESMTPS id 591C7601FD;
+	Mon, 12 Oct 2026 12:59:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 591C7601FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1791790961;
-	bh=NBBbcLYulHLhK4CdFaRVal3Y0VsFJYEIZnfaMhg1H3U=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1791802771;
+	bh=GukRYsRjTQQnhmISVcxKD2uCMtiqdM/bzG2vZDaC/+A=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=X7CL8Xk9V6ad84/oVUK/emgjsHCx9p9MMtPwrRAreGl0Qb9FTPVTHhfT+YvLueZq9
-	 ghfWav+xSdPMKuX989W9EtZNdYIDGWhZ1biaFraLlCfIgokE8+tZWRVR4BG0UueaRZ
-	 6dCYhKQDIFTcuDbCqspZlIKpxJS4/eFQRMjGM/oc=
+	b=hYm3Wt+JNtFSbhO0g6fiG8UGDE4ZE8Tp+XwPhuN8q7mn4tn9RmwHS1g0e4VzyUfo3
+	 WNRclcLteNoV0ltcr5t0kCjxYW5jmMyvICGfe4uiX5sfdBPm6luEjAy4Y+tetwZE58
+	 YulWbQSAxh50jscgQCGPlFGJHdCJEEN7wSWq/vo8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2E3C6F805E7; Mon, 12 Oct 2026 09:42:04 +0200 (CEST)
+	id 73DE1F805F4; Mon, 12 Oct 2026 12:58:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2ACE5F805D3;
-	Mon, 12 Oct 2026 09:42:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08F23F8058C;
+	Mon, 12 Oct 2026 12:58:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D3F8F80526; Mon, 12 Oct 2026 09:41:57 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.131
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791790915;
-	b=Xp8ZKhLg2rdQla1JLsYHylYVDJoJf3VHOT1wn0LwkiAvgRMajidL7mTsRXkrEUAfi0um
-	 m89UbwTqhImBUK2dT4lITvs1Phq823Cx+7A8aI6sdPinDKTQWPTvsTuFCU1P3/0ILGqYs
-	 CbZQBwfmc1uAlLGmXERtZkrAjyoq2wsJhU3F01Y3zRtAGSNHVwiTPmn2XgGA7yGMTu1RN
-	 ThrEV3M+drblB70cy0YF7tadk6EEjnHKf9uGYaun/6C39IxwtOdO0fOeUH41TMXH2MpcQ
-	 hJdsmwrtTfIyrxf0taiNnCrd5OIdMTGJBZsQV2w44kWiHk0/zQr9oIplG1glN0DH4HQ==
+	id 9D2DEF80526; Mon, 12 Oct 2026 12:58:48 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=95.85.9.111
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791802725;
+	b=JECxEudaJf8+daTNp91Mzj8pFZz58XlfmnbIDk8Oot2NWkw4k1FVYsXK5e2GRUvqghcl
+	 oPuKnl0UPfjYLxjNxdnpUgTyCjQPu846BTDcMcS1ms3v84fXJB0DyJoHB5SOjgYGOxYgX
+	 rpx5nvwJvLJJfaQS3znniM8COUfT2c3OSp842rPh1nIVtwIxpuWTMNDyEylVVixdM23Hr
+	 eWoic30Y00mLJ5q//GtmBvh1HjkDVdJ1bTJNQmOqSYl2Kj62oMXsEi1g7EE6oBLI/GoBf
+	 cQ7ulPjxNP5MYli2BrudeOHPvbSE8ShzVwZM1BpvrlrGf8r48LjsPKzYd4tfGI7I/6Q==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1791790915;
-	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
-	 Message-ID:From:To:Subject:MIME-Version;
-	bh=NBBbcLYulHLhK4CdFaRVal3Y0VsFJYEIZnfaMhg1H3U=;
-	b=bdNnY6d7DcJzAeRnTR8fyNXUzy+5otxboppjdhVtKrJF3G6E4mj/S+E3cXs3SNgUP97y
-	 GnhSMfEo3CrYiJKSPnCoUVas2lZv1VqOsfhqY/WloyiI+2gIGsy5EQZ64Hbn4L3tQ6GJv
-	 KfOW+g9sDYA8Pb+pKRfhl+V5FHh/sK0/VljUdaNTl3m49DYThPPJWXx+whCcv19VI2yuW
-	 VHfW8YBIu2Sw4UvTz/lbjUjAgExDdeJuO3nO/4+MOB9/UOLiZfskJZ2mvtz94KKlsOqoQ
-	 ViTfvwUNhI3VVPzPnPKeyEnXYKqFwYIx3g8C4aG5BwJmVycebXxtEoZRuKTrt6TttHA==
+	c=relaxed/simple; t=1791802725;
+	h=Message-ID:Subject:From:To:Date:MIME-Version;
+	bh=GukRYsRjTQQnhmISVcxKD2uCMtiqdM/bzG2vZDaC/+A=;
+	b=S5ufBaBhYaPZsewX8NTBCMEa7GjCUFL8zvOC7oSzfn3LygwrvsEllbi0rdod9xCvzB3M
+	 WZtRNR7WVjYTIOvgJd9ewYiZb+yf+mhX7riBt45x3eF72uinwxX3wcfY31lLZnVYzTKLI
+	 FTWEwjQmUPS+X6LevrR/ZuQlRSpfTVN27GiFYnH01Q8fPMX7Mbp3qzMwF6uYWcrlun3nl
+	 V0SY1GKP+6obDkGGqa5TzXSoS5TMrx/8jR14uNb5uDJVdK2yNat0nimWn285R5Nvw+aqv
+	 n4U6RePcuNpHWTV7wjmQybbyKsGnAS7xAC3+h6S2m5mENBP+MXDg15PtaTcRKBIFBdw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=Q0XtQZsp;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b="z5xD/E86";
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=Q0XtQZsp;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b="z5xD/E86";
-	arc=none smtp.remote-ip=195.135.223.131
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ arc=none smtp.remote-ip=95.85.9.111
+Received: from irl.hu (irl.hu [95.85.9.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EFE13F80424
-	for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2026 09:41:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFE13F80424
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=Q0XtQZsp;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=z5xD/E86;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=Q0XtQZsp;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=z5xD/E86
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 045911F76C;
-	Mon, 12 Oct 2026 07:41:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1791790913;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NK0RjV01j15XAfD1bslcrosVqxBWBkOyzhIpmWsbcP8=;
-	b=Q0XtQZspd+UB+XcN4YGSK3oPEEIXT81drn/L8IXKcjhLLk5NvktQH+Z9WzvrkTVwsvhgjE
-	wFCEDS9TpbkwInZW48x3d9pkHg166AX8URRrtvUmNKQbp5VifPHoH4Md4Kk8L1dJg5wNq2
-	SPby+v6/WrXOrygTU4gpzmE9R43C+NQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1791790913;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NK0RjV01j15XAfD1bslcrosVqxBWBkOyzhIpmWsbcP8=;
-	b=z5xD/E86GgZx526ltRl8k2GMps2YCBDEvIf6PlXkffkkpGAmauFb2e4e1JJnJa9jwx0S5K
-	MoDtBPnzqxYz2oAA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1791790913;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NK0RjV01j15XAfD1bslcrosVqxBWBkOyzhIpmWsbcP8=;
-	b=Q0XtQZspd+UB+XcN4YGSK3oPEEIXT81drn/L8IXKcjhLLk5NvktQH+Z9WzvrkTVwsvhgjE
-	wFCEDS9TpbkwInZW48x3d9pkHg166AX8URRrtvUmNKQbp5VifPHoH4Md4Kk8L1dJg5wNq2
-	SPby+v6/WrXOrygTU4gpzmE9R43C+NQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1791790913;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NK0RjV01j15XAfD1bslcrosVqxBWBkOyzhIpmWsbcP8=;
-	b=z5xD/E86GgZx526ltRl8k2GMps2YCBDEvIf6PlXkffkkpGAmauFb2e4e1JJnJa9jwx0S5K
-	MoDtBPnzqxYz2oAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AECE213314;
-	Mon, 12 Oct 2026 07:41:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8Qc6IUCPzGqAcAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Mon, 12 Oct 2026 07:41:52 +0000
-Date: Mon, 12 Oct 2026 09:41:52 +0200
-Message-ID: <87wlrngybj.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: =?ISO-8859-1?Q?Gon=E7alo?= Miranda <me@goncalom.dev>
-Cc: alsa-devel@alsa-project.org,
-	perex@perex.cz
-Subject: Re: [PATCH] ALSA: hda/conexant: Add quirk for Acer Aspire Go 16 mic
- mute LED
-In-Reply-To: <20261011113709.25174-1-me@goncalom.dev>
-References: <20261011113709.25174-1-me@goncalom.dev>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.994];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-Message-ID-Hash: HVJQFPXU2ZVJGPAVH3AIVV2Z7AFW4TYJ
-X-Message-ID-Hash: HVJQFPXU2ZVJGPAVH3AIVV2Z7AFW4TYJ
-X-MailFrom: tiwai@suse.de
+	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 426A0F80424
+	for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2026 12:58:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 426A0F80424
+Received: from [192.168.2.4] (bc24bec8.dsl.pool.telekom.hu
+ [::ffff:188.36.190.200])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 00000000000C70AA.000000006ACCBD62.00335E2B;
+ Mon, 12 Oct 2026 12:58:42 +0200
+Message-ID: <368151886b753a44feb5b56fe9c7147d9956ed4f.camel@irl.hu>
+Subject: Re: [PATCH v2] ALSA: hda/tas2781: Enable bass speakers support
+From: Gergo Koteles <soyer@irl.hu>
+To: Georg Wenzel <g.wenzel@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org,
+  linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Mon, 12 Oct 2026 12:58:47 +0200
+In-Reply-To: 
+ <CAKnFnk5ZY1njMkqwLPtOrv817LFfXS7jfh6vaEvqA03s8uorUA@mail.gmail.com>
+References: <87cxtw2y8b.wl-tiwai@suse.de>
+	 <20261004071202.89116-1-g.wenzel@gmail.com>
+	 <08164314db94522865dd4681d414bc42939da545.camel@irl.hu>
+	 <CAKnFnk5ZY1njMkqwLPtOrv817LFfXS7jfh6vaEvqA03s8uorUA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.60.2 (3.60.2-2.fc44) 
+MIME-Version: 1.0
+Message-ID-Hash: CJJ2HUKGRTVDBBZRCIO6CVWO3GT2EGNM
+X-Message-ID-Hash: CJJ2HUKGRTVDBBZRCIO6CVWO3GT2EGNM
+X-MailFrom: soyer@irl.hu
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -180,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HVJQFPXU2ZVJGPAVH3AIVV2Z7AFW4TYJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CJJ2HUKGRTVDBBZRCIO6CVWO3GT2EGNM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -189,77 +100,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, 11 Oct 2026 13:37:09 +0200,
-Gonçalo Miranda wrote:
-> 
-> The Acer Aspire Go 16 (AG16-71P) uses a Conexant SN6180 codec
-> (subsystem ID 0x1025:0x1937) with the microphone mute LED wired
-> to GPIO4. Add a quirk entry so the kernel drives the LED in sync
-> with the microphone mute state.
-> 
-> The fixup reuses the existing cxt_setup_mute_led() helper with
-> mask 0x10, matching the behavior verified on the hardware.
-> 
-> Signed-off-by: Gonçalo Miranda <me@goncalom.dev>
-> ---
->  sound/hda/codecs/conexant.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/sound/hda/codecs/conexant.c b/sound/hda/codecs/conexant.c
-> index 40da2832b..f66bae098 100644
-> --- a/sound/hda/codecs/conexant.c
-> +++ b/sound/hda/codecs/conexant.c
-> @@ -283,6 +283,7 @@ enum {
->  	CXT_FIXUP_HP_SPECTRE,
->  	CXT_FIXUP_HP_GATE_MIC,
->  	CXT_FIXUP_MUTE_LED_GPIO,
-> +	CXT_FIXUP_ACER_ASPIRE_GO_MUTE_LED,
->  	CXT_FIXUP_HP_ELITEONE_OUT_DIS,
->  	CXT_FIXUP_HP_ZBOOK_MUTE_LED,
->  	CXT_FIXUP_HEADSET_MIC,
-> @@ -786,6 +787,13 @@ static void cxt_fixup_hp_zbook_mute_led(struct hda_codec *codec,
->  		cxt_setup_mute_led(codec, 0x10, 0x20);
->  }
->  
-> +static void cxt_fixup_acer_aspire_go_mute_led(struct hda_codec *codec,
-> +					      const struct hda_fixup *fix, int action)
-> +{
-> +	if (action == HDA_FIXUP_ACT_PRE_PROBE)
-> +		cxt_setup_mute_led(codec, 0, 0x10);
-> +}
-> +
->  static void cxt_fixup_hp_a_u(struct hda_codec *codec,
->  			     const struct hda_fixup *fix, int action)
->  {
-> @@ -985,6 +993,10 @@ static const struct hda_fixup cxt_fixups[] = {
->  		.type = HDA_FIXUP_FUNC,
->  		.v.func = cxt_fixup_mute_led_gpio,
->  	},
-> +	[CXT_FIXUP_ACER_ASPIRE_GO_MUTE_LED] = {
-> +		.type = HDA_FIXUP_FUNC,
-> +		.v.func = cxt_fixup_acer_aspire_go_mute_led,
-> +	},
->  	[CXT_FIXUP_HP_ELITEONE_OUT_DIS] = {
->  		.type = HDA_FIXUP_FUNC,
->  		.v.func = cxt_fixup_update_pinctl,
-> @@ -1098,6 +1110,7 @@ static const struct hda_quirk cxt5066_fixups[] = {
->  	SND_PCI_QUIRK(0x103c, 0x82b4, "HP ProDesk 600 G3", CXT_FIXUP_HP_MIC_NO_PRESENCE),
->  	SND_PCI_QUIRK(0x103c, 0x836e, "HP ProBook 455 G5", CXT_FIXUP_MUTE_LED_GPIO),
->  	SND_PCI_QUIRK(0x103c, 0x837f, "HP ProBook 470 G5", CXT_FIXUP_MUTE_LED_GPIO),
-> +	SND_PCI_QUIRK(0x1025, 0x1937, "Acer Aspire Go 16", CXT_FIXUP_ACER_ASPIRE_GO_MUTE_LED),
->  	SND_PCI_QUIRK(0x103c, 0x83b2, "HP EliteBook 840 G5", CXT_FIXUP_HP_DOCK),
->  	SND_PCI_QUIRK(0x103c, 0x83b3, "HP EliteBook 830 G5", CXT_FIXUP_HP_DOCK),
->  	SND_PCI_QUIRK(0x103c, 0x83d3, "HP ProBook 640 G4", CXT_FIXUP_HP_DOCK),
+Hi Georg,
 
-The fixup table is sorted in PCI SSID order.  Please put the new entry
-at the right position.
+On Mon, 2026-10-12 at 10:47 +0200, Georg Wenzel wrote:
+> Hi Gergo,
+> I'm not very familiar with kernel development.
+> My problem is that the subwoofer doesn't work without the patch, but it
+> does work with the patch.
+> So I figured others might be having the same problem, which is why I
+> submitted the patch.
+>=20
 
-Also, the correct place for the sound kernel patch submission is
-linux-sound ML (linux-sound@vger.kernel.org) instead of alsa-devel ML.
-The latter is only for user-space stuff now.  Please resubmit to the
-former ML, instead.
+My problem is that this simplifies down the TAS2563 part of the driver
+to setting just these few registers, bypassing the firmware and the
+machine-specific calibration values.
 
+Could there be a problem with your kernel config or your hardware?
+Have you tried it with a distro kernel? If you live boot into a Fedora
+it should work.
 
-thanks,
-
-Takashi
+Best regards,
+Gergo
