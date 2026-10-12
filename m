@@ -4,80 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3E2FCA9EBD
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Oct 2026 19:18:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18F0BCA9ED1
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2026 06:55:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1AB93601FA;
-	Sun, 11 Oct 2026 21:18:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AB93601FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 225B0601FC;
+	Mon, 12 Oct 2026 08:55:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 225B0601FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1791746299;
-	bh=gdW/Hqk9Svm8OLwtKz0K7iwDvXb0EHdBya5BIqnj57s=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=hdiq7485zAJqY5aiXgTwUsGTl1kyFPRjbXbd65YWksFUH6d1SLzgU56Rs22sQmzah
-	 wVKNToJS20PXgytBRkYR7mgvuVGeN3UoihaduGdBOHQtmyompIRj3En2c2ezArco0J
-	 p2/8f8w0qAOcSOkGEDQCyZAsSqX26WpF7bYy+RTM=
+	s=default; t=1791788154;
+	bh=aG68NNaOejwQHNDZoQyIcv1qq/8lTGbqoOJzWACH9Zo=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=ZZy8qHrhNuxS9I3Q/5Dl9Ait/+7qj+dze6RYshq2rluuJzBpcvRFT/mTtUdDrTw4t
+	 DcNn1sM9nlw78YTOFj3Eq4Rlv08XnaWRFaO/2Zd4YaWI/SGC0VxotH1b/dou5+DeMk
+	 yv616fzXE2kqxn9PJM+C72rplhmxIPedEenKFDFU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C020DF80603; Sun, 11 Oct 2026 21:17:45 +0200 (CEST)
+	id 167CDF805FF; Mon, 12 Oct 2026 08:55:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 401B2F80526;
-	Sun, 11 Oct 2026 21:17:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29F63F805F5;
+	Mon, 12 Oct 2026 08:55:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D03B8F80551; Sun, 11 Oct 2026 21:17:36 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=95.85.9.111
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791746254;
-	b=kmLfD5VyI4okpoLnQWDcFFW081RoW0DxXvOSE3E+WTXMVljMjZTQj5AxOIC/f8fDfhcQ
-	 XgeF6hOukcunuFd6ktcBFtu82S/LnQpGaYnPiQuGtqIdPBk0cbFhmlnxst3vKvdPUaUV2
-	 NfR+YEC/l7BPQCmLtZEImEmow+BV3p7GHEI2Ns2e/P/tk3Soss8mJY1cJliVFSBQZccPa
-	 TlI0jDk2tD5S527M4u1Cml2S/tbvq3gYt2GE3LBrvHu6bgUFJ7vPGlzj6e58YbZGuFtYT
-	 7cc5OXutkKLDFA0HnuL+MFkNugdTzBOgn0RmB5AyWsKHHkF/kZRKQg+O61jEeVxtZ6Q==
+	id 2A291F80526; Mon, 12 Oct 2026 08:55:13 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791788111;
+	b=pYkuUroVxP1hsS6/P/DIxEmjJiyvSaZB+I4OEiFntPBHL+Qg22C9w85oitrBPNhDOstF
+	 0ZobH06EH0k6V8PAmL57HBP/gp3nkpSgpwoakbHw/i+yFwWgJsGzQd0oOfSnAmJGbOAEg
+	 qV6C826ASWPWKMekFaaPbiVBLOts3cErS2f8JdEy3G9xnf7N05PTNval9T1+7HtvkeHzP
+	 cMxiHZ8jF5L8IJNSl2f7mRJADQUHvUHSv1ILBmc9Z2N6NCI1aBEy4E3Y5m11FsrbHRNXl
+	 YK+ITlSLrG2S0DZQhtGXHi9QxTgBqdXWJCYE5YqV13D5nvdZn8SXH+x4JsC0vyc6xzQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1791746254;
-	h=Message-ID:Subject:From:To:Date:MIME-Version;
-	bh=gdW/Hqk9Svm8OLwtKz0K7iwDvXb0EHdBya5BIqnj57s=;
-	b=np/7Hw9DmWNw10lpf5V/Gw9TViPLBpUFwOZRrseyktD9ArSik46V7BEPNFE1NnqaZVTT
-	 XD6jIrmeFitfJToQi6WjMWnHIPEJeBMtujQZrQBVWk1q3Qtbn3dVTUACcWa20hxUyK3p8
-	 CuqJoQ/uz6CES77O8Z/KPVJMoDtEztBEqT7hlgn4NAiw12LHIFdpLBP8cN0HF8CUJtfnw
-	 +YzZc79Z4y7+uHCmgp/0sKDpnfJ32+1bFxZzhIEUQCnpuQWmnzjNTXmXfIaPr8thCaHGw
-	 UtVq3YLAcxrkyOIMZoRuAPTg9aLB6mFXz4EbettfMd7wr3bjhXIRFd1CMrWKGP4VorQ==
+	c=relaxed/simple; t=1791788111;
+	h=MIME-Version:From:To:Message-Id:Subject;
+	bh=aG68NNaOejwQHNDZoQyIcv1qq/8lTGbqoOJzWACH9Zo=;
+	b=UdQwbz4YZqZ8G2vkl4NbP0Pcq3xIyTQIbdH6XvJRWRaH0HV613hdXu7OxTp8h/U8bMsF
+	 wrLayExK8q+3KiSJgMjz6gzZt4b4z9D2W1FuHxOKkzV2tG/V0XX2aCZPtddhJSi52YxTY
+	 lc40h4LcndejKpmQLRshA2A5YyK3YNm15ET9oCdVqGAD/TVFpfezLzySgwmDN9lYXFcg8
+	 Az+54hetcOdfeY4c7M7fLrR+b0uydN9dhTpagjNdO8i0iWK1pBxIhTmoOOugni4ykbHOC
+	 MVI9QGDUTtyb7a02O8QBvVWZpzsgwYCqblWhpjDITQoIbE2IHDsUcO3zMxjWX4tZJ+Q==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=95.85.9.111
-Received: from irl.hu (irl.hu [95.85.9.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 46CCFF800F3
-	for <alsa-devel@alsa-project.org>; Sun, 11 Oct 2026 21:17:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46CCFF800F3
-Received: from [192.168.2.4] (bc24bec8.dsl.pool.telekom.hu
- [::ffff:188.36.190.200])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 00000000000C70AA.000000006ACBE0CB.0033447B;
- Sun, 11 Oct 2026 21:17:31 +0200
-Message-ID: <08164314db94522865dd4681d414bc42939da545.camel@irl.hu>
-Subject: Re: [PATCH v2] ALSA: hda/tas2781: Enable bass speakers support
-From: Gergo Koteles <soyer@irl.hu>
-To: Georg Wenzel <g.wenzel@gmail.com>, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Date: Sun, 11 Oct 2026 21:17:36 +0200
-In-Reply-To: <20261004071202.89116-1-g.wenzel@gmail.com>
-References: <87cxtw2y8b.wl-tiwai@suse.de>
-	 <20261004071202.89116-1-g.wenzel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.60.2 (3.60.2-2.fc44) 
+ arc=none smtp.remote-ip=45.14.194.44
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 13FF5F80100
+	for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2026 08:55:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13FF5F80100
 MIME-Version: 1.0
-Message-ID-Hash: K47SXY25NJBULVIBPPEYOIEGN2AEC5KK
-X-Message-ID-Hash: K47SXY25NJBULVIBPPEYOIEGN2AEC5KK
-X-MailFrom: soyer@irl.hu
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18ddb5cad058cf00-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/873@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/873@alsa-project.org>
+Subject: ucm2: Qualcomm: add HP EliteBook G1q support
+Date: Mon, 12 Oct 2026 08:55:13 +0200 (CEST)
+Message-ID-Hash: OINRN5376MPYP7EEEF2ZRB6S7ETH77L4
+X-Message-ID-Hash: OINRN5376MPYP7EEEF2ZRB6S7ETH77L4
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -88,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K47SXY25NJBULVIBPPEYOIEGN2AEC5KK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OINRN5376MPYP7EEEF2ZRB6S7ETH77L4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,171 +84,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Georg,
+alsa-project/alsa-ucm-conf pull request #873 was opened from juergh:
 
-On Sun, 2026-10-04 at 09:12 +0200, Georg Wenzel wrote:
-> Configure the driver to correctly initialize and enable the bass speakers
-> on devices utilizing the TAS2781 amplifier. Without this change, only the
-> tweeters or main speakers are active, leading to thin audio output.
->=20
-> Set up the required register sequences and routing to ensure the bass
-> channels are properly powered and mixed into the audio stream.
->=20
-> Signed-off-by: Georg Wenzel <g.wenzel@gmail.com>
-> ---
-> v2:
->   - Rebased onto sound/for-next (Takashi Iwai).
->   - Removed non-ASCII characters in comments (Takashi Iwai).
->  =20
->  include/sound/tas2781.h                       | 12 +++
->  .../hda/codecs/side-codecs/tas2781_hda_i2c.c  | 98 +++++++++++++++++++
->  2 files changed, 110 insertions(+)
->=20
-> diff --git a/include/sound/tas2781.h b/include/sound/tas2781.h
-> index b763da613769..ccc0142fbad5 100644
-> --- a/include/sound/tas2781.h
-> +++ b/include/sound/tas2781.h
-> @@ -91,6 +91,18 @@
->  /* prm_TE_1_Beta1 */
->  #define TAS2563_TE_DT_REG		TASDEVICE_REG(0x00, 0x0f, 0x70)
-> =20
-> +/* TAS2563 ASI (Audio Serial Interface) Register Definitions */
-> +#define TAS2563_ASI_CFG_REG			TASDEVICE_REG(0x00, 0x00, 0x06)
-> +#define TAS2563_ASI_SR_REG			TASDEVICE_REG(0x00, 0x00, 0x07)
-> +#define TAS2563_ASI_FS_REG			TASDEVICE_REG(0x00, 0x00, 0x08)
-> +#define TAS2563_ASI_DA_REG			TASDEVICE_REG(0x00, 0x00, 0x0a)
-> +#define TAS2563_ASI_TDM_REG			TASDEVICE_REG(0x00, 0x00, 0x0b)
-> +#define TAS2563_ASI_DL_REG			TASDEVICE_REG(0x00, 0x00, 0x0c)
-> +#define TAS2563_ASI_SLOT_REG		TASDEVICE_REG(0x00, 0x00, 0x30)
-> +
-> +/* TAS2563 ASI Apply Register (triggers configuration update) */
-> +#define TAS2563_ASI_APPLY_REG			TASDEVICE_REG(0x00, 0x00, 0x02)
-> +
->  #define TAS2781_PRM_INT_MASK_REG	TASDEVICE_REG(0x00, 0x00, 0x3b)
->  #define TAS2781_PRM_CLK_CFG_REG		TASDEVICE_REG(0x00, 0x00, 0x5c)
->  #define TAS2781_PRM_RSVD_REG		TASDEVICE_REG(0x00, 0x01, 0x19)
-> diff --git a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c b/sound/hda/c=
-odecs/side-codecs/tas2781_hda_i2c.c
-> index 5e5f46c9fb6b..cef33159eba4 100644
-> --- a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-> +++ b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-> @@ -46,6 +46,83 @@
->  #define TAS2563_CAL_TLIM		TASDEVICE_REG(0, 0x10, 0x14)
->  #define TAS2563_CAL_R0			TASDEVICE_REG(0, 0x0f, 0x34)
-> =20
-> +/*
-> + * TAS2563 Post-Firmware ASI Configuration.
-> + *
-> + * The DSP firmware loading can overwrite the ASI (Audio Serial Interfac=
-e)
-> + * registers that configure the I2S/TDM audio path to the amplifier.
-> + * This function re-applies the correct ASI configuration after firmware=
- load,
-> + * matching the reference initialization sequence used by the vendor scr=
-ipt:
-> + *   - Software reset
-> + *   - ASI_CFG  =3D 0x09 (I2S mode, master/slave config)
-> + *   - ASI_SR   =3D 0x02 (sample rate divider for 48 kHz)
-> + *   - ASI_DA   =3D 0xf1 (data alignment / slot assignment)
-> + *   - ASI_TDM  =3D 0x02 (TDM mode select)
-> + *   - ASI_DL   =3D 0x00 (delay line off)
-> + *   - ASI_SLOT =3D 0x99 (slot enable mask for 2-channel stereo)
-> + *   - CHNL_0   =3D 0x02 (channel mapping)
-> + *   - ASI_FS   =3D 0x1e or 0x2e (frame sync, device-specific: bit4 sele=
-cts
-> + *                which of the two devices is the "primary" for FS gener=
-ation)
-> + *   - ASI_APPLY=3D 0x00 (trigger configuration update)
-> + */
-> +static void tas2563_post_fw_init(struct tasdevice_priv *tas_priv)
-> +{
-> +	int i, ret;
-> +
-> +	dev_info(tas_priv->dev, "%s: ndev=3D%d, chip_id=3D%d\n",
-> +		 __func__, tas_priv->ndev, tas_priv->chip_id);
-> +
-> +	for (i =3D 0; i < tas_priv->ndev; i++) {
-> +		struct tasdevice *tasdev =3D &tas_priv->tasdevice[i];
-> +		u8 fs_val;
-> +
-> +		dev_info(tas_priv->dev,
-> +			 "%s: device[%d] dev_addr=3D0x%02x\n",
-> +			 __func__, i, tasdev->dev_addr);
-> +
-> +		/* Step 1: Software reset (matches script: 0x01 =3D 0x01) */
-> +		ret =3D tasdevice_dev_write(tas_priv, i, TASDEVICE_REG_SWRESET,
-> +					  TASDEVICE_REG_SWRESET_RESET);
-> +		dev_info(tas_priv->dev,
-> +			 "%s: chn=3D%d SWRESET ret=3D%d\n", __func__, i, ret);
-> +		usleep_range(1000, 2000);
+The EliteBook series is just a higher-end version of the OmniBook and compatible. Confirmed working on a EliteBook 6 G1q.
 
-According the 7.5.3 in the tas2563.pdf, this will place all register
-values in their default POR (Power on Reset) state.
-
-So this resets all registers set by the firmware before.
-
-Why is this necessary? Should that vendor script run here?
-
-I have TAS2563s in my Lenovo 14ARB7 and they work fine already.
-
-You wrote that it worked well with 6.16.
-Could you bisect the culprit commit instead?
-
-Based on your dmesg something else can be wrong:
-
-snd_hda_codec_alc269 hdaudioC1D0: bound i2c-INT8866:00 (ops
-tas2781_hda_i2c_driver_exit [snd_hda_scodec_tas2781_i2c])
-
-This sould be:
-
-snd_hda_codec_alc269 hdaudioC1D0: bound i2c-INT8866:00 (ops
-tas2781_hda_comp_ops [snd_hda_scodec_tas2781_i2c])
-
-
-> +
-> +		/* Step 2: ASI configuration registers */
-> +		ret =3D tasdevice_dev_write(tas_priv, i, TAS2563_ASI_CFG_REG, 0x09);
-> +		dev_info(tas_priv->dev, "%s: chn=3D%d ASI_CFG=3D0x09 ret=3D%d\n", __fu=
-nc__, i, ret);
-> +
-> +		ret =3D tasdevice_dev_write(tas_priv, i, TAS2563_ASI_SR_REG, 0x02);
-> +		dev_info(tas_priv->dev, "%s: chn=3D%d ASI_SR=3D0x02 ret=3D%d\n", __fun=
-c__, i, ret);
-> +
-> +		ret =3D tasdevice_dev_write(tas_priv, i, TAS2563_ASI_DA_REG, 0xf1);
-> +		dev_info(tas_priv->dev, "%s: chn=3D%d ASI_DA=3D0xf1 ret=3D%d\n", __fun=
-c__, i, ret);
-> +
-> +		ret =3D tasdevice_dev_write(tas_priv, i, TAS2563_ASI_TDM_REG, 0x02);
-> +		dev_info(tas_priv->dev, "%s: chn=3D%d ASI_TDM=3D0x02 ret=3D%d\n", __fu=
-nc__, i, ret);
-> +
-> +		ret =3D tasdevice_dev_write(tas_priv, i, TAS2563_ASI_DL_REG, 0x00);
-> +		dev_info(tas_priv->dev, "%s: chn=3D%d ASI_DL=3D0x00 ret=3D%d\n", __fun=
-c__, i, ret);
-> +
-> +		ret =3D tasdevice_dev_write(tas_priv, i, TAS2563_ASI_SLOT_REG, 0x99);
-> +		dev_info(tas_priv->dev, "%s: chn=3D%d ASI_SLOT=3D0x99 ret=3D%d\n", __f=
-unc__, i, ret);
-> +
-> +		ret =3D tasdevice_dev_write(tas_priv, i, TAS2781_PRM_CHNL_0_REG, 0x02)=
-;
-> +		dev_info(tas_priv->dev, "%s: chn=3D%d CHNL_0=3D0x02 ret=3D%d\n", __fun=
-c__, i, ret);
-> +
-
-TAS2781_PRM_CHNL_0_REG is misleading.
-It is TASDEVICE_REG(0x00, 0x00, 0x03) which is the PB_CFG1 on the
-TAS2563.
-
-Writing 0x02 into sets the AMP_LEVEL to the minimum.
-AMP_LEVEL=3D0x01 -> 8.5 dBV (3.76Vpk).
-
-The default is 0x20 for this register.
-AMP_LEVEL=3D0x10 -> 16.0 dBV (8.92Vpk).
-
-Why should it be quieter?
-
-
-Thanks,
-Gergo
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/873
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/873.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
