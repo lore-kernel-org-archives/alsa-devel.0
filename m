@@ -4,83 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D732CA9ED0
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2026 10:59:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4C1BCA9ED1
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2026 14:39:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 591C7601FD;
-	Mon, 12 Oct 2026 12:59:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 591C7601FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id F3DE0601FA;
+	Mon, 12 Oct 2026 16:39:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3DE0601FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1791802771;
-	bh=GukRYsRjTQQnhmISVcxKD2uCMtiqdM/bzG2vZDaC/+A=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=hYm3Wt+JNtFSbhO0g6fiG8UGDE4ZE8Tp+XwPhuN8q7mn4tn9RmwHS1g0e4VzyUfo3
-	 WNRclcLteNoV0ltcr5t0kCjxYW5jmMyvICGfe4uiX5sfdBPm6luEjAy4Y+tetwZE58
-	 YulWbQSAxh50jscgQCGPlFGJHdCJEEN7wSWq/vo8=
+	s=default; t=1791815996;
+	bh=LNliqDiKjt6sWhot2HYaYckfvEBGwkMROnltRf1Qp2I=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=H3bnepzuZOWuWKIlrzagJ7O0FgxnnDHxm4eV8hdL9MvHWPNUnethCHkbk8IzTjb/F
+	 zi/HYcJBYr9zMW8rJMDGEXk2536P4ZA0UTv1X5XBqMNJaAximQObogtWiipHjZZHPk
+	 ht1r52HDE7kzsdeVQxxo2fiGhKe/11XkCAcvFmIg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 73DE1F805F4; Mon, 12 Oct 2026 12:58:56 +0200 (CEST)
+	id EB24FF805FC; Mon, 12 Oct 2026 16:39:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08F23F8058C;
-	Mon, 12 Oct 2026 12:58:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F9C1F805F5;
+	Mon, 12 Oct 2026 16:39:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9D2DEF80526; Mon, 12 Oct 2026 12:58:48 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=95.85.9.111
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791802725;
-	b=JECxEudaJf8+daTNp91Mzj8pFZz58XlfmnbIDk8Oot2NWkw4k1FVYsXK5e2GRUvqghcl
-	 oPuKnl0UPfjYLxjNxdnpUgTyCjQPu846BTDcMcS1ms3v84fXJB0DyJoHB5SOjgYGOxYgX
-	 rpx5nvwJvLJJfaQS3znniM8COUfT2c3OSp842rPh1nIVtwIxpuWTMNDyEylVVixdM23Hr
-	 eWoic30Y00mLJ5q//GtmBvh1HjkDVdJ1bTJNQmOqSYl2Kj62oMXsEi1g7EE6oBLI/GoBf
-	 cQ7ulPjxNP5MYli2BrudeOHPvbSE8ShzVwZM1BpvrlrGf8r48LjsPKzYd4tfGI7I/6Q==
+	id 14B99F80526; Mon, 12 Oct 2026 16:39:18 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791815947;
+	b=j0RW6BU0981M3HWyaxZPKBO4j//CIwvjJNITs8ekaoz5FLZUQU0v94tW/In1jvjpI7a4
+	 4dJjuFZBSkLcDpQFNx7/3udb8XNcraHCbCXLt0OWcQl0hnN0msLXQDQgIm8I9adjTDhmF
+	 iCXKRK7m2U6jhbx+PudK5fyyaxYFBYZ2lawXwhxg1S7hUzJ+Xq/Y5qTvvZnWGr7zmnhQ2
+	 xkxJU9jAOBdLOTlGxdONfN001BFMDVfbvHaPEspj9w+YPntlF5IgTTJt4K60n2mfXuTef
+	 v0fQSRRrivU/hxhaYJ7A8ekhUwuVQyj9/hoJsuIpMCXZ6Z6bZOrqlB7dCwhe/tkeT5g==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1791802725;
-	h=Message-ID:Subject:From:To:Date:MIME-Version;
-	bh=GukRYsRjTQQnhmISVcxKD2uCMtiqdM/bzG2vZDaC/+A=;
-	b=S5ufBaBhYaPZsewX8NTBCMEa7GjCUFL8zvOC7oSzfn3LygwrvsEllbi0rdod9xCvzB3M
-	 WZtRNR7WVjYTIOvgJd9ewYiZb+yf+mhX7riBt45x3eF72uinwxX3wcfY31lLZnVYzTKLI
-	 FTWEwjQmUPS+X6LevrR/ZuQlRSpfTVN27GiFYnH01Q8fPMX7Mbp3qzMwF6uYWcrlun3nl
-	 V0SY1GKP+6obDkGGqa5TzXSoS5TMrx/8jR14uNb5uDJVdK2yNat0nimWn285R5Nvw+aqv
-	 n4U6RePcuNpHWTV7wjmQybbyKsGnAS7xAC3+h6S2m5mENBP+MXDg15PtaTcRKBIFBdw==
+	c=relaxed/simple; t=1791815947;
+	h=MIME-Version:From:To:Message-Id:Subject;
+	bh=LNliqDiKjt6sWhot2HYaYckfvEBGwkMROnltRf1Qp2I=;
+	b=DP1/dPj60vL9at6Xi1jJZhCU+6hPLtg1VwqAwDwUXqERmQQUwlrDnptta1Ua00L/5X/j
+	 HdKzvyQmMTnOxeWJkk/DswMtk1pqSBfT/60qngHdFX7m0MfEZqbuRVNEHX9GUDsZtzKX9
+	 04UBqnJgMh7hxPM6k+FICOSNkCm9pB9XDnxNz2ZoeDOlWG/CW21Uhg5muolu/xWxXUifq
+	 wyUDi1eGfqjeIMYWd2KDXRiSC3eJHyg7jS++w1ykusWC49weGuDG6uw/Fb3AWRdZYOkoN
+	 DUGJv+IBUxEO5n7qow52rjTulqBtluzcmxheL3SLaKa41a+3suLZIA4BQ+1/xbjpbUw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=95.85.9.111
-Received: from irl.hu (irl.hu [95.85.9.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 426A0F80424
-	for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2026 12:58:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 426A0F80424
-Received: from [192.168.2.4] (bc24bec8.dsl.pool.telekom.hu
- [::ffff:188.36.190.200])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 00000000000C70AA.000000006ACCBD62.00335E2B;
- Mon, 12 Oct 2026 12:58:42 +0200
-Message-ID: <368151886b753a44feb5b56fe9c7147d9956ed4f.camel@irl.hu>
-Subject: Re: [PATCH v2] ALSA: hda/tas2781: Enable bass speakers support
-From: Gergo Koteles <soyer@irl.hu>
-To: Georg Wenzel <g.wenzel@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org,
-  linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Mon, 12 Oct 2026 12:58:47 +0200
-In-Reply-To: 
- <CAKnFnk5ZY1njMkqwLPtOrv817LFfXS7jfh6vaEvqA03s8uorUA@mail.gmail.com>
-References: <87cxtw2y8b.wl-tiwai@suse.de>
-	 <20261004071202.89116-1-g.wenzel@gmail.com>
-	 <08164314db94522865dd4681d414bc42939da545.camel@irl.hu>
-	 <CAKnFnk5ZY1njMkqwLPtOrv817LFfXS7jfh6vaEvqA03s8uorUA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.60.2 (3.60.2-2.fc44) 
+ arc=none smtp.remote-ip=45.14.194.44
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F905F80495
+	for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2026 16:39:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F905F80495
 MIME-Version: 1.0
-Message-ID-Hash: CJJ2HUKGRTVDBBZRCIO6CVWO3GT2EGNM
-X-Message-ID-Hash: CJJ2HUKGRTVDBBZRCIO6CVWO3GT2EGNM
-X-MailFrom: soyer@irl.hu
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18ddcf1bebadae00-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-lib/pr/531@alsa-project.org>
+References: <alsa-project/alsa-lib/pr/531@alsa-project.org>
+Subject: configure: update to modern LT_INIT options
+Date: Mon, 12 Oct 2026 16:39:18 +0200 (CEST)
+Message-ID-Hash: WQFTN4UQCBI2CTCB7IJ62WGLR56VOWFH
+X-Message-ID-Hash: WQFTN4UQCBI2CTCB7IJ62WGLR56VOWFH
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -91,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CJJ2HUKGRTVDBBZRCIO6CVWO3GT2EGNM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WQFTN4UQCBI2CTCB7IJ62WGLR56VOWFH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,24 +84,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Georg,
+alsa-project/alsa-lib pull request #531 was opened from Hello71:
 
-On Mon, 2026-10-12 at 10:47 +0200, Georg Wenzel wrote:
-> Hi Gergo,
-> I'm not very familiar with kernel development.
-> My problem is that the subwoofer doesn't work without the patch, but it
-> does work with the patch.
-> So I figured others might be having the same problem, which is why I
-> submitted the patch.
->=20
+the migration of f7779c2a62 ("configure: update to autoconf v2.72") was incomplete, _LT_SET_OPTION is legacy method and doesn't work on slibtool (alternative libtool implementation). the supported libtool versions are same, _LT_SET_OPTION is due to autoupdate limitations
 
-My problem is that this simplifies down the TAS2563 part of the driver
-to setting just these few registers, bypassing the firmware and the
-machine-specific calibration values.
-
-Could there be a problem with your kernel config or your hardware?
-Have you tried it with a distro kernel? If you live boot into a Fedora
-it should work.
-
-Best regards,
-Gergo
+Request URL   : https://github.com/alsa-project/alsa-lib/pull/531
+Patch URL     : https://github.com/alsa-project/alsa-lib/pull/531.patch
+Repository URL: https://github.com/alsa-project/alsa-lib
