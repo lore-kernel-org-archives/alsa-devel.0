@@ -4,82 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07018CC6B03
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2026 13:05:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16F85CC6B16
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2026 15:30:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 509EA601FF;
-	Tue, 13 Oct 2026 15:04:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 509EA601FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id E954D601E0;
+	Tue, 13 Oct 2026 17:30:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E954D601E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1791896697;
-	bh=/+OIcG+CafyzVhe5eezNsS2ymROGZcx58GyFUp1yydg=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=JITAlK9d8/snllowdyRtZO5ll+PiAl9HxP4Ah1CYxXfl7C/pNq/ntO4WVGztgDgPx
-	 kOeTKjO4aZCCr3V14mM81sLAd5+6lIpt8TcgHG9XLAHOjY7L2+6dQZBOifUa8sdEI4
-	 BN0oiFgEDBcCTvxcuvSYc94fBs0eJCnbCMDd489g=
+	s=default; t=1791905456;
+	bh=ZOPUCQMM8nkcHGWziwCpO3Y3wMiuUu4TgjhMNHQ4XaE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=aJihn4SeZoDDytHgvQw8NWnEZ4zkYQ3YMgwj8UARo3B8mU1mwGVYKg0gTzvaDRZc6
+	 ZRIYbdyxyvzR25KU7feH7N4Y9f2HfGdCFvuRtcGrOwneJ8icJKefU5a4n3fHQujzP6
+	 1pvYRkVLNOP1/ZpSrcno8aPXJkXmvU3SrhX5xyJc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 211C0F80631; Tue, 13 Oct 2026 15:03:54 +0200 (CEST)
+	id 6C68EF805FD; Tue, 13 Oct 2026 17:30:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B058F80631;
-	Tue, 13 Oct 2026 15:03:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D57EFF80600;
+	Tue, 13 Oct 2026 17:30:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A56BBF80495; Tue, 13 Oct 2026 15:03:45 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=95.85.9.111
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791896616;
-	b=A96hpAEPaIBWwTI26AjNcqPRji/LaOq8AZKyUJ6z2mXhoWKvizdQ9sTgBSTqwrda4rTD
-	 dyKgLx82T2VI4GrmuQnwwGgSwM3Td6+im+FC9oRAz45bBnzjFm+tD38QqpVghytplStNi
-	 XEy8TaNU2ph+kxrhAy96HW70niCKRP9xgpGvJqrSY4+TSAcROPAXr8hBzCQ6Kz1yaAa1H
-	 nPW3cNgn4pIfH5DovX8dFf/BD2FIaXREq4F780ypvCRiOANapAv+R84qSEs8F4NVrDtSp
-	 hiSwRhVk89gAoO71Y8AyD6Xvq/edlhaIP8wfVw9sCg+avQlWI3EQWr3DPKzJO1tNnnQ==
+	id F289BF80495; Tue, 13 Oct 2026 17:30:16 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791905416;
+	b=nz6E4pCR1yUWNiX0dMEUdEZx+7MMbHMmW5krqBrfZZ7YEx1WOdoGFBdwV9bRb1Zgn4hc
+	 dp9MG550jIMbuHW3xIqHMy5y/8fb2FYpPuW67HZhpxxnPiXVxaaD+eIwuhcXakKXnkADg
+	 IRN9601OqLAI3ll01LSh1Uz5OGur3TfRH8u73y6WaIUFap99zhI9d6jx9zWRg87ZzE0et
+	 OITwwGdVbf/3dCKuhNEjVenhKVnp/Yi/pJL7BHQefQpOFczx7TXXJ9L07r3IZ88QOig/5
+	 J2/UOcVqOQBQI7XlCxj158WEhb+zAvGLm0PvMxjeg+J0emVpgNStv9j/cxyh9Hx9E7Q==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1791896616;
-	h=From:To:Subject:Date:Message-ID:Mime-Version;
-	bh=/+OIcG+CafyzVhe5eezNsS2ymROGZcx58GyFUp1yydg=;
-	b=R8j5UwWdwHDFaJurRgFMtKMhVyzS0lqEtj8PbHHigPPeZERlEfQ5ytSUwEA7x+3GR7Vo
-	 M3ub/k9QNmylcAMY3pdBkBDVkxlNcTUvRiuSkMM+9otEYxgjJb30TthvINNO5b+vujvXp
-	 Uw4bb5u3AIhot5iuNsy/fuPHMD9PUKlYf2YNPfRj2Hc5KSSilNiLI2gILcF0dLNlJXN/J
-	 T0PtwXh1uoYYUV6wgGhaaqqQWQiREKFe6HZRZRxzC+hxmQb4EYdVeaazkL4AuumprAtV+
-	 Kz8Q8FpaPPabdmNKCItUTYD3YDBlf3whEjPNJIQ8+xZCVZa/+gQXb7jsnJOHDZapfqw==
+	c=relaxed/simple; t=1791905416;
+	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
+	bh=ZOPUCQMM8nkcHGWziwCpO3Y3wMiuUu4TgjhMNHQ4XaE=;
+	b=gJXI4fqHeQRcNnKx3HTLLbttsJjSA3CdP6VS6TLJNRtVGkBtQAQDumGSBcoaUf6SK7F7
+	 4tqbr5Z+r3lMVHFiysi0MN7lYKhjGDfq8p5RYdgXcQ8YB4cvAYZpApkh2/IitKUD/33tD
+	 M/Ie4uIbIMXTw0x9NUwjRlI30/HFFStYGekUp6wnfnPwYdAKbzWqs6AiKjYCjmHuDvQsu
+	 xQkiZ56TLvzaJ4vhquzNUuxdM4MI9dqs7YsI3UX2aQN0JJqUIJOna2Mel4bF77K+Z162W
+	 yKjFK9Vv/t15HyG1OXlgqlH9vX21XFfbA/9a+hkXoEuTZNoo2Y1Cd0aue3Z+q+Ho6Rg==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=95.85.9.111
-Received: from irl.hu (irl.hu [95.85.9.111])
+ dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=SsWaM+4h;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 30B81F800EE
-	for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2026 15:03:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30B81F800EE
-Received: from fedori.lan (51b68c74.dsl.pool.telekom.hu
- [::ffff:81.182.140.116])
-  (AUTH: PLAIN soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 00000000000C70AA.000000006ACE2C23.00339CB5;
- Tue, 13 Oct 2026 15:03:31 +0200
-From: Gergo Koteles <soyer@irl.hu>
-To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-  Baojun Xu <baojun.xu@ti.com>, Sen Wang <sen@ti.com>,
-  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-  Philipp Oster <philippdev5396@outlook.de>,
-  Georg Wenzel <g.wenzel@gmail.com>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-  alsa-devel@alsa-project.org, Gergo Koteles <soyer@irl.hu>
-Subject: [PATCH v2 0/2] ALSA: hda/tas2781: Skip invalid TAS2563 UEFI
- calibration data
-Date: Tue, 13 Oct 2026 15:02:19 +0200
-Message-ID: <cover.1791895478.git.soyer@irl.hu>
-X-Mailer: git-send-email 2.56.0
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
-Message-ID-Hash: QAGYJRHPSPPWSQ3IZTX3NRUDJ4IXDXRR
-X-Message-ID-Hash: QAGYJRHPSPPWSQ3IZTX3NRUDJ4IXDXRR
-X-MailFrom: soyer@irl.hu
+	by alsa1.perex.cz (Postfix) with ESMTPS id 29722F800EE
+	for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2026 17:30:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29722F800EE
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=SsWaM+4h
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 900D6602C3;
+	Tue, 13 Oct 2026 15:30:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2C721F000FF;
+	Tue, 13 Oct 2026 15:30:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1791905412;
+	bh=rAyS/1IzCRzhQpaDoMl4P3Lp0Bb3HZwrOWPnviM0hWg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=SsWaM+4hSp+Ys+cxgjxBS3ZayZIjvihMlYlrDPVMkAJS4Yylmz62GqcdCsD55ls5Z
+	 uie2zdIzyo3GBEzfHW+jI8i9O3rpRIlXLRYSfImk3wAGCJfbicasbPriEZFHY50uzu
+	 /CYqWCbgDQEpZF5weNvjew8iJNOvBmtklZfXU7PZFg+2EuiFdMeOvsXLjPSz/1B5Ct
+	 g5XtkoOT8tTVmS6Ji9JlNqCKSUkxzxZ02P8WeigdN8PnA0Rbt7SjQd9C2OnSQHJwRc
+	 MxcaUohUTggj68fnyPaWYiTRzfo4VzoHZ/0m6O45AGteKQ5lk4PsDpWjKphLn0JOe5
+	 A0K8o3UtPSlJA==
+Date: Tue, 13 Oct 2026 16:30:08 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Mingxuan Guo <gmx472@qq.com>
+Cc: Simon Trimmer <simont@opensource.cirrus.com>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] firmware: cs_dsp: clear dsp->running on the
+ cs_dsp_run() error path
+Message-ID: <775ad338-0c87-44e8-937e-8c8408dcde5c@sirena.org.uk>
+References: <tencent_B839C5A92D762B5717B9637A5CFA0841C608@qq.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="sJCKWyzMQlEu4TzI"
+Content-Disposition: inline
+In-Reply-To: <tencent_B839C5A92D762B5717B9637A5CFA0841C608@qq.com>
+X-Cookie: Some equipment shown is optional.
+Message-ID-Hash: KECVSZTBWGDQLCJKXP4CHKL552PL7G7W
+X-Message-ID-Hash: KECVSZTBWGDQLCJKXP4CHKL552PL7G7W
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -90,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QAGYJRHPSPPWSQ3IZTX3NRUDJ4IXDXRR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KECVSZTBWGDQLCJKXP4CHKL552PL7G7W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,32 +116,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
 
-Georg Wenzel experienced a regession with TAS2563 amplifiers. His laptop 
-lacks proper calibration data, and due to a bug, the driver failed to 
-apply them in the v6.16.x. That's why they worked.
+--sJCKWyzMQlEu4TzI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The amplifiers operate even without calibration data, so the calibration 
-setup can be skipped if the data is invalid.
+On Tue, Oct 13, 2026 at 06:23:58PM +0800, Mingxuan Guo wrote:
+> cs_dsp_run() sets dsp->running = true once the core has been started, but
+> the error path below it only stops and disables the core, leaving the flag
+> set.  The first thing that can fail after that point is the post_run client
+> hook, and it is reachable in mainline: wm_adsp registers
+> wm_adsp_event_post_run(), which can fail in wm_adsp_buffer_init().
 
-The first patch simplifies error paths in the tas2563_save_calibration() 
-function.
+The patches in this series aren't threaded together and don't have a
+cover latter which makes it hard for tools to work with them, you might
+want to look at b4 to send the patches, especially it's web submission
+endpoint which avoids having to configure mail:
 
-The second patch skips the zero UEFI calibration data as it is not 
-necessary to apply.
+   https://b4.docs.kernel.org/en/latest/contributor/overview.html
 
-The previous patch for this problem
-3bc4fc135ec7 ("ALSA: hda/tas2781: Enable bass speakers support")
-should be removed/reverted.
 
-Gergo Koteles (2):
-  ALSA: hda/tas2781: Assign total_sz at the end of the function
-  ALSA: hda/tas2781: Skip invalid TAS2563 UEFI calibration data
+--sJCKWyzMQlEu4TzI
+Content-Type: application/pgp-signature; name="signature.asc"
 
- .../hda/codecs/side-codecs/tas2781_hda_i2c.c  | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
--- 
-2.56.0
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmrOTn8ACgkQJNaLcl1U
+h9Bgxgf/Tivc2rORB2SWKwCmH3Q9XKTDAtQ2QyXDaS6VE+jIO6IqBEk/a9F7C/TI
+DBuYnMhSDmKN/wTftBcNjVdVoA5G1Q9sVXxjQoG7+QeTh2sefibqpP6Saw14R0FR
+DTxxs4EeCE1cFupGFkxZ7VCWjwrHLpQ3oyfRa29/0TL10m/LrB5zClj2zLpfCPJ2
+BHT8NB4Em0X1Gw7o/xYU9YxIhxzNL0yVnLueLwRIata/RXTyAe1hgFycc7DM0tnL
+yXAnWqfbrb6FZkU4+Pk8uXIvU9sYz8Q2hli71P6h3arIsiUnGChuJ02A490b8kEK
+1Cm37BM3UOw6ag+ENLgUfLtNiIUGoA==
+=Jkro
+-----END PGP SIGNATURE-----
 
+--sJCKWyzMQlEu4TzI--
