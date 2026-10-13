@@ -4,107 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0B3ACC6B33
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2026 10:32:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25190CC6B30
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2026 10:32:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 594906021B;
-	Thu, 15 Oct 2026 12:31:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 594906021B
+	by alsa0.perex.cz (Postfix) with ESMTPS id E505360234;
+	Thu, 15 Oct 2026 12:32:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E505360234
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1792060323;
-	bh=GliNkEv4f5oaxNNjOVax3rnIxeu6bYxuNBj+S/JWY60=;
+	s=default; t=1792060347;
+	bh=4bF/zFcPZ+rge2e+q78qNspBsBmmrjazXqSGKV4CxYw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=s5tRhWLpxjYPqQgPg6AcTkp0p+ZHFUhAo5xMtLpg2mgQ0PrYrw7qOhzvHdHD6wqx+
-	 KGG7Pb2WmNpCD9KU/LuYw6qQcVWzzlr6T8OglYofkB86ckRDPmNb2Fo5L9L9Vq6oTH
-	 2t48DSp4uMgxh5CU7eaqNWS80tGcAqai36NQp+0Q=
+	b=KqRdyOQ8m6rj+NuYzdBLeYOutvKlYwIiDP05RITPrfxsT3pJ7+V9YmoEu+bEij7TU
+	 8p+1B0P6CwfFashIqQYogikbyyV+SVfqYQZ+svZsXjiQAvSfj6tjjTDjakDq+ZdrOD
+	 tdtOaXxSi9OUkJK3RI2kOTSHvfQ/NFPxgzSZ7SQ0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B357DF805F8; Thu, 15 Oct 2026 12:31:27 +0200 (CEST)
+	id 9AD81F8061F; Thu, 15 Oct 2026 12:31:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73B31F80600;
-	Thu, 15 Oct 2026 12:31:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 158FDF80622;
+	Thu, 15 Oct 2026 12:31:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7702AF800FA; Thu, 15 Oct 2026 12:31:21 +0200 (CEST)
+	id 82873F8060D; Thu, 15 Oct 2026 12:31:31 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1792060279;
-	b=XMkEVyFVEPt5Vkl1c3N0De3Up5eJOcIvGJrIT2DO4cd5qolNAQ9krbbIB1fruYWsE9M3
-	 1e5xCYjDwFJI8dqXLVscPIFTP03bLLmjXVC5LFS8HW5VOeW3hZiCA8hbpPZI/rbLnbI+z
-	 Ci6X62LmUtufZ/L/rFCHP2JlvwzmqPvrDczUJKyJtL+UL1ndf/ekRTZi94hEi85hN4unm
-	 7xbLtpi5sd/bEAgdHz/1/Kpi2gOMc84VpEFaZqV5Bvb33LkMgWmVKYy2FRc1748s4norX
-	 p3Fot03wPSYMWP8wCuQMYa6tyE3tasxytSA5BnpNJx/BkVES0jDKb0OMV88k8ROEV5w==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1792060290;
+	b=H7koa5bWBEfHx/5xJPwm3hobNUGhDqFkXhd1SRWAk4RHKHPqmV1W9HT0PaLCroH4ieY+
+	 upCZpLk1PfstR6KRydxU/lUV2m0gMjfICCo5gWJ2Bt7Da7t9qADoxJG0ErJgHPmRBfRij
+	 NNNd1fp8xb+vl7yqJk4HXeVo2zq/Ujub39Kp+R3n4FIKr+BIiOuNeUsAFd7vvYehxIoGp
+	 ER8SaWutrdE/THVGYW4+SD2I79KvNM72dREmFGajvbyuYkE10umQFiUCzYbsXsyBdNNoE
+	 CIWce+RgLjpNqK0+WEaplK6Qbx2DI83kgdWE0ZIR2kxkFcowhgOoKgPa9/rpN9pXiSg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1792060279;
+	c=relaxed/simple; t=1792060290;
 	h=DKIM-Signature:From:To:Subject:Message-Id:Date:MIME-Version;
-	bh=GliNkEv4f5oaxNNjOVax3rnIxeu6bYxuNBj+S/JWY60=;
-	b=a8ld4bKB1Xw/P9HhQ9ZW7AgFrOWLoqhDAXaEOezgYFRUKuyzz8LSogPCvoQOyJuecHJn
-	 tXq+mUirjU5ZgSUCtME555U99XJx01e/LMvh/aQgVMOwv/rzB+i9bxHeouaWrlam5qHyo
-	 dg8nJY6m138j1c51w0TsGFkDU+Ssmr3YNTXj+c/+APvz3S2nafsZwC0ouc8hRSgtsNvtp
-	 86lEe+bvJ7NnlKh8VXWj/VpVAGlMoq0dyiZcL3begxT0SeqLtLn/+AlBko/aMcCZKvuRh
-	 q+jVGKLDqgLbJXSduToyOgOeKKzDSkKYO97D8xhYveF9ObZd1X3UnO36hgql61ZmeQw==
+	bh=4bF/zFcPZ+rge2e+q78qNspBsBmmrjazXqSGKV4CxYw=;
+	b=p1SQroDyEELexJbGfu6sM4AjQVpXIV2A7l7y/CiH2JyrYfFEOE+kiamtoWj9THmD7TCF
+	 cOh6z1vMbFpXh0g8/xI31RB+DfiMekQU9gVlLLlRoz+wl4h4ObQ4hydt1FZ7Q8+hnuj7C
+	 cFFC9nSfAAjFkn7q4O/ukTQnZ1mv0NqrVX/3G3h8mvP/ErU3dSwVwVNcjGelgOQ1kKj90
+	 dDpmSLg0qB22q5/AH/9R6H7dWkbLOP4Kc4ZOCQNMImbUyTmb8sH5c9Mqu+s4FRuwVGQ/j
+	 4Si9NPmlh+t3LdPLq9j57yHBvvMGEKHgDaeKMKHgURRA5xKwkhji1FhfiAOlwiCxnWA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=anAiLvI9;
+ header.s=k20260515 header.b=hFh3yJab;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 73710F8026D;
-	Thu, 15 Oct 2026 12:31:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73710F8026D
+	by alsa1.perex.cz (Postfix) with ESMTPS id B6374F80606
+	for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2026 12:31:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6374F80606
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=anAiLvI9
+ header.s=k20260515 header.b=hFh3yJab
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 8E29B41765;
-	Thu, 15 Oct 2026 10:31:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F7451F000C4;
-	Thu, 15 Oct 2026 10:31:10 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 7701B400E5;
+	Thu, 15 Oct 2026 10:31:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2CD31F000C4;
+	Thu, 15 Oct 2026 10:31:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792060273;
-	bh=79LtDdXUGnQRvSGTVgG4tAzTgUO9Gbk0LFtaWpy2oig=;
+	s=k20260515; t=1792060288;
+	bh=ZNM/BYGhfHnDKDA67q+sAabYWzpLx4cmmnoJmrbhFeY=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=anAiLvI9xUWtRWgpajPIn8M95hBrsNXxS4yzI/1jJGnQTcGdkCuBR6zwpcSBMaYac
-	 KzWJwpZ7rerDyRJtBUv3H+zF/zD/2cTHHcRoVshIxKNKxNRbRG8zRPPB+viASL+ZjH
-	 hUklbufMqLsDQ/pwlR36HW/t76/Jol2W0GZjhULy99MhqQTEY3JlzNsoWGlZPT9Qr5
-	 4YFoyUnEw4pi+SfayeVkdc54ejrtyoV1lXE+H+Bxvh8Qe2WUNse2kWlJWp7eCPEbvb
-	 fNLkeUPYfl8RtABt54DBdJSsA2V3NDtBU2H/5Rcug1Pj8zJFkM3dOG57tf1qa+OO9P
-	 VICndq4GCqGhA==
+	b=hFh3yJabENhH3Y6vENYG3s9CyB1xltCW3IjjpUktyW6VQdlgvM0eT19ALwrjKL2X5
+	 TDkZofaBdIx/THVC77HQQisFyNE3pE0Cz6SU1dPizf45bSkoKLhSCc6a4jftV9D8LQ
+	 10efLaHbUqkF+vLqq3+xBc6nDxsvmv1iW64MqX0KwmTHx2eiHw6u1P84mlP1q6MSD3
+	 YhBAqEF39IAMNdMmRzO8k8x5EqNGsMBZv+vS1udE16fUIkP1TOiXZaZS0RVO6dTQil
+	 hodDpVAQk8mZ4MAWi042/Edr1RMCdigPZepNnYDEaTp7haN8vd7MUx424z4xssiOlK
+	 1RsY+m9jirxvQ==
 From: Mark Brown <broonie@kernel.org>
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
- tiwai@suse.com, yung-chuan.liao@linux.intel.com,
- Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
- venkataprasad.potturu@amd.com, Syed.SabaKareem@amd.com,
- Mario.Limonciello@amd.com, Richard.Gong@amd.com,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- sound-open-firmware@alsa-project.org
-In-Reply-To: <20261013154644.3788064-1-Vijendar.Mukunda@amd.com>
-References: <20261013154644.3788064-1-Vijendar.Mukunda@amd.com>
-Subject: Re: [PATCH 0/9] ASoC: SOF/amd: ACP7.B support and ASP carveout
- firmware loading
-Message-Id: <179191856632.42298.5680316320552393906.b4-ty@b4>
-Date: Tue, 13 Oct 2026 20:09:26 +0100
+To: Simon Trimmer <simont@opensource.cirrus.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, Mingxuan Guo <gmx472@qq.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <tencent_B839C5A92D762B5717B9637A5CFA0841C608@qq.com>
+References: <tencent_B839C5A92D762B5717B9637A5CFA0841C608@qq.com>
+Subject: Re: [PATCH 1/2] firmware: cs_dsp: clear dsp->running on the
+ cs_dsp_run() error path
+Message-Id: <179190663311.42298.15437389949849983493.b4-ty@b4>
+Date: Tue, 13 Oct 2026 16:50:33 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2750; i=broonie@kernel.org;
- h=from:subject:message-id; bh=GliNkEv4f5oaxNNjOVax3rnIxeu6bYxuNBj+S/JWY60=;
- b=owGbwMvMwCWm/754w+YLFp2Mp9WSGLIurM7hqZw4b1GbiXqwb875pblT4r/fv/3oyTHtDzU7i
- lwCw9iUO0pZGMS4GGTFFFnisrhf1pe8XsN3cGEbzBxWJpAhDFycAjAR5euMDBsmb9rP9rFDWLtX
- z1KFscBwoY2WdeJ2Jid/xVuHrJTWFzEy9PnoBdpXflZgqsmPYrl83un/0fjbLzvCLVluVftPk/7
- EBQA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1283; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=4bF/zFcPZ+rge2e+q78qNspBsBmmrjazXqSGKV4CxYw=;
+ b=owGbwMvMwCWm/754w+YLFp2Mp9WSGLIurK6dsohlZviptYsiUj9uit5Y+8rJOuz4143LtvidV
+ WXftdD9akcpC4MYF4OsmCJLXBb3y/qS12v4Di5sg5nDygQyhIGLUwAm0r6CkeFZa+KR5X6TFrT3
+ vWl9k2XH28WSsOXUbt7LhmzzvSJP/1vNyLA5/dChHfP3Sh1MVPx+yEbpOZ/+2/KZuu5LVNb8cH4
+ /PZUdAA==
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: 6HUTT4N26JIERAXHNYVKMKTPB2GU73XW
-X-Message-ID-Hash: 6HUTT4N26JIERAXHNYVKMKTPB2GU73XW
+Message-ID-Hash: 3ADTBVGAM754EAOICA3OWICWCMTSOF5D
+X-Message-ID-Hash: 3ADTBVGAM754EAOICA3OWICWCMTSOF5D
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -116,7 +112,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6HUTT4N26JIERAXHNYVKMKTPB2GU73XW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3ADTBVGAM754EAOICA3OWICWCMTSOF5D/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,21 +121,8 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 13 Oct 2026 21:11:32 +0530, Vijendar Mukunda wrote:
-> ASoC: SOF/amd: ACP7.B support and ASP carveout firmware loading
-> 
-> This series adds ACP7.B platform support to the AMD SOF driver stack
-> and implements the ASP-authenticated firmware load path required by
-> both ACP7.B and ACP7.F.
-> 
-> Patches 1-2 are preparatory renames and restructuring. The existing
-> acp7x machine table and chip descriptor are renamed to acp7f to
-> accurately reflect the hardware they target (ACP7.F). The probe
-> callback is restructured to select the per-revision descriptor via a
-> dedicated static pci_device_id entry rather than encoding it in
-> driver_data of the shared ID table.
-> 
-> [...]
+On Tue, 13 Oct 2026 18:23:58 +0800, Mingxuan Guo wrote:
+> firmware: cs_dsp: clear dsp->running on the cs_dsp_run() error path
 
 Applied to
 
@@ -147,24 +130,10 @@ Applied to
 
 Thanks!
 
-[1/9] ASoC: SOF: amd: rename acp7x machine table and descriptor to acp7f
-      https://git.kernel.org/broonie/misc/c/929e433b8cbc
-[2/9] ASoC: SOF: amd: select descriptor per PCI revision in acp7x probe
-      https://git.kernel.org/broonie/misc/c/f84363861e44
-[3/9] ASoC: amd: add I2S machine table for ACP7.B
-      https://git.kernel.org/broonie/misc/c/9246ac5b5c99
-[4/9] ASoC: SOF: amd: add ACP7.B chip descriptor and wire per-revision probe
-      https://git.kernel.org/broonie/misc/c/44f8d28191f1
-[5/9] ASoC: SOF: amd: Propagate PCI subsystem Vendor and Device IDs
-      https://git.kernel.org/broonie/misc/c/b2dc10ee0b51
-[6/9] ASoC: SOF: amd: consolidate local variable declarations
-      https://git.kernel.org/broonie/misc/c/b23e9b1f3b4c
-[7/9] ASoC: amd: acp: add acp-mach-common.h for shared machine driver types
-      https://git.kernel.org/broonie/misc/c/0e4c4081169b
-[8/9] ASoC: SOF: amd: propagate pdm_sel to SDW machine driver via mach->pdata
-      https://git.kernel.org/broonie/misc/c/439c43d9628e
-[9/9] ASoC: SOF: amd: add ASP carveout firmware loading for ACP7.B/7.F
-      https://git.kernel.org/broonie/misc/c/cec3598305a6
+[1/2] firmware: cs_dsp: clear dsp->running on the cs_dsp_run() error path
+      https://git.kernel.org/broonie/misc/c/ad6be54d1349
+[2/2] firmware: cs_dsp: add a KUnit test for the cs_dsp_run() error path
+      https://git.kernel.org/broonie/misc/c/80b3f283e961
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
