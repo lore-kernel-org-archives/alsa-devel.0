@@ -4,124 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55332CC6B24
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2026 06:55:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAE9CCC6B1A
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2026 08:51:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1EB2601F9;
-	Wed, 14 Oct 2026 08:54:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1EB2601F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0EA61601F5;
+	Wed, 14 Oct 2026 10:51:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EA61601F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1791960909;
-	bh=ZZMWOHcPV/ZhcCh6nhXHqg0hT5jW2Fa66GrVcbh8aAE=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=EK+xZm26x4MuW1Sx55mplULUds0lXMvt9bs72XKe0StKniQTHiFaNUz4ren3KA/aG
-	 mw7JgHEbpXM8QEOmhgEa9fbk3T1hMuqRg+l/WO2uF4Du3HL7Sj9oiK7T1IIRs8tv68
-	 R9/q5ke7z8DjigYRKelFouD6yToXdkYEIvI1l0Jw=
+	s=default; t=1791967901;
+	bh=wEHvXVXAn7qF10YGXtpZZTIFDuEGih3XjREhWEu2hsE=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=EQq9EqWc0QtukT7QXpk5VNTrIe/diymB6VtEDrYhvDpDL8IfsydN1JXPwhR7hPxil
+	 gWGMWKAV9gKdKAIzKt7rJmg1b21QFr+Aze++uT/98C+YGu1oCiyhyXe9WlfCfkY3PU
+	 Ae+MSfrkqyRgIUMj8c2Q7BJ/tCr2/CQeUJ7/vDSI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5F1D8F805FD; Wed, 14 Oct 2026 08:54:35 +0200 (CEST)
+	id 2D86CF80601; Wed, 14 Oct 2026 10:51:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83796F805F3;
-	Wed, 14 Oct 2026 08:54:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BEE98F80600;
+	Wed, 14 Oct 2026 10:51:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 12641F80448; Wed, 14 Oct 2026 08:54:30 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=209.85.128.43
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791960865;
-	b=mx0OlDpmOu8wwq9IJfqd97UOSC6Rutmw7eqs/vEiDYyqUsdcCsCUsr9uJ6zaDQlBzmfz
-	 UicSGUBnrA56Nw04jqubJKfsKU2NHji+GzIkWxlMfXM7yvTyPEpe0BJRd8pw8lCPhOedx
-	 lAg/sSlCs1bN5fQwUEg8FBRN4NcSUXvmExuwVvXbCKExX+qLq7aNoFua6uKbuVFFpjbMr
-	 Bn11jktpyaqXeZJZ1AkukxrvNQlHy3/5TJv4HIdUgUveab5nU+Fa+7VFCzJU6f516MZTd
-	 zTTJk6OmdE+gRuFL0c3qWX9r41KxkjgiZlrT1igJTKkUD1jADF3Nk9bFYKyugxgmfLQ==
+	id A032FF80448; Wed, 14 Oct 2026 10:51:00 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791967857;
+	b=n0QGPzPI5Ssw+Q+cTl2La/sxH5Km3VobbHsRJi4FflcIe1qNT7+jAWq3BXyzSiZXAbNH
+	 Gj5wqMOmdJlQWxO7mfMFDvG7jqTebpHnWzCAcORJM+Gf7RPNLdbhTW27sHRt4xKFQPzIV
+	 vtSR2Ejdv+pnjhxXDAy2hHjD8FFfG1CcQmmswGaKxDWtK63FZIwiqoXSBcKk23I1MjiwW
+	 JaE8vjoSfhEQzANABntvYok9UUouVKfAPQPBnPG8cUiK7cFSstMcNXotuqMwfs5ucgeSE
+	 WIol3HWYJ3a9Zts8HJ2fsvGQSVMLTS9/lSNlKsWw1gFe9gkRLBlbx4pIE38Ok0fuevA==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1791960865;
-	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=ZZMWOHcPV/ZhcCh6nhXHqg0hT5jW2Fa66GrVcbh8aAE=;
-	b=EzwfGhiTICtFDSpE3dKKHlUYwtYIAeMCQs/QI6VQ4OdDR0wtM0yVVNXRhfe53UbWI56v
-	 GN5YAKHMRG4Y+yEjC/ZRgKbRdr83Celx0xOa2IIlNj+aj+yaWLJd9R1LPOuPA3qCImxEO
-	 tXpui2+sxpjrjD/4/Z8S1YaoYC6/5C0sUnNYVMNY64ZK378DfiRKCO7wObRfuhl882Hbl
-	 fxqbNR+2KviGPYFTiTP0NTH/RCJZNSH9saA3pRIQ774VlOMe0uyB3Q2yP1sGFV13lwK2w
-	 T0hnvlt5n1TNOhGXrG1l6g23yEm5yBOvDm0UWcdIxMrOodzncAiRMb+OQtdgi3WQXjA==
+	c=relaxed/simple; t=1791967857;
+	h=MIME-Version:From:To:Message-Id:Subject;
+	bh=wEHvXVXAn7qF10YGXtpZZTIFDuEGih3XjREhWEu2hsE=;
+	b=AN8S31FPSZSDqvShr10fkKt635trOpE1LbY2x1A2DDn9n02pqCCyGPqjFbVtLcqWY0CZ
+	 Ao7+TzP3UpqW9q3AhNUeJ4VYkhhaJEZlHVTzTh5TB1EjiMFmLwC7ENT3uUh4UHtpLb3kX
+	 X4ZuCGh0D2traFMWmGetBJRu51wIJPSVQFmLa/v52LD0LW+wFG+GSirOdeCSi+YwnBXaT
+	 mJeL0VDFtC2vvtzKDIfsuM1kPBDFLVULnAO1jm5Qsp/cndkwRxDNJoFH4SQN5Zwb01y4v
+	 V1JhE/pUQ/PxC/YNGteqzFZSM7ng/43/7Ha2gZHDjMD9zx7hjTQrPGmEsd0gTwsvqeg==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=M+ZQFRKh;
-	arc=none smtp.remote-ip=209.85.128.43
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com
- [209.85.128.43])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B28D9F80038
-	for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2026 08:54:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B28D9F80038
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=M+ZQFRKh
-Received: by mail-wm1-f43.google.com with SMTP id
- 5b1f17b1804b1-4a02667ccebso26614615e9.0
-        for <alsa-devel@alsa-project.org>;
- Tue, 13 Oct 2026 23:54:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791960864; x=1792565664;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=t/EWJwREj/j/NhglPdJXCtWU3i+1LaWly6FUhVKlieA=;
-        b=M+ZQFRKhZTH3axy4gX2tdT1wrAm9s5xIYqS3JO7O1A/6oRs8pJaY2TC8SQdBjPquZ4
-         m7fkiG2JDagP1y4ssELbpWms+9sgBMIaI9KDVsepy/eqEw6tW4vpiK2RSuKqm1AkE6xc
-         DFIh9kxE7o1YodLKsKKdDZpMx9Iz9F1272onUCJeg57Hy3tDMKsVCK6DDx+GPiCjzyjp
-         itrlilu24qBrEsdfa1vD5SjTE6L9M5UmqGAnGA8DGG5LzXZFQnE9o/JqSt5d7e9urzM5
-         l+66VIUZwfyr3cVRKahnNEiZ8e1Eabfru6aC+nv00VBp8lIFMOcDieMnQobW1zsgZ3Fe
-         QIJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791960864; x=1792565664;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=t/EWJwREj/j/NhglPdJXCtWU3i+1LaWly6FUhVKlieA=;
-        b=lyiJ3iYWaIFeQNEiUxi4WMYYGt34R+f+FsrH+GjdkWRzue11WuxqbRbwmAmHuDGiCQ
-         faNR41Mqg6ujwNMnm3sxm5lPrDq+K3VeIukilWL1Th3BbcDp0K+oQJV3aYHsKJXhT4ZP
-         hgewhgFIF/c5wRwg86Np7ltJe2kCoY0QoR0wb03ervDa0TO/LeLE5/1K5UAm1jib2zp5
-         SrdXK6tt2WoVvBqm6geK18dkePzE9ecjR3fY+X54yUOkL9EdZaHgaQRqk7kSmDaqQlfF
-         SA3YH0s+ppcI4yEfVMKPr6Swlryy0pCOs5skp7ejQKnJwRbXIxNq5+W7d+cjbR8XBLbM
-         Z04A==
-X-Gm-Message-State: AFq9FYIpNBnskKbnmaFak9Kgfpo6jv6UgjmzDvifxuYz4rBafgCJYTWX
-	2uQeW+bcm86/CAu2cD0mPW+Brgr7US84bL72YoFI4ZlPEwGgI19A8xgS6SKCwknOozUoogsy
-X-Gm-Gg: AYBFou0lsibcKRmTucJ1QdTmw7FKow3ihWhGrbKhiIfNmQ4xGwFXIP97bhbPJZJVsDS
-	ZOCWAYo3r+UIf2e8kDwKwI/ryg8s3jNnwBGCf0ur3jxhNybIItg0xj4KPD1t68KVKsBLEVMapIR
-	AdKY0u0dadGo7DAlawHFmHVwZm7MFArst+wGkEADCUyHOYjhhqVmBFqBCO/KrFz26Ynfi7MeH1O
-	mk3StpCKKMC8k451yziI+gTHqIgIzM/VarjqVEb2QjPKu8TnK6fokNgjdcDjS6msuZvuen99XF6
-	HJBr8nzyNvvzGBJDAYkTUtE3bAEpzY1Yo/3xs3N0ewywquMYB6Ekb59i0CBHtuXoBFvVkwZI8av
-	k8f76aeCpb0aV6MwpLL6oEbkZB9kACV//j5xMC6ceojVUYPh0aokCF9SjP22ZaYpLPES7KJbxUx
-	0fxG9mSgsP1FzrbesDx5e8LyVO1cC7m3ljdO4zqfQPlYMFD2JWh/USI6kytfzJcBH/BvwilJZ+/
-	wsWlKRIfxzeu4Wudtxo9fEwG/IzVzufwue8z5Xwqfvm0FB6dexeOUh4qJaWG30AR3MxfHzz
-X-Received: by 2002:a05:600c:3e8f:b0:4a0:1c0e:b057 with SMTP id
- 5b1f17b1804b1-4a18e44653cmr298080405e9.4.1791960863433;
-        Tue, 13 Oct 2026 23:54:23 -0700 (PDT)
-Received: from localhost ([188.234.148.119])
-        by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4a18c1e33d2sm612095515e9.0.2026.10.13.23.54.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2026 23:54:22 -0700 (PDT)
-From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-To: alsa-devel@alsa-project.org
-Cc: perex@perex.cz,
-	tiwai@suse.de,
-	Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
-	"Claude Opus 5.5" <noreply@anthropic.com>
-Subject: [PATCH] pcm: direct - check channel bindings against the opened slave
-Date: Wed, 14 Oct 2026 11:54:17 +0500
-Message-ID: <20261014065417.261594-1-mikhail.v.gavrilov@gmail.com>
-X-Mailer: git-send-email 2.56.0
+ arc=none smtp.remote-ip=45.14.194.44
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id B3620F800FA
+	for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2026 10:50:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3620F800FA
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ZNX5Z3AOKJ3JIHA3ZYZOIE2U7C3ABAYR
-X-Message-ID-Hash: ZNX5Z3AOKJ3JIHA3ZYZOIE2U7C3ABAYR
-X-MailFrom: mikhail.v.gavrilov@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - edited <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18de5945497cef00-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/826@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/826@alsa-project.org>
+Subject: ucm2: USB-Audio: add Topping M62 configuration
+Date: Wed, 14 Oct 2026 10:51:00 +0200 (CEST)
+Message-ID-Hash: Z6KF3RYHTJFDNJ63CALTZ5Y7AY2RHCMW
+X-Message-ID-Hash: Z6KF3RYHTJFDNJ63CALTZ5Y7AY2RHCMW
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -132,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZNX5Z3AOKJ3JIHA3ZYZOIE2U7C3ABAYR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z6KF3RYHTJFDNJ63CALTZ5Y7AY2RHCMW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -141,124 +84,219 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-A dshare or dsnoop PCM whose bindings name slave channels the hardware
-does not have indexes the slave's channel areas past the end of the
-array and reads or writes audio through whatever lies there.
+alsa-project/alsa-ucm-conf pull request #826 was edited from NTMan:
 
-snd_pcm_direct_parse_bindings() checks the bindings against the channel
-count the configuration asks the slave for, but the slave is set up with
-snd_pcm_hw_params_set_channels_near() and may take fewer, and nothing
-checks the bindings again. dmix skips such channels while mixing;
-dshare and dsnoop do not.
+ucm2: USB-Audio: add Topping M62 configuration
 
-Seen with the UCM split profile of the Topping M62, whose ten playback
-channels go to five stereo dshare devices. After a bad contact the card
-enumerated at full speed with two channels of S24_3LE, and WirePlumber
-crashed on every start while probing the profile: closing
-m62_stereo_out:M62,0,6,7 made do_silence() take the areas for channels
-6 and 7 from the heap past the two-entry array and write silence
-through what it found there.
+The M62 exposes a single ten channel playback PCM and a single sixteen
+channel capture PCM. The ten playback channels are not a surround
+layout: they are five independent stereo buses that the card's own
+mixer sums into its outputs, named Playback 1/2 to Playback 9/10 in the
+manual.
 
-Check the bindings once the slave is open, against the channel count in
-the shared memory, in both the first and the secondary instance paths,
-and fail the open: a binding to a channel the slave does not have
-carries no audio.
+The descriptor declares no channel positions at all -- bmChannelConfig
+is 0x00000000 on both the ten channel and the sixteen channel terminal
+-- so the kernel guesses. snd-usb-audio fills a missing channel config
+with the standard surround order and publishes FL FR FC LFE RL RR FLC
+FRC RC SL as a fixed channel map for the ten playback channels, in the
+Playback Channel Map control and in the card's /proc stream file; the
+sixteen capture channels are more than a channel map can hold and get
+no map at all. Without a profile PipeWire leaves the guess unused and
+hands out AUX0..AUX9; wherever the map is used, the desktop believes in
+a centre, an LFE and a rear that the hardware does not have. Both
+readings break more than cosmetics: with AUX names the balance control
+and the speaker test have nothing to work with, with the guess they
+work on speakers that do not exist, and either way any per device
+equalisation carries ten channel keys where two are meant.
+
+Each bus is therefore published as its own stereo device, split out of
+the one PCM. Unless the kernel publishes the output selector described
+below, the five are not marked conflicting: they may play at once,
+which is the point of having five.
+
+What the card does declare is channel NAMES. iChannelNames points at
+"Playback 1" on the playback terminal and at "Analogue 1" on the capture
+terminal, each the first of a consecutive run of string descriptors, and
+the run reads Analogue 1, Analogue 2, AUX 1, AUX 2, BT 1, BT 2,
+Mobile 1, Mobile 2 and Loopback 1 to 8. macOS displays exactly those
+because Core Audio follows that field. Every name this profile shows
+comes from there. Linux surfaces none of it: ALSA carries channel
+positions through chmap and has no notion of a channel name, so the host
+sees an anonymous sixteen and this profile is where the names can live.
+The order was confirmed by measurement as well, one column at a time --
+feeding the microphone input lights column 0, and a headphone to AUX
+loop lights columns 2 and 3.
+
+The inputs are therefore described by the names the card's own panel
+and control application use: IN 1, IN 2, AUX, BT and OTG IN. The
+two microphone channels are named after the card's mic channels and not
+after jacks, because IN 1 is switched on the card between its own
+6.3 mm jack, the 3.5 mm jack and the headset jack; that switch lives in
+the card's own panel and is not visible to the driver, so a jack name
+would be a claim the configuration cannot back.
+
+Those names live in each device's Comment; the device identifiers come
+from the vocabulary use-case.h defines -- Mic1 and Mic2 for the two
+microphone channels, Bluetooth for the Bluetooth input, and Line1 to
+Line11 for the five playback buses, the AUX and OTG inputs and the four
+loopback returns. PulseAudio and PipeWire take the leading alphabetic
+part of an identifier and look it up in that same list to set the port
+type, so a name outside it gives an untyped port.
+
+The two microphone channels are offered as two mono devices and not
+additionally as one stereo device covering both. A stereo pair would be
+useful, since a balanced source arrives on both at once, but it can only
+be declared as conflicting with the two halves, and alsa-lib treats a
+conflict list as a group of mutually exclusive devices: it closes the
+relation transitively, so a stereo device conflicting with each half
+makes the two halves conflict with each other. Two microphones that work
+perfectly well at the same time would then be offered only one at a
+time, which is the worse loss. Expressing it the other way round, as
+SupportedDevice, fails for the same reason: the closure fills the lists
+until nothing excludes anything, and all three end up coexisting and
+overwriting each other's preamp gain.
+
+Bluetooth and Mobile carry audio, and all four inputs record at once: a
+sixteen channel recording with a phone on Bluetooth and another on OTG
+shows signal on the analogue, AUX, Bluetooth and Mobile columns
+simultaneously.
+
+The eight loopback returns arrive MUTED. Mic Capture Switch carries one
+value per capture column and reads on for the first eight and off for
+the rest, so columns 8 to 15 deliver digital silence until something
+turns them on. That is why they look as though the loop never reaches
+the USB stream, while the vendor's control panel meters it happily and
+while the same card delivers those returns to a host whose software
+turns the switch on. The verb turns all sixteen on, and the four
+returns are then declared as stereo devices, below the physical inputs
+in priority because a return is what the card is already playing rather
+than something arriving from outside. The Direct verb unmutes them too,
+and its ten playback channels with them: it is where someone asks for
+every column and channel at once, so it is the verb where silence on
+some of them misleads most.
+
+The card's own faders are digital and sit after the converter, so
+raising one lifts the converter's noise floor with the signal. The
+analogue stages -- the two microphone preamps before the converter and
+the headphone stage after it -- are reachable only over a vendor
+protocol on the card's HID interface, and a kernel that speaks it
+publishes them as ordinary mixer controls. Each device therefore picks
+its volume with a ControlExists condition: where the analogue control
+exists the device takes it and the verb pins the digital trim open, its
+switch on included, since the two are in series and a fader over their
+product describes neither, and nothing else would turn a trim's switch
+on that someone had left off; where it does not exist the device takes
+the trim, which is what this profile did before. No particular kernel is
+required. The loopback returns are picked the same way: the card applies
+its own gain to each, up to +12 dB, before USB, and where the kernel
+publishes that gain the return takes it, since the trim after it can
+only lower what the gain let through. The analogue stage after the
+converter is a single headphone output, and which of the ten channels
+reaches it is a choice inside the card; the next paragraph is where that
+choice is made, and it is what lets a playback device name that stage as
+its own.
+
+Each output on this card listens to one source chosen inside it, and
+where the kernel publishes that selector -- a control separate from the
+headphone volume, so the two are conditioned separately -- the five
+playback devices own it: they conflict with one another, and enabling
+one points the headphone output at its own bus. That is what makes the
+analogue headphone stage theirs -- the active device is the one the
+output is listening to, so its volume is that stage and not the digital
+trim. Two things follow. The five buses no longer play at once, which
+they can do on this card, their sum reaching an output through one of
+the card's internal mixes. And a headphone output left listening to such
+a mix is moved to a single bus the first time a device is enabled, a
+setting this profile cannot restore. Where the selector is not
+published the five stay independent, each with its own trim.
+
+The card keeps all ten playback channels in one mixer element and all
+sixteen capture columns in another, so the per bus and per input
+volumes come from a control remap by channel index, in the same shape
+the Behringer UMC204HD profile uses.
+
+The card has three operating modes, switched from its own panel, and all
+three keep the same USB id. The mode is encoded in the high byte of
+bcdDevice -- 01xx Mobile, 02xx Live Streaming, 03xx Pro Audio -- and
+Topping/M62.conf picks the verb file by it. Live Streaming and Pro Audio
+have identical channel layouts and on USB differ only in the rates they
+offer, 44.1 and 48 kHz against those plus 88.2 and 96 kHz, so they share
+M62-HiFi.conf. Mobile Mode is a two-in, two-out device: its descriptor
+declares no positions either, and the kernel's guess, FL FR in both
+directions, is right for two channels. Its capture is not two inputs but
+the stereo output of one mixer over all of them, which the vendor's
+control application calls Recording. A microphone on IN 1, a phone on
+Bluetooth and a source on AUX are all in it at once; the host's own
+playback is not, and is heard in the headphones with the inputs. It gets
+a profile all the same, M62-Mobile-HiFi.conf, so that the sound server
+takes the card from UCM in every mode instead of falling back to probing
+it: one playback device, Playback 1/2, and one stereo capture device,
+Recording, each on the card's own stage where the kernel publishes it --
+the headphone stage and the Recording fader -- and on the USB trim where
+it does not. Where the kernel also publishes the application's
+Playback 1/2 knob, which sets the playback within the headphone mix, the
+verb pins it at 0 dB, as it pins the trims. A bcdDevice outside the
+three ends in an Error that names it.
+
+The ten and sixteen channel layout of Live Streaming and Pro Audio
+needs a high-speed link. A full-speed isochronous endpoint carries at
+most 1023 bytes a millisecond, and ten 32-bit channels at 44.1 kHz, the
+lowest rate the card offers, need 1764. After a marginal contact the
+card came up at full speed, still in Pro Audio Mode and still with
+bcdDevice 0327, and its playback was a two-channel S24_3LE stream. The
+five stereo devices were then split out of channels the stream did not
+have, and WirePlumber crashed on every start while probing them, since
+alsa-lib checked the bindings only against the ten channels the
+configuration asked for; that is fixed in alsa-lib on its own,
+https://lore.kernel.org/alsa-devel/20261014065417.261594-1-mikhail.v.gavrilov@gmail.com/
+Topping/M62.conf therefore offers the layout only at 480 Mbit/s and
+otherwise ends in an Error that names the speed, which leaves the card
+to the sound server's own probing, the way it treats a card without a
+profile. Mobile Mode's two channels fit a full-speed link, and its verb
+is left as it is.
+
+The analogue controls, the loopback gains, the output selector, the
+Mobile Mode levels and the MUTE switches come from a kernel series under
+review. The names used here are those of its next version, which will be
+linked here once it is posted; its v8 is at
+https://lore.kernel.org/all/20261003184217.34671-1-mikhail.v.gavrilov@gmail.com/
+
+Tested on Fedora with alsa-lib 1.2.16 and PipeWire in all three modes:
+in Live Streaming and Pro Audio the five sinks and the named sources
+appear as expected, playback lands on the intended pair, each remapped
+element moves only its own channels, and a sixteen column recording
+confirms the input columns, the loopback returns among them once the
+verb has unmuted them; in Mobile Mode the one sink and the one source
+appear, on the headphone stage and the Recording fader.
+
+On 7.3-rc7 with that next version, in every mode: a tone played through
+each playback device is heard in the headphones, the output selector
+following the device in Live Streaming and Pro Audio; each sink's and
+source's volume moves the card's own control behind it, and its mute
+turns off the switch the series publishes beside that control or, on the
+loopback returns, which have none, takes the gain to its lowest step;
+the headphone knob on the card moves the sink's volume; the USB trims
+stay at 0 dB and on, and so does the Playback 1/2 knob in Mobile Mode.
+
+The speed condition was checked on a high-speed link: the card reads
+480 there and the HiFi and Direct verbs come up as before; with the
+condition inverted, alsa-lib stops on the Error that names the speed,
+and PipeWire takes the card through its own probing, as one without a
+profile. A full-speed link was not reproduced on purpose.
 
 Signed-off-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01UtgNSeUh5N6FdyeFTPugkp
----
- src/pcm/pcm_direct.c | 23 +++++++++++++++++++++++
- src/pcm/pcm_direct.h |  3 +++
- src/pcm/pcm_dshare.c |  4 ++++
- src/pcm/pcm_dsnoop.c |  4 ++++
- 4 files changed, 34 insertions(+)
 
-diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index a08bbe6d..184ced7b 100644
---- a/src/pcm/pcm_direct.c
-+++ b/src/pcm/pcm_direct.c
-@@ -1802,6 +1802,29 @@ int snd_pcm_direct_parse_bindings(snd_pcm_direct_t *dmix,
- 	return 0;
- }
- 
-+/*
-+ * snd_pcm_direct_parse_bindings() checks the bindings against the slave
-+ * channel count the configuration asks for, but the slave is set up with
-+ * snd_pcm_hw_params_set_channels_near() and may take fewer channels.
-+ * Check them again against the channel count the slave really has.
-+ */
-+int snd_pcm_direct_check_bindings(snd_pcm_direct_t *dmix)
-+{
-+	unsigned int chn, schn;
-+
-+	if (dmix->bindings == NULL)
-+		return 0;
-+	for (chn = 0; chn < dmix->channels; chn++) {
-+		schn = dmix->bindings[chn];
-+		if (schn != UINT_MAX && schn >= dmix->shmptr->s.channels) {
-+			snd_error(PCM, "invalid slave channel number %u in binding to %u, the slave has %u channels",
-+				  schn, chn, dmix->shmptr->s.channels);
-+			return -EINVAL;
-+		}
-+	}
-+	return 0;
-+}
-+
- /*
-  * parse slave config and calculate the ipc_key offset
-  */
-diff --git a/src/pcm/pcm_direct.h b/src/pcm/pcm_direct.h
-index 9a8c5527..8da2fa18 100644
---- a/src/pcm/pcm_direct.h
-+++ b/src/pcm/pcm_direct.h
-@@ -220,6 +220,8 @@ struct snd_pcm_direct {
- 	snd1_pcm_direct_check_interleave
- #define snd_pcm_direct_parse_bindings \
- 	snd1_pcm_direct_parse_bindings
-+#define snd_pcm_direct_check_bindings \
-+	snd1_pcm_direct_check_bindings
- #define snd_pcm_direct_nonblock \
- 	snd1_pcm_direct_nonblock
- #define snd_pcm_direct_async \
-@@ -327,6 +329,7 @@ int snd_pcm_direct_check_interleave(snd_pcm_direct_t *dmix, snd_pcm_t *pcm);
- int snd_pcm_direct_parse_bindings(snd_pcm_direct_t *dmix,
- 				  struct slave_params *params,
- 				  snd_config_t *cfg);
-+int snd_pcm_direct_check_bindings(snd_pcm_direct_t *dmix);
- int snd_pcm_direct_nonblock(snd_pcm_t *pcm, int nonblock);
- int snd_pcm_direct_async(snd_pcm_t *pcm, int sig, pid_t pid);
- int snd_pcm_direct_poll_descriptors(snd_pcm_t *pcm, struct pollfd *pfds,
-diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index 4ef158c0..62cfc51c 100644
---- a/src/pcm/pcm_dshare.c
-+++ b/src/pcm/pcm_dshare.c
-@@ -777,6 +777,10 @@ int snd_pcm_dshare_open(snd_pcm_t **pcmp, const char *name,
- 		dshare->spcm = spcm;
- 	}
- 
-+	ret = snd_pcm_direct_check_bindings(dshare);
-+	if (ret < 0)
-+		goto _err;
-+
- 	for (chn = 0; dshare->bindings && (chn < dshare->channels); chn++) {
- 		unsigned int dchn = dshare->bindings ? dshare->bindings[chn] : chn;
- 		if (dchn != UINT_MAX)
-diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index 6a803b2c..ca66d0f0 100644
---- a/src/pcm/pcm_dsnoop.c
-+++ b/src/pcm/pcm_dsnoop.c
-@@ -643,6 +643,10 @@ int snd_pcm_dsnoop_open(snd_pcm_t **pcmp, const char *name,
- 		dsnoop->spcm = spcm;
- 	}
- 
-+	ret = snd_pcm_direct_check_bindings(dsnoop);
-+	if (ret < 0)
-+		goto _err;
-+
- 	ret = snd_pcm_direct_initialize_poll_fd(dsnoop);
- 	if (ret < 0) {
- 		snd_error(PCM, "unable to initialize poll_fd");
--- 
-2.43.0
 
+Attached alsa-info from all three modes. The `bcdDevice` value is what the profile keys on:
+
+| Mode | bcdDevice | Playback | Capture | Rates (kHz) | Profile |
+| --- | --- | --- | --- | --- | --- |
+| [alsa-info-MobileMode.txt](https://github.com/user-attachments/files/30801211/alsa-info-MobileMode.txt) | 0145 | 2ch, FL FR | 2ch, FL FR | 44.1, 48 | M62-Mobile-HiFi.conf |
+| [alsa-info-LiveStreamingMode.txt](https://github.com/user-attachments/files/30801208/alsa-info-LiveStreamingMode.txt) | 0248 | 10ch | 16ch | 44.1, 48 | M62-HiFi.conf |
+| [alsa-info-ProAudioMode.txt](https://github.com/user-attachments/files/30801204/alsa-info-ProAudioMode.txt) | 0327 | 10ch | 16ch | 44.1, 48, 88.2, 96 | M62-HiFi.conf |
+
+In all three modes the descriptor declares no channel positions: all ten `bmChannelConfig` fields in each file's `lsusb` section read `0x00000000`. The channel maps in the stream sections are the kernel's guess. In the two ten channel modes it is `FL FR FC LFE RL RR FLC FRC RC SL` for playback, which the hardware does not have -- those are five stereo buses -- and the sixteen channel capture gets no map. In Mobile Mode the same guess gives `FL FR` on both directions, which is right for a stereo device.
+
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/826
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/826.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
