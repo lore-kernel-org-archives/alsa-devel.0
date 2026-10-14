@@ -4,67 +4,156 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAE9CCC6B1A
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2026 08:51:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50969CC6B1D
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2026 10:11:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0EA61601F5;
-	Wed, 14 Oct 2026 10:51:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EA61601F5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D208601F8;
+	Wed, 14 Oct 2026 12:10:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D208601F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1791967901;
-	bh=wEHvXVXAn7qF10YGXtpZZTIFDuEGih3XjREhWEu2hsE=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=EQq9EqWc0QtukT7QXpk5VNTrIe/diymB6VtEDrYhvDpDL8IfsydN1JXPwhR7hPxil
-	 gWGMWKAV9gKdKAIzKt7rJmg1b21QFr+Aze++uT/98C+YGu1oCiyhyXe9WlfCfkY3PU
-	 Ae+MSfrkqyRgIUMj8c2Q7BJ/tCr2/CQeUJ7/vDSI=
+	s=default; t=1791972661;
+	bh=N8/qLIT9pUcIeidsDH1vXjG1txF+hsH3Yim4Z/qsrng=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=mmoxHLVgq4abN53jOxM+j5nQOBm0vlvOXeajPa8AmF2j3nRR90Kncn32bkB15WSFZ
+	 6mEJRytxOkkIsefUmvrUPCqDwrLNu+8QwyXd/zo54qbSKYmvJkmg+Ooh97zFKvYz8O
+	 cn506WxG9dlwFyqmvXZ5XYwYvIIyC6OYJ100oG+s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2D86CF80601; Wed, 14 Oct 2026 10:51:08 +0200 (CEST)
+	id 29CC7F80605; Wed, 14 Oct 2026 12:10:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BEE98F80600;
-	Wed, 14 Oct 2026 10:51:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3356F805F5;
+	Wed, 14 Oct 2026 12:10:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A032FF80448; Wed, 14 Oct 2026 10:51:00 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1791967857;
-	b=n0QGPzPI5Ssw+Q+cTl2La/sxH5Km3VobbHsRJi4FflcIe1qNT7+jAWq3BXyzSiZXAbNH
-	 Gj5wqMOmdJlQWxO7mfMFDvG7jqTebpHnWzCAcORJM+Gf7RPNLdbhTW27sHRt4xKFQPzIV
-	 vtSR2Ejdv+pnjhxXDAy2hHjD8FFfG1CcQmmswGaKxDWtK63FZIwiqoXSBcKk23I1MjiwW
-	 JaE8vjoSfhEQzANABntvYok9UUouVKfAPQPBnPG8cUiK7cFSstMcNXotuqMwfs5ucgeSE
-	 WIol3HWYJ3a9Zts8HJ2fsvGQSVMLTS9/lSNlKsWw1gFe9gkRLBlbx4pIE38Ok0fuevA==
-ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1791967857;
-	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=wEHvXVXAn7qF10YGXtpZZTIFDuEGih3XjREhWEu2hsE=;
-	b=AN8S31FPSZSDqvShr10fkKt635trOpE1LbY2x1A2DDn9n02pqCCyGPqjFbVtLcqWY0CZ
-	 Ao7+TzP3UpqW9q3AhNUeJ4VYkhhaJEZlHVTzTh5TB1EjiMFmLwC7ENT3uUh4UHtpLb3kX
-	 X4ZuCGh0D2traFMWmGetBJRu51wIJPSVQFmLa/v52LD0LW+wFG+GSirOdeCSi+YwnBXaT
-	 mJeL0VDFtC2vvtzKDIfsuM1kPBDFLVULnAO1jm5Qsp/cndkwRxDNJoFH4SQN5Zwb01y4v
-	 V1JhE/pUQ/PxC/YNGteqzFZSM7ng/43/7Ha2gZHDjMD9zx7hjTQrPGmEsd0gTwsvqeg==
-ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=45.14.194.44
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3620F800FA
-	for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2026 10:50:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3620F800FA
+	id 55F8EF80495; Wed, 14 Oct 2026 12:10:16 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.198.29
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1791972614;
+	b=f5raYmVLg3nj0sXQDp195yOnps7Ez+9HnTNXEH5JW3erJwuK+BWyY68+PQwKmDmQb6lv
+	 13AINbOz8lOn6FdytRZ6s3GKjIaJL1r80ZYvuu4wEgbxqq5JmpCTli14wK337FAoFtPu+
+	 GC7zEqbMHsYvHnigedMVarlBorrrinRp4CkTeF5sjt5xBTHdH3AUYDq8KMaCTHiFegzDi
+	 MUeIINHcfU/bUszkrHE0fGWxpYQFgMa47pi9oZLwdrfR7PvWvkqb3OJmspuhCVAw/TB9x
+	 v8oSMnd5iMaQfmpz+BsDm3wPtKH04tEuHFh0460lXKoDzNFazeUYNoyrn91HFLkcXng==
+ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1791972614;
+	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=N8/qLIT9pUcIeidsDH1vXjG1txF+hsH3Yim4Z/qsrng=;
+	b=mjXBA80EIBpWsESItFj9hDpmIRIfwKCNgTw8VhpiLVmc3+fzOloYN0q39Noh0PZU06Tg
+	 ybUin6tn3FdfP5q86jZGlRQb5oncpNBPDfa1z8PDP19yKq3RPTZOyWTA20MNqlTVcKuF8
+	 +fGlHFUxANQbMSOuN/yHxvIs1R6Dhc/6z0qAWd1e0dFBKCg4VNMK7hSOEVA02YCIVie9/
+	 ujnQ3Bh7FmMQdv2jBx5YnS2o+WVaWV4g38pQhbVzM5NhtPRU5+p7ga7HRWUHJKCCQX+da
+	 HpCBGZ5BCCvGTUXau/+J5vUubvSiMbkk+ZfoG02ob43/ciQJiAKZqizk35279OgdE0A==
+ARC-Authentication-Results: i=2; alsa1.perex.cz;
+ dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=dj0Ut2Ng;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.198.29
+Received: from CY7PR03CU001.outbound.protection.outlook.com
+ (mail-westcentralusazon11010029.outbound.protection.outlook.com
+ [40.93.198.29])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id EEF00F80038;
+	Wed, 14 Oct 2026 12:10:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEF00F80038
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=dj0Ut2Ng
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ez7r/GS7NnTvA9Ri4jsHIwqHx9hfMH7KsTYdR2U8vJu7U7Jy5iylOujMZLjgF6LBwRBmBtLDujGNuPsGnEOfFK9MyEnozSXUEvUDF1Itgw3PjYHXCfZJFKLS3pxF95aZxflGnmRL9vPqJFUNFsNZA0LsF2zbvBvC+6VjPwioUHjPt7u4W85DWdY/qoDFOTeBrlpELla4UmU4awQ5Hs/ge4QYt7ZMu6xhu7F2kFJInVklg1FRXbBwyMu/Mmhq2bqaVjGVjgGneKyLie55ElXmve7Jm6W3UoOpzBpEIZF+uEVsqd6z4MT5Cg72bqTnxvNyqWC/0OlR4xuaMG/AaaznkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rxR6TT3XuoJcJSL0T1aZxIv/O3lGjOIDnUdhadeSWvk=;
+ b=UovAYwcWTq7Si/c0XmXAsMJ2pEzlYyXJZmDbLbHE2tyNtLEOp56hOqwDbU+9Jp+gCrkext/O0IoKMeBdp7SQXNzGtAMxZOw9jOFj49wIC31cl5BMhU6CxzIGuR0CtW9d/7o4c0lZZ5+F6Zjvk/YY+IA4efOwPuKFo3ME5ci35e34iX2HW40lriwKIGKsxe+1ZLg7T/MNxjjUTPtu4BUav/UQcIqfK4QeRkjBau8QIerQ6QJPoqlQr3OQwgFJlmXZ1mrw1kXAaGk/c0PfinD5OlFBaDn8/qos02NZBBvshIHEh+HIkBtK2tDcmdOzwo2TP91v4tQByUy2Tmy1sm659Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rxR6TT3XuoJcJSL0T1aZxIv/O3lGjOIDnUdhadeSWvk=;
+ b=dj0Ut2NgM04TT7zbvR/pvTgCu0mUkigl+LzcPvyI3gLNAMrhlkdYHddj5xhK+bmRzR5F9jYEuYhLeW/dfLlULVUcsY9uRmubTJznzcPC265bkQdg8OZ6cmsDtIsnbHhnW6JbbFDxGxlinAoY0HVLXRIsMHCUZKxzWq/cR9fOP+I=
+Received: from BL1PR13CA0382.namprd13.prod.outlook.com (2603:10b6:208:2c0::27)
+ by PH8PR12MB6985.namprd12.prod.outlook.com (2603:10b6:510:1bc::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.451.27; Wed, 14 Oct
+ 2026 10:10:02 +0000
+Received: from BN3PEPF00022BBE.namprd04.prod.outlook.com
+ (2603:10b6:208:2c0:cafe::7d) by BL1PR13CA0382.outlook.office365.com
+ (2603:10b6:208:2c0::27) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.382.10 via Frontend Transport; Wed,
+ 14 Oct 2026 10:10:02 +0000
+X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
+ is 165.204.84.17) smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
+Received: from satlexmb07.amd.com (165.204.84.17) by
+ BN3PEPF00022BBE.mail.protection.outlook.com (10.167.248.119) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.522.6 via Frontend Transport; Wed, 14 Oct 2026 10:10:01 +0000
+Received: from satlexmb07.amd.com (10.181.42.216) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.53; Wed, 14 Oct
+ 2026 05:09:55 -0500
+Received: from amd-System-Product-Name.amd.com (10.180.168.240) by
+ satlexmb07.amd.com (10.181.42.216) with Microsoft SMTP Server id 15.2.2562.53
+ via Frontend Transport; Wed, 14 Oct 2026 05:09:51 -0500
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To: <broonie@kernel.org>
+CC: <alsa-devel@alsa-project.org>, <lgirdwood@gmail.com>, <perex@perex.cz>,
+	<tiwai@suse.com>, <yung-chuan.liao@linux.intel.com>,
+	<Basavaraj.Hiregoudar@amd.com>, <Sunil-kumar.Dommati@amd.com>,
+	<venkataprasad.potturu@amd.com>, <Syed.SabaKareem@amd.com>,
+	<Mario.Limonciello@amd.com>, <Richard.Gong@amd.com>,
+	<Vijendar.Mukunda@amd.com>, <Poojitha.N@amd.com>,
+	<linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<sound-open-firmware@alsa-project.org>
+Subject: [PATCH v2 00/10] ASoC: SOF/amd: ACP7.B support and ASP carveout
+ firmware loading
+Date: Wed, 14 Oct 2026 15:29:08 +0530
+Message-ID: <20261014100902.1215212-1-Vijendar.Mukunda@amd.com>
+X-Mailer: git-send-email 2.48.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <18de5945497cef00-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-ucm-conf/pr/826@alsa-project.org>
-References: <alsa-project/alsa-ucm-conf/pr/826@alsa-project.org>
-Subject: ucm2: USB-Audio: add Topping M62 configuration
-Date: Wed, 14 Oct 2026 10:51:00 +0200 (CEST)
-Message-ID-Hash: Z6KF3RYHTJFDNJ63CALTZ5Y7AY2RHCMW
-X-Message-ID-Hash: Z6KF3RYHTJFDNJ63CALTZ5Y7AY2RHCMW
-X-MailFrom: github@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN3PEPF00022BBE:EE_|PH8PR12MB6985:EE_
+X-MS-Office365-Filtering-Correlation-Id: 42780639-b306-47ad-6e54-08df29db4f95
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: 
+	BCL:0;ARA:13230040|1800799024|82310400026|36860700016|376014|23010399003|56012099006|10067099003|261009223027099003|18002099003|11063799006;
+X-Microsoft-Antispam-Message-Info: 
+	eofDJWQi4crOTiSw0qTRNS13E3J/glp4TWdNLWHWToHZKQbRaxy5IPtKa/mbAjFf/7n0u55qExL+pswKg3MdjfIxrUL6vUYg0gLwtqtYbkGLjv6qN9T7URq+nrh6ilhZQfdUxSdduAKtxELuVxvnCdZRMnll7n8/x62n644k7lPcCVlVlXL6uQErSzXWXoTfiaHX7Lozt1/DIOdR4PvL3iP9LYupJMUc/jDF+zbNfhsF8N8vjYaA+ZtnBGJ+Bgy40gO7hIZW5kxl5z4htHJx6EbCHpoYhq1pWBpWfjXEJbQTes4wDbpOX6hYnU430wZt/QF//jnxafgnPu+qEMwQtvplQkpi8yvR2E6ORJXu+3DT1SKawUKHxmcnTQkJBOomq1FKRP7PK/O/heO1oL6V1fLu2wn7AoB/Ha48AVzCqdvZolQgUpIZtqNxmDSl0wC7Q+S3GYGUG8uvMEuhi9k+K3JuhQxiiJM0knLW7FEIwMQQQCSGsNLpae1DxyNrq8TK9aaEr2BA6NLqOibln6e5H7/aO6qqrgfQQfj9ecna3vOTIpzYdYiDuUg4loWgx192lvX5w0ofMuHvZ8GR8mm7fDk5vcKrGWnX8rkFI5XD3PNk2nlAZHETkxEBco3Jnj9YpI/8K6NZgI9WQW319myIbRcGwy+rFkgqXh//r1Uo/LscPAwnTNHXF/rM/ox5hzTQm1w6xkCwhxhEOAnAHODl0w==
+X-Forefront-Antispam-Report: 
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700016)(376014)(23010399003)(56012099006)(10067099003)(261009223027099003)(18002099003)(11063799006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	7xUMgd0C6mPWqxkj694HfK5cGRuPy4MIRhv7jHt36Vy+Tvmp8/syLmSozztGi/vjiYBfvrcsf1v0C9xyJ123pJNnu7rqTVc310gmfT0horUzrZIbhgw8Hs81K0JUEpJZonK0ar4XWQ9HlD+GmIltxFAcLnkr3u0KwV4FuiBXor8AEta/iP/ME3W3j34BppQMoi+/rMs8/GFzd/KnLF/I1QJyPJx3AuVVQRte/OkbWWoP+iAUydIVQRBTKGRPFR4Ik50sHWUAwZJidQk2gtsPp9NfpZB47C9mepWk8CUigqO/AUF2eWm/j+anK4HieQ8vXkNHS6RYN8aOkxlvuUCIPsrNNpXm12RO4W/MleygnCqZ1aArH6Fnn+0g/RDnutwKK/K00hySs+Mo+uVJ59MZtdqc/jJM1PQNuB+9WVlvebES/eUWMInOPEnqcsxoMnSk
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2026 10:10:01.9282
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 42780639-b306-47ad-6e54-08df29db4f95
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
+ TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: 
+	BN3PEPF00022BBE.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6985
+Message-ID-Hash: HO5N34CIXNFFHR4J25ROQA5SV5WP22EP
+X-Message-ID-Hash: HO5N34CIXNFFHR4J25ROQA5SV5WP22EP
+X-MailFrom: Vijendar.Mukunda@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -75,7 +164,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z6KF3RYHTJFDNJ63CALTZ5Y7AY2RHCMW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HO5N34CIXNFFHR4J25ROQA5SV5WP22EP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,219 +173,91 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #826 was edited from NTMan:
+This series adds ACP7.B platform support to the AMD SOF driver stack
+and implements the ASP-authenticated firmware load path required by
+both ACP7.B and ACP7.F.
 
-ucm2: USB-Audio: add Topping M62 configuration
+Patches 1-2 are preparatory renames and restructuring. The existing
+acp7x machine table and chip descriptor are renamed to acp7f to
+accurately reflect the hardware they target (ACP7.F). The probe
+callback is restructured to select the per-revision descriptor via a
+dedicated static pci_device_id entry rather than encoding it in
+driver_data of the shared ID table.
 
-The M62 exposes a single ten channel playback PCM and a single sixteen
-channel capture PCM. The ten playback channels are not a surround
-layout: they are five independent stereo buses that the card's own
-mixer sums into its outputs, named Playback 1/2 to Playback 9/10 in the
-manual.
+Patches 3-4 add ACP7.B hardware support. Patch 3 adds the ACP7.B I2S
+machine table with its driver name, firmware image, and topology file.
+Patch 4 adds the acp7b chip descriptor and extends acp7x_pci_probe()
+to select it for ACP7B_PCI_ID revisions alongside the existing
+acp7f_desc path.
 
-The descriptor declares no channel positions at all -- bmChannelConfig
-is 0x00000000 on both the ten channel and the sixteen channel terminal
--- so the kernel guesses. snd-usb-audio fills a missing channel config
-with the standard surround order and publishes FL FR FC LFE RL RR FLC
-FRC RC SL as a fixed channel map for the ten playback channels, in the
-Playback Channel Map control and in the card's /proc stream file; the
-sixteen capture channels are more than a channel map can hold and get
-no map at all. Without a profile PipeWire leaves the guess unused and
-hands out AUX0..AUX9; wherever the map is used, the desktop believes in
-a centre, an LFE and a rear that the hardware does not have. Both
-readings break more than cosmetics: with AUX names the balance control
-and the speaker test have nothing to work with, with the guess they
-work on speakers that do not exist, and either way any per device
-equalisation carries ten channel keys where two are meant.
+Patch 5 propagates the PCI subsystem Vendor and Device IDs from the
+AMD SOF machine driver into mach_params, enabling downstream SDW
+machine drivers to use them as an SSID.
 
-Each bus is therefore published as its own stereo device, split out of
-the one PCM. Unless the kernel publishes the output selector described
-below, the five are not marked conflicting: they may play at once,
-which is the point of having five.
+Patch 6 is a cleanup: register variable declarations in the ACP7.x
+SDW wake and PME handlers are consolidated to u32.
 
-What the card does declare is channel NAMES. iChannelNames points at
-"Playback 1" on the playback terminal and at "Analogue 1" on the capture
-terminal, each the first of a consecutive run of string descriptors, and
-the run reads Analogue 1, Analogue 2, AUX 1, AUX 2, BT 1, BT 2,
-Mobile 1, Mobile 2 and Loopback 1 to 8. macOS displays exactly those
-because Core Audio follows that field. Every name this profile shows
-comes from there. Linux surfaces none of it: ALSA carries channel
-positions through chmap and has no notion of a channel name, so the host
-sees an anonymous sixteen and this profile is where the names can live.
-The order was confirmed by measurement as well, one column at a time --
-feeding the microphone input lights column 0, and a headphone to AUX
-loop lights columns 2 and 3.
+Patches 7-9 address PDM controller selection for ACP7.B/7.F. Patch 7
+introduces acp-mach-common.h as a minimal shared header for types used
+across all AMD ACP machine driver variants (I2S, SoundWire, and SOF),
+and moves struct amd_pdm_pdata there from the SoundWire-specific
+soc_amd_sdw_common.h. Patch 8 moves the ACP7X_PDM_DMIC0/1 constants
+to acp-mach-common.h so there is a single shared location for all PDM
+types and values, removing the duplicate definition from
+sound/soc/sof/amd/acp.h. Patch 9 fixes a gap in the SDW machine select
+path where pdm_sel was not propagated to the machine driver, preventing
+acp-sdw-sof-mach.c from configuring the correct DMIC DAI link on
+ACP7.B/7.F platforms.
 
-The inputs are therefore described by the names the card's own panel
-and control application use: IN 1, IN 2, AUX, BT and OTG IN. The
-two microphone channels are named after the card's mic channels and not
-after jacks, because IN 1 is switched on the card between its own
-6.3 mm jack, the 3.5 mm jack and the headset jack; that switch lives in
-the card's own panel and is not visible to the driver, so a jack name
-would be a claim the configuration cannot back.
+Patch 10 implements the two-stage ASP carveout firmware load path for
+ACP7.B and ACP7.F. At probe time the driver queries ASP for the
+physical base address and ATU group of a pre-allocated 32 MB MALL
+carveout region; probe fails immediately if ASP does not support
+carveout. At load time the signed firmware image is sent to ASP via
+the MPASP mailbox VALIDATE_IMAGE command. ASP authenticates the image
+and deposits the raw binary into the carveout; the driver then
+SHA-DMAs from the carveout into DSP IRAM. On D3->D0 resume the
+carveout content is preserved, so the ASP authentication step is
+skipped and the driver restores directly from the saved carveout
+address.
 
-Those names live in each device's Comment; the device identifiers come
-from the vocabulary use-case.h defines -- Mic1 and Mic2 for the two
-microphone channels, Bluetooth for the Bluetooth input, and Line1 to
-Line11 for the five playback buses, the AUX and OTG inputs and the four
-loopback returns. PulseAudio and PipeWire take the leading alphabetic
-part of an identifier and look it up in that same list to set the port
-type, so a name outside it gives an untyped port.
+Changes in v2:
+  - Add patch 8: move ACP7X_PDM_DMIC0/1 to acp-mach-common.h as the
+    canonical single definition, removing the duplicate from
+    sound/soc/sof/amd/acp.h
+  - Fix patch 10 (v1 patch 9): remove trailing blank line at EOF in
+    sound/soc/sof/amd/acp_asp_mailbox.c
 
-The two microphone channels are offered as two mono devices and not
-additionally as one stereo device covering both. A stereo pair would be
-useful, since a balanced source arrives on both at once, but it can only
-be declared as conflicting with the two halves, and alsa-lib treats a
-conflict list as a group of mutually exclusive devices: it closes the
-relation transitively, so a stereo device conflicting with each half
-makes the two halves conflict with each other. Two microphones that work
-perfectly well at the same time would then be offered only one at a
-time, which is the worse loss. Expressing it the other way round, as
-SupportedDevice, fails for the same reason: the closure fills the lists
-until nothing excludes anything, and all three end up coexisting and
-overwriting each other's preamp gain.
+Vijendar Mukunda (10):
+  ASoC: SOF: amd: rename acp7x machine table and descriptor to acp7f
+  ASoC: SOF: amd: select descriptor per PCI revision in acp7x probe
+  ASoC: amd: add I2S machine table for ACP7.B
+  ASoC: SOF: amd: add ACP7.B chip descriptor and wire per-revision probe
+  ASoC: SOF: amd: Propagate PCI subsystem Vendor and Device IDs
+  ASoC: SOF: amd: consolidate local variable declarations
+  ASoC: amd: acp: add acp-mach-common.h for shared machine driver types
+  ASoC: amd: acp: move ACP7X_PDM_DMIC0/1 to acp-mach-common.h
+  ASoC: SOF: amd: propagate pdm_sel to SDW machine driver via
+    mach->pdata
+  ASoC: SOF: amd: add ASP carveout firmware loading for ACP7.B/7.F
 
-Bluetooth and Mobile carry audio, and all four inputs record at once: a
-sixteen channel recording with a phone on Bluetooth and another on OTG
-shows signal on the analogue, AUX, Bluetooth and Mobile columns
-simultaneously.
+ sound/soc/amd/acp-config.c             |  22 +-
+ sound/soc/amd/acp/acp-mach-common.h    |  29 ++
+ sound/soc/amd/acp/soc_amd_sdw_common.h |  14 +-
+ sound/soc/amd/mach-config.h            |   3 +-
+ sound/soc/sof/amd/Makefile             |   2 +-
+ sound/soc/sof/amd/acp-common.c         |  17 +
+ sound/soc/sof/amd/acp-dsp-offset.h     |  58 +++
+ sound/soc/sof/amd/acp-loader.c         |  64 +++
+ sound/soc/sof/amd/acp-stream.c         |   9 -
+ sound/soc/sof/amd/acp.c                |  91 +++-
+ sound/soc/sof/amd/acp.h                | 110 ++++-
+ sound/soc/sof/amd/acp7x.c              |  11 +-
+ sound/soc/sof/amd/acp_asp_mailbox.c    | 558 +++++++++++++++++++++++++
+ sound/soc/sof/amd/pci-acp7x.c          |  80 +++-
+ 14 files changed, 1008 insertions(+), 60 deletions(-)
+ create mode 100644 sound/soc/amd/acp/acp-mach-common.h
+ create mode 100644 sound/soc/sof/amd/acp_asp_mailbox.c
 
-The eight loopback returns arrive MUTED. Mic Capture Switch carries one
-value per capture column and reads on for the first eight and off for
-the rest, so columns 8 to 15 deliver digital silence until something
-turns them on. That is why they look as though the loop never reaches
-the USB stream, while the vendor's control panel meters it happily and
-while the same card delivers those returns to a host whose software
-turns the switch on. The verb turns all sixteen on, and the four
-returns are then declared as stereo devices, below the physical inputs
-in priority because a return is what the card is already playing rather
-than something arriving from outside. The Direct verb unmutes them too,
-and its ten playback channels with them: it is where someone asks for
-every column and channel at once, so it is the verb where silence on
-some of them misleads most.
-
-The card's own faders are digital and sit after the converter, so
-raising one lifts the converter's noise floor with the signal. The
-analogue stages -- the two microphone preamps before the converter and
-the headphone stage after it -- are reachable only over a vendor
-protocol on the card's HID interface, and a kernel that speaks it
-publishes them as ordinary mixer controls. Each device therefore picks
-its volume with a ControlExists condition: where the analogue control
-exists the device takes it and the verb pins the digital trim open, its
-switch on included, since the two are in series and a fader over their
-product describes neither, and nothing else would turn a trim's switch
-on that someone had left off; where it does not exist the device takes
-the trim, which is what this profile did before. No particular kernel is
-required. The loopback returns are picked the same way: the card applies
-its own gain to each, up to +12 dB, before USB, and where the kernel
-publishes that gain the return takes it, since the trim after it can
-only lower what the gain let through. The analogue stage after the
-converter is a single headphone output, and which of the ten channels
-reaches it is a choice inside the card; the next paragraph is where that
-choice is made, and it is what lets a playback device name that stage as
-its own.
-
-Each output on this card listens to one source chosen inside it, and
-where the kernel publishes that selector -- a control separate from the
-headphone volume, so the two are conditioned separately -- the five
-playback devices own it: they conflict with one another, and enabling
-one points the headphone output at its own bus. That is what makes the
-analogue headphone stage theirs -- the active device is the one the
-output is listening to, so its volume is that stage and not the digital
-trim. Two things follow. The five buses no longer play at once, which
-they can do on this card, their sum reaching an output through one of
-the card's internal mixes. And a headphone output left listening to such
-a mix is moved to a single bus the first time a device is enabled, a
-setting this profile cannot restore. Where the selector is not
-published the five stay independent, each with its own trim.
-
-The card keeps all ten playback channels in one mixer element and all
-sixteen capture columns in another, so the per bus and per input
-volumes come from a control remap by channel index, in the same shape
-the Behringer UMC204HD profile uses.
-
-The card has three operating modes, switched from its own panel, and all
-three keep the same USB id. The mode is encoded in the high byte of
-bcdDevice -- 01xx Mobile, 02xx Live Streaming, 03xx Pro Audio -- and
-Topping/M62.conf picks the verb file by it. Live Streaming and Pro Audio
-have identical channel layouts and on USB differ only in the rates they
-offer, 44.1 and 48 kHz against those plus 88.2 and 96 kHz, so they share
-M62-HiFi.conf. Mobile Mode is a two-in, two-out device: its descriptor
-declares no positions either, and the kernel's guess, FL FR in both
-directions, is right for two channels. Its capture is not two inputs but
-the stereo output of one mixer over all of them, which the vendor's
-control application calls Recording. A microphone on IN 1, a phone on
-Bluetooth and a source on AUX are all in it at once; the host's own
-playback is not, and is heard in the headphones with the inputs. It gets
-a profile all the same, M62-Mobile-HiFi.conf, so that the sound server
-takes the card from UCM in every mode instead of falling back to probing
-it: one playback device, Playback 1/2, and one stereo capture device,
-Recording, each on the card's own stage where the kernel publishes it --
-the headphone stage and the Recording fader -- and on the USB trim where
-it does not. Where the kernel also publishes the application's
-Playback 1/2 knob, which sets the playback within the headphone mix, the
-verb pins it at 0 dB, as it pins the trims. A bcdDevice outside the
-three ends in an Error that names it.
-
-The ten and sixteen channel layout of Live Streaming and Pro Audio
-needs a high-speed link. A full-speed isochronous endpoint carries at
-most 1023 bytes a millisecond, and ten 32-bit channels at 44.1 kHz, the
-lowest rate the card offers, need 1764. After a marginal contact the
-card came up at full speed, still in Pro Audio Mode and still with
-bcdDevice 0327, and its playback was a two-channel S24_3LE stream. The
-five stereo devices were then split out of channels the stream did not
-have, and WirePlumber crashed on every start while probing them, since
-alsa-lib checked the bindings only against the ten channels the
-configuration asked for; that is fixed in alsa-lib on its own,
-https://lore.kernel.org/alsa-devel/20261014065417.261594-1-mikhail.v.gavrilov@gmail.com/
-Topping/M62.conf therefore offers the layout only at 480 Mbit/s and
-otherwise ends in an Error that names the speed, which leaves the card
-to the sound server's own probing, the way it treats a card without a
-profile. Mobile Mode's two channels fit a full-speed link, and its verb
-is left as it is.
-
-The analogue controls, the loopback gains, the output selector, the
-Mobile Mode levels and the MUTE switches come from a kernel series under
-review. The names used here are those of its next version, which will be
-linked here once it is posted; its v8 is at
-https://lore.kernel.org/all/20261003184217.34671-1-mikhail.v.gavrilov@gmail.com/
-
-Tested on Fedora with alsa-lib 1.2.16 and PipeWire in all three modes:
-in Live Streaming and Pro Audio the five sinks and the named sources
-appear as expected, playback lands on the intended pair, each remapped
-element moves only its own channels, and a sixteen column recording
-confirms the input columns, the loopback returns among them once the
-verb has unmuted them; in Mobile Mode the one sink and the one source
-appear, on the headphone stage and the Recording fader.
-
-On 7.3-rc7 with that next version, in every mode: a tone played through
-each playback device is heard in the headphones, the output selector
-following the device in Live Streaming and Pro Audio; each sink's and
-source's volume moves the card's own control behind it, and its mute
-turns off the switch the series publishes beside that control or, on the
-loopback returns, which have none, takes the gain to its lowest step;
-the headphone knob on the card moves the sink's volume; the USB trims
-stay at 0 dB and on, and so does the Playback 1/2 knob in Mobile Mode.
-
-The speed condition was checked on a high-speed link: the card reads
-480 there and the HiFi and Direct verbs come up as before; with the
-condition inverted, alsa-lib stops on the Error that names the speed,
-and PipeWire takes the card through its own probing, as one without a
-profile. A full-speed link was not reproduced on purpose.
-
-Signed-off-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-
-
-Attached alsa-info from all three modes. The `bcdDevice` value is what the profile keys on:
-
-| Mode | bcdDevice | Playback | Capture | Rates (kHz) | Profile |
-| --- | --- | --- | --- | --- | --- |
-| [alsa-info-MobileMode.txt](https://github.com/user-attachments/files/30801211/alsa-info-MobileMode.txt) | 0145 | 2ch, FL FR | 2ch, FL FR | 44.1, 48 | M62-Mobile-HiFi.conf |
-| [alsa-info-LiveStreamingMode.txt](https://github.com/user-attachments/files/30801208/alsa-info-LiveStreamingMode.txt) | 0248 | 10ch | 16ch | 44.1, 48 | M62-HiFi.conf |
-| [alsa-info-ProAudioMode.txt](https://github.com/user-attachments/files/30801204/alsa-info-ProAudioMode.txt) | 0327 | 10ch | 16ch | 44.1, 48, 88.2, 96 | M62-HiFi.conf |
-
-In all three modes the descriptor declares no channel positions: all ten `bmChannelConfig` fields in each file's `lsusb` section read `0x00000000`. The channel maps in the stream sections are the kernel's guess. In the two ten channel modes it is `FL FR FC LFE RL RR FLC FRC RC SL` for playback, which the hardware does not have -- those are five stereo buses -- and the sixteen channel capture gets no map. In Mobile Mode the same guess gives `FL FR` on both directions, which is right for a stereo device.
-
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/826
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/826.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+-- 
+2.48.1
