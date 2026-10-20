@@ -2,35 +2,35 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C89D9606A31B
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Oct 2026 07:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1771C606A324
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Oct 2026 07:09:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=OFl1pnfl;
-	dkim=pass (2048-bit key, unprotected) header.d=qualcomm.com header.i=@qualcomm.com header.a=rsa-sha256 header.s=qcppdkim1 header.b=gKMzz6P7;
-	dkim=pass (2048-bit key, unprotected) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.a=rsa-sha256 header.s=google header.b=Au9DV2+b
+	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=K1ds2s13;
+	dkim=pass (2048-bit key, unprotected) header.d=qualcomm.com header.i=@qualcomm.com header.a=rsa-sha256 header.s=qcppdkim1 header.b=f4Kuknhs;
+	dkim=pass (2048-bit key, unprotected) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.a=rsa-sha256 header.s=google header.b=hqxCFBId
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE28D601CB;
-	Fri, 23 Oct 2026 09:08:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE28D601CB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 217E4601AE;
+	Fri, 23 Oct 2026 09:09:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 217E4601AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1792739337;
-	bh=8jK9TIWbD6QefR9kQ++tVg/5xwWCv77cabG/zWe3+ks=;
+	s=default; t=1792739361;
+	bh=aaehUpN662lq42ZhGwnG4ypwBwWyBgwh36C9mkI+NBg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OFl1pnfl0EKNJmEXjYOeC+I1GK3NwoZukOLJZfDQRT/84TTPdZh8zh2qASB0mX/Mx
-	 g1F8jCnOvxDDZWfF7vcY+mQa5mU8RIVzy33MMumnUkqgqEJQjpGFMQKpSLbfHJ0tH9
-	 ae9deE90YYz2+X1b2PMCSawqAHxs7oUoykCfMHQ0=
+	b=K1ds2s137nOGPjiWSoSLTdEL/O3XPhAdQcFrEMu5EmMzrvy0mTqxeaP/WnKSiWohr
+	 MI3CV/puikIWg3XfvLCXF6pSsopVGjaxotwG/ducPNksW+WurbFYR8TxKsqjaPfNq0
+	 xRnpyDTjv7rb0Q9dP6S6gdhdQF9aBjHA26Qh2Wn8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1DAAFF805F7; Fri, 23 Oct 2026 09:08:24 +0200 (CEST)
+	id 37FB4F80620; Fri, 23 Oct 2026 09:08:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 161BAF805F3;
-	Fri, 23 Oct 2026 09:08:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 662FAF80622;
+	Fri, 23 Oct 2026 09:08:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 18C32F800B6; Wed, 21 Oct 2026 18:12:31 +0200 (CEST)
+	id E32EEF80087; Wed, 21 Oct 2026 18:28:56 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
@@ -45,85 +45,85 @@ Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 93954F8003A
-	for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2026 18:12:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93954F8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 51885F80087
+	for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2026 18:28:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51885F80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=qualcomm.com header.i=@qualcomm.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=gKMzz6P7;
+ header.s=qcppdkim1 header.b=f4Kuknhs;
 	dkim=pass (2048-bit key,
  unprotected) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com
- header.a=rsa-sha256 header.s=google header.b=Au9DV2+b
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+ header.a=rsa-sha256 header.s=google header.b=hqxCFBId
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 69K0tAfq186182
-	for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2026 07:39:25 GMT
+ 69K0tPCo1211286
+	for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2026 07:39:24 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
 	cc:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=qcppdkim1; bh=1aGPUh+pH+A
-	6f+5NezhpjcrkpA6qe52i06POTDfLDA8=; b=gKMzz6P7IWIG5jqMUbxkvExJGml
-	rHJM3N2sdPQVifjUvOa7uGFo3mYydNWiNYMvCFXn5hujoTCH8qcLESQcsf2V5v9H
-	6kNKyfGZYik6FW8tZ7AnvI8P4+qEO1lQQ5fV7/CuBvn2oc/lB3mkqpqT7ETsN9Ka
-	9SkIvIKD99QZkkIiyOf/u/VfQXkJrk3vmHtbjgzKNfuUPzJyaObAemfPiMookj/3
-	hMX+tvCbi0OhCLU51PE0MPRd5g1pxCOaSzO6p3ey+kdvbYQmRszJPiSY1xRvhpvB
-	QCW3QRl4q3zzGDhhlXX9sHrU/Bab0KT0OtpiNoJcKN17kMilQ3xYEgwE4Gw==
+	:mime-version:references:subject:to; s=qcppdkim1; bh=qoA6ADeVtXS
+	q9JMrH4L+llb/0nFEv/ASnOYsfH0syRY=; b=f4KuknhsLH070xKg974nmwJrNAc
+	lBI3yzn4D6mV/ibCdntGHPF/AgmRzylNGT/On/T61J1Gt4s05eAbQ+K3nGnMve0R
+	p9oLw52f0zZXvwnE5C3AR05Ug+9d48+RvLLWr+Q/cSXxsfml6LmuTq4fkt0s7060
+	/B2s0xOrTotlWT1iPd8f5+o69Dfh/tuwTFya9fmbmwrK2rmLCCWHCFoFKrNXETQU
+	A2BYXS7VnQN7aW8H+Vc/mIRDuOwgAiYcSlztqSDQ9mzqKw3o1S25S50IfiXJh+Wv
+	sqowOVmkKPFzKyUm/cq62SjJ8MnekRP4hmWgM6ZHzlWGzaGOmfdHNde1xUA==
 Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
  [209.85.222.197])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4hdw5nse82-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4hdw5p1e3d-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2026 07:39:25 +0000 (GMT)
+	for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2026 07:39:23 +0000 (GMT)
 Received: by mail-qk1-f197.google.com with SMTP id
- af79cd13be357-93f32050e72so864850785a.1
+ af79cd13be357-93cb7f9bb86so604865985a.2
         for <alsa-devel@alsa-project.org>;
- Tue, 20 Oct 2026 00:39:25 -0700 (PDT)
+ Tue, 20 Oct 2026 00:39:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1792481964; x=1793086764;
+        d=oss.qualcomm.com; s=google; t=1792481963; x=1793086763;
  darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=1aGPUh+pH+A6f+5NezhpjcrkpA6qe52i06POTDfLDA8=;
-        b=Au9DV2+bxKAcfQjfBw7d0gdAeSA9q3+LkvNPFu9RV6E+T/GcTBUc82ipFqGK7a6M3Z
-         o9IAuAlJ1k4IFP7P7kc2z+1HMVkl99IRVYjbwR3ZutaPqmOw9VP0Db1EpA1i3Zn5qqFA
-         w7Og/dQkMa4nGCVVjo//pgiQxkTNN9tAaf9pzYHp6dti22vM8xr5nTwrb5KcdyrufWOV
-         TaHHBHKRmo34Wh9nig/M/gLGl/QkSFRQnxptO5VBYnisxQAegdNMp8nWXeJPhmdpIahb
-         3Ia2q/FtVYgFhgi2QvPlK/dl1cuAWV55aZ6XMjFPBhn+255xj6Ka/0FlHjI/U/qLEcFG
-         SeqA==
+        bh=qoA6ADeVtXSq9JMrH4L+llb/0nFEv/ASnOYsfH0syRY=;
+        b=hqxCFBIdbKh5QcO8ZJMg65jutUm6Y9w3GpEzjG25s+LXgUfHe/eOZI5HPnR9LTx6oL
+         XM6DN7nRdIQ24Be+uqIOUGSnygSh3smnetlXCkolIZvnsgzJ+MGJjxCv4PuVcpoiyWRL
+         EBvqexkAgqeNgvBS4wEz0hN2iod59xv+AmR/kV4Xk2fjAqgTcth1v3saudXf3F18tnvz
+         6NuHj+oPkMjcF/m6iP7yH72bnGJf/c8I8QrrG0QrxPJbN8bxRlI6/IlV8EUVGTGovCs7
+         dhKHa/UxQxJ+RyasG2wKlnFn1hWGY9XT84MIbF4FsiP5iJV1P0/rZVN+Xdo2Fkm1c3Bn
+         n9Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792481964; x=1793086764;
+        d=1e100.net; s=20260707; t=1792481963; x=1793086763;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=1aGPUh+pH+A6f+5NezhpjcrkpA6qe52i06POTDfLDA8=;
-        b=N8tUe1oyaV/AypxcekHLBorGqzokv+zq2QY+xDBuwnNbiKu8B1wx3+8PHlv+2BVnyR
-         9GQ7TNHbLLaBBFBHC5TgvRufXBiKWlCUVhfdaMmBrGpEh4+AgoGGd7IMmboky0h+Ef70
-         drI6he/qf9ZqCosg7KKfFVU+fqVPiXXYAmpn3XsYPXDEg7wmn9V2RVGpvyGeN2zov7Hk
-         yj8QwRKzUpwl7wn1wgmQHm9+gBQdNXLWgUvlE+Q1gWA+ABlh4sqx3CpPMXBi+kne+xni
-         0oqfV/DeAjRtk8u5IuYyUQaJeij7MZdCxIjD2xS2+Nome59b464ec0st8BnJTsi2LKOc
-         JLvg==
+        bh=qoA6ADeVtXSq9JMrH4L+llb/0nFEv/ASnOYsfH0syRY=;
+        b=I1i57Eg7QG0yMRLKrNGEGy4eblbTcjjyGrlk2yru/xAffXUwKCeofizjX8sdPZEUbw
+         ueivmsCRM8RPY/5FbnUXh1EfvLSpnMQaOOiBCmNgu1Gr4gEtVCPX3Uojk2RlwA4VjAew
+         w1Gs2K/+7N9rV/UF2xgfDsSbY/DRBzJeNvA++elk8jvnJ/cNntTyzXDwkRg4ypMB4+zF
+         a941J3FGdCR9Rlht1TABQ9MDKnPs3GQkuxphGxyJnNKC3qvCXbeYFe9dtyfMR2HNo9Um
+         oZcGNbzCvO4uq0uLRUupsGx44NnGVJCyaiOjg0EJ1uLrWWTH8Gvqcrc5+67h3fV1sCTW
+         Zz3Q==
 X-Forwarded-Encrypted: i=1;
- AKwUvByrPpW653KHQ0MG86y107DYzrzehvnLaitPHXNreL8NYoOb1NNBYPzimIR3kBmbxfEeP2IFcNH5ohBE@alsa-project.org
-X-Gm-Message-State: AFq9FYKECdwc8j9t7WCqczElA6YvizI/+XD/7nVF7ybp9+gLjlOzu9qY
-	+muzcTUJJb0OYU6O7Ey+xfl6II+dWTiiCU7B0Gqr0FgC3JlsS2YevxVaPFhdQN/pyruwqMbqtIX
-	rRyVR4HXHfx8f8nRBXQvedO8cqeEQATqBPLka9ElASaeX2MWiFOrNNK6nIQgxa9WjqQ==
-X-Gm-Gg: AYBFou1debIYlh2CkRc4lxaPWNX3H1SDkKNt1gMIvwm2PHPjJNQX752vSfLmGh9rpyd
-	8TNkmaAPtw3kiqbZVPsJV2bUV94uRKSkitR8c2taMFwdP0AMRLrt74puTY0mTbHMMvmpQCe27UU
-	HLr8Jzg06BtS4HlqI8P+u5ph0GfVT7s2qgUA0lymXt0Qhr/TH60wX56sUW6JVZpg8SRohPc4yeB
-	jG0UOzZ4/u39QDs69MUoDNQNbtnIwPKFdYR9BsmxhcrEt6MZ0a7doGeyM/M18BALjYTzi606yim
-	luW7SIy432x7Wstgo+gxm4IQQN2O4euAugsqcYVe1h8acNMCsX1RxAwK6YA/S3kwz3tE9PMjW4I
-	HkP2BcNIbwEbr
-X-Received: by 2002:a05:620a:1b86:b0:93e:bcbf:4ad with SMTP id
- af79cd13be357-93f29d0a5a2mr1584877585a.33.1792481959278;
-        Tue, 20 Oct 2026 00:39:19 -0700 (PDT)
-X-Received: by 2002:a05:620a:1b86:b0:93e:bcbf:4ad with SMTP id
- af79cd13be357-93f29d0a5a2mr1584855485a.33.1792481954007;
-        Tue, 20 Oct 2026 00:39:14 -0700 (PDT)
+ AKwUvBxVSt7sAbbcAfK3PQnwVZ068bQqTPsoETPd88MQKCVV8MeEnbtlYO2FM5jQDPQKjxh3uHuofogixPfZ@alsa-project.org
+X-Gm-Message-State: AFq9FYIPgqZdxBktJRqiL2uWxP10UO8cbv6o1zzhb0k4kjuxTmwf/HbW
+	H9jQoTUh0aadSH/t/woVNQ/vFWEpNT8VqFiyKS1i77qn5rJ629buRguuCgZmY6pBb4op8yvhnrg
+	bBYxE2KN2eKqk0RrEu6ezMULBpGM1RW7KjGeahoQQ2vmbNEtuHLFTI58mh7CrNYy2aQ==
+X-Gm-Gg: AYBFou20VaiU6EOuc1/Nhn3J5RHQfTLaCD+saxnvaBbA56s5IJXpneIWqBrRJMOXzsE
+	vWFQFqiX8tT1rlQkMqiZ3WaVfMYy2bxd+2UN6XyWLoMZ1SxJkBpfEl3WzP7LFWqmhV59AbohJxL
+	n5RLkQtsrof63kF7/ucg4WGIrgs4sH6V77H1aKufgdwbxk9SWhLjO3OCq7sI0ojYhu+S7vYnTcz
+	XeWpOaAQzVMQaJDq9hEs6E9r+uSq3LRtZxysdIP/5nHG3dEiyqGn8Ze5q2KmqfZfCq/n7Gfr0Ek
+	xs4sodiQcsK986WrLV8+biSWdWrd7nW6N4Re8rGKxHHCh858G+9Jv36ttIwxLxumQFvA6vkASTa
+	U3yJF04lf1ZWb
+X-Received: by 2002:a05:620a:3190:b0:93e:f499:43b0 with SMTP id
+ af79cd13be357-93f29cee012mr1765058985a.22.1792481957858;
+        Tue, 20 Oct 2026 00:39:17 -0700 (PDT)
+X-Received: by 2002:a05:620a:3190:b0:93e:f499:43b0 with SMTP id
+ af79cd13be357-93f29cee012mr1765038885a.22.1792481952471;
+        Tue, 20 Oct 2026 00:39:12 -0700 (PDT)
 Received: from debian ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-48e1d8208e0sm4566271f8f.36.2026.10.20.00.39.12
+ ffacd0b85a97d-48e1d8208e0sm4566271f8f.36.2026.10.20.00.39.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2026 00:39:13 -0700 (PDT)
+        Tue, 20 Oct 2026 00:39:11 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@oss.qualcomm.com>
 To: Mark Brown <broonie@kernel.org>,
         Charles Keepax <ckeepax@opensource.cirrus.com>,
@@ -135,56 +135,60 @@ Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
         Sanyog Kale <sanyog.r.kale@intel.com>, Takashi Iwai <tiwai@suse.com>,
         patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@oss.qualcomm.com>
-Subject: [PATCH v2 4/6] ASoC: SDCA: add sdca_asoc_dai_is_pdm() helper
-Date: Tue, 20 Oct 2026 08:38:54 +0100
-Message-ID: <20261020073856.1177749-5-srinivas.kandagatla@oss.qualcomm.com>
+        Srinivas Kandagatla <srinivas.kandagatla@oss.qualcomm.com>,
+        stable@vger.kernel.org
+Subject: [PATCH v2 3/6] ASoC: SDCA: re-enable IRQ on pm_runtime_force_suspend
+ failure
+Date: Tue, 20 Oct 2026 08:38:53 +0100
+Message-ID: <20261020073856.1177749-4-srinivas.kandagatla@oss.qualcomm.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261020073856.1177749-1-srinivas.kandagatla@oss.qualcomm.com>
 References: <20261020073856.1177749-1-srinivas.kandagatla@oss.qualcomm.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: LbLFyL59ue4GDIw2Cit83tXEDJbmPTso
-X-Authority-Analysis: v=2.4 cv=DZOCOftW c=1 sm=1 tr=0 ts=6ad71aad cx=c_pps
+X-Proofpoint-ORIG-GUID: pqiKe87L7gjdjA_xQ3z1iEJir2FWIlDZ
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMDIwMDAzMCBTYWx0ZWRfX4nKODELJofTb
+ DlZYVNvz0V6tYniygf/V59pwbR9t+cH6qX5sOyLWKUQ3WlDlW6NXlE+gFeHRvH9CCHhm8Rc8TbX
+ QwQX46GSKPrkThFUs0O4fPLo9a+ifFg=
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDIwMDAzMCBTYWx0ZWRfX6neHtVMypDjP
+ MUtlWabZAe9VT93/3mjSWxa7Z1a+CVR5gNzyBl8mAupGUqtDYcCUO3JsCrPUh2tkokGh470/Kmr
+ lu3OCWxVcUSYF8wMJbaGuDb1/1OOxQ7CyglVfGPOWThY27BcNMUkXqIdXjVX8Ip6cQagVhyt53V
+ CymCO/bVrOQvrX+jsI+UuyDZuP4V34zSBk2d8Rsz3Wy4AT2y91Z2VHxPTVHxk0s71kzVRis395K
+ jPoXbs3p4VzLdDZ87c7+gYXexn6WbWzLISWx8tQkA/tagzsRafWSk6VyGAM1rroJ7NVAxBgENFa
+ 6PR7mEuxFyEptvUCoLeYci+6FpJQZDVeVqr2kQNq8TMDv3NUVaViFbORuzhxeN9Rhof9Rn0qUWq
+ NVHTEeatBOeOKjelM9ZogBSBM0dnd7mSXMYkUzeg5rG5XofuVgloViliYr/raN+3sHbWPTP14ne
+ x3klq/8fINkR8vP45vQ==
+X-Proofpoint-GUID: pqiKe87L7gjdjA_xQ3z1iEJir2FWIlDZ
+X-Authority-Analysis: v=2.4 cv=crUOAF4i c=1 sm=1 tr=0 ts=6ad71aab cx=c_pps
  a=50t2pK5VMbmlHzFWWp8p/g==:117 a=ZsC4DHZuhs/kKio7QBcDoQ==:17
  a=660iZSQnnn4A:10 a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=u7WPNUs3qKkmUXheDGA7:22 a=yOCtJkima9RkubShWh1s:22 a=EUspDBNiAAAA:8
- a=UfHDTIoufQuGQUpisKIA:9 a=IoWCM6iH3mJn3m4BftBB:22
-X-Proofpoint-ORIG-GUID: LbLFyL59ue4GDIw2Cit83tXEDJbmPTso
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDIwMDAzMCBTYWx0ZWRfXzl4RgD85m+pr
- eoB7kmbW6FSv5GIobS43rwqA68t3aqNoNu21QyapAx90HiN+Ra++aLDh227oDqbVWzi3eepB/NL
- kfGlrfQEI8F9vSimqbRD352dzXWmsplYMJFQU3if5//LhNUt6cl1HEhtTvfD4/+Z5CaMK7Fji42
- hFPug3usTBIwnZrTZD4wMOUpmWrWfDlxsoKoblxRsn0l+HB3ETWFINoOh1GK4xUyE1Mn710k9K/
- Ts0T5wQXxcnD4amM6I8NknP78gIlIggAkRoIDPfglgLMZB2fSSyY1j6RIxAPH84e9dJTmvXZfY8
- /BilR7Go8Urbc5HvSaNlgy0k3J5bYvXKjYGLm58z2HnQak/6GdWVJZSlgr/gOcnDl8OfKW/5/Fs
- EfTPwHwAZaX4x2HEWMfSh3IYvU6Acmq6WoBpSXhJ+SUeKc3/sWy9JPl/jmt6xMTSKmaK1WAplIy
- /19EC/cM6DKryu79y3Q==
-X-Proofpoint-Spam-Info: AW1haW4tMjYxMDIwMDAzMCBTYWx0ZWRfX8TroDePaiOIc
- swbe+55FfhR/KV1x9Mb/mCt3c58mwzANqmv2vh7cHkMn1KfYEPOXNlP/UOSndICT+fR5sl04dDK
- DzAYq0Hw5+Xn1Q58e6H+xEu7x4r1Qyw=
+ a=u7WPNUs3qKkmUXheDGA7:22 a=Um2Pa8k9VHT-vaBCBUpS:22 a=VwQbUJbxAAAA:8
+ a=w1d2syhTAAAA:8 a=EUspDBNiAAAA:8 a=AaUSbDpTSIYfnfK-pzQA:9
+ a=IoWCM6iH3mJn3m4BftBB:22
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
  definitions=2026-10-20_01,2026-10-19_02,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 impostorscore=0 phishscore=0 priorityscore=1501 bulkscore=0
- adultscore=0 lowpriorityscore=0 spamscore=0 suspectscore=0 malwarescore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2610190000 definitions=main-2610200030
+ clxscore=1015 suspectscore=0 malwarescore=0 bulkscore=0 adultscore=0
+ impostorscore=0 priorityscore=1501 phishscore=0 spamscore=0
+ lowpriorityscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2610190000
+ definitions=main-2610200030
 X-MailFrom: srinivas.kandagatla@oss.qualcomm.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: IM6QCOOYYSWJ7IAIYWUUROBETKVA5TCY
-X-Message-ID-Hash: IM6QCOOYYSWJ7IAIYWUUROBETKVA5TCY
+Message-ID-Hash: RW2CGVUNXKEQO74M34HMJSVPGRZ5GILK
+X-Message-ID-Hash: RW2CGVUNXKEQO74M34HMJSVPGRZ5GILK
 X-Mailman-Approved-At: Fri, 23 Oct 2026 07:08:18 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IM6QCOOYYSWJ7IAIYWUUROBETKVA5TCY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RW2CGVUNXKEQO74M34HMJSVPGRZ5GILK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -192,62 +196,31 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 
-Resolve the SDCA terminal type for a DAI and return true for the
-spec-defined PDM terminals (SDCA_TERM_TYPE_RAW_PDM_MIC and
-SDCA_TERM_TYPE_PDM_RENDER_STREAM).
+The SoundWire IRQ was disabled before pm_runtime_force_suspend() but
+never re-enabled when the force suspend failed, leaving the codec
+unable to receive interrupts.
 
-Used by sdca_class_function to tag PDM streams; expose it so other
-SDCA codec drivers can share the check.
-
+Fixes: 2d877d0659cb ("ASoC: SDCA: Add basic SDCA class driver")
+Cc: stable@vger.kernel.org
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Assisted-by: LLM
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@oss.qualcomm.com>
 ---
- include/sound/sdca_asoc.h  |  2 ++
- sound/soc/sdca/sdca_asoc.c | 23 +++++++++++++++++++++++
- 2 files changed, 25 insertions(+)
+ sound/soc/sdca/sdca_class.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/sound/sdca_asoc.h b/include/sound/sdca_asoc.h
-index 599a72f33515..99c39b5944e3 100644
---- a/include/sound/sdca_asoc.h
-+++ b/include/sound/sdca_asoc.h
-@@ -112,4 +112,6 @@ int sdca_asoc_pde_poll_actual_ps(struct regmap *regmap,
- 				 int from_ps, int to_ps,
- 				 const struct sdca_pde_delay *pde_delays,
- 				 int num_delays);
-+bool sdca_asoc_dai_is_pdm(struct sdca_function_data *function,
-+			  struct snd_soc_dai *dai);
- #endif // __SDCA_ASOC_H__
-diff --git a/sound/soc/sdca/sdca_asoc.c b/sound/soc/sdca/sdca_asoc.c
-index ccc579f878ff..559a0fdfd98e 100644
---- a/sound/soc/sdca/sdca_asoc.c
-+++ b/sound/soc/sdca/sdca_asoc.c
-@@ -1781,3 +1781,26 @@ int sdca_asoc_hw_params(struct device *dev, struct regmap *regmap,
- 	return 0;
- }
- EXPORT_SYMBOL_NS(sdca_asoc_hw_params, "SND_SOC_SDCA");
-+
-+/**
-+ * sdca_asoc_dai_is_pdm - True if the DAI is routed to a PDM data-port terminal
-+ * @function: Pointer to the Function information.
-+ * @dai: Pointer to the ASoC DAI.
-+ *
-+ * Return: true for SDCA_TERM_TYPE_RAW_PDM_MIC and
-+ * SDCA_TERM_TYPE_PDM_RENDER_STREAM, false otherwise.
-+ */
-+bool sdca_asoc_dai_is_pdm(struct sdca_function_data *function,
-+			  struct snd_soc_dai *dai)
-+{
-+	struct sdca_entity *entity = &function->entities[dai->id];
-+
-+	switch (entity->iot.type) {
-+	case SDCA_TERM_TYPE_RAW_PDM_MIC:
-+	case SDCA_TERM_TYPE_PDM_RENDER_STREAM:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+EXPORT_SYMBOL_NS(sdca_asoc_dai_is_pdm, "SND_SOC_SDCA");
+diff --git a/sound/soc/sdca/sdca_class.c b/sound/soc/sdca/sdca_class.c
+index ca311209c6d1..ee61c983dc57 100644
+--- a/sound/soc/sdca/sdca_class.c
++++ b/sound/soc/sdca/sdca_class.c
+@@ -265,6 +265,7 @@ int sdca_class_system_suspend(struct sdca_class_drv *drv)
+ 	ret = pm_runtime_force_suspend(drv->dev);
+ 	if (ret) {
+ 		dev_err(drv->dev, "failed to force suspend: %d\n", ret);
++		enable_irq(drv->sdw->irq);
+ 		return ret;
+ 	}
+ 
 -- 
 2.53.0
 
