@@ -2,159 +2,60 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C9CD606A31B
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Oct 2026 13:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43326606A31E
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Oct 2026 17:31:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=hwtNAwW/;
-	dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=RW/Rqe9e;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=+KaHnapv;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=RW/Rqe9e;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=+KaHnapv
+	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=CmcW74rO
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BD29601DA;
-	Fri, 23 Oct 2026 15:34:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BD29601DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4AEB86018A;
+	Fri, 23 Oct 2026 19:31:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AEB86018A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1792762494;
-	bh=T9uIBjw90LrVaJy/ZU3A9bSZ13pNqmgXRXi2cmRkG7c=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=hwtNAwW/n8JR3IRqKzGhJquGAtM9BJfhR0sGisCTy13vs/MhgbLhXw2SNLtZKOeCB
-	 AMYU6FbhvaFzupQtXoHRTuD6IiRyttK79KrWEBOdDTV/jgma2ridsn6iw+XGdeGUvD
-	 KFQ0RjoQxTswo5+6JHTOoiwTYk/sLQ+vd/yKxKfw=
+	s=default; t=1792776686;
+	bh=6v5NUqGmuJEV1J+GUxEkowHStW3tNJ9k6DQxuI5DsIA=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=CmcW74rOF3CKt1rn1GhTpf4dnZ/LaTl2BiPkqqimWqfwuy8kObzr6HmhBF5hQAVKS
+	 vsXXDnB0NsA1W61dtAEnyNGLLTGd/K30Nebizmjy9pVOJ4L5W6rd9fJ96wDE+IE1o9
+	 REB7W5P5mhtODNEeSKwBn2AqY2sUphRIZeQsFcd4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2E891F805F7; Fri, 23 Oct 2026 15:34:18 +0200 (CEST)
+	id 70E6FF804B4; Fri, 23 Oct 2026 19:30:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6866F80603;
-	Fri, 23 Oct 2026 15:34:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D86FBF805C7;
+	Fri, 23 Oct 2026 19:30:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A76C8F80548; Fri, 23 Oct 2026 15:34:11 +0200 (CEST)
+	id 7C1F2F80548; Fri, 23 Oct 2026 19:30:47 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=4.0.1
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2C82EF8045D
-	for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2026 15:34:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C82EF8045D
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=RW/Rqe9e;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=+KaHnapv;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=RW/Rqe9e;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=+KaHnapv
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 191C6220E6;
-	Fri, 23 Oct 2026 13:34:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1792762445;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4DUQZ8KTzA58M2ePEzmfN785cYb/uj5h5rNraNyYL8g=;
-	b=RW/Rqe9eXh0xbI23smWE9SdpdoqRn7ZLNO8SsPR1Sy2jqqZQ+39yDCL0vd4EhfQ6nHf4H+
-	g7rhMHRjaFhck96t7RIxHfwwzzlNb+gpwnUuNfBD8hUz3ivjNQGasqOR95KmTwCdJcoPPL
-	w3pb0DBO4dFwxIRsqcQ927gh0qriUvY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1792762445;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4DUQZ8KTzA58M2ePEzmfN785cYb/uj5h5rNraNyYL8g=;
-	b=+KaHnapvzQmazttFunDjMUT96oLZf2RclixXWbvy9h7pBT7hPn8euG/nw+0/9WmwenmVZf
-	G/HCzMA9UC6jq1BA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1792762445;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4DUQZ8KTzA58M2ePEzmfN785cYb/uj5h5rNraNyYL8g=;
-	b=RW/Rqe9eXh0xbI23smWE9SdpdoqRn7ZLNO8SsPR1Sy2jqqZQ+39yDCL0vd4EhfQ6nHf4H+
-	g7rhMHRjaFhck96t7RIxHfwwzzlNb+gpwnUuNfBD8hUz3ivjNQGasqOR95KmTwCdJcoPPL
-	w3pb0DBO4dFwxIRsqcQ927gh0qriUvY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1792762445;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4DUQZ8KTzA58M2ePEzmfN785cYb/uj5h5rNraNyYL8g=;
-	b=+KaHnapvzQmazttFunDjMUT96oLZf2RclixXWbvy9h7pBT7hPn8euG/nw+0/9WmwenmVZf
-	G/HCzMA9UC6jq1BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B51D2133F6;
-	Fri, 23 Oct 2026 13:34:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id nw4mI0xi22pmTwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Fri, 23 Oct 2026 13:34:04 +0000
-Date: Fri, 23 Oct 2026 15:34:04 +0200
-Message-ID: <87h5ica6cz.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: rppxj178543@163.com
-Cc: alsa-devel@alsa-project.org,
-	tiwai@suse.com,
-	perex@perex.cz,
-	fuhao@open-hieco.net,
-	linux-kernel@vger.kernel.org,
-	renpanpan <renpanpan@kylinos.cn>
-Subject: Re: [PATCH] ALSA: hda: Force MSI for Hygon H34M51A board
-In-Reply-To: <20261022085438.1315679-1-rppxj178543@163.com>
-References: <20261022085438.1315679-1-rppxj178543@163.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_PASS,SPF_PASS
+	autolearn=ham autolearn_force=no version=4.0.1
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id D6B55F80100
+	for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2026 19:30:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6B55F80100
+Content-Type: text/plain; charset="utf-8"
 X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-12.30 / 50.00];
-	SUSE_INTERNAL_BYPASS(-9.00)[];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[163.com];
-	FREEMAIL_ENVRCPT(0.00)[163.com];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,kylinos.cn:email]
-Message-ID-Hash: NGK2LZJXVVZMT6UMVRWBG5OG22MI6CET
-X-Message-ID-Hash: NGK2LZJXVVZMT6UMVRWBG5OG22MI6CET
-X-MailFrom: tiwai@suse.de
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18e138dc03d66500-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/889@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/889@alsa-project.org>
+Subject: ucm2: Qualcomm: x1e80100: Surface11-HiFi: disable DP RX mixer routes
+ by default
+Date: Fri, 23 Oct 2026 19:30:47 +0200 (CEST)
+Message-ID-Hash: MV7JJZI754ZUFEHTNHY2NBOJY6T2OY4Z
+X-Message-ID-Hash: MV7JJZI754ZUFEHTNHY2NBOJY6T2OY4Z
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -165,7 +66,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NGK2LZJXVVZMT6UMVRWBG5OG22MI6CET/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MV7JJZI754ZUFEHTNHY2NBOJY6T2OY4Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -173,32 +74,24 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 
-On Thu, 22 Oct 2026 10:54:38 +0200,
-rppxj178543@163.com wrote:
-> 
-> From: renpanpan <renpanpan@kylinos.cn>
-> 
-> The Hygon HDA controller (PCI 1d94:14a9) has AZX_DCAPS_NO_MSI set in
-> the PCI ID table to use legacy INTx, as MSI may lose interrupts under
-> heavy load on some Hygon platforms (commit 41212ff3e4ed ("ALSA: hda:
-> Add support for Hygon family 18h model 5h HD-Audio")).
-> 
-> However, on the Kunlun H34M51A board (PCI subsystem 1d94:c950) the
-> INTx interrupt line is not wired.  /proc/interrupts shows zero count
-> for the HDA IRQ from boot, so the RIRB interrupt handler is never
-> called.  Without RIRB processing, azx_rirb_get_response() times out
-> after 1 s, switches to polling mode, and the resulting slow codec
-> communication delays card registration by ~20 s and breaks
-> unsolicited jack-detection event delivery.
-> 
-> Force MSI on for subsystem 1d94:c950 by adding it to msi_deny_list
-> with value 1.  The list is consulted in check_msi() before the
-> AZX_DCAPS_NO_MSI check, so H34M51A gets MSI enabled while other
-> Hygon platforms retain INTx.
-> 
-> Signed-off-by: renpanpan <renpanpan@kylinos.cn>
-
-Applied now.  Thanks.
-
-
-Takashi
+YWxzYS1wcm9qZWN0L2Fsc2EtdWNtLWNvbmYgcHVsbCByZXF1ZXN0ICM4ODkgd2FzIG9wZW5lZCBm
+cm9tIHJhbW9uamVzdXNtaXJhbmRhLWRlYnVnOgoKU2VjdGlvblZlcmIgaW4gYFN1cmZhY2UxMS1I
+aUZpLmNvbmZgIHVuY29uZGl0aW9uYWxseSBlbmFibGVzIHRoZSBgRElTUExBWV9QT1JUX1JYXzBg
+IGFuZCBgRElTUExBWV9QT1JUX1JYXzFgIEF1ZGlvIE1peGVyIHJvdXRlcyAoYE11bHRpTWVkaWEz
+YCBhbmQgYE11bHRpTWVkaWE0YCksIGFuZCBgU2VjdGlvbkRldmljZS4iSERNSTAiYCAvIGAiSERN
+STEiYCBsYWNrIGEgYERpc2FibGVTZXF1ZW5jZWAuCgpXaGVuIFBpcGVXaXJlIC8gV2lyZVBsdW1i
+ZXIgc3RhcnRzIG9yIHByb2JlcyB0aGUgY2FyZCB3aXRoIG5vIGV4dGVybmFsIERpc3BsYXlQb3J0
+IG1vbml0b3IgYXR0YWNoZWQsIG9wZW5pbmcgYE11bHRpTWVkaWEzYCAvIGBNdWx0aU1lZGlhNGAg
+dHJpZ2dlcnMgNDQgdG8gNTQgZXJyb3JzIGluIGBkbWVzZ2Agb24gZXZlcnkgc3RhcnQvcmVzdGFy
+dDoKCmBgYApoZG1pLWF1ZGlvLWNvZGVjIGhkbWktYXVkaW8tY29kZWMuMi5hdXRvOiBBU29DOiBl
+cnJvciBhdCBzbmRfc29jX2RhaV9zdGFydHVwIG9uIGkycy1oaWZpOiAtMjIKYGBgCgpLZWVwIHRo
+ZSBEaXNwbGF5UG9ydCBtaXhlciByb3V0ZXMgZGlzYWJsZWQgKGAwYCkgaW4gYFNlY3Rpb25WZXJi
+YCBhbmQgYWRkIHRoZSBtYXRjaGluZyBgRGlzYWJsZVNlcXVlbmNlYCB0byBgSERNSTBgIGFuZCBg
+SERNSTFgIHNvIHRoZXkgYXJlIG9ubHkgZW5hYmxlZCB3aGVuIGFuIGV4dGVybmFsIERpc3BsYXlQ
+b3J0IGF1ZGlvIHNpbmsgaXMgYWN0dWFsbHkgc2VsZWN0ZWQuCgpUZXN0ZWQgb24gYSBNaWNyb3Nv
+ZnQgU3VyZmFjZSBQcm8gMTEgT0xFRCAoWDFFODAxMDApLgoKU2lnbmVkLW9mZi1ieTogUmFtw7Nu
+IEplc8O6cyBNaXJhbmRhIDxyYW1vbmplc3VzbWlyYW5kYUBnbWFpbC5jb20+CgpSZXF1ZXN0IFVS
+TCAgIDogaHR0cHM6Ly9naXRodWIuY29tL2Fsc2EtcHJvamVjdC9hbHNhLXVjbS1jb25mL3B1bGwv
+ODg5ClBhdGNoIFVSTCAgICAgOiBodHRwczovL2dpdGh1Yi5jb20vYWxzYS1wcm9qZWN0L2Fsc2Et
+dWNtLWNvbmYvcHVsbC84ODkucGF0Y2gKUmVwb3NpdG9yeSBVUkw6IGh0dHBzOi8vZ2l0aHViLmNv
+bS9hbHNhLXByb2plY3QvYWxzYS11Y20tY29uZgo=
