@@ -2,184 +2,97 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 416F3606A91D
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2026 14:33:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B670606A336
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2026 14:37:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=BEbSVlAC;
-	dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=AQim8VLD;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=+B+Rr1Nb;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=SShI2Dm8;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=8xljWlZX
+	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=fJHaNtmC;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AcO317Bk
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69FEC601FA;
-	Mon,  2 Nov 2026 15:33:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69FEC601FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6439F60202;
+	Mon,  2 Nov 2026 15:36:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6439F60202
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1793630023;
-	bh=0nn0+0x229EWlhvjTSEUB1qOZ1fAKJblEiQrZIKy3mU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=BEbSVlACkymIx48ZpiHuQcYV4bqpGznUW4kAljAGrZJYoPd+yy5LTwTmp09NVVd1h
-	 1YjLhuEcfLl9fZm8P1JjKtf1MQJlhOUwI8WYzS66SnOy58MEFR5ySwfHcF2yF1U58E
-	 CUhnRLh5BK0gCKPWdReJ4+QmnKNTiLsD68/JBmzA=
+	s=default; t=1793630222;
+	bh=VfJMDiTGz7WeUc1JWAE/kMG+zIVn5324YdIRci64N/M=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=fJHaNtmC7iiOFT7AnfGBbgMPbNBl/mJSnblrdtCgRLVw8g+rCeNsJ4gGwJ9fcz63N
+	 Atm3INwUuhEkQHTGb1VFwDTD9w6gg5SRdNR5ZYKlRWyO34SV4ORzPGBNiHvWzkCdx4
+	 2ScE5ujAFqLdeu4+hs4Z216L9Im576NqnmpPSldI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BEA64F805FA; Mon,  2 Nov 2026 15:33:09 +0100 (CET)
+	id A769BF805F6; Mon,  2 Nov 2026 15:36:29 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35F13F80600;
-	Mon,  2 Nov 2026 15:33:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 050A7F805E7;
+	Mon,  2 Nov 2026 15:36:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 291A0F8016E; Mon,  2 Nov 2026 15:33:04 +0100 (CET)
+	id BCAB1F8016E; Mon,  2 Nov 2026 15:36:23 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=no
-	autolearn_force=no version=4.0.1
-Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.131
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1793629982;
-	b=ih13l5NCaCNBONhCKtjJ2FYpblMlUZYYDpvA3QFFwBE7emaTNd1itRezf9XrXEWP1O2D
-	 6Mgv5LcWLsJTfLzUFJn1nJ7R+UEUh53OoR9x23MawnImBSZLvwMaqT+BEhhrGchLxGnLn
-	 kij5BLvBISSDGjyA71CURRGl9Qrc+2uk2Ouk7Cfzuyqc37gl5XX03uuks3ENAG+ydbs81
-	 sOiTrMCqmc/aR89PL/OYfVBrLlW1kZEwqj/M7jCcL/JWAFKtSugcJyML8xVTi94iXegiK
-	 k0YaIFJoct2D+eUy3bjQI/GCazwfiYfYXBYOjYiPutxQcLp3PPDJLNnf8iTKqrc+t3w==
+X-Spam-Status: No, score=-20.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_PASS,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=4.0.1
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1793630182;
+	b=Q+a8oUbpvTmBHNWyqoDSmT+dngfgo7gyPiYK8XSSRkWunmGnFwq9caJzJ/7DH/kdhYMk
+	 Cjf5Q0lVVj/Kt1zYVRCuIQQBFoxhoKogPe8l/yXr0YWHB45KltXFX1UAK+81b9Zt8mJ4L
+	 TgKsxsajMdrHpaKNUKdxCaJ6e1fN4SoNoHL+5X/qvAe721Xy+k61cY1F3mtpRy7kXrNRP
+	 Fh0D+oy4vdWBDzZOB1LWE+Ax82ZrBrrPjUgiQ2rDs/Jio1k9kZ8tAOkEjgdruFIwnONdX
+	 L0iYNqmzo625sNTgW6DOvAEWLEUWuck7h10geNsyJv1PTg2jRCaaftqauREyr6zBqJA==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1793629982;
-	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
-	 Message-ID:From:To:Subject:MIME-Version;
-	bh=0nn0+0x229EWlhvjTSEUB1qOZ1fAKJblEiQrZIKy3mU=;
-	b=YFNIjM9Mzk5XGnl6VrZOF32w+hQ66G62SqNhE7v2WLAZPLGAXBzeWGTShj6kPfxlbyaL
-	 8+59FfIfSAa9tmzOLjs4Irw1MjNq+ZamQjaeTirLAcmFT1DsmkVTFFKaW1We75i2V/rDw
-	 830yQstEhopVpMtWYk3mC6jjOpZiqPgYAUeEB5iCXwMzwpo+vwphRf1W5IX6RVZfVr8bH
-	 cBT2JaHYAkcpB+/z/1UJU/wp4EFwuJJrbKBWgt2h2zPVbX7jnC4rlmqG34qD3/a5080m4
-	 CYUB737k0uglHi7T5hl9N9IGkmeHI8UDZ+lI0AuGsccepexk7RzBcqKnBYeHK+mkyog==
+	c=relaxed/simple; t=1793630182;
+	h=DKIM-Signature:Message-ID:From:To:Subject:Date;
+	bh=VfJMDiTGz7WeUc1JWAE/kMG+zIVn5324YdIRci64N/M=;
+	b=QuQrJHRASOJc6TyCT7owJvobUj/IUPCoxLb5hQtpN066vDoxsNz7nKxinCS+83HLgxkh
+	 Jkhov2GS+22Gm4uvpMmhaWcL0ateUUff/F1IHGrTehFnJ13sE9cFckElVpPKDxs80HItV
+	 1Eq9he7d1rs6f9Au/AWYyXfPU7C+6ZmQf0OIe38iRVjWw92s9R9inQKdpZrZqn6eilvbF
+	 XDDeqxwfCjA6GNdGsfzaxmAtO7rFLJ3zGKL9s98tJBFcYs+L3sRJr+VvcD7tKC1YR5oje
+	 S7c2BueMeDvgi6LLRK4ABPWGbEPoIYU+lnCEcEWiXDoBgamHbXi15dOJ1W4w00e+ddA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=AQim8VLD;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=+B+Rr1Nb;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=SShI2Dm8;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=8xljWlZX;
-	arc=none smtp.remote-ip=195.135.223.131
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=AcO317Bk;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BFB75F80095
-	for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2026 15:33:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFB75F80095
+	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 475E1F80095
+	for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2026 15:36:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 475E1F80095
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=AQim8VLD;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=+B+Rr1Nb;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=SShI2Dm8;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=8xljWlZX
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 96BB31F38F;
-	Sat, 31 Oct 2026 16:57:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1793465848;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YBhiIwvADJajh3RbHDwL/JDcA8HU7Bu/kdL+MLxWhn4=;
-	b=AQim8VLDAfZ2B0MG15a44DFFH3lTH9uxZ0FEkdCt+KKY9mHHnKz+udEE6ieQiE7ES1xryN
-	Dt8yHRz3lyKW/kOvuacPoK7UZBmT3rGAnpuHyZ89aFDRvbOy3QiDTzpH3GNDsPI7ZHxRZ1
-	kSzIY9CUiRYehWeKim59z7Sb9zl33tk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1793465848;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YBhiIwvADJajh3RbHDwL/JDcA8HU7Bu/kdL+MLxWhn4=;
-	b=+B+Rr1NbzzLi+IbWn4BrqWkUTRQakoYBuBHt9TY3gbgrT15ST2fyBPBA7djfkeGvNx3iPd
-	gWTF0nLUIyC8raAA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1793465847;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YBhiIwvADJajh3RbHDwL/JDcA8HU7Bu/kdL+MLxWhn4=;
-	b=SShI2Dm8GHXidWTZIQ/+2pbnZSiXK/4tgljKcyAQtEAu76jKd12xUjUmIxE8egJKN2r9oh
-	os8Z+nwFrJKmEu8DsmVXBkRo88ETIQ1muOclUW9p/IY+mYPtwXa4t6LiCf+CK4/aV52QYi
-	scetrf4VO3IYvctRrnqSN7TGdpI6HY4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1793465847;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YBhiIwvADJajh3RbHDwL/JDcA8HU7Bu/kdL+MLxWhn4=;
-	b=8xljWlZXMHnEby8ymRgHWTDKAicRPYtqXs0Bg6ywWfglWBrjWqyTzUGYApBQppbsdkt2xE
-	OMImbAmZl+XK2ZDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 28B04132D3;
-	Sat, 31 Oct 2026 16:57:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id AWBwO/Yd5mp8ZQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Sat, 31 Oct 2026 16:57:27 +0000
-Date: Sat, 31 Oct 2026 17:57:26 +0100
-Message-ID: <87bj89reo9.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: RenPanpan <rppxj178543@163.com>
-Cc: alsa-devel@alsa-project.org,
-	linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [DISCUSSION] ALSA: usb-audio: Card naming for composite devices
-In-Reply-To: <20261030121740.250336-1-rppxj178543@163.com>
-References: <20261030121740.250336-1-rppxj178543@163.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-12.30 / 50.00];
-	SUSE_INTERNAL_BYPASS(-9.00)[];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_TO(0.00)[163.com];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FREEMAIL_ENVRCPT(0.00)[163.com];
-	RCPT_COUNT_THREE(0.00)[4];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-Message-ID-Hash: L2HK5TQPFQ4FN2ZPVVYTFUWJTYJ6D3YR
-X-Message-ID-Hash: L2HK5TQPFQ4FN2ZPVVYTFUWJTYJ6D3YR
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=AcO317Bk
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with UTF8SMTP id BE4DD6012A;
+	Thu, 29 Oct 2026 18:19:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id E5CF11F01816;
+	Thu, 29 Oct 2026 18:19:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793297944;
+	bh=TMt4tok8EtivAf1je3I6wfcfe3Gi9bFIlhPwzfeT6EI=;
+	h=From:To:Cc:Subject:Date;
+	b=AcO317BkfglmuCWVcXoIgMsi49G392AHb5vTvJV9P9hMOJpAT3Udh5hHMpZTKWSL3
+	 PSSKK6d3zAJJRhvHmyUZZm3OC7FpK+yAO/GWLN9YpgG3k1f5VtM+Y464LmJBPsN8yo
+	 PRy+2fQs2UoXiypOkAIDRhxLeqd0gVCF32C60vwc9Kl3cqmo0U5hJdWpRzUx0LFgX7
+	 XeWqWRhwxHBm/hoTNj+uhMarh3aF+UcDIRC+d6ymmR6XyeL7hBxkoHikbzRcLRbtNr
+	 0Dpqg2kXQUuY9kIeVeD+RyvZ/3ivKf34h97HBaUwVdaXjR2exdBqImQa/5gDv3rTLz
+	 35DLBnEmDh7YA==
+Message-ID: <f3c0e30fe8b901ae314a5400bc8dda92@kernel.org>
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC fixes for v7.4-merge-window
+Date: Thu, 29 Oct 2026 18:18:34 +0000
+Message-ID-Hash: WYBSAT4M2KGOXMFIJQLTUFHIY2OB47D7
+X-Message-ID-Hash: WYBSAT4M2KGOXMFIJQLTUFHIY2OB47D7
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -190,93 +103,167 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L2HK5TQPFQ4FN2ZPVVYTFUWJTYJ6D3YR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WYBSAT4M2KGOXMFIJQLTUFHIY2OB47D7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
+X-Archived-By: <archiver.kernel.org>
 
-On Fri, 30 Oct 2026 13:17:39 +0100,
-RenPanpan wrote:
-> 
-> Hello,
-> 
-> I'd like to discuss an issue with USB audio card naming for composite
-> devices and propose a possible improvement.
-> 
-> Problem
-> -------
-> 
-> For USB composite devices containing both non-audio and UAC audio
-> functions, the ALSA card shortname is derived from the device-level
-> iProduct string, which describes the entire device rather than the
-> audio function.
-> 
-> For example, the CVT Touch Device (1ff7:0f33) is a composite device
-> with HID touch interfaces and UAC audio interfaces. Its iProduct is
-> "Touch Device", which is the name for the whole device. The UAC
-> OUTPUT_TERMINAL descriptor defines the audio function name as
-> "MAXHUB Speaker" via the iTerminal string descriptor (index 14).
-> 
-> Currently, the ALSA card name shows "Touch Device", which does not
-> identify the audio function. The UAC mixer code already reads
-> iTerminal for mixer control names (e.g. "MAXHUB Mic" from the
-> Microphone INPUT_TERMINAL's iTerminal=17), but the card naming
-> function (usb_audio_make_shortname) does not use iTerminal.
-> 
-> Proposed approach
-> -----------------
-> 
-> When the USB device is composite (i.e. it has non-audio interfaces),
-> prefer the Speaker OUTPUT_TERMINAL's iTerminal string as the card
-> shortname, instead of the device-level iProduct. If iTerminal is not
-> set (zero) or not readable via usb_string(), fall back to iProduct
-> (existing behavior).
-> 
-> Non-composite (dedicated audio) devices are not affected and continue
-> to use iProduct.
-> 
-> The composite device detection checks whether any interface has a
-> non-Audio class. The iTerminal reading uses the existing
-> snd_usb_find_csint_desc() helper to parse OUTPUT_TERMINAL descriptors
-> in the Audio Control interface's extra data. The iTerminal field is
-> the last byte of the descriptor, common to both UAC1 (bLength=9) and
-> UAC2 (bLength=12).
-> 
-> As an immediate fix, I have also prepared a quirk entry for 1ff7:0f33
-> to override the card shortname to "MAXHUB Speaker" directly.
-> 
-> Questions for the community
-> ----------------------------
-> 
-> 1. Is this approach reasonable for composite devices, or should it
->    remain a per-device quirk?
-> 
-> 2. Are there concerns about changing card names for existing composite
->    USB audio devices that have iTerminal set? For example, UCM profile
->    matching or PulseAudio device identification.
-> 
-> 3. Would it be preferable to also check the IAD's iFunction field
->    before falling back to iTerminal, or is iTerminal sufficient?
-> 
-> 4. Are there known composite USB audio devices where the iTerminal
->    string might be empty or contain unexpected content?
-> 
-> I have tested the quirk approach on a MT81C device (Kylin V10-SP1)
-> and it works correctly. The iTerminal approach compiles but has not
-> been tested on multiple devices yet.
-> 
-> Any feedback would be appreciated.
-> 
-> Best regards,
-> RenPanpan
+The following changes since commit 73be2ee656f2722d498504259b9f1fdef8419431:
 
-I took your first fix patch as it was simple enough.
-(It took time just because I was traveling in the last week.)
+  ASoC: codecs: Fix more control definitions that write another control's bits (2026-10-18 13:22:10 +0100)
 
-If it still doesn't suffice, let us know.  Thanks.
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v7.4-merge-window
 
-Takashi
+for you to fetch changes up to 11ae63bd9030349a0136fb2edd1622a4a029edc8:
+
+  ASoC: SOF: Intel: hda: Stop the controller before freeing its DMA buffers (2026-10-29 11:41:21 +0000)
+
+----------------------------------------------------------------
+ASoC: Fixes for v7.4
+
+A moderately large collection of fixes and quirks that have come in
+during the merge window, everything here is driver specific and none of
+it unusually severe.
+
+----------------------------------------------------------------
+Alex Kazinsky (1):
+      ASoC: tlv320aic32x4: Prevent division by zero in divider callbacks
+
+Arnd Bergmann (1):
+      ASoC: SOF: amd: add ACPI dependency
+
+Bard Liao (1):
+      ASoC: soc-acpi-intel-arl-match: add rt712 on link 0 config
+
+Chancel Liu (1):
+      ASoC: imx-pcm-rpmsg: Flush pending work in hw_free
+
+Fabio Estevam (1):
+      ASoC: fsl_utils: Tolerate fractional PLL rate residue
+
+Filippo Falezza (1):
+      ASoC: qcom: sm8250: Limit RX digital gain to 0 dB
+
+HyeongJun An (1):
+      ASoC: cs42l56: Remove the ADC Mute Switch control
+
+JJ Gault (1):
+      ASoC: Intel: soc-acpi-intel-arl-match: Add RT713 + dual RT1320 support
+
+Marek Szyprowski (6):
+      ASoC: wm8994: fix MCLK gating for AIF clocks sourced from MCLK2
+      ASoC: wm8994: don't lose the AIF clock ratio when staying at 32kHz SYSCLK
+      ASoC: wm8994: fix MCLK index used for setting MCLK rate
+      ASoC: samsung: midas_wm1811: run FLL1 at the AIF1 configured rate when idle
+      ASoC: wm8994: follow AIF clock source changes in MCLK gating
+      ASoC: codecs: wsa881x: Fix shared powerdown GPIO handling
+
+Mark Brown (7):
+      ASoC: wm8994/midas_wm1811: fix codec clocking issues
+      ASoC: qcom: q6apm: Fix shared memory unmap
+      ASoC: Intel: soc-acpi-intel-arl-match: add new
+      ASoC: qcom: AudioReach and WSA88xx fixes
+      ASoC: es9356-sdca: Modify the initialization and headphone-related settings
+      ASoC: codecs: es*: controls that write each other's bits
+      ASoC: hdac_hda: Fix module unbind/bind via sysfs
+
+Oder Chiou (1):
+      ASoC: rt721: Remove invalid register defaults
+
+Peter Ujfalusi (4):
+      ASoC: hdac_hda: Allocate the private data at codec driver bind
+      ASoC: hdac_hda: Restore the codec device type on unbind
+      ASoC: hdac_hda: Balance the runtime PM disable in codec remove
+      ASoC: hdac_hda: Keep runtime PM state in sync across codec remove/probe
+
+Ravi Hothi (3):
+      ASoC: qcom: audioreach: fix module cfg blob size handling
+      ASoC: codecs: wsa884x: Fix VI sense port channel count
+      ASoC: codecs: wsa883x: Fix VI sense port channel count
+
+Richard Fitzgerald (1):
+      ASoC: cs35l56: Wait for firmware timer expiry before system suspend
+
+Sasha Levin (1):
+      ASoC: SOF: Intel: hda: Stop the controller before freeing its DMA buffers
+
+Shawn Guo (3):
+      ASoC: qcom: q6apm: Fix unmap regions response handling
+      ASoC: qcom: q6apm: Clear the right handle on pos buffer unmap
+      ASoC: qcom: q6apm: Unmap DSP buffers before removing the topology
+
+Shuming Fan (1):
+      ASoC: rt722: enable mono speaker on Dell SKU 0EBA
+
+Srinivas Kandagatla (7):
+      ASoC: codecs: wsa884x: Accept temperatures across the full trim range
+      ASoC: codecs: wsa883x: Accept temperatures across the full trim range
+      ASoC: codecs: wsa884x: disable runtime PM on unbind
+      ASoC: codecs: wsa883x: disable runtime PM on unbind
+      ASoC: SDCA: propagate sdw_slave_read_prop() failure in class_read_prop
+      ASoC: SDCA: drop pm_runtime reference on probe failure path
+      ASoC: SDCA: re-enable IRQ on pm_runtime_force_suspend failure
+
+Val Packett (1):
+      ASoC: qcom: qdsp6: q6afe: fix clk vote response type mismatch
+
+Zhang Heng (1):
+      ASoC: amd: yc: Add DMI quirk for HP Laptop 14-em0xxx
+
+Zhang Yi (6):
+      ASoC: codecs: es8375: Modify Register Configuration
+      ASoC: es9356-sdca: Modify the timing and configuration of headphone events
+      ASoC: es9356-sdca: Add writeable_reg
+      ASoC: es9356-sdca: Modify the Initialization Configuration
+      ASoC: codecs: es*: Modify the registers related to ALC RECOVERY
+      ASoC: codecs: es*: Modify the maximum value of DMIC_GAIN
+
+bui duc phuc (2):
+      ASoC: amd: raven: Fix memory leak in acp3x_dma_close()
+      ASoC: xilinx: formatter_pcm: Fix read-modify-write of AUD_CTRL in hw_params
+
+ include/sound/cs35l56.h                           |   4 +
+ sound/soc/amd/raven/acp3x-pcm-dma.c               |   2 +
+ sound/soc/amd/yc/acp6x-mach.c                     |   7 +
+ sound/soc/codecs/cs35l56-sdw.c                    |  27 +++-
+ sound/soc/codecs/cs35l56-shared.c                 |  38 ++++++
+ sound/soc/codecs/cs35l56.c                        |  17 +++
+ sound/soc/codecs/cs35l56.h                        |   1 +
+ sound/soc/codecs/cs42l56.c                        |   1 -
+ sound/soc/codecs/es8326.c                         |   2 +-
+ sound/soc/codecs/es8375.c                         | 136 +++++++++----------
+ sound/soc/codecs/es8375.h                         |   5 +-
+ sound/soc/codecs/es9356.c                         | 106 +++++++++++----
+ sound/soc/codecs/es9356.h                         |   5 +
+ sound/soc/codecs/hdac_hda.c                       |  41 +++++-
+ sound/soc/codecs/rt721-sdca-sdw.c                 |   2 -
+ sound/soc/codecs/rt721-sdca-sdw.h                 |   4 -
+ sound/soc/codecs/rt722-sdca.c                     |  18 +++
+ sound/soc/codecs/rt722-sdca.h                     |   2 +
+ sound/soc/codecs/tlv320aic32x4-clk.c              |   8 +-
+ sound/soc/codecs/wm8994.c                         | 153 ++++++++++++----------
+ sound/soc/codecs/wm8994.h                         |   2 +
+ sound/soc/codecs/wsa881x.c                        |  18 ++-
+ sound/soc/codecs/wsa883x.c                        |  21 +--
+ sound/soc/codecs/wsa884x.c                        |  19 +--
+ sound/soc/fsl/fsl_utils.c                         |  25 +++-
+ sound/soc/fsl/imx-pcm-rpmsg.c                     |  14 +-
+ sound/soc/intel/common/soc-acpi-intel-arl-match.c |  84 ++++++++++++
+ sound/soc/qcom/qdsp6/q6afe.c                      |  10 +-
+ sound/soc/qcom/qdsp6/q6apm.c                      |  49 +++++--
+ sound/soc/qcom/qdsp6/topology.c                   |  31 ++++-
+ sound/soc/qcom/sm8250.c                           |  10 ++
+ sound/soc/samsung/midas_wm1811.c                  |  14 +-
+ sound/soc/sdca/sdca_class.c                       |  10 +-
+ sound/soc/sof/amd/Kconfig                         |   1 +
+ sound/soc/sof/intel/hda-codec.c                   |  23 +---
+ sound/soc/sof/intel/hda-ctrl.c                    |   1 +
+ sound/soc/sof/intel/hda.c                         |   4 +
+ sound/soc/xilinx/xlnx_formatter_pcm.c             |  18 +--
+ 38 files changed, 685 insertions(+), 248 deletions(-)
