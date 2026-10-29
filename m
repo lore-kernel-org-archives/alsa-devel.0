@@ -2,96 +2,110 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B670606A336
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2026 14:37:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50989606F3FD
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2026 14:42:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=fJHaNtmC;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AcO317Bk
+	dkim=temperror header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=DJlVp2Me;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=TQ7bnElp
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6439F60202;
-	Mon,  2 Nov 2026 15:36:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6439F60202
+	by alsa0.perex.cz (Postfix) with ESMTPS id 130A360205;
+	Mon,  2 Nov 2026 15:41:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 130A360205
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1793630222;
-	bh=VfJMDiTGz7WeUc1JWAE/kMG+zIVn5324YdIRci64N/M=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=fJHaNtmC7iiOFT7AnfGBbgMPbNBl/mJSnblrdtCgRLVw8g+rCeNsJ4gGwJ9fcz63N
-	 Atm3INwUuhEkQHTGb1VFwDTD9w6gg5SRdNR5ZYKlRWyO34SV4ORzPGBNiHvWzkCdx4
-	 2ScE5ujAFqLdeu4+hs4Z216L9Im576NqnmpPSldI=
+	s=default; t=1793630521;
+	bh=b/8PUtS+Kp4ROI869eUE9VnUh8GeLydBctR0kQiPelA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=DJlVp2MeXuh80itHJHkbCzBhg3LYetE+3LX/Gdf9jMgNLdbnVgoMaqc8y1U1JOVlQ
+	 jvfjEO87z+AOTRArTzOsonqWET883U+Y6X41MgAXYmMYzp8tUJqJpM0ZvwFiJhiuJ3
+	 wvBlw9/kTxB4oNTHTitGxcPmhLdBNmYzNwCcnro8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A769BF805F6; Mon,  2 Nov 2026 15:36:29 +0100 (CET)
+	id 4D4E4F80603; Mon,  2 Nov 2026 15:41:28 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 050A7F805E7;
-	Mon,  2 Nov 2026 15:36:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7156F805F9;
+	Mon,  2 Nov 2026 15:41:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BCAB1F8016E; Mon,  2 Nov 2026 15:36:23 +0100 (CET)
+	id 794B0F8016E; Mon,  2 Nov 2026 15:41:22 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-5.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_PASS,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=4.0.1
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
+	SPF_PASS autolearn=no autolearn_force=no version=4.0.1
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1793630182;
-	b=Q+a8oUbpvTmBHNWyqoDSmT+dngfgo7gyPiYK8XSSRkWunmGnFwq9caJzJ/7DH/kdhYMk
-	 Cjf5Q0lVVj/Kt1zYVRCuIQQBFoxhoKogPe8l/yXr0YWHB45KltXFX1UAK+81b9Zt8mJ4L
-	 TgKsxsajMdrHpaKNUKdxCaJ6e1fN4SoNoHL+5X/qvAe721Xy+k61cY1F3mtpRy7kXrNRP
-	 Fh0D+oy4vdWBDzZOB1LWE+Ax82ZrBrrPjUgiQ2rDs/Jio1k9kZ8tAOkEjgdruFIwnONdX
-	 L0iYNqmzo625sNTgW6DOvAEWLEUWuck7h10geNsyJv1PTg2jRCaaftqauREyr6zBqJA==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1793630481;
+	b=DrSRD7XXYqfeFlVsyurLXKLOHRBoPy/gbFrzW1EhgGhTkYtcvdlutOiedAhn8cqiLFL0
+	 EHRreLrVPMk6YgNs3xSI6p3A4duV8eb9a0u/SMuLCGyOcLa550orwM8mQLnBnSYenBfhi
+	 uEZpAS3EvN3MHsEWdPnlWX4JzHGADKiwDti+Fz9yOlXYxDzROVnq8ei1Hcn62/gVr/wZ/
+	 eHUkP9qMcpfRzXv4333WKcXGMOKd1/YxGRloiOjBbp9vnhmmbj80tFfRK4aINOJjZfPUp
+	 exkPRlw2ODnAFepd1tVo9vcHeJ2Le/8wd8DahCug8UcSVnJgQQiRJ5BmQ3i3JGetMDw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1793630182;
-	h=DKIM-Signature:Message-ID:From:To:Subject:Date;
-	bh=VfJMDiTGz7WeUc1JWAE/kMG+zIVn5324YdIRci64N/M=;
-	b=QuQrJHRASOJc6TyCT7owJvobUj/IUPCoxLb5hQtpN066vDoxsNz7nKxinCS+83HLgxkh
-	 Jkhov2GS+22Gm4uvpMmhaWcL0ateUUff/F1IHGrTehFnJ13sE9cFckElVpPKDxs80HItV
-	 1Eq9he7d1rs6f9Au/AWYyXfPU7C+6ZmQf0OIe38iRVjWw92s9R9inQKdpZrZqn6eilvbF
-	 XDDeqxwfCjA6GNdGsfzaxmAtO7rFLJ3zGKL9s98tJBFcYs+L3sRJr+VvcD7tKC1YR5oje
-	 S7c2BueMeDvgi6LLRK4ABPWGbEPoIYU+lnCEcEWiXDoBgamHbXi15dOJ1W4w00e+ddA==
+	c=relaxed/simple; t=1793630481;
+	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
+	bh=b/8PUtS+Kp4ROI869eUE9VnUh8GeLydBctR0kQiPelA=;
+	b=A1GzEQqrNrzhzpFAkg/LySauSlfpxB/3GUmlgiXkoRRJ0tc6DP6bek0VGwa/y9Zkv9fX
+	 Z4jqNc9iBIkZzLHPfzPCskSVJTUV/biWpdhcHOi5lE88hcRWJVhymXzTPoxWfx81PV8H2
+	 mgbbPNLycqfOPoNBoFp7g6Te8Jn/CA9g27Rgxkop3NeK0JeO5rIUcM8WWzmIoTbBEh09H
+	 BZXexa/ILk0uJYunO/b17AEcl00qN6VaZTwTkr7MTh+RS69jZrp4/sahdO7XkL1AYwjf1
+	 axmBoI8Ej/UBRq1HOaJChfD8cpzIjl6SOsbmpxZUbe9wHc72ldNkuABKkHj8Ob6/zbA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
 	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=AcO317Bk;
+ header.s=k20260515 header.b=TQ7bnElp;
 	arc=none smtp.remote-ip=172.105.4.254
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 475E1F80095
-	for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2026 15:36:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 475E1F80095
+	by alsa1.perex.cz (Postfix) with ESMTPS id C56B5F80095
+	for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2026 15:41:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C56B5F80095
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=AcO317Bk
+ header.s=k20260515 header.b=TQ7bnElp
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with UTF8SMTP id BE4DD6012A;
-	Thu, 29 Oct 2026 18:19:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id E5CF11F01816;
-	Thu, 29 Oct 2026 18:19:03 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 82F68601E4;
+	Thu, 29 Oct 2026 12:31:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1A3E1F01825;
+	Thu, 29 Oct 2026 12:31:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793297944;
-	bh=TMt4tok8EtivAf1je3I6wfcfe3Gi9bFIlhPwzfeT6EI=;
-	h=From:To:Cc:Subject:Date;
-	b=AcO317BkfglmuCWVcXoIgMsi49G392AHb5vTvJV9P9hMOJpAT3Udh5hHMpZTKWSL3
-	 PSSKK6d3zAJJRhvHmyUZZm3OC7FpK+yAO/GWLN9YpgG3k1f5VtM+Y464LmJBPsN8yo
-	 PRy+2fQs2UoXiypOkAIDRhxLeqd0gVCF32C60vwc9Kl3cqmo0U5hJdWpRzUx0LFgX7
-	 XeWqWRhwxHBm/hoTNj+uhMarh3aF+UcDIRC+d6ymmR6XyeL7hBxkoHikbzRcLRbtNr
-	 0Dpqg2kXQUuY9kIeVeD+RyvZ/3ivKf34h97HBaUwVdaXjR2exdBqImQa/5gDv3rTLz
-	 35DLBnEmDh7YA==
-Message-ID: <f3c0e30fe8b901ae314a5400bc8dda92@kernel.org>
+	s=k20260515; t=1793277115;
+	bh=xa5URGaN5W0pQyv70BuKHVgE4RyRaU8Hn6PDhKD2das=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=TQ7bnElpShtQwBInMgoKdKuztfq3+C21P/n0KrnYxhA/r+UomozUVJxXysXXfV4LA
+	 Up13LWwcQB9l3OINiwALxZ8/hIUXZPlOpUmvz9Ss7apvIdYxTNlHYHrDEgdqrNGHCI
+	 MmMmzLRfII3O9+Mh+VdxdBeck9msLcrT/aofUt6rPBU4mar3vJhEYAocj4wo9BIFDK
+	 9X8Kgwr7GPmA2U6tXsU9Y63FlUi69z+7FIPTpUZCLKMox+6WvS9NvuKst64G+ZBE0K
+	 ii1gscobkrOumTFgq715EPUqdBkuTONlvHZCI+K/+WuNSe1kN6phUt5jbSxzTzD5jm
+	 wYYnI3ieAmxpw==
+Date: Thu, 29 Oct 2026 12:31:50 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC fixes for v7.4-merge-window
-Date: Thu, 29 Oct 2026 18:18:34 +0000
-Message-ID-Hash: WYBSAT4M2KGOXMFIJQLTUFHIY2OB47D7
-X-Message-ID-Hash: WYBSAT4M2KGOXMFIJQLTUFHIY2OB47D7
+To: YLCHANG2 <neo.chang70@gmail.com>
+Cc: Neo Chang <YLCHANG2@nuvoton.com>, lgirdwood@gmail.com, perex@perex.cz,
+	robh@kernel.org, krzk+dt@kernel.org, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+	kchsu0@nuvoton.com, sjlin0@nuvoton.com
+Subject: Re: [PATCH v1 2/2] ASoC: codecs: nau8310: Add support for NAU83G10
+ amplifier
+Message-ID: <e9e87eba-d3cc-494c-bd63-9efc7aa5e059@sirena.org.uk>
+References: <20261022084037.259983-1-YLCHANG2@nuvoton.com>
+ <20261022084037.259983-3-YLCHANG2@nuvoton.com>
+ <179304693306.199157.5210648249546181520.b4-review@b4>
+ <0752dec9-2de8-43fa-931b-27e1cae6e1df@gmail.com>
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="33E0WjiqKniC6qf5"
+Content-Disposition: inline
+In-Reply-To: <0752dec9-2de8-43fa-931b-27e1cae6e1df@gmail.com>
+X-Cookie: I have a TINY BOWL in my HEAD
+Message-ID-Hash: EBW5KDGB5Z4Y5B2LCJNNIT4FMEJVXB6L
+X-Message-ID-Hash: EBW5KDGB5Z4Y5B2LCJNNIT4FMEJVXB6L
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -103,167 +117,66 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WYBSAT4M2KGOXMFIJQLTUFHIY2OB47D7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EBW5KDGB5Z4Y5B2LCJNNIT4FMEJVXB6L/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
-X-Archived-By: <archiver.kernel.org>
 
-The following changes since commit 73be2ee656f2722d498504259b9f1fdef8419431:
 
-  ASoC: codecs: Fix more control definitions that write another control's bits (2026-10-18 13:22:10 +0100)
+--33E0WjiqKniC6qf5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-are available in the Git repository at:
+On Thu, Oct 29, 2026 at 10:24:39AM +0800, YLCHANG2 wrote:
+> On 10/27/26 04:35, Mark Brown wrote:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v7.4-merge-window
+> > > +static int nau8310_switch_internal_osc(struct snd_soc_component *cp)
+> > > +{
+> > > +	struct nau8310 *nau8310 =3D snd_soc_component_get_drvdata(cp);
+> > > +	int ret;
+> > > +
+> > > +	/* For internal Ring OSC, the default fs apply to 48kHz */
+> > > +	nau8310->fs =3D NAU8310_DEFAULT_SAMPLE_RATE;
 
-for you to fetch changes up to 11ae63bd9030349a0136fb2edd1622a4a029edc8:
+> > This will overwrite anything set_sysclk() set, since we call this from
+> > _shutdown() and _resume() we're relying on the machine driver
+> > reconfiguring the clocks when starting streams.
 
-  ASoC: SOF: Intel: hda: Stop the controller before freeing its DMA buffers (2026-10-29 11:41:21 +0000)
+> Regarding `switch_internal_osc()` overwriting `set_sysclk()` states during
+> suspend/resume, I'm considering two fixes:
+>=20
+> 1. Add NAU8310_CLK_INTERNAL to set_sysclk(): Standardizes and unifies clo=
+ck
+> setting through set_sysclk().
+> It sets the 48kHz internal clock here, but would still temporarily overwr=
+ite
+> the nau8310->fs and mclk states during _shutdown() and _resume().
+> 2. Pass arguments to clock_config(..., mclk, fs): Configures the 48kHz
+> hardware directly via arguments, leaving the nau8310->fs and mclk states
+> completely untouched.
+> Which approach would be preferred for upstream?
 
-----------------------------------------------------------------
-ASoC: Fixes for v7.4
+The second option sounds like it might be a bit safer since it won't
+disrupt other users, though it may also be useful to expose the internal
+clock via set_sysclk() if it's useful for running audio.
 
-A moderately large collection of fixes and quirks that have come in
-during the merge window, everything here is driver specific and none of
-it unusually severe.
+--33E0WjiqKniC6qf5
+Content-Type: application/pgp-signature; name="signature.asc"
 
-----------------------------------------------------------------
-Alex Kazinsky (1):
-      ASoC: tlv320aic32x4: Prevent division by zero in divider callbacks
+-----BEGIN PGP SIGNATURE-----
 
-Arnd Bergmann (1):
-      ASoC: SOF: amd: add ACPI dependency
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmrjPLUACgkQJNaLcl1U
+h9AvHAf+KXI5E3bvHag9+mXdWiYHYhPnOjtylEUTawoCYOxJLYL7jEV1aBmcZxkR
+IFBuP95gLG5TtwHmzdWc5LBNS66yLNbdGT795Z8i139PV4K6m3ssKg/daAKAGul2
+atZvnGvz+AUFGF2Z2XWHhRSIIwWW6RyPPcpvA/h70KTJlGY0EOcII5l2j4jm0J1Q
+rz2sHXl+7ePkReDF1rMUkAQPhdiNFSv1a6/lJe/HVoMhiiPSrA9r1jYVuBGJd5vW
+W2eLQK+YXEBk/1vNRk253tbQyBPe6gXF0sODqi+FULjWsU2tFBaa7ECckvZ19FTZ
+lknCgspqG6ZMxK8ZUCr7ekRxvYfy8g==
+=h8z+
+-----END PGP SIGNATURE-----
 
-Bard Liao (1):
-      ASoC: soc-acpi-intel-arl-match: add rt712 on link 0 config
-
-Chancel Liu (1):
-      ASoC: imx-pcm-rpmsg: Flush pending work in hw_free
-
-Fabio Estevam (1):
-      ASoC: fsl_utils: Tolerate fractional PLL rate residue
-
-Filippo Falezza (1):
-      ASoC: qcom: sm8250: Limit RX digital gain to 0 dB
-
-HyeongJun An (1):
-      ASoC: cs42l56: Remove the ADC Mute Switch control
-
-JJ Gault (1):
-      ASoC: Intel: soc-acpi-intel-arl-match: Add RT713 + dual RT1320 support
-
-Marek Szyprowski (6):
-      ASoC: wm8994: fix MCLK gating for AIF clocks sourced from MCLK2
-      ASoC: wm8994: don't lose the AIF clock ratio when staying at 32kHz SYSCLK
-      ASoC: wm8994: fix MCLK index used for setting MCLK rate
-      ASoC: samsung: midas_wm1811: run FLL1 at the AIF1 configured rate when idle
-      ASoC: wm8994: follow AIF clock source changes in MCLK gating
-      ASoC: codecs: wsa881x: Fix shared powerdown GPIO handling
-
-Mark Brown (7):
-      ASoC: wm8994/midas_wm1811: fix codec clocking issues
-      ASoC: qcom: q6apm: Fix shared memory unmap
-      ASoC: Intel: soc-acpi-intel-arl-match: add new
-      ASoC: qcom: AudioReach and WSA88xx fixes
-      ASoC: es9356-sdca: Modify the initialization and headphone-related settings
-      ASoC: codecs: es*: controls that write each other's bits
-      ASoC: hdac_hda: Fix module unbind/bind via sysfs
-
-Oder Chiou (1):
-      ASoC: rt721: Remove invalid register defaults
-
-Peter Ujfalusi (4):
-      ASoC: hdac_hda: Allocate the private data at codec driver bind
-      ASoC: hdac_hda: Restore the codec device type on unbind
-      ASoC: hdac_hda: Balance the runtime PM disable in codec remove
-      ASoC: hdac_hda: Keep runtime PM state in sync across codec remove/probe
-
-Ravi Hothi (3):
-      ASoC: qcom: audioreach: fix module cfg blob size handling
-      ASoC: codecs: wsa884x: Fix VI sense port channel count
-      ASoC: codecs: wsa883x: Fix VI sense port channel count
-
-Richard Fitzgerald (1):
-      ASoC: cs35l56: Wait for firmware timer expiry before system suspend
-
-Sasha Levin (1):
-      ASoC: SOF: Intel: hda: Stop the controller before freeing its DMA buffers
-
-Shawn Guo (3):
-      ASoC: qcom: q6apm: Fix unmap regions response handling
-      ASoC: qcom: q6apm: Clear the right handle on pos buffer unmap
-      ASoC: qcom: q6apm: Unmap DSP buffers before removing the topology
-
-Shuming Fan (1):
-      ASoC: rt722: enable mono speaker on Dell SKU 0EBA
-
-Srinivas Kandagatla (7):
-      ASoC: codecs: wsa884x: Accept temperatures across the full trim range
-      ASoC: codecs: wsa883x: Accept temperatures across the full trim range
-      ASoC: codecs: wsa884x: disable runtime PM on unbind
-      ASoC: codecs: wsa883x: disable runtime PM on unbind
-      ASoC: SDCA: propagate sdw_slave_read_prop() failure in class_read_prop
-      ASoC: SDCA: drop pm_runtime reference on probe failure path
-      ASoC: SDCA: re-enable IRQ on pm_runtime_force_suspend failure
-
-Val Packett (1):
-      ASoC: qcom: qdsp6: q6afe: fix clk vote response type mismatch
-
-Zhang Heng (1):
-      ASoC: amd: yc: Add DMI quirk for HP Laptop 14-em0xxx
-
-Zhang Yi (6):
-      ASoC: codecs: es8375: Modify Register Configuration
-      ASoC: es9356-sdca: Modify the timing and configuration of headphone events
-      ASoC: es9356-sdca: Add writeable_reg
-      ASoC: es9356-sdca: Modify the Initialization Configuration
-      ASoC: codecs: es*: Modify the registers related to ALC RECOVERY
-      ASoC: codecs: es*: Modify the maximum value of DMIC_GAIN
-
-bui duc phuc (2):
-      ASoC: amd: raven: Fix memory leak in acp3x_dma_close()
-      ASoC: xilinx: formatter_pcm: Fix read-modify-write of AUD_CTRL in hw_params
-
- include/sound/cs35l56.h                           |   4 +
- sound/soc/amd/raven/acp3x-pcm-dma.c               |   2 +
- sound/soc/amd/yc/acp6x-mach.c                     |   7 +
- sound/soc/codecs/cs35l56-sdw.c                    |  27 +++-
- sound/soc/codecs/cs35l56-shared.c                 |  38 ++++++
- sound/soc/codecs/cs35l56.c                        |  17 +++
- sound/soc/codecs/cs35l56.h                        |   1 +
- sound/soc/codecs/cs42l56.c                        |   1 -
- sound/soc/codecs/es8326.c                         |   2 +-
- sound/soc/codecs/es8375.c                         | 136 +++++++++----------
- sound/soc/codecs/es8375.h                         |   5 +-
- sound/soc/codecs/es9356.c                         | 106 +++++++++++----
- sound/soc/codecs/es9356.h                         |   5 +
- sound/soc/codecs/hdac_hda.c                       |  41 +++++-
- sound/soc/codecs/rt721-sdca-sdw.c                 |   2 -
- sound/soc/codecs/rt721-sdca-sdw.h                 |   4 -
- sound/soc/codecs/rt722-sdca.c                     |  18 +++
- sound/soc/codecs/rt722-sdca.h                     |   2 +
- sound/soc/codecs/tlv320aic32x4-clk.c              |   8 +-
- sound/soc/codecs/wm8994.c                         | 153 ++++++++++++----------
- sound/soc/codecs/wm8994.h                         |   2 +
- sound/soc/codecs/wsa881x.c                        |  18 ++-
- sound/soc/codecs/wsa883x.c                        |  21 +--
- sound/soc/codecs/wsa884x.c                        |  19 +--
- sound/soc/fsl/fsl_utils.c                         |  25 +++-
- sound/soc/fsl/imx-pcm-rpmsg.c                     |  14 +-
- sound/soc/intel/common/soc-acpi-intel-arl-match.c |  84 ++++++++++++
- sound/soc/qcom/qdsp6/q6afe.c                      |  10 +-
- sound/soc/qcom/qdsp6/q6apm.c                      |  49 +++++--
- sound/soc/qcom/qdsp6/topology.c                   |  31 ++++-
- sound/soc/qcom/sm8250.c                           |  10 ++
- sound/soc/samsung/midas_wm1811.c                  |  14 +-
- sound/soc/sdca/sdca_class.c                       |  10 +-
- sound/soc/sof/amd/Kconfig                         |   1 +
- sound/soc/sof/intel/hda-codec.c                   |  23 +---
- sound/soc/sof/intel/hda-ctrl.c                    |   1 +
- sound/soc/sof/intel/hda.c                         |   4 +
- sound/soc/xilinx/xlnx_formatter_pcm.c             |  18 +--
- 38 files changed, 685 insertions(+), 248 deletions(-)
+--33E0WjiqKniC6qf5--
