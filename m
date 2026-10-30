@@ -2,122 +2,148 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC6B606D80D
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2026 21:14:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0023C606A329
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2026 21:15:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=IZGhcGOd;
-	dkim=pass (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=uCOWqGsR
+	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=G/rRUlxG;
+	dkim=pass (2048-bit key, unprotected) header.d=cyberprotect.ru header.i=@cyberprotect.ru header.a=rsa-sha256 header.s=dkim-r header.b=QuS4jBxd;
+	dkim=pass header.d=cyberprotect.ru header.i=@cyberprotect.ru header.a=ed25519-sha256 header.s=dkim header.b=Y57LJXjr;
+	dkim=neutral header.d=cyberprotect.ru header.i=@cyberprotect.ru header.a=rsa-sha256 header.s=dkim-r header.b=QuS4jBxd;
+	dkim=neutral header.d=cyberprotect.ru header.i=@cyberprotect.ru header.a=ed25519-sha256 header.s=dkim header.b=Y57LJXjr
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B5AB601FF;
-	Mon,  2 Nov 2026 22:14:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B5AB601FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 296AE60201;
+	Mon,  2 Nov 2026 22:14:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 296AE60201
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1793654082;
-	bh=cW6qKgzk8mxeXA6HkHDZMcqXE+l3PrzoIeWlvKUlAVY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=IZGhcGOdKZgdEwRyc+7x7yiMS138cQe3msv4OV4w3CL8lgr2DOOjSSXYmfYRi5Woh
-	 /4lG0zXBFMqzM5hqDxs7Z+mKEb7HVYNlh4uGkBcu/s1psVOgf1O+xEmX8QnI5mB+sy
-	 m/iUbXdRMK7camJO5O3BgV7EhsZDqaSnxP17iodE=
+	s=default; t=1793654099;
+	bh=8ONJqSAZV2Yx9p5ppT7rr0hTr9JK7MWUB8wuPRz34KI=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=G/rRUlxGLDHxjOcUGSkymD25MQulIualDYZFnGKDu4R545TwknRGC4RZ/zh+aQoFr
+	 VKgoWp1WnHGW8JBb2r0Mrli1lQSse5ThRHixcpYzhgoEu+dh6VJUaA8OL8wY2kIbQf
+	 30uT1exMOGrR4F6JXwjYwHDHq693lMQsmGv5w/fE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 18346F80659; Mon,  2 Nov 2026 22:13:48 +0100 (CET)
+	id 1C6B3F80674; Mon,  2 Nov 2026 22:13:52 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 022D2F80631;
-	Mon,  2 Nov 2026 22:13:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7ABCF80680;
+	Mon,  2 Nov 2026 22:13:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E692DF80424; Mon,  2 Nov 2026 16:12:31 +0100 (CET)
+	id 1E82CF8016E; Mon,  2 Nov 2026 19:01:38 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=4.0.1
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=95.215.58.136
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1793632347;
-	b=Yq7MEuTnPr9OJfxK7qdKWPQ7dBtceMuSYdH6kr4sDJWJO+af95k3mZD5YJUJh5/piYC+
-	 6dG0vutDHmR73MzJoiKP1SMpGSvsttGh1FQedrRIXim9a9ktAv0KKVcjdOlQzyy5T1SGV
-	 x+kNfyddC5UO9fugzbesonSdoj9bJ2tSf2mHp+WHINucLXsIwZ2iDPWPZXvssiFiefzL9
-	 hQjQFMImF/DxZ2GZPoiSZjPcgyizwMtf0qpXRSitbdx5OJVO2NpzWH06RYYPW3sgjjJ1l
-	 dRwlo78qjWPi7cBXPdzybghHHDxgG4+QBJidUguosrhxxNN6Bf5ppC6RN0TdEtEAxbw==
+X-Spam-Status: No, score=-17.9 required=3.0 tests=BAYES_00,DATE_IN_PAST_48_96,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=4.0.1
+Authentication-Results: alsa1.perex.cz;
+ arc=none smtp.remote-ip=185.232.107.110
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1793642497;
+	b=iFBE93+b2iD0RY4wxw14mB//1hcaSqsGYPGUxAMWNl9Ww3jvFUJLArkpGTCPcG9FrYee
+	 nvn5qUok7F6tX2XfN3tPm4a0s9owFD0l15yMDqNwdbxq5qkdAxUtH0tsrsbCl11FDxudC
+	 5UIMU89BwSrfkxQyLM8DYLMjROPQeLdodjciZxzskV2uibLTn92y5uxHtmxjD47z5XNMw
+	 y3VZnObTuT0aZWpp2bPzNYMBnId0/0/WQHofRJP8n+n1QYiz+UcHoY55llSZiW0p7Kngl
+	 dqxgVBunoNYIUMGS38xRsoRPKcnPiWUZ69VHAan5371CwKqrepxeoKKQTc4m0KmlUcQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1793632347;
-	h=DKIM-Signature:Message-ID:Date:MIME-Version:Subject:To:From;
-	bh=cW6qKgzk8mxeXA6HkHDZMcqXE+l3PrzoIeWlvKUlAVY=;
-	b=Vz6L9PLPN4rRAXxKS6d5p6qV+GRTfQjaYHDNaKQalqZJ3BE0eUjrXzn3Hn1yd/mIg5YZ
-	 2HxmUVY+sSG4dhKcXqBmPPKxZ/DZTgf2Yu4dmeRv+TbZ/+vlJFQe634HgUR+6swjlgYwy
-	 BKvfFIVcGOLw3RHNIVRyjP0aFFMFILNsXHQJDM6nk9xCUTzjcLe0nY3PbqwmQBc4DI5+o
-	 gOUQUgDJVIB43Vq8qHnUAsp4bsmehgaXV0MBMLvDQEXr5h3W0CSmzBIOzVnh32kAIJXzX
-	 7SEmdnbkH7uIsp1omhV2l/s768jlkCzBfjeyuV3IJHU0YiGxqrJ5U74ea+9kdp/3PWw==
+	c=relaxed/simple; t=1793642497;
+	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:From:To:
+	 Subject:Date:Message-ID:MIME-Version;
+	bh=8ONJqSAZV2Yx9p5ppT7rr0hTr9JK7MWUB8wuPRz34KI=;
+	b=OK40CeK2/XF2niszEi8e0cA2qwAvb4wnYunzLGPm6QrlW8Cotrf8JGqCo2YCWszd7kvR
+	 vUeXu/Lp2NWmo6BZJCgVqh7D+UMFbdMmAeYvHO7RqOOCi83x+sfQiJzkTNNSp/jRRUDt3
+	 9cMK+Y43HxvGUd0QiSHvlfOuHow+8t4+SOBoV7V6AS+3dlgwL5/+VGFsBNt703obFqxYh
+	 ZCfwS+tibH5OQBN8bFi3tTL9DyZGKSJ/7QL2PHkW4H4x+UGkVN7Ou+X42z91dDCEIBlZ+
+	 YBtyc8p2lExDfNKYpe1yvWW1IoHZ/KM2CVoQ7LX7lKi4qDhwaz2PglzR6n7mJHVw6Fw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
-	dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256
- header.s=key1 header.b=uCOWqGsR;
-	arc=none smtp.remote-ip=95.215.58.136
-Received: from mta1.migadu.com (out-136.mta1.migadu.com [95.215.58.136])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dkim=pass header.d=cyberprotect.ru header.i=@cyberprotect.ru
+ header.a=rsa-sha256 header.s=dkim-r header.b=QuS4jBxd;
+	dkim=pass header.d=cyberprotect.ru header.i=@cyberprotect.ru
+ header.a=ed25519-sha256 header.s=dkim header.b=Y57LJXjr;
+	dkim=pass header.d=cyberprotect.ru header.i=@cyberprotect.ru
+ header.a=rsa-sha256 header.s=dkim-r header.b=QuS4jBxd;
+	dkim=neutral header.d=cyberprotect.ru header.i=@cyberprotect.ru
+ header.a=ed25519-sha256 header.s=dkim header.b=Y57LJXjr;
+	arc=none smtp.remote-ip=185.232.107.110
+Received: from mx1.cyberprotect.ru (mx1.cyberprotect.ru [185.232.107.110])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 48FBAF80095
-	for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2026 16:12:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48FBAF80095
+	by alsa1.perex.cz (Postfix) with ESMTPS id A9DF7F80095
+	for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2026 19:01:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9DF7F80095
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256
- header.s=key1 header.b=uCOWqGsR
-X-Envelope-To: alsa-devel@alsa-project.org
-DKIM-Signature: a=rsa-sha256; bh=cW6qKgzk8mxeXA6HkHDZMcqXE+l3PrzoIeWlvKUlAVY=;
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1793632345; v=1; x=1794237145;
- b=uCOWqGsRZsvxMcv2Iq9cm4ThEVhyE0ItiJF4IAglrMBuOQGR6hvuatjyc6hyqEiuaAvyxWGH
- 5a7fTWGjQNK8+s8IonBLnVunq+iMlBV8qwPs+ovfmfRB3MBVQT5cnVrzvR5RFTluN/34QFvq2ME
- zqiOElb4Y9SeeGbAobfD/1Mk=
-X-Envelope-To: alsa-devel@alsa-project.org
-Received: by smtp.migadu.com with ESMTPS id 53ac8b846c1ec72b;
-	Sun, 01 Nov 2026 18:34:38 +0000
-X-Mizu-Trace-ID: 53ac8b846c1ec72b
-X-Migadu-Flow: FLOW_OUT
-Message-ID: <3f3d7e4b-dd5a-4ef9-806e-5bc98a40d2d3@linux.dev>
-Date: Sun, 1 Nov 2026 19:34:20 +0100
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cyberprotect.ru header.i=@cyberprotect.ru
+ header.a=rsa-sha256 header.s=dkim-r header.b=QuS4jBxd;
+	dkim=pass header.d=cyberprotect.ru header.i=@cyberprotect.ru
+ header.a=ed25519-sha256 header.s=dkim header.b=Y57LJXjr;
+	dkim=pass (2048-bit key) header.d=cyberprotect.ru header.i=@cyberprotect.ru
+ header.a=rsa-sha256 header.s=dkim-r header.b=QuS4jBxd;
+	dkim=neutral header.d=cyberprotect.ru header.i=@cyberprotect.ru
+ header.a=ed25519-sha256 header.s=dkim header.b=Y57LJXjr
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=cyberprotect.ru; s=dkim-r; h=MIME-Version:Date:From:Sender:Reply-To;
+	bh=GYxzBfV8nb382eo52z1jeyt/BLYppy/OrUDjVytaEig=; b=QuS4jBxdw067+NggE0xgNIi8NR
+	GuFsxheNmzKidZcHFzLR6rklV79nUeAKdwEl2Has80OZ51/nlEyDjM/2unzONzZ/eRgTGV8OVy25q
+	nKFDx7YXV1PsM+4fLfdiiCZpq+9RI6eQ22MzpYZuhmgr/DnX7w0p+5r/AG40UrTJCoQl4llqYijnF
+	AAerwV/iRLirm+/QyxdiAfhgHVq/CB2Ki/HDEo9b4W2UlqUsHtDF5MKfo39m43zdIZ+Tl0jRl0etb
+	tIaRCfHcofVGKeRkrhNdFjdYleRsoLlfQ+eexmXZgMMfAEt8adg3WPDVVUeIUYCtT1tHI1PDYMM1p
+	4Ui85Whg==;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=cyberprotect.ru; s=dkim; h=MIME-Version:Date:From:Sender:Reply-To;
+	bh=GYxzBfV8nb382eo52z1jeyt/BLYppy/OrUDjVytaEig=; b=Y57LJXjrCWbPUhFtq0k5kFusQu
+	lfaamp727G7T/y5l642QXtWPv5y31FuA9aYzqRD2dHtPKSqXI5/fb7TsNzBA==;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=cyberprotect.ru; s=dkim-r; h=MIME-Version:Date:From:Sender:Reply-To;
+	bh=GYxzBfV8nb382eo52z1jeyt/BLYppy/OrUDjVytaEig=; b=QuS4jBxdw067+NggE0xgNIi8NR
+	GuFsxheNmzKidZcHFzLR6rklV79nUeAKdwEl2Has80OZ51/nlEyDjM/2unzONzZ/eRgTGV8OVy25q
+	nKFDx7YXV1PsM+4fLfdiiCZpq+9RI6eQ22MzpYZuhmgr/DnX7w0p+5r/AG40UrTJCoQl4llqYijnF
+	AAerwV/iRLirm+/QyxdiAfhgHVq/CB2Ki/HDEo9b4W2UlqUsHtDF5MKfo39m43zdIZ+Tl0jRl0etb
+	tIaRCfHcofVGKeRkrhNdFjdYleRsoLlfQ+eexmXZgMMfAEt8adg3WPDVVUeIUYCtT1tHI1PDYMM1p
+	4Ui85Whg==;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=cyberprotect.ru; s=dkim; h=MIME-Version:Date:From:Sender:Reply-To;
+	bh=GYxzBfV8nb382eo52z1jeyt/BLYppy/OrUDjVytaEig=; b=Y57LJXjrCWbPUhFtq0k5kFusQu
+	lfaamp727G7T/y5l642QXtWPv5y31FuA9aYzqRD2dHtPKSqXI5/fb7TsNzBA==;
+From: Dmitriy Chumachenko <Dmitry.Chumachenko@cyberprotect.ru>
+To: Jaroslav Kysela <perex@perex.cz>
+CC: Takashi Iwai <tiwai@suse.com>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, Sasha Levin <sashal@kernel.org>, Oswald
+ Buddenhagen <oswald.buddenhagen@gmx.de>, Mehul Rao <mehulrao@gmail.com>,
+	Ji'an Zhou <eilaimemedsnaimel@gmail.com>, Norbert Szetei
+	<norbert@doyensec.com>, <alsa-devel@alsa-project.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>, Dmitriy
+ Chumachenko <Dmitry.Chumachenko@cyberprotect.ru>
+Subject: [PATCH] ALSA: pcm: Don't WARN on NULL dma_area in the default mmap
+ fault handler
+Date: Fri, 30 Oct 2026 14:25:02 +0300
+Message-ID: <20261030112502.22227-1-Dmitry.Chumachenko@cyberprotect.ru>
+X-Mailer: git-send-email 2.49.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 00/16] ASoC: amd: acp: ACP7.B/7.F SoundWire machine
- driver support
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
- tiwai@suse.com, yung-chuan.liao@linux.intel.com,
- Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
- venkataprasad.potturu@amd.com, Syed.SabaKareem@amd.com,
- Mario.Limonciello@amd.com, Richard.Gong@amd.com, Poojitha.N@amd.com,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- sound-open-firmware@alsa-project.org
-References: <20261030094714.1123396-1-Vijendar.Mukunda@amd.com>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.dev>
-In-Reply-To: <20261030094714.1123396-1-Vijendar.Mukunda@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-MailFrom: pierre-louis.bossart@linux.dev
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AIP-EXCH-1.aip.ooo (10.77.28.101) To AIP-EXCH-1.aip.ooo
+ (10.77.28.101)
+X-MailFrom: Dmitry.Chumachenko@cyberprotect.ru
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: P56TVMVKPQOMKVWOF6R2JGXU2BJF745Z
-X-Message-ID-Hash: P56TVMVKPQOMKVWOF6R2JGXU2BJF745Z
+Message-ID-Hash: SPVYLJ2FENHOWRS6MFSFEUUBHMVTGDDT
+X-Message-ID-Hash: SPVYLJ2FENHOWRS6MFSFEUUBHMVTGDDT
 X-Mailman-Approved-At: Mon, 02 Nov 2026 21:13:36 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P56TVMVKPQOMKVWOF6R2JGXU2BJF745Z/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SPVYLJ2FENHOWRS6MFSFEUUBHMVTGDDT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,81 +151,57 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 
-On 10/30/26 10:45, Vijendar Mukunda wrote:
-> This series adds SoundWire machine driver support for ACP7.B and ACP7.F
-> platforms. It extends the existing AMD ACP SoundWire infrastructure with
-> per-platform CPU pin ID lookup, PDM controller selection via ACPI and DMI
-> quirks, DMIC DAI link and components string handling, PCI subsystem ID
-> propagation, and ACPI machine tables for RT721/RT722/RT1320 codec
-> configurations on both platforms.
-> 
-> Changes in v4:
->   - Patch 1: fix missing asoc_sdw_mc_dailink_exit_loop() cleanup on
->     devm_kasprintf() failure in acp-sdw-sof-mach.c mc_probe() (new).
->   - Patch 2: fix missing asoc_sdw_mc_dailink_exit_loop() cleanup on
->     both devm_kasprintf() failure paths in acp-sdw-legacy-mach.c
->     mc_probe(); update commit message to reference the correct function
->     name soc_card_dai_links_create() instead of sof_card_dai_links_create()
->     (new).
->   - Patch 3: remove unused ACP63_SDW_MAX_CPU_DAIS define (new).
->   - Patch 5 (was 2): add comments above ACP7X_SW_AUDIO* define block
->     and get_acp7x_cpu_pin_id() to document the dedicated per-port DMA
->     layout and the port-to-use-case mapping.
->   - Patch 9 (was 6): replace misleading "No functional change" claim
->     with an accurate description of the behavioural change for platforms
->     where ignore_internal_dmic is true (dmic_num now stays zero at the
->     gate rather than reaching the dmic_num > 0 block).
-> 
-> Changes in v3:
->   - Patch 3: update subject and changelog to accurately describe the new
->     PDM controller selection infrastructure being added.
->   - Patch 5: fix commit subject prefix from "amd: acp7x:" to "amd: acp:"
->     since the change is in the generic ACP SoundWire machine driver
->     (acp-sdw-sof-mach.c), not the ACP7x-specific SOF driver.
-> 
-> Changes in v2:
->   - Patch 6: simplify the DMIC enable condition as suggested by Pierre:
->     evaluate the three-way boolean once and nest the ignore_internal_dmic
->     check inside, avoiding the double-tested condition from v1.
-> 
-> Vijendar Mukunda (16):
->   ASoC: amd: acp: fix missing cleanup on devm_kasprintf() failure in
->     mc_probe()
->   ASoC: amd: acp: fix missing cleanup on devm_kasprintf() failure in
->     legacy SDW machine driver
->   ASoC: amd: sdw: remove unused ACP63_SDW_MAX_CPU_DAIS define
->   ASoC: amd: acp: add ACP7.B/7.F SoundWire link count for machine driver
->   ASoC: amd: acp: add ACP7.B/7.F SoundWire DAI link support
->   ASoC: amd: acp: add PDM controller selection for ACP7.B/7.F SoundWire
->     machine driver
->   ASoC: amd: acp: log ASOC_SDW_ACP_DMIC1 quirk in SOF SoundWire machine
->     driver
->   ASoC: amd: acp: enable DMIC DAI link based on PDM controller selection
->   ASoC: amd: acp: move ignore_internal_dmic gate to DMIC enable
->     condition
->   ASoC: amd: acp: add DMIC components string for SOF SoundWire machine
->     driver
->   ASoC: amd: acp: set PCI subsystem ID for SOF SoundWire machine driver
->   ASoC: amd: acp: fix MODULE_AUTHOR missing closing angle bracket
->   ASoC: amd: acp: add ACPI machine tables for ACP7.F SoundWire
->   ASoC: SOF: amd: add alt_machines for ACP7.F SOF SoundWire
->   ASoC: amd: acp: add SoundWire machine table for ACP7.B platform
->   ASoC: SOF: amd: register SoundWire alt_machines for ACP7.B
-> 
->  sound/soc/amd/acp/Makefile               |   2 +-
->  sound/soc/amd/acp/acp-sdw-legacy-mach.c  |   8 +-
->  sound/soc/amd/acp/acp-sdw-mach-common.c  |  48 ++++++
->  sound/soc/amd/acp/acp-sdw-sof-mach.c     | 109 +++++++++++--
->  sound/soc/amd/acp/amd-acp7x-acpi-match.c | 198 +++++++++++++++++++++++
->  sound/soc/amd/acp/soc_amd_sdw_common.h   |  45 +++++-
->  sound/soc/amd/mach-config.h              |   2 +
->  sound/soc/sof/amd/pci-acp7x.c            |   2 +
->  8 files changed, 396 insertions(+), 18 deletions(-)
->  create mode 100644 sound/soc/amd/acp/amd-acp7x-acpi-match.c
+During fuzz testing, the following issue was discovered.
 
-For the patchset:
+WARNING: CPU: 2 PID: 1734 at sound/core/pcm_native.c:3835 
+snd_pcm_mmap_data_fault+0x47f/0x530 sound/core/pcm_native.c:3835
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.dev>
+Modules linked in:
+CPU: 2 PID: 1734 Comm: syz.1.352 Not tainted 6.1.187-syzkaller-00593-g063a81552262 #0
+RIP: 0010:snd_pcm_mmap_data_fault+0x47f/0x530 sound/core/pcm_native.c:3835
 
-I added two nit-pick comments on naming and DMIC0/DMIC1 explanations, in
-case you respin a v5.
+Call Trace:
+ <TASK>
+ __do_fault+0x10d/0x480 mm/memory.c:4280
+ do_cow_fault mm/memory.c:4661 [inline]
+ do_fault+0xa7a/0x1100 mm/memory.c:4762
+ handle_pte_fault mm/memory.c:5031 [inline]
+ __handle_mm_fault+0xdf3/0x2e40 mm/memory.c:5173
+ handle_mm_fault+0x2da/0xa60 mm/memory.c:5294
+ do_user_addr_fault+0x4aa/0x1050 arch/x86/mm/fault.c:1338
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0x98/0x1b0 arch/x86/mm/fault.c:1482
+ asm_exc_page_fault+0x22/0x30 arch/x86/include/asm/idtentry.h:608
+
+snd_pcm_mmap_data_fault() guards the default RAM-buffer path with
+WARN_ON_ONCE(!runtime->dma_area). As commit d2913a07d903 notes, a driver
+may allow mmap before dma_area is set up, so this state is reachable from
+user space: mmap the PCM data region and fault it while the buffer is not
+allocated. The WARN then fires on a user-triggerable path and panics a
+kernel with panic_on_warn.
+
+Drop the WARN; the NULL check and VM_FAULT_SIGBUS return stay, which is
+the correct silent handling.
+
+Fixes: d2913a07d903 ("ALSA: pcm: Add sanity NULL check for the default mmap fault handler")
+Signed-off-by: Dmitriy Chumachenko <Dmitry.Chumachenko@cyberprotect.ru>
+---
+ sound/core/pcm_native.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index fcb5f176f0df..dd640d90f6a3 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -3832,7 +3832,7 @@ static vm_fault_t snd_pcm_mmap_data_fault(struct vm_fault *vmf)
+ 	if (substream->ops->page)
+ 		page = substream->ops->page(substream, offset);
+ 	else if (!snd_pcm_get_dma_buf(substream)) {
+-		if (WARN_ON_ONCE(!runtime->dma_area))
++		if (!runtime->dma_area)
+ 			return VM_FAULT_SIGBUS;
+ 		page = virt_to_page(runtime->dma_area + offset);
+ 	} else
+-- 
+2.49.0
+
