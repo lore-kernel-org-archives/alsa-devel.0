@@ -2,124 +2,197 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD46606A329
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Nov 2026 05:47:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F2C606A31B
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Nov 2026 07:26:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=G1tIwepQ;
-	dkim=pass (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=VDXaW9F8
+	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=Ce2z+hN9;
+	dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=XeH28d03;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=wvUMSiIf;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=XeH28d03;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=wvUMSiIf
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC8C26022B;
-	Wed,  4 Nov 2026 06:47:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC8C26022B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7BDC3601F8;
+	Wed,  4 Nov 2026 08:26:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BDC3601F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1793771249;
-	bh=qhahMrQYHLJ+Qp5l4x02iu2RBmtmF/q7vKTTQcducQ4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1793777213;
+	bh=JkhYhFVAK7M/DxNrpqcN5qqqo+0SXWUsy3sszgOqiDI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=G1tIwepQb1h8IBAIkfzhqzOPrzjHiWaEgH0+rW6chgx4J+U9tt3hF2D9hoiYm5G1y
-	 ZIb7Bg2vsNDkR8+aaQWd7S2UfHspjOhompXaTmgbKxEPg3X8J5VRU471CTFq7Ohjpo
-	 DBqr0YiHpujjIuWd4x4JH+CJbqugIkH8R6YLp5nw=
+	b=Ce2z+hN9sHj1YIGtft/JUbzfv+80H4cnWA36xA5aMqbIfjkhopm+Dlp/7Z0HreKG2
+	 X/LNTUqkSx7yEiI7V+Tdrl8k9IzIAwlAnU/9aJSjbuBClHi8QWrZ8+x6UidqmWh4tj
+	 f16OoF1Sg2xSQcY8yomKfs5NoVmeQVmiXzvwULP0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1896DF805FC; Wed,  4 Nov 2026 06:46:55 +0100 (CET)
+	id 445A9F80600; Wed,  4 Nov 2026 08:26:21 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8D64EF8055B;
-	Wed,  4 Nov 2026 06:46:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C45ECF805FF;
+	Wed,  4 Nov 2026 08:26:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4FBE3F805AA; Wed,  4 Nov 2026 06:46:48 +0100 (CET)
+	id 69044F805AA; Wed,  4 Nov 2026 08:26:14 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=4.0.1
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=198.175.65.21
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1793771203;
-	b=G6ACzUmi1MKibhONpjaF8H5VTAscrVeXJufpGAoMmqlzL4aC2WdBqCVxFpWHB++r+xwI
-	 h+j9Zxk5vIMghwde49atkHF8eNnkeeiUgFpihClpwxQI4npkTEKMqy/yNmnCPcqA7vp5q
-	 qQ9m/n/RBgxbcaf1dMB6wDRMMIvU4e7iOvJLDoLqa7i5mrTfvKk5EckWbkbv0sIIet4Mu
-	 y1I925FFI9TFhEUl+KBVciY9Vt3XOnnThZEuf/i86z9EFlAC+lnkrM1FiL+QVsfo4Cfp6
-	 xgpMH3wDT2AtF60ddFLLWM+TQznyg/cjDF2ssk1j7MeYYwvUDb0pI1SmfXBSEPglnrw==
-ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1793771203;
-	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
-	bh=qhahMrQYHLJ+Qp5l4x02iu2RBmtmF/q7vKTTQcducQ4=;
-	b=R0I614NtzrL7bKtaeDcLaBDsUCQ+OFbkadxxNwVNcCSXqoYTtcdiATDZjhRqiJSQmTW7
-	 3jfmXc4BhEB5Rtn30EdDhr2768ZfJwlWeY0usYx86gSj/q+P8vN84rMRUeDjx0kLcE17E
-	 4GS4r6Pl/FeY1dA1LeSdBLCutn0jX6wQPAnphUN/ogF4mwMKzWVrJ9NXbqGTBpjXEpkJv
-	 vjiXKq8JqHFae6Oy/q6SN8h8PXk0LJz9OAorNe1MDmEomAcfgPWUiTwrkjBTHvm8zXV6b
-	 tLFsH4YfPlDhWVsk+WZoelPvOEGBrp2Ykm2QlW2M3Pdfzp0NSy4jfJ8Xjbfit/3JcMw==
-ARC-Authentication-Results: i=1; alsa1.perex.cz;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=VDXaW9F8;
-	arc=none smtp.remote-ip=198.175.65.21
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3781EF800E4
-	for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2026 06:46:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3781EF800E4
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS
+	autolearn=ham autolearn_force=no version=4.0.1
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=VDXaW9F8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1793771203; x=1825307203;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qhahMrQYHLJ+Qp5l4x02iu2RBmtmF/q7vKTTQcducQ4=;
-  b=VDXaW9F87swlU5JX9iDp/9Dwh7nY9Tnnxg7YYq23XIgSryk867o98yq8
-   wyDJo++11oCICmmWGz1qK+8DnKKkBKC0XdDNDo7ubjjiiNNyjYiHVKUQk
-   D9ixsh0IfT7gILv6rtlxKHBifUuYA+EKhNelgv27f7nz52bFaLxEeZysc
-   3ow68RJ0d5DqmRyG5yvyRfKFn2lW06dfgUfOZcEjwgZyqsUx9OPrgXpfh
-   nwjJtqQzJ923hhxddRdq6FtRSogZMP96zMkotn4caVUwVtzw+joGBKwgD
-   uS8Vtw/NAWGetl7qGx8sK3+WhK9IzP1hj6S1wTsgKixu1tJxhHtwpG5s+
-   Q==;
-X-CSE-ConnectionGUID: fM8o+simShCtw01gHozn3A==
-X-CSE-MsgGUID: h07drHVES9WmLWiMJVMwXQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11955"; a="2608632"
-X-IronPort-AV: E=Sophos;i="6.27,194,1787036400";
-   d="scan'208";a="2608632"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Nov 2026 21:46:36 -0800
-X-CSE-ConnectionGUID: S2thmX75Qq211O7/p4MTlw==
-X-CSE-MsgGUID: BV6HQmkQTH+rilKIKIhjKQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,194,1787036400";
-   d="scan'208";a="6448714"
-Received: from lkp-server01.sh.intel.com (HELO 0caa9d2d175c) ([10.239.97.150])
-  by orviesa007.jf.intel.com with ESMTP; 03 Nov 2026 21:46:30 -0800
-Received: from kbuild by 0caa9d2d175c with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1xOTpL-00000000jpl-1Agm;
-	Wed, 04 Nov 2026 05:46:27 +0000
-Date: Wed, 4 Nov 2026 13:45:43 +0800
-From: kernel test robot <lkp@intel.com>
-To: Baojun Xu <baojun.xu@ti.com>, broonie@kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, tiwai@suse.de,
-	andriy.shevchenko@linux.intel.com, 13916275206@139.com,
-	alsa-devel@alsa-project.org, shenghao-ding@ti.com, baojun.xu@ti.com,
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-	k-yi@ti.com, henry.lo@ti.com, robinchen@ti.com, niranjan.hy@ti.com,
-	pin-hao.huang@hp.com, Syed.SabaKareem@amd.com
-Subject: Re: [PATCH v1] ASoC: tas2783-sdw: Add basic BPT support
-Message-ID: <202611041243.Bn9AJATC-lkp@intel.com>
-References: <20261103133853.1612-1-baojun.xu@ti.com>
+ arc=none smtp.remote-ip=195.135.223.131
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1793777173;
+	b=ixnnI383bUfGm5PSr7qnCbAu2Gi75rt/Mr48E7hTN8TiSEJbiASKvF5iqF6J8LdANVOw
+	 miKUibCAfnktCUUlvihvrbE21p6aylRaEyfbwetsWeLUpg7Vp9iPjaN1sTUOUAebM5KYl
+	 1VfcPsNeJXWqAZjDOSCI3kvsKd7/8TWBPc+AJzRmXEDLQLEEh3tEtMXGGvtm7+NKHIi72
+	 WjIRm5Supq2HoYWaO52h5ekdoNwYaY4WTqg82BBvTQA6eExsJ0MIgeiU8oE3eETfqCtsq
+	 Wxdm5W+HCb3Al9wdK0ttbvMnh+wAwXz1S2Qrs3SA/gIHMDiVbKgV9qDHpUvZTzPYIKQ==
+ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1793777173;
+	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
+	 Message-ID:From:To:Subject:MIME-Version;
+	bh=JkhYhFVAK7M/DxNrpqcN5qqqo+0SXWUsy3sszgOqiDI=;
+	b=nw1eTXsyqWUEIKu+x6Gkm4Er0jT4KvHBjmeL5uEUV33HqXKNYMWmZqWs8LDXSVkdiqeB
+	 TFdtbqwqTQCLrqaiJ2Re0QFlXYeQ/yd8+j+c7WFeehN21fJucNHkJJDKDx2xo5AfOGBJb
+	 eYEHSd3Se73A6QAJTmuiMA/nl6xbO0toEbkrX2UvMxGkLiMf0Unffauov1+jlimVPrTd+
+	 KZd0By/oc5hNZwZZon/sdrlAtDc7KqAWJeYvPw0TB+3NtYUB8jdS0GqKBmJZnI4JC5sf1
+	 NlRX0pJCsF2gxE2WQFEvBcHJVvlRu9QGy4qZps0bcrFyiw60vFRwA6sxKnS+bs8FqUA==
+ARC-Authentication-Results: i=1; alsa1.perex.cz;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=XeH28d03;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=wvUMSiIf;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=XeH28d03;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=wvUMSiIf;
+	arc=none smtp.remote-ip=195.135.223.131
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id D879BF8055B
+	for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2026 08:26:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D879BF8055B
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=XeH28d03;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=wvUMSiIf;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=XeH28d03;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=wvUMSiIf
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 0A5181F79F;
+	Wed,  4 Nov 2026 07:26:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1793777171;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SA7Bf9auILChUao5hZdgNKE7dHcrzEqtGGCcyfajDU0=;
+	b=XeH28d03aO9jBGFzpSN/p5tdxG2hXReWJoXHiD5TpnCi0iubl2gT9iW2jhYUTDC+w3RhDX
+	0ZMR1kGxpJNiSLlTa5bG9PmLYeh/1JNg2ZvK1ne5zw5Cc1yYKUbxj218TgiMhKO5C5sfUv
+	TGt8SPtdFYKVq2drxXOCsXlXqH/3lA4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1793777171;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SA7Bf9auILChUao5hZdgNKE7dHcrzEqtGGCcyfajDU0=;
+	b=wvUMSiIfHhIOTcG/45u8kAWosopcVphhHLFnjbqBm0+nqaaZkZIUHmDycRMIxdhMo+is7F
+	g0tQsjCPS2tpGOCQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=XeH28d03;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=wvUMSiIf
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1793777171;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SA7Bf9auILChUao5hZdgNKE7dHcrzEqtGGCcyfajDU0=;
+	b=XeH28d03aO9jBGFzpSN/p5tdxG2hXReWJoXHiD5TpnCi0iubl2gT9iW2jhYUTDC+w3RhDX
+	0ZMR1kGxpJNiSLlTa5bG9PmLYeh/1JNg2ZvK1ne5zw5Cc1yYKUbxj218TgiMhKO5C5sfUv
+	TGt8SPtdFYKVq2drxXOCsXlXqH/3lA4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1793777171;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SA7Bf9auILChUao5hZdgNKE7dHcrzEqtGGCcyfajDU0=;
+	b=wvUMSiIfHhIOTcG/45u8kAWosopcVphhHLFnjbqBm0+nqaaZkZIUHmDycRMIxdhMo+is7F
+	g0tQsjCPS2tpGOCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9D45E134A5;
+	Wed,  4 Nov 2026 07:26:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id wzxFGxLe6mp+NwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Wed, 04 Nov 2026 07:26:10 +0000
+Date: Wed, 04 Nov 2026 08:26:10 +0100
+Message-ID: <87o6c5ukfh.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Cristiano Souza <cristianocps@gmail.com>
+Cc: alsa-devel@alsa-project.org,
+	tiwai@suse.com
+Subject: Re: [PATCH] ALSA: usb-audio: Skip broken playback feature unit on
+ XiiSound chips
+In-Reply-To: 
+ <CANiPN4m_+iwVio0LvXeJrq5SdLi3-paL45XMs0yjuZu4KotmEw@mail.gmail.com>
+References: 
+ <CANiPN4m_+iwVio0LvXeJrq5SdLi3-paL45XMs0yjuZu4KotmEw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
 X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261103133853.1612-1-baojun.xu@ti.com>
-Message-ID-Hash: PUZRD3NCVBNCQU2VZY6JLX6TYRN2DUCM
-X-Message-ID-Hash: PUZRD3NCVBNCQU2VZY6JLX6TYRN2DUCM
-X-MailFrom: lkp@intel.com
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Rspamd-Queue-Id: 0A5181F79F
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-12.51 / 50.00];
+	SUSE_INTERNAL_BYPASS(-9.00)[];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_TRACE(0.00)[suse.de:+];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCPT_COUNT_THREE(0.00)[3];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim]
+Message-ID-Hash: HPUU7HJRCT7FHEKNKNQXST53VZK4CWIU
+X-Message-ID-Hash: HPUU7HJRCT7FHEKNKNQXST53VZK4CWIU
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -130,7 +203,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PUZRD3NCVBNCQU2VZY6JLX6TYRN2DUCM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HPUU7HJRCT7FHEKNKNQXST53VZK4CWIU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -138,95 +211,41 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 
-Hi Baojun,
+On Tue, 03 Nov 2026 04:33:35 +0100,
+Cristiano Souza wrote:
+> 
+> Weltrend XiiSound-based devices (040b:0897, e.g. Redragon H878
+> wireless headset) expose a UAC1 playback feature unit whose volume
+> and mute controls are unusable in practice: the reported per-channel
+> dB range is only 0..+0.39dB, yet setting any volume below the
+> maximum mutes one or even both channels, and the mapping between
+> logical and physical channels is unreliable.  Any attempt by
+> userspace to drive the hardware volume therefore results in muted
+> or one-sided audio.
+> 
+> Skip the playback feature unit entirely so that userspace falls back
+> to software volume, and pin the unit's master and per-channel volumes
+> to the reported maximum with mutes cleared when the mixer is created,
+> so the signal path always stays fully open.  The capture path
+> (microphone feature unit) is not affected and keeps working.
+> 
+> Tested with a Redragon H878 wireless headset on PipeWire/PulseAudio:
+> stereo output works on both channels at any volume, software volume
+> applies smoothly, and mute/unmute works.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Cristiano Souza <cristianocps@gmail.com>
 
-kernel test robot noticed the following build warnings:
+The patch looks inapplicable likely because your mailer broke the tabs
+and spaces.  Also, the submission for a kernel patch should go to
+linux-sound@vger.kernel.org, not alsa-devel ML.
+Please fix your mailer setup and/or try submission via git send-email.
 
-[auto build test WARNING on broonie-sound/for-next]
-[also build test WARNING on linus/master next-20261030]
-[cannot apply to v7.3]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Baojun-Xu/ASoC-tas2783-sdw-Add-basic-BPT-support/20261103-213853
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-patch link:    https://lore.kernel.org/r/20261103133853.1612-1-baojun.xu%40ti.com
-patch subject: [PATCH v1] ASoC: tas2783-sdw: Add basic BPT support
-config: riscv-allyesconfig (https://download.01.org/0day-ci/archive/20261104/202611041243.Bn9AJATC-lkp@intel.com/config)
-compiler: clang version 24.0.0git (https://github.com/llvm/llvm-project 65303e81f481bbfe386b8596423f94c43198ba94)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261104/202611041243.Bn9AJATC-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202611041243.Bn9AJATC-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> sound/soc/codecs/tas2783-sdw.c:1369:6: warning: variable 'ret' is uninitialized when used here [-Wuninitialized]
-    1369 |         if (ret) {
-         |             ^~~
-   sound/soc/codecs/tas2783-sdw.c:1362:9: note: initialize the variable 'ret' to silence this warning
-    1362 |         s32 ret;
-         |                ^
-         |                 = 0
-   1 warning generated.
+But, before that, about the code change: I wonder whether you can
+achieve it more simply by defining a usbmix_name_map in mixer_maps.c?
+It can be used to skip unsupported units, too.
 
 
-vim +/ret +1369 sound/soc/codecs/tas2783-sdw.c
+thanks,
 
-  1357	
-  1358	static s32 tas_io_init(struct device *dev, struct sdw_slave *slave)
-  1359	{
-  1360		struct tas2783_prv *tas_dev = dev_get_drvdata(dev);
-  1361		uint val;
-  1362		s32 ret;
-  1363	
-  1364		if (tas_dev->hw_init)
-  1365			return 0;
-  1366	
-  1367		regmap_read(tas_dev->regmap, TASDEV_REG_SDW(0, 0, 7), &val);
-  1368		dev_dbg(dev, "Got B0P0R7 = %02X with %d.", val, ret);
-> 1369		if (ret) {
-  1370			dev_err(dev, "Get FW download status failed, err=%d", ret);
-  1371			return ret;
-  1372		}
-  1373		if (val != 0x22) {
-  1374			tas_dev->fw_dl_success = false;
-  1375			ret = regmap_write(tas_dev->regmap, TAS2783_SW_RESET, 0x1);
-  1376			if (ret) {
-  1377				dev_err(dev, "sw reset failed, err=%d", ret);
-  1378				return ret;
-  1379			}
-  1380			usleep_range(2000, 2200);
-  1381			regcache_cache_only(tas_dev->regmap, false);
-  1382			tas_dev->fw_use_fallback = false;
-  1383			ret = tas_fw_load(tas_dev, slave);
-  1384			if (!ret && tas_dev->fw_use_fallback)
-  1385				ret = tas_fw_load(tas_dev, slave);
-  1386		}
-  1387		if (!ret) {
-  1388			if (tas_dev->sa_func_data)
-  1389				ret = sdca_regmap_write_init(dev, tas_dev->regmap,
-  1390							     tas_dev->sa_func_data);
-  1391			else
-  1392				ret = regmap_multi_reg_write(tas_dev->regmap, tas2783_init_seq,
-  1393							     ARRAY_SIZE(tas2783_init_seq));
-  1394	
-  1395			/* Re-active AMP after resume. */
-  1396			regmap_write(tas_dev->regmap, TASDEV_REG_SDW(0, 0, 2), 0);
-  1397			if (ret)
-  1398				dev_err(tas_dev->dev,
-  1399					"init writes failed, err=%d", ret);
-  1400			else
-  1401				tas_dev->hw_init = true;
-  1402		}
-  1403	
-  1404		return ret;
-  1405	}
-  1406	
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Takashi
