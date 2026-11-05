@@ -2,196 +2,114 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E34606D806
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2026 16:02:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E96E606A31B
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2026 20:14:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=aaOhw0iB;
-	dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=gGxO0SHx;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=HKTQbMwv;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=gGxO0SHx;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=HKTQbMwv
+	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=ngQ7Qwsa;
+	dkim=pass (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=eb2eKYnD
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A94D46014C;
-	Thu,  5 Nov 2026 17:02:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A94D46014C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65C34601E3;
+	Thu,  5 Nov 2026 21:14:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65C34601E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1793894545;
-	bh=2Zvxb/A5eHTWzuzdfdLCAju0BStvKd/4ddIMpBfj7uA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=aaOhw0iBoXkjtkPklnKf5jiFxMAEIagw3nzYFpJNkzeFzQ0E6txxgD9foWx1q81ga
-	 gk2aNRslxaZvNze1so1kcOkngqZ1Byn/BUMjfF0fbvHRpnKKqnkKEsAqVRJDPOaXmN
-	 h7XOKoPGeszmaFGao2NcZfZptbq63+QufnBpc1+w=
+	s=default; t=1793909666;
+	bh=0z++K7EFByBu2htfgx671oiMl5Rb9T6wO61BPNWMO2I=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ngQ7Qwsa+OvQ0DV4tmzlQs1t3oHPlJ/QwCf3eE50hwn/XwMZqyzxvlzT0xHK+7XSn
+	 mJ1lrS0aI/o409fVwLACOFL5EKpOdcUOaPtQUoEPCUi46vHWgK/DF1Cjm4oiYXByHB
+	 yJHlZvmFWY/PZk7ojbMV3g8zy1kFybPz0WbyTmvE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 91364F805FF; Thu,  5 Nov 2026 17:01:51 +0100 (CET)
+	id 76E9BF805F6; Thu,  5 Nov 2026 21:13:52 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4CDDDF805F5;
-	Thu,  5 Nov 2026 17:01:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7DEE3F805F2;
+	Thu,  5 Nov 2026 21:13:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 259AEF804FF; Thu,  5 Nov 2026 17:01:46 +0100 (CET)
+	id 36E23F804FF; Thu,  5 Nov 2026 21:13:46 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
 	version=4.0.1
-Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.131
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1793894505;
-	b=jxtbTvkQejQMJ5MckG/7YAQZ21iEhm2S+WdKqKJH+3us+ehjqfhInLPWu7Lwb7mCietu
-	 MP3a90l47a8DwGgN3H3BbEW5vgfCSPYOUAVl7bDSFW8kspItHa3VQxm/ntA7BWNM1lu/h
-	 3UeSA1p2j5mJdS41wiKWm+T9rMiW80tGsBJS8Jdh1ADUWqOrt7DFjSmPQJLiTyWFgzJWg
-	 zy8qCg7RbCxjUZ9/8EU3psLZVstAfMgY5lkFiFlpvT3MzKYIsvI+AyiJTioUvwMUuCd2p
-	 JCm4KUJzA9gbS38jbsz6qiXCFTZA5nCDe28UQaIgfAdG1HAtfBXaXvBmGhLuTWuaF/g==
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=192.198.163.11
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1793909625;
+	b=DSfcaz9B9CH7BOoiWg1c9R7NaRoYB+Jrdhyc5MY9uZWPzl0+3f5KXSQIHqTOEJMzlEz4
+	 9MtUEUa4hicI5JMc4hmDrcLpX51j5z5JxlQGw32SL/z9LnhWPchCzM0YLMZtlxlgVnUCr
+	 oVNVkxGLPpJHhDFvblCoQp0DJqi/YD7Ek60vpKGHS75hEVxS+jqBUmnI+XkXWwdZNOnBt
+	 XyINoUyoTl3LZDD1ZxuRAtfEiJc75L8HhIqUoN5KOSY1HeveC8Ygd7q853CGbNSb1Ayj6
+	 /JboeCDBk6a3QQ/8/B/ne3/a8+E+8e+DJkUbpNjiDB8v0Wuo0zs2BWb6WcKXyFIL0jw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1793894505;
-	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
-	 Message-ID:From:To:Subject:MIME-Version;
-	bh=2Zvxb/A5eHTWzuzdfdLCAju0BStvKd/4ddIMpBfj7uA=;
-	b=J4AiQvaR0UEYAGefkp/NVDfcs/fSNNeffDa6zqLqiQS9j+FwNPq38M+pCpPKOCY99laK
-	 Lg5lRjtFugGxA18aepC1pYvfda8JPWw6mQjIUoXbx62kM1ZEGVSb92QG03ObaVpQbabgG
-	 cSqdPuG3SiWJ3iXp6XTR4lXgowDO1is0jwgRzNA7tr7FKx4QPQumtjPWpmf0Pd/Dp3dPs
-	 TZT+FCHvOuyQFdTLavKdSY3GqfAIfr1rUmKIVeUHM4ZsiUNMTbbY1ajFIel73FHqI0YX6
-	 ExAvfNfM2zASeC3vv289llvQmUBrLCZUZuF6rZzAtGFicwGSAl0hHV/f/wNhgjzjrXw==
+	c=relaxed/simple; t=1793909625;
+	h=DKIM-Signature:Date:From:To:Subject:Message-ID;
+	bh=0z++K7EFByBu2htfgx671oiMl5Rb9T6wO61BPNWMO2I=;
+	b=GSgTLF+vre7ZneJ3kG1hUcsC3xxy5OjMO7bH8LtZ5vBADATudk9BvzcJBKHL5u21sf2d
+	 3pBbsVUC17n/TaAXpYibbmSsQlydheTqFKH2xCn16ze0BLZ6Ic+jwBQlMBNWTf+vvWmO0
+	 0/yXaoazdacnn9ApHgxEhDyxZPw35Qyy+OJnT+pNXSIx6wIEm9JH3jhXlUG1GXIKzXxUc
+	 noBVs3gEiyCms9GBA5Aqg6rzHT9gsH6Px5BZEMBBZ9ZS2BrGEWwppQYB38iOmOkgsIy3x
+	 CSL9sVfvFbockeIzXnc/X2dPrekcNtZtmlDJLjwKQKahZ8mNzxjgko5TBlz6JthLqGA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=gGxO0SHx;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=HKTQbMwv;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=gGxO0SHx;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=HKTQbMwv;
-	arc=none smtp.remote-ip=195.135.223.131
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=eb2eKYnD;
+	arc=none smtp.remote-ip=192.198.163.11
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 17C0BF802DB
-	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2026 17:01:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17C0BF802DB
+	by alsa1.perex.cz (Postfix) with ESMTPS id AC311F8016D
+	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2026 21:13:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC311F8016D
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=gGxO0SHx;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=HKTQbMwv;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=gGxO0SHx;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=HKTQbMwv
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 74CF81F749;
-	Thu,  5 Nov 2026 16:01:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1793894497;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bCAXsQYTn+ro7wQ3X5+sSRZ5vAY/PJ6i1XVSyLlK874=;
-	b=gGxO0SHxJ1lggBgMepmGGMhM37Zk6ZbGTZjUGvYd+f5ND44PnkydwOpHOH2EhbF9IV+ZS5
-	Ij1G5YHY8D4iat7e5sSDU1af8bacUr1Supq8MGxYYc+IgY0ayPux1lfzBWEGkMH1PF8KaG
-	Uh+ltF6pcVN89+fAV1jtyIp7+FdYAlg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1793894497;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bCAXsQYTn+ro7wQ3X5+sSRZ5vAY/PJ6i1XVSyLlK874=;
-	b=HKTQbMwvEsex35AwmI7QAHHEdbUROjIJdJ3mSKzJ5J1LCujAdlx+JFwYI3lWWLAybS0Bjw
-	wzk6bqu6/5F6WEBQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=gGxO0SHx;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=HKTQbMwv
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1793894497;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bCAXsQYTn+ro7wQ3X5+sSRZ5vAY/PJ6i1XVSyLlK874=;
-	b=gGxO0SHxJ1lggBgMepmGGMhM37Zk6ZbGTZjUGvYd+f5ND44PnkydwOpHOH2EhbF9IV+ZS5
-	Ij1G5YHY8D4iat7e5sSDU1af8bacUr1Supq8MGxYYc+IgY0ayPux1lfzBWEGkMH1PF8KaG
-	Uh+ltF6pcVN89+fAV1jtyIp7+FdYAlg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1793894497;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bCAXsQYTn+ro7wQ3X5+sSRZ5vAY/PJ6i1XVSyLlK874=;
-	b=HKTQbMwvEsex35AwmI7QAHHEdbUROjIJdJ3mSKzJ5J1LCujAdlx+JFwYI3lWWLAybS0Bjw
-	wzk6bqu6/5F6WEBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 354B7134F4;
-	Thu,  5 Nov 2026 16:01:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Yv/wA2Go7Gq9CgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 05 Nov 2026 16:01:37 +0000
-Date: Thu, 05 Nov 2026 17:01:36 +0100
-Message-ID: <87v76bqnbz.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>,
-	linux-sound@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: Re: [GIT PULL] ASoC fixes for v7.4-rc1
-In-Reply-To: <e5aded615cb3e714bfe90050876a9f98@kernel.org>
-References: <e5aded615cb3e714bfe90050876a9f98@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-12.51 / 50.00];
-	SUSE_INTERNAL_BYPASS(-9.00)[];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,alsa-project.org];
-	DKIM_TRACE(0.00)[suse.de:+];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_THREE(0.00)[4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 74CF81F749
-Message-ID-Hash: YBBO6BVCMZWVKNEII26PCQ57YBDFYFNR
-X-Message-ID-Hash: YBBO6BVCMZWVKNEII26PCQ57YBDFYFNR
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=eb2eKYnD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1793909625; x=1825445625;
+  h=date:from:to:cc:subject:message-id;
+  bh=0z++K7EFByBu2htfgx671oiMl5Rb9T6wO61BPNWMO2I=;
+  b=eb2eKYnD9hF+0lEsgw9+93XdR6uwz6rLO6yXmi5U7WyO74v4M/oAGcgw
+   CMtmzMrrRtpiBRA6sy6v34tKUcR35IaQHoU7czzIHe8Cf51jMHNEDO/mc
+   82rIQZzMMVbfzEwT3iSp6xWxClnGnRSnPUNiysdIpcRqwmw/2QwWVyK+g
+   r0XbaL4TRR9D+9pgoWmRwgqvogzHTAuEfKPfcU1x204H4MxS4OOmniU/V
+   OHZ/1VrLkabvzdIB8IPwrVeiHVcaSNphzzUHPuBUUqDA2/LtQjlvrW8eg
+   HOtt+/T1I0KzAbVAgSxpPCEcOr+CM0ErqlE0uaw5mocmKiFxz5EOeN6jg
+   g==;
+X-CSE-ConnectionGUID: Tnv9PTVqQiqD7KkIp0cc0A==
+X-CSE-MsgGUID: z9bY0lPzS3ut5kzBp87SCg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11957"; a="2630892"
+X-IronPort-AV: E=Sophos;i="6.27,197,1787036400";
+   d="scan'208";a="2630892"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Nov 2026 12:13:40 -0800
+X-CSE-ConnectionGUID: GJE1j10RTnuL+XXw+TnYUA==
+X-CSE-MsgGUID: JU3/3YVVT8yhzUxPGkT/Xw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,197,1787036400";
+   d="scan'208";a="7247541"
+Received: from igk-lkp-server01.igk.intel.com (HELO 58ca8a381a5c)
+ ([10.211.93.152])
+  by fmviesa002.fm.intel.com with ESMTP; 05 Nov 2026 12:13:38 -0800
+Received: from kbuild by 58ca8a381a5c with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1xP3q1-000000009n1-2JnT;
+	Thu, 05 Nov 2026 20:13:33 +0000
+Date: Thu, 05 Nov 2026 21:13:28 +0100
+From: kernel test robot <lkp@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: oe-kbuild-all@lists.linux.dev, alsa-devel@alsa-project.org
+Subject: [tiwai-sound:test/sound-rust-v7.3 5/56] warning: reference
+ as raw pointer
+Message-ID: <202611052152.RyP1WBkt-lkp@intel.com>
+User-Agent: s-nail v14.9.25
+Message-ID-Hash: QNP4T2VCWJSBFAUS6DZJM3U2IW25XSLY
+X-Message-ID-Hash: QNP4T2VCWJSBFAUS6DZJM3U2IW25XSLY
+X-MailFrom: lkp@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -202,39 +120,39 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YBBO6BVCMZWVKNEII26PCQ57YBDFYFNR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QNP4T2VCWJSBFAUS6DZJM3U2IW25XSLY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
+X-Archived-By: <archiver.kernel.org>
 
-On Thu, 05 Nov 2026 16:52:47 +0100,
-Mark Brown wrote:
-> 
-> The following changes since commit 6628e7d4c6b25c8d18f1345e3a20d21829aae7e4:
-> 
->   Linux 7.4-rc1 (2026-11-01 13:26:31 -0800)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v7.4-rc1
-> 
-> for you to fetch changes up to cf09d02dc0c49593fdd9e0ec2f17251cba39a94e:
-> 
->   ASoC: amd: yc: drop duplicated DMI quirk entries (2026-11-05 00:25:11 +0000)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v7.4
-> 
-> More fixes that have come in since -rc1, a lot of this is quirks but
-> there's some bug fixes as well.  The bug fixes should mostly be those
-> that seem to be affecting actual users rather than just being pure
-> static analysis work.  I also took some fixes for missing Kconfig
-> dependencies which won't have any runtime impact.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git test/sound-rust-v7.3
+head:   070444a8abf14da700680a5331d0a95cd11e578b
+commit: 79a5b63f9f837d360951e298544c4f69e9051078 [5/56] rust: module: add support for string parameter type
+config: x86_64-rhel-9.4-rust (https://download.01.org/0day-ci/archive/20261105/202611052152.RyP1WBkt-lkp@intel.com/config)
+compiler: clang version 22.1.8 (https://github.com/llvm/llvm-project ca7933e47d3a3451d81e72ac174dcb5aa28b59d1)
+rustc: rustc 1.96.0 (ac68faa20 2026-05-25)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261105/202611052152.RyP1WBkt-lkp@intel.com/reproduce)
 
-Pulled now.  Thanks.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202611052152.RyP1WBkt-lkp@intel.com/
 
+All warnings (new ones prefixed by >>):
 
-Takashi
+>> warning: reference as raw pointer
+   --> rust/kernel/module_param.rs:118:37
+   |
+   118 |         let arg_static = unsafe { &*(arg as *const BStr) };
+   |                                     ^^^^^^^^^^^^^^^^^^^^ help: try: `core::ptr::from_ref::<BStr>(arg)`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.96.0/index.html#ref_as_ptr
+   = note: requested on the command line with `-W clippy::ref-as-ptr`
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
