@@ -2,33 +2,33 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02801606A326
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2026 23:24:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E015D606A326
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2026 23:45:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=COpamxwo;
-	dkim=pass (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=AFPPptbD
+	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=CvXawCHg;
+	dkim=pass (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=L3x0FpS+
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF2FD601E3;
-	Fri,  6 Nov 2026 00:23:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF2FD601E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id ADF7E601DF;
+	Fri,  6 Nov 2026 00:45:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADF7E601DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1793921042;
-	bh=FCG55QVwiKpBDwugbFLe2PewKn8x9ZJcBDzB24vvX4I=;
+	s=default; t=1793922313;
+	bh=/EOF5OTVfOoBzhuw2SJOB6s+/Ruf8F3tuGJElD8ZNsM=;
 	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=COpamxwoGqssG0oxnaRzDTljVTaTs/5siev/yNUWt4bj4aROxhBootoVANO1yPuVT
-	 31yPH0fC3YncA1Hvy9UZQyM+5yTrdoEvQZL2RLGzF/KzSQrRIDuLGtt+wCHzubvNzg
-	 QFOZSqbW1idfi3pdol5bcNdxauyvRiR5zmsIdhQc=
+	b=CvXawCHgrSw8yYgPsWfujBEfA51xUWpDLLBKcbaFxmbQWkGwtJydWWqy8iXZYLLBn
+	 nF/NJLVExKjlIfcikbTo6YsQtP9GRNubgQxp/dewrdExVu4S39q+nj6T2D61eFkxVy
+	 1o/ocvp8N7UJyYVxFdD2jl1bXrY854oToNULbfk4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 33C30F805F1; Fri,  6 Nov 2026 00:23:28 +0100 (CET)
+	id 5FC05F805F2; Fri,  6 Nov 2026 00:44:40 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A075F805FF;
-	Fri,  6 Nov 2026 00:23:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C69ABF80600;
+	Fri,  6 Nov 2026 00:44:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 14B3CF80510; Fri,  6 Nov 2026 00:23:23 +0100 (CET)
+	id 98B23F80510; Fri,  6 Nov 2026 00:44:33 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
@@ -37,79 +37,79 @@ X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
 	version=4.0.1
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=192.198.163.19
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1793921001;
-	b=aPqJpF4kFVDngbOGTAHt5Gv3Ie2UFq47Fvf0XVl5EAquQ5WXX5QVFZ18Hkde2RBNNG31
-	 7/xm7B7Jk4HgjP8qNGmdFAu6w3Co2D1PG5IUqNih364H0qr25Cencuf/6Qr6cCsQhixS/
-	 59fL9QoY6qQl4TxtdvJ7ANegubLv9wp+UY41ad0dW5gl9wo4X8uCvw2pV+9Dp/0KS7/dg
-	 7kOW8QVb9942s+XMoKyPOasZ+9vlREPdrQSQJCBoAgpsv9nhbW9Vlt5unmzgLNEVI4yLA
-	 c9X2+axJ2xvjsubFDf1bbRyLnDzZs8DVJh9pjKxEW42p+tx7DIzqQxKXdH4dR3clhuw==
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=192.198.163.16
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1793922269;
+	b=q1qX/5SnCR5TX013FcWT2cuVA3RH0DxEVDBdgURWKUgEeZjzzDSfTA725xFqqrA55nNJ
+	 t0Y4pHJu0rGWLvz+F6nAOyn/nGR/ahXAE22sq4e4q+PS7KS9YqAOyIWaQpyexOdwO8Lpb
+	 abEIkkvxmOX8U0TbxEcTZO/a9kZAuJbOhKdz7mWtmTV6DnEIoVf1nAUuFYYIMmz0Cd7nW
+	 9vaN0IoTNMYKJOezGRVCNOB2OgwCfvbrSoWqXJiFuURkut0lI+2gE9giOYVFJD/vDJXLk
+	 3d/053EQpArid4rrbBzovmJP/VUjZwSNTfYhprGq7nZ6ZhB0eqhw2PIAwshFHdj3J6Q==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1793921001;
+	c=relaxed/simple; t=1793922269;
 	h=DKIM-Signature:Date:From:To:Subject:Message-ID;
-	bh=FCG55QVwiKpBDwugbFLe2PewKn8x9ZJcBDzB24vvX4I=;
-	b=MAS/TQIzE9uDA628oPuzLsyfMV09/ay9OSask+hrdIMDLyJWnlQtf+HJm8sO+4IIMtyF
-	 QnFjDf5NgFBCgOz7gi3Yq5Zjl58Avdw74EipEoG1zK5CG4kCqd/imCm3ko7ML4wK89p1w
-	 60ihYtCdxsh+UjH85FAKbze851xnTDxiI0N1fYRgX6sjywDb8DiQctfL3b3SrVD+y4yAw
-	 hE9ZdP2360ON3N8sF7Ziuv8hmase3Rk/ms4vtsldBydvL8dWULnG5FTzuDxY61Xai43+1
-	 QFl71BpUA7kCj2LGyLxjPN7Bs/wLbY+tGjkuGSrss0OYvqWH1BdjiaKTiNJXk7Nzvdg==
+	bh=/EOF5OTVfOoBzhuw2SJOB6s+/Ruf8F3tuGJElD8ZNsM=;
+	b=Bm6l8nYePk9nTX36RcAXC7uMoukbWTTEaSZTTZXD1r/lS8BQEe/5hMUmq/aR6upgj10e
+	 qeKGHluvcCEBcJcHaaJPFmLAZSN6m3nJiUgtd5MEJ2eTBwl6U6xD/P/JSn1EZ7OHeLxWM
+	 BDOsw0LZtJIM0MwDh08T+MD6CPKdlpK4XdqxDxlUrmdI4pgVKrNTF7xiYQTSz6jj8eNut
+	 BZgawSE9hiozhVmN/N9pQijA8mhmA06wqplfsST5593tp4D181uJdHm+IBkPL8I622m2Y
+	 gCIXYDrL7z5HvNZVw9bVNwWznyj1QiJmxjSEBxCCdw3mun2xsDaqkYBITZkJPyVXI4Q==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
 	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=AFPPptbD;
-	arc=none smtp.remote-ip=192.198.163.19
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+ header.s=Intel header.b=L3x0FpS+;
+	arc=none smtp.remote-ip=192.198.163.16
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 39E75F80124
-	for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2026 00:23:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39E75F80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 654E6F8016D
+	for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2026 00:44:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 654E6F8016D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=AFPPptbD
+ header.s=Intel header.b=L3x0FpS+
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1793921002; x=1825457002;
+  t=1793922269; x=1825458269;
   h=date:from:to:cc:subject:message-id;
-  bh=FCG55QVwiKpBDwugbFLe2PewKn8x9ZJcBDzB24vvX4I=;
-  b=AFPPptbDgieJincf2lQ6WiUS7qA5IZIGvCt8LXsyomDSy+QovUtR8vXv
-   w6yXUqfpQu8h1y2mg/0agR/bj3uEUXbEDQicTWD95fa4JrAcrRIXQruB1
-   S8kjkI1VOSNfq4SFIpR8XZCmg5gM+V4ScWwGPu1q5G1ZICOB2sE/cGtZ2
-   DOWqGx3I8H73H+nn0k0G1IRwXhq37y64x8ihJ38LLtdD3hmX4ZXe458aE
-   sYGDoGjybxcUDRb4OsuIbj9IuDKy2gq/CFORXqYKYb0MdijpmFfoNxYxb
-   f6VLDD7XX33jF5I2azXcV0puaU/ct4lTj4A5ZiG4X05JofKIANO2uhFV4
-   A==;
-X-CSE-ConnectionGUID: yEjTigItQLexE+ET9YwMuw==
-X-CSE-MsgGUID: yZWJpuoyTfqZxljQSQrs6w==
-X-IronPort-AV: E=McAfee;i="6800,10657,11957"; a="2831568"
+  bh=/EOF5OTVfOoBzhuw2SJOB6s+/Ruf8F3tuGJElD8ZNsM=;
+  b=L3x0FpS+BhgTIAD1JwqsaSQ2Hu/goGnc74Jm887UhdOiZZ0ku85jfH18
+   aOq48rOa3weHKBm6RD2GpWbHDgyEiJRP9lej+bGqm+sD6rw0TsrervO5I
+   Ftxi37EsMr7bSV+u9vIc3WuNAq9/Tht96ADWJ6zOzL/XDauTid3dj7rnS
+   7hhdM5/ixaMaccLjsfI1+HU1sUnhK+OVFo81Aw9aLSx5KrWpTl+XTTXHK
+   /LhbfYK2wH3rbYDuwi/34wddDMw1p0HXsg8+exAuKmaIoNTcxwoRJJJ2e
+   Iq5Wr1eHe89N3jAuwRtUQGrfWdauPQAn1Z1I0PkMzCCAOMj6RP/kbGchE
+   Q==;
+X-CSE-ConnectionGUID: GSTdGRdVSwiNXBHbs0YGBA==
+X-CSE-MsgGUID: FVAQ1gR7Q9CUtL2QzsZo7Q==
+X-IronPort-AV: E=McAfee;i="6800,10657,11957"; a="2754613"
 X-IronPort-AV: E=Sophos;i="6.27,197,1787036400";
-   d="scan'208";a="2831568"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Nov 2026 15:23:18 -0800
-X-CSE-ConnectionGUID: 3VakEvy1TiiovtUxNd3Z2Q==
-X-CSE-MsgGUID: ltVOhA8zRcK1VxsQz8dGkA==
+   d="scan'208";a="2754613"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Nov 2026 15:44:20 -0800
+X-CSE-ConnectionGUID: 900j8yFLTLWxct0DKZ55+Q==
+X-CSE-MsgGUID: 37pA78O3TcyiWqwHrTN5nw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.27,197,1787036400";
-   d="scan'208";a="7464156"
+   d="scan'208";a="7309584"
 Received: from igk-lkp-server01.igk.intel.com (HELO 58ca8a381a5c)
  ([10.211.93.152])
-  by fmviesa009.fm.intel.com with ESMTP; 05 Nov 2026 15:23:16 -0800
+  by fmviesa003.fm.intel.com with ESMTP; 05 Nov 2026 15:44:18 -0800
 Received: from kbuild by 58ca8a381a5c with local (Exim 4.98.2)
 	(envelope-from <lkp@intel.com>)
-	id 1xP6na-000000009sr-1ShE;
-	Thu, 05 Nov 2026 23:23:14 +0000
-Date: Fri, 06 Nov 2026 00:23:10 +0100
+	id 1xP77w-000000009tb-1uld;
+	Thu, 05 Nov 2026 23:44:16 +0000
+Date: Fri, 06 Nov 2026 00:44:00 +0100
 From: kernel test robot <lkp@intel.com>
-To: Beata Michalska <beata.michalska@arm.com>
-Cc: oe-kbuild-all@lists.linux.dev, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.de>
-Subject: [tiwai-sound:test/sound-rust-v7.3 7/56] Diff in
- rust/kernel/pm.rs:24:
-Message-ID: <202611060004.YCuneUre-lkp@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+ alsa-devel@alsa-project.org
+Subject: [tiwai-sound:test/sound-rust-v7.3 26/56] error[E0425]:
+ cannot find function `snd_pcm_suspend_all` in crate `bindings`
+Message-ID: <202611060048.OHu58JrR-lkp@intel.com>
 User-Agent: s-nail v14.9.25
-Message-ID-Hash: MULL6AJVKZYW4OLJIVQY65EULGU4MMZH
-X-Message-ID-Hash: MULL6AJVKZYW4OLJIVQY65EULGU4MMZH
+Message-ID-Hash: 5CMWMQX5OCOQQA3BEDLRGLOOVB5AGCQZ
+X-Message-ID-Hash: 5CMWMQX5OCOQQA3BEDLRGLOOVB5AGCQZ
 X-MailFrom: lkp@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -121,7 +121,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MULL6AJVKZYW4OLJIVQY65EULGU4MMZH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5CMWMQX5OCOQQA3BEDLRGLOOVB5AGCQZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -132,56 +132,24 @@ X-Archived-By: <archiver.kernel.org>
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git test/sound-rust-v7.3
 head:   070444a8abf14da700680a5331d0a95cd11e578b
-commit: d5dd8d4a1fbe95ad79dc47b8b6606b6fcece0c82 [7/56] rust: add runtime PM support
-config: x86_64-rhel-9.4-rust (https://download.01.org/0day-ci/archive/20261106/202611060004.YCuneUre-lkp@intel.com/config)
-compiler: clang version 22.1.8 (https://github.com/llvm/llvm-project ca7933e47d3a3451d81e72ac174dcb5aa28b59d1)
+commit: 5f8a12175afdf1ad3ab75535be1efc491d89805b [26/56] ALSA: rust: add PM and runtime PM support
+config: s390-randconfig-2000-20261105 (https://download.01.org/0day-ci/archive/20261106/202611060048.OHu58JrR-lkp@intel.com/config)
+compiler: clang version 24.0.0git (https://github.com/llvm/llvm-project 0fa861dbbf46e5a75f621406fd91cb015d8754bf)
 rustc: rustc 1.96.0 (ac68faa20 2026-05-25)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261106/202611060004.YCuneUre-lkp@intel.com/reproduce)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261106/202611060048.OHu58JrR-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202611060004.YCuneUre-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202611060048.OHu58JrR-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   PATH=/opt/cross/clang-22/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-   INFO PATH=/opt/cross/rustc-1.96.0-bindgen-0.72.1/cargo/bin:/opt/cross/clang-22/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-   /usr/bin/timeout -k 100 12h /usr/bin/make KCFLAGS=\ -fno-crash-diagnostics\ -Wno-error=return-type\ -Wreturn-type\ -funsigned-char\ -Wundef\ -falign-functions=64 W=1 --keep-going LLVM=1 -j32 -C source O=/kbuild/obj/consumer/x86_64-rhel-9.4-rust ARCH=x86_64 SHELL=/bin/bash rustfmtcheck 
-   make: Entering directory '/kbuild/src'
-   make[1]: Entering directory '/kbuild/obj/consumer/x86_64-rhel-9.4-rust'
->> Diff in rust/kernel/pm.rs:24:
-        types::ForeignOwnable, //
-    };
-    
-   -use core::{
-   -    cell::UnsafeCell,
-   -    marker::PhantomData
-   -};
-   +use core::{cell::UnsafeCell, marker::PhantomData};
-    
-    /// Runtime Power Management modes that determine how a particular PM
-    /// transition is to be carried out.
->> Diff in rust/kernel/pm.rs:24:
-        types::ForeignOwnable, //
-    };
-    
-   -use core::{
-   -    cell::UnsafeCell,
-   -    marker::PhantomData
-   -};
-   +use core::{cell::UnsafeCell, marker::PhantomData};
-    
-    /// Runtime Power Management modes that determine how a particular PM
-    /// transition is to be carried out.
-   make[2]: *** [Makefile:2038: rustfmt] Error 123
-   make[2]: Target 'rustfmtcheck' not remade because of errors.
-   make[1]: Leaving directory '/kbuild/obj/consumer/x86_64-rhel-9.4-rust'
-   make[1]: *** [Makefile:248: __sub-make] Error 2
-   make[1]: Target 'rustfmtcheck' not remade because of errors.
-   make: *** [Makefile:248: __sub-make] Error 2
-   make: Target 'rustfmtcheck' not remade because of errors.
-   make: Leaving directory '/kbuild/src'
+>> error[E0425]: cannot find function `snd_pcm_suspend_all` in crate `bindings`
+   --> rust/kernel/sound/pcm.rs:748:38
+   |
+   748 |         to_result(unsafe { bindings::snd_pcm_suspend_all(self.as_raw()) })
+   |                                      ^^^^^^^^^^^^^^^^^^^ not found in `bindings`
 
 --
 0-DAY CI Kernel Test Service
