@@ -2,114 +2,173 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59DE5606A326
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2026 09:46:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C78F7606A32F
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2026 11:48:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=F5CSd/mY;
-	dkim=pass (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=TLOWf0Xo
+	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=jrdQLsEc;
+	dkim=pass (1024-bit key, unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=dxnogW7I
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21602601DB;
-	Fri,  6 Nov 2026 10:45:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21602601DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id B38B8601E1;
+	Fri,  6 Nov 2026 12:48:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B38B8601E1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1793958364;
-	bh=PRq1oDoWmk2Mb5FIRNK/OQjgvY1nx5a1/OarPhatuHw=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=F5CSd/mYWJ/tvDoUGglUO9sX+qJ98XzLedJZv2+/QFPvmvZWwwt6x0Pb2fkMkDS2W
-	 f7x7LsedbNXLYOH879p7BqDvyoeBan74VUrzI6avYyE89EM0YJYo56yfjJABA6wOtt
-	 kou38zs0ASyAzJPVpx7UzGDpu5OfoJvz/2PsjaGQ=
+	s=default; t=1793965705;
+	bh=6bwZVmt3fDO44Umy3vTJZmXC/Jf67lpmMKGVhjjTd6M=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=jrdQLsEchdRaqEeGyje3Kldbp3dGsnWA2MOFjOU+LdzByer26HvUkqBWM4TTU4RMx
+	 kfE6fqGsI7n6ZIsQY1CAf1mXm6famqRf+trKM4Cj3vv6tho7hAgtLKLSJK5Mh2ZajN
+	 gIoQIq8YT3NTk0wF8F+EzFIieT97kCt8VFy0+cJw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 90E90F805F4; Fri,  6 Nov 2026 10:45:31 +0100 (CET)
+	id 469DDF805FD; Fri,  6 Nov 2026 12:47:51 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30492F80601;
-	Fri,  6 Nov 2026 10:45:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59B36F805F9;
+	Fri,  6 Nov 2026 12:47:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DFC4CF80510; Fri,  6 Nov 2026 10:45:25 +0100 (CET)
+	id 1D06FF80510; Fri,  6 Nov 2026 12:47:44 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=4.0.1
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=192.198.163.13
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1793958324;
-	b=FZeDnp0xPhET23cwwIihihRN9m8n8l6oyFWc7B5k+7nNXFK4cnOYm+fkIRtJ+SxLft4X
-	 1wZViZ4VotheCYVGkP7qdUIjr6J3ETWfd22V1QovoQUKor052N7//O7FWTt1z6aHpKp/L
-	 qkGb8HY8xHsNyKXn7U0Gh1hBrirN8toLVR5fFZxaBcntRLuvoJt0dulcpbmgSWb7m52ka
-	 UdlArVTRt3+hA92zHilvVLrpZjHZNQKJP4Kfs1oEL30xAWUJtTxFXgfd0EWStHEMXiITX
-	 5qJHX2x5IAEmnxS3r6QYerK4xIBaVf5Dm0HZq4lz7dYTY6EhpiAReCB1hM3Bt+OJL6Q==
-ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1793958324;
-	h=DKIM-Signature:Date:From:To:Subject:Message-ID;
-	bh=PRq1oDoWmk2Mb5FIRNK/OQjgvY1nx5a1/OarPhatuHw=;
-	b=Wsfyr9ggcDd5+rMc0UO3AmnNB0aCRpBdSfAteEGA7M40/CtykH2N8lhPJXCpVVds6tvO
-	 rfERCGCXfQ2/m+ZHHynRjetsZ4SKJpG3fmHB+knvoD1EV5D/nxunW3ssjj7FzF/9+sCVt
-	 d4ZZfczpFOLH/Aiu9x5qjDbExkkllDvf6MZzl1NqkTc3SPc7Uja2rbeBR0Q/d6IwkME5T
-	 BKZ8+dFvvHN2IjMhd4ved/hj23evgfAYUzJ9Meq3LkgW4JNJeZqC1V2UgXJwIaXNkmVBh
-	 82iKOG2QLgFZat1g2ge50ZLoZbX+KR1kpNYNWpNkVAvlD/uuMA8gYgSBTgxwfQDjUHw==
-ARC-Authentication-Results: i=1; alsa1.perex.cz;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=TLOWf0Xo;
-	arc=none smtp.remote-ip=192.198.163.13
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EFA27F8024C
-	for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2026 10:45:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFA27F8024C
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=4.0.1
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=TLOWf0Xo
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1793958324; x=1825494324;
-  h=date:from:to:cc:subject:message-id;
-  bh=PRq1oDoWmk2Mb5FIRNK/OQjgvY1nx5a1/OarPhatuHw=;
-  b=TLOWf0XoLTCAOIhLA1UJHkOIbaRp//RFQlDQlI1TFAb/LZN6cC+UO2s8
-   kFKOJ73WldF018pE2w57AUzzbafAZOvz5AtD55qFAe2yTfxq11p3jJvbU
-   Bmn1tEjOXfXKjNLUu0Y5V/L57tZKe7bEcwdCLkI+e90Qiz8eAbYhoCncr
-   0eD/lBUBFRU/b25a/A8hub5vgKHaZD9vzBDlEJ3tSzy4PKefQGRXnS/rc
-   0ezawJktsLdhBG2oPCiFnTNt4F+XLA4aPDBhf6N2s1yWPjBUnU2TL90bw
-   eR2t1YOPo1IWc9qSMFGIFsV3oURZ5E+S8MtOLBkvw3cw6zym5iYOnLaVV
-   w==;
-X-CSE-ConnectionGUID: yWmSlD2PSBOkY6+9o7HpVw==
-X-CSE-MsgGUID: 3eOKJpffSM29b03H9Q5SWg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11957"; a="2759602"
-X-IronPort-AV: E=Sophos;i="6.27,197,1787036400";
-   d="scan'208";a="2759602"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Nov 2026 01:45:18 -0800
-X-CSE-ConnectionGUID: GruqIT+HTVGvimdjHrJALA==
-X-CSE-MsgGUID: aeFsqZbCQj2lQ73z3mbiUA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,197,1787036400";
-   d="scan'208";a="7577519"
-Received: from igk-lkp-server01.igk.intel.com (HELO 58ca8a381a5c)
- ([10.211.93.152])
-  by fmviesa009.fm.intel.com with ESMTP; 06 Nov 2026 01:45:17 -0800
-Received: from kbuild by 58ca8a381a5c with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1xPGVX-00000000ABT-0GRJ;
-	Fri, 06 Nov 2026 09:45:15 +0000
-Date: Fri, 06 Nov 2026 10:45:04 +0100
-From: kernel test robot <lkp@intel.com>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: oe-kbuild-all@lists.linux.dev, alsa-devel@alsa-project.org
-Subject: [tiwai-sound:test/sound-rust-v7.3 24/56]
- rust/helpers/sound.c:74:undefined reference to `snd_pcm_hw_rule_add'
-Message-ID: <202611061033.mR5eK0QO-lkp@intel.com>
-User-Agent: s-nail v14.9.25
-Message-ID-Hash: 4QTWXMX2Z4LRKUGXZQLHDSEDRHA54R3T
-X-Message-ID-Hash: 4QTWXMX2Z4LRKUGXZQLHDSEDRHA54R3T
-X-MailFrom: lkp@intel.com
+ arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.43.14
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1793965660;
+	b=DHJoH3lL3x76BINO5rM86/GeBfbGz3bGDUj01afrFPdCVH/0DbN75co68UTkKxHdWkHb
+	 bGuIN0iTV6fWF86CHMgIXUhQRStLkdj0C11yi2B3HO3VPkWQrHERh8OipA3hqQouoL9nJ
+	 2nqVqd+IjUqEWOCT1OIEgVWL69zNqkwYsl8H9i/1Thu0GyQ+8N1ojQd4kph+1xXTcMVa6
+	 NWnn8gOt+DmgTKVGQUWEtUEBfdEKZDPcFPPzP6CKBfFB/8Hi34E5OovS/NRqkEoEl7w6x
+	 KWPKqB2lDCLqRI1HlLEBeParcinMZuzAcoMbNi6GNi/GtFtMyjblBu8LEjRwfo5lF1g==
+ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1793965660;
+	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=6bwZVmt3fDO44Umy3vTJZmXC/Jf67lpmMKGVhjjTd6M=;
+	b=X3X9J/hZruXcr+biidxsdvaZOz7g9NFVbIkryT8pY6sqKHvc37frAdTg3PEtE/iWICgP
+	 Xq4cDB6E9cCpBTF6FA/HWuYeT6O5rPpBELJqcjh27Yp3LgBXQwlB6bS8ouk9Baj57E0qw
+	 fuE4UfTkWuhVemmXkumo5NTERyCGyMwokjG3vv6/BnTo8yevjk6fmvf1YuWAdX+BK9Fq+
+	 ligtoQGo/tHrz6Afowg9rX2+eTxNpOu7evn2MdvTCVT4i70jeldlHWVyn/MkfKhbAR5/t
+	 IpK73mWDY9iqvVe2cDz53eiIB9hnSxqyoA58aayyaJ9h88ZopW8L528wtsZe0Rb6a7A==
+ARC-Authentication-Results: i=2; alsa1.perex.cz;
+	dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=dxnogW7I;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.43.14
+Received: from SJ2PR03CU001.outbound.protection.outlook.com
+ (mail-westusazon11012014.outbound.protection.outlook.com [52.101.43.14])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id D6E92F80124
+	for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2026 12:47:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6E92F80124
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=dxnogW7I
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=U2hkrd7t65t+CwqLU+VO0H7RTCPRkhWYUI3B+vEI8MeJG5D8XfqTTmh1WhgCmEMnx9eybrO151BlFAzLV0mBwL7qM3UfAZzgf0Xe6ty3TdWwsjrNpWVh/L1J2XZk7/M7Ty98ZsdvtrzmFaLeOQR7CxK/o9KZWzWEIibtuyJnpwDv1zrSSi3Uf26u5ohUo4RAJSLb6vx31oHCMqbgBBEjhJ9gEg7Ndg1iAYmSOrSQXiQOv7B4U4ak7xpYhH+vyI5/vG12cbrnEDvdAiI6jz9DNKzR9rTDzM4mk/aQ+HPbtRweV5pNVKYFHLsDTSwrSHzI3XQKDYAeQcw4domf2xvhMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=t7+dOZS5NbqctMwj+ML9mmIONS1DqNelMRfbgICKaTo=;
+ b=TVKrxbjHCPKIWNkk9cuEeBGwJb929/TGLQ9iFSGQGwp5u5U3b4Nt+VAl+c30/2TXk9scCNQz2jRaB8VosEdevaDfZ9mtHVaDa1IamkPKfPybYkvF24mKO4pIflBu/eOZ0La72yxpetytbXQFy9Kk1geONLN8boVI1zMiuJXn3hidFkbGe7e7tGpIuJimnSYa2Z8cYDFlbWHsak+z9RaLGNU1IvIvjKkSf63PwXcXHWqLUVlZHluBqXsi0m6kQn7HbqD6U70u8jxk/2ClUKuh3m/skliqU2JG2v+/iZw2IcKq7qpyG13FaLQh8t9sGbd37kq0Uw1v/uba9gB4aERAwQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t7+dOZS5NbqctMwj+ML9mmIONS1DqNelMRfbgICKaTo=;
+ b=dxnogW7I+1Qx7aVfsYD2BCFyeKGXIyjIm+sVRIWoL5665XJuPsxAT0I5DecWHpOIAYzh6nBBNJnFEW4vtP4fGeEjBJD2U67GUGFfX6Cvb/KrJXxTC53OL1sMUDUUHTf/EaYw5qZEXhrrLraxjyakAM4y9iz3CXYBdRzXTkfEzbM=
+Received: from CH0PR13CA0025.namprd13.prod.outlook.com (2603:10b6:610:b1::30)
+ by LY0PR12MB991423.namprd12.prod.outlook.com (2603:10b6:404:21e::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.592.11; Fri, 6 Nov
+ 2026 11:47:32 +0000
+Received: from CH2PEPF00000145.namprd02.prod.outlook.com
+ (2603:10b6:610:b1:cafe::1e) by CH0PR13CA0025.outlook.office365.com
+ (2603:10b6:610:b1::30) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.592.8 via Frontend Transport; Fri, 6
+ Nov 2026 11:47:32 +0000
+X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
+ is 165.204.84.17) smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
+Received: from satlexmb07.amd.com (165.204.84.17) by
+ CH2PEPF00000145.mail.protection.outlook.com (10.167.244.102) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.615.4 via Frontend Transport; Fri, 6 Nov 2026 11:47:32 +0000
+Received: from satlexmb10.amd.com (10.181.42.219) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.53; Fri, 6 Nov
+ 2026 05:47:30 -0600
+Received: from satlexmb07.amd.com (10.181.42.216) by satlexmb10.amd.com
+ (10.181.42.219) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.53; Fri, 6 Nov
+ 2026 05:47:30 -0600
+Received: from amd-System-Product-Name.amd.com (10.180.168.240) by
+ satlexmb07.amd.com (10.181.42.216) with Microsoft SMTP Server id 15.2.2562.53
+ via Frontend Transport; Fri, 6 Nov 2026 05:47:21 -0600
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To: <broonie@kernel.org>
+CC: <pierre-louis.bossart@linux.dev>, <vijendar.mukunda@amd.com>,
+	<Basavaraj.Hiregoudar@amd.com>, <Mario.Limonciello@amd.com>,
+	<Richard.Gong@amd.com>, <Sunil-kumar.Dommati@amd.com>,
+	<Syed.SabaKareem@amd.com>, <alsa-devel@alsa-project.org>,
+	<lgirdwood@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<linux-sound@vger.kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
+	<venkataprasad.potturu@amd.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Subject: [PATCH 0/2] ASoC: amd: acp: supplement patches for ACP7.B/7.F
+ SoundWire machine driver series
+Date: Fri, 6 Nov 2026 17:16:20 +0530
+Message-ID: <20261106114622.219126-1-Vijendar.Mukunda@amd.com>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20261030094714.1123396-1-Vijendar.Mukunda@amd.com>
+References: <20261030094714.1123396-1-Vijendar.Mukunda@amd.com>
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH2PEPF00000145:EE_|LY0PR12MB991423:EE_
+X-MS-Office365-Filtering-Correlation-Id: 33007868-655c-4da1-94ba-08df3bfbbe24
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: 
+	BCL:0;ARA:13230040|376014|23010399003|1800799024|36860700016|82310400026|11063799006|56012099006|261022113327099003|261022105027099003|261022075727099003|261021123027099003|261021121427099003|261009223027099003|261102123227099003|261026121527099003|261026140227099003|261028144727099003|10067099003|22082099003|18002099003|13003099007;
+X-Microsoft-Antispam-Message-Info: 
+	ucJaVV7VHEnW3JVZZbcr4blGz2nwCiSg41giOnSu9op+ABl7iOuZTn7pcsTn5ZOjdg8IutfFi22E6ogU2Y18FOw5j60jFqJUx1EfI51GZ0penUZeHEvWuYaQYJ4U4TxKELXqA0soqoH8MUCbmuTXsO4Mx+qkX1oG/1cBZTbBdbbZjan3oNqxUkTkMmBe51GNTGGBgFnCC7zKfH2d5lgyH0kvMXmDQQdd+p/ezadR0lvNIp/0sF+xWe2erlH5PKRLHfU9lZsFT0i/MWPCbCo3ZxCr9igX2fEvID6ChfExpaDQXLft+fNcqDPW42CU3Pu3rfKRIpQOHPF65ikWQaHnepf6i4VfpIP+bItvtqexu/Z8uhVLTIZsg/9d5Jizyus/WwLW5ga5uMmgSw2t7ail4H8G1Xzf+FrKQYT1K2rmYkVRwPTPfioEKUzmTJBtWtyWFWy2WwI7CWvu1P/eJ3SOh1Kt2RexcyKl2CM4vXYGTcEaL+WLaabafHugrvpek0FXv/Lpa1X720XlvU5TgZuVWMJVJQiQtcMBm0PZeodOiIjVkz9LIodmw+LOx07N2AE/1uPSxJ00P6bb/up45xwa6MBmBysvJAoDjah5lX7DJCYGtQKmnI0YmqnifbYPS6eQa8RtDgapBnXVhsXdFS57ZQ==
+X-Forefront-Antispam-Report: 
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(23010399003)(1800799024)(36860700016)(82310400026)(11063799006)(56012099006)(261022113327099003)(261022105027099003)(261022075727099003)(261021123027099003)(261021121427099003)(261009223027099003)(261102123227099003)(261026121527099003)(261026140227099003)(261028144727099003)(10067099003)(22082099003)(18002099003)(13003099007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	as2mRYIPPW0pL2SGWPygTf5uLXaroGOnpStVZq8478Kn6nT8aws3I4Ta6F4Lvm2zwRjLSw4qo8RQbc3VP6DwezuFOGBQltzjkfl2r9HzTPvdw6MhrIvIRCzMgI61lex82GPqnx7j8AzsMdUwbnM0XD/heopichLlfHChMhCUZwpVOBzAonB0JgwZY6bOhBnDi+cjIVpo+fYfISOnRDSGPLHUY+9zk99rdsCT/3pZ7klxgL0qXMCE9TekvHByQyBMqJ3rJDT9Cp51u41z539FX5Fr2Gkhh2rt0StkEgwI57KZP4MVbGFMX2/khgH+TqqCf/AzzBiMEhCi8KtSjLdNYN5eDfh0ZfFRmmIbbAllbdU4WzrnzomMZcty8hu7fUykrh1ETYUrWtbrIix7notjfc0mVwHjB+5s9RmZtEzGvXSQDkNd0lOz9b+Slwo4XD9k
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2026 11:47:32.2247
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 33007868-655c-4da1-94ba-08df3bfbbe24
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
+ TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: 
+	CH2PEPF00000145.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LY0PR12MB991423
+Message-ID-Hash: XCTGT56XHVDYFXE7IRFJR26JWEZEPKQC
+X-Message-ID-Hash: XCTGT56XHVDYFXE7IRFJR26JWEZEPKQC
+X-MailFrom: Vijendar.Mukunda@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -120,53 +179,40 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4QTWXMX2Z4LRKUGXZQLHDSEDRHA54R3T/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XCTGT56XHVDYFXE7IRFJR26JWEZEPKQC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
-X-Archived-By: <archiver.kernel.org>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git test/sound-rust-v7.3
-head:   070444a8abf14da700680a5331d0a95cd11e578b
-commit: 6a450838191295e224845ae206d9594315682abc [24/56] ALSA: rust: pcm: Add hw_rule_add and hw_constraint_minmax abstractions
-config: um-randconfig-2200-20261105 (https://download.01.org/0day-ci/archive/20261106/202611061033.mR5eK0QO-lkp@intel.com/config)
-compiler: clang version 19.1.7 (https://github.com/llvm/llvm-project cd708029e0b2869e80abe31ddb175f7c35361f90)
-rustc: rustc 1.96.0 (ac68faa20 2026-05-25)
-smatch: v0.5.0-9187-g5189e3fb
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261106/202611061033.mR5eK0QO-lkp@intel.com/reproduce)
+These two patches address nit-picks raised in review of the ACP7.B/7.F
+SoundWire machine driver series posted at:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202611061033.mR5eK0QO-lkp@intel.com/
+  https://lore.kernel.org/all/20261030094714.1123396-1-Vijendar.Mukunda@amd.com/
 
-All errors (new ones prefixed by >>):
+Patch 1 renames three static adr_device arrays in amd-acp7x-acpi-match.c
+to reflect their endpoint set rather than their structural role, making the
+distinction between jack+dmic (combo with RT1320) and jack+amp+dmic
+(standalone) self-explanatory.
 
-   /usr/lib/gcc/i686-linux-gnu/14/../../../../i686-linux-gnu/bin/ld: warning: .tmp_vmlinux1 has a LOAD segment with RWX permissions
-   /usr/lib/gcc/i686-linux-gnu/14/../../../../i686-linux-gnu/bin/ld: rust/helpers/helpers.o: in function `snd_devm_alloc_pages':
-   include/sound/memalloc.h:110:(.text+0x9212): undefined reference to `snd_devm_alloc_dir_pages'
-   /usr/lib/gcc/i686-linux-gnu/14/../../../../i686-linux-gnu/bin/ld: rust/helpers/helpers.o: in function `rust_helper_snd_pcm_hw_rule_add':
->> rust/helpers/sound.c:74:(.text+0x94aa): undefined reference to `snd_pcm_hw_rule_add'
-   clang: error: linker command failed with exit code 1 (use -v to see invocation)
+Patch 2 adds a block comment above the ASOC_SDW_ACP_DMIC and
+ASOC_SDW_ACP_DMIC1 quirk bit definitions to document the dual-PDM-
+controller hardware model of ACP7.B/7.F, and annotates each bit with its
+role.  ASOC_SDW_ACP_DMIC is a generic DMIC-enable flag on all ACP
+platforms; on ACP7.B/7.F it additionally identifies the PDM0 controller.
+ASOC_SDW_ACP_DMIC1 is ACP7.B/7.F-specific for PDM1. BIOS wires exactly
+one controller per platform.
 
+Vijendar Mukunda (2):
+  ASoC: amd: acp: fix adr_device naming in ACP7.x ACPI match table
+  ASoC: amd: acp: document PDM controller topology for ACP7.B/7.F
 
-vim +74 rust/helpers/sound.c
+ sound/soc/amd/acp/amd-acp7x-acpi-match.c | 22 +++++++++++-----------
+ sound/soc/amd/acp/soc_amd_sdw_common.h   | 11 +++++++++--
+ 2 files changed, 20 insertions(+), 13 deletions(-)
 
-    64	
-    65	/*
-    66	 * snd_pcm_hw_rule_add is variadic; provide a fixed 4-dep wrapper.
-    67	 * Pass -1 for unused dep slots.
-    68	 */
-    69	__rust_helper int rust_helper_snd_pcm_hw_rule_add(
-    70		struct snd_pcm_runtime *runtime, unsigned int cond, int var,
-    71		snd_pcm_hw_rule_func_t func, void *private,
-    72		int dep0, int dep1, int dep2, int dep3)
-    73	{
-  > 74		return snd_pcm_hw_rule_add(runtime, cond, var, func, private,
+-- 
+2.53.0
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
