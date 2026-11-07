@@ -2,102 +2,101 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 944D6606A326
-	for <alsa-devel@archiver.kernel.org>; Sat,  7 Nov 2026 17:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010BB606A32D
+	for <alsa-devel@archiver.kernel.org>; Sat,  7 Nov 2026 17:58:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=WIZFdoVg;
-	dkim=pass (1024-bit key, unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=v01oOQ/f
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=Dhg9j8JO;
+	dkim=pass (1024-bit key, unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=v3voyPk4
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05E1C601E1;
-	Sat,  7 Nov 2026 18:56:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05E1C601E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2055F601F3;
+	Sat,  7 Nov 2026 18:57:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2055F601F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1794074217;
-	bh=Ge0YfxF380nlcqotKmH5W6gy/eI9MHYR6XcRMiIewO0=;
+	s=default; t=1794074282;
+	bh=NYqVQL93dB9jIAB/U+xkyiMXUxEHW8ZvBvQ6fFRPoeg=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WIZFdoVgOnzuwNgDo1lFHgmX8PQgEDMiQMlCS5zSDsRrqFCDtJEb7zd1zdlid5rP/
-	 Dg5dJDwlM9XEDwNhLpMVHbMNER3rb24ttuX4hdLHhuKsFUkr7KEGTQ0ApedHzeAGtz
-	 alwP2rd4MeFsxBTS6JsiKk4Z6G9x/K4W8cbZcUAM=
+	b=Dhg9j8JOE/XDwnxNICVBbpgh9+k0+5za5kGU5Yuyk8wOYhN5QgbpZANkTSnyoJ8KP
+	 4/6YN6iUF2n8n71poBhdeGsqez6mRID5O+jvXBusL42Mh/YtNes22vl9fdk820QOTr
+	 AxmNKcjX/KFX54ZzoMutVpGx7RdJSLguR0fa3+q4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DFD51F806AC; Sat,  7 Nov 2026 18:55:31 +0100 (CET)
+	id 60892F805F7; Sat,  7 Nov 2026 18:57:28 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61513F806B4;
-	Sat,  7 Nov 2026 18:55:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 788F8F805F3;
+	Sat,  7 Nov 2026 18:57:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 95DB3F8068F; Sat,  7 Nov 2026 18:55:25 +0100 (CET)
+	id 29B13F805A8; Sat,  7 Nov 2026 18:57:23 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
 X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=4.0.1
+	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=4.0.1
 Authentication-Results: alsa1.perex.cz;
- arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.194.12
-ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1794074121;
-	b=LOWPHf+dVRTraTwkI/ZGuyS8tHHngVi/XtHa0mHsSkwDnfmVl9vJRrHYV/3zNNgm0mIO
-	 cupGYJmGBXqJmHXn5wMWLKltyr80AENoWku/zr0SGinqe4Pc85WAQsgF7HXmewJBZix7Y
-	 39HO/2RbqcbQ16phJrqscw5yOAHEMRxgumgYRTGf4RciYmfKkHVIMcF2GCVVSw1s3re7N
-	 X8FS514J+60nkECLo4vuQ+5JjYYqNZJ8HPsCBA+0b8lyusp77QamqeLs00G01sSwaArLD
-	 43RzjpGkQjI12kovipCYCIFnuNKih1QvcxTbbc5i+zRutfmWVgD2of/MhttPpqS2TYg==
+ arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.201.59
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1794074242;
+	b=ECIRhgGGQQYIeiGwxy1XIHicaanOLCDzIC+4SKqzuhZLp0znekalU0yjclbzu5IuFnEc
+	 7wgZuaWROMwBCqih5fUbdSsTlFLXe0A0rI6ynBI9cxizwBfKqPuH3b/W2GR8PH3Uk9gUb
+	 Acyd0W+5PWwhXghgtK6KLPivQqTVBfhcj13fB5MLKOl1Z+hJLAamml8oMJqw3Ol9PVSCc
+	 LysDSjg5bTjhzjuBMI7EffmQ1u70xgWDHWZ8mRYCDi+ESQsLMs86bLUaCvq4MvXqK/OiH
+	 bT8NV/6RBFJXhfcfRx0BXJLLcmDxeTJvCh6hR3vVsMvLyk4TGI9HvK5NsdrAAVNAQhg==
 ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1794074121;
+	c=relaxed/simple; t=1794074242;
 	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=Ge0YfxF380nlcqotKmH5W6gy/eI9MHYR6XcRMiIewO0=;
-	b=HJozJFiDv6bJkRx0eHXY9q8bg/bFhAxcLqAWQobxzTxziBIlRhl+ht97iuzshM4PYiDV
-	 Tw6xcZ2W9ONN9EeP+RIGJrd0eQTyJ+hBFToJ+VuDy+vXbkL2e5ZwR8RcGavo4Te9TVNga
-	 bTQpoJxFRXVSM8qtzxur0ta3D+5xKbEzbgnpL1IhgxPEjnLlHAZbIPs+rGQuEYouQvdAP
-	 wpzoWBX0bZ5ixjDgr8NEqrJn9QuZ0hfA4v5t9qJcnxoR2g6iMuQXpT7VTFQM+PcXUbbp6
-	 sT8Uxec1YkBldJHvszSgLUhsE5ZVRMb7pPxnxkwWwg6IdyaNhQcSwZ2kDdvWe2OI7tQ==
+	bh=NYqVQL93dB9jIAB/U+xkyiMXUxEHW8ZvBvQ6fFRPoeg=;
+	b=bF4kG52L33oERUpoNvYhn3T6cn7FkRQP9BXWZ2kR9DyodtKdJImA4FRSvUicXHBoWDxv
+	 kdnO6WsepuQuDHC3X6dtbM7YEZNvIRI3gnudiV9g6L+/cp0zo1Ynt/hrUOQfDLRiVbHCo
+	 WBXa30M/nrEj0DT9JJ6Q9SkW6ZqP/SoI4V2pKl5DGx/a/ZPhGkhNfLNiybtIveJ7Ac73d
+	 BOV1gWOR7TMc0vsSrq2TQyWbSU+8EEqZNKTUXLC7GRA6YbhOfRfHk5bulHAei37GOme3m
+	 YoYuGD9cuoVWvP1M90rpbXElJ0ajfDzCxRHlaLrlMSprQwmSty+6bD4CLFFveZ3D7tA==
 ARC-Authentication-Results: i=2; alsa1.perex.cz;
 	dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b="v01oOQ/f";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.194.12
-Received: from SN4PR0501CU005.outbound.protection.outlook.com
- (mail-southcentralusazon11011012.outbound.protection.outlook.com
- [40.93.194.12])
+ header.s=selector1 header.b=v3voyPk4;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.201.59
+Received: from PH7PR06CU001.outbound.protection.outlook.com
+ (mail-westus3azon11010059.outbound.protection.outlook.com [52.101.201.59])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8137AF80633;
-	Sat,  7 Nov 2026 18:55:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8137AF80633
+	by alsa1.perex.cz (Postfix) with ESMTPS id 19113F80124;
+	Sat,  7 Nov 2026 18:57:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19113F80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=v01oOQ/f
+ header.s=selector1 header.b=v3voyPk4
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=trgb4gh1SDP4p1A8dx0MtsxYVYKGjmeZGhuAunCs9cwEQWAfG9nOnfEztGilLFP9E55A9BcyVVDBIIkZ8oLeBMmy9hq8pC5GNdKLlozXngqSpOpgiljQiaZCIRk2xU0cQkIjd8mXxO21gb0XnOOQn0Xq/RXoMZhGM8+mdpK84ck235YKo1Uf2a+wOu/3WwzjgrFZygSKtTn8PiYLuxGB3mfgWTmxpLz3uKRdPliM7AsNWmzFXSRqKoLX39vDXTdNWxkxxFG4K4dIhuy5dV1R/u/rgnTzRQfIMoZVLnei07wMXeM9A20Id+V5odjdIdAAifEmOG7Cec0NFkIe9F2tCg==
+ b=RMJa1U5J/Y7KA+qlvhBrCrZV5tQScUt9CJy7XiSsMTFUGiEN+aI1m477LScfMybekI4Gzjk6iU9dk9gaeKoCtvccJH8v3fCw7nfJ/RTA7PSIeueAr2BdVrJLLVLz5dmomTDtYetSfHi/gPfCQ2l3Ol29fDG7ZmLX222sEWmTMzByTEAzOyYpN5psq07HPUcBX/9U//pka3LLsfhsEn54w4p98MAuezWFhNm5y13xTOXu5e8cianxFQEWd1KH9Z9N2sIUnln/mGn5VFUL0svw6TiOdgxkY8sg3sbFRvFKdz0sR6NN9rcI9fdqduB+McUnNVpTGJujWCntXRHnZbKoLg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kfGWQ10e9YooNzt55L3vZxPkoz5GS3+4+0zT7uXGQd4=;
- b=xiAIHr0973hU05ZOJ7TpliZbfSiUb9mkP+VmIhOBXwzWxiHpm3ULNwvQIExoyHJ+84HHh/yowZTKSTHtXGZwtbUy3+6tnoFjvtpTIaMSuacKOPM/qBOHhpSYqqfNuCWDSCb0XDr74JszJfvzkKANtZeUyIUtvSGcotYevI9aNzMImbA41HPFLUeRCocIp5TPNoVqLtkUIyYExaLiCRm03i1T+V/TmKCOiesMJsf9h2+zjJTSzpnqNlfuMbn22lytMhYOR2GO9PgkUFBIj2qLZuBzDBJwy+iud1BnM6VhGwG6TG40t+s/D0T3ODXGcUlxUNrglqp73EkoFHrrILDYBw==
+ bh=V4R7jWWPNLtRHzN/NGNzMq8lUyt+CMie8SDaZgXjGs8=;
+ b=dRc/NBmFgbER//vqBDSJ7e2v75Nk747mVWttERybV6O7LrnEHRi/evJO9hJ0xnodNHSdQk97zBHhptfXF7eslDbJ6hySISdskBODUXTXiw8PzG6iroB3geR+HFqIO4xzrxaFYEVNQ/EYHnJL3Hn6MtcBM3OtEc+Jq2aibp282OyunzgUC3zONaXeiOY6Lkmbz46a3eXPyvFsdbde+Q7CfKho0qynFKPcEvvXPeZC03lisYDCOdDDf2VBgMsnu+v5/GcC2aGgYBINapqPS3ON2inRwrsgBNRfFmUSZpr6xbZdBbYV2AZx9sUnEe/1yvdZZ1fJOIESpQSv3pKIKkyn4w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kfGWQ10e9YooNzt55L3vZxPkoz5GS3+4+0zT7uXGQd4=;
- b=v01oOQ/fu29ApnfoR+Ftw7N6bLjtAXAELP2qrIW7tEV6QgJeeIpXFiFX410sp7jFWS3dFCkge312hCk5wqX3L6vCtSVE1CRDlsgOVd/FR0R1CP+EO5LtcBcMP2gypQsleAGjRi+CgsLI8dl9ihoSCWo3zvI07mn7Vb7e/SBaZug=
-Received: from BN9PR03CA0092.namprd03.prod.outlook.com (2603:10b6:408:fd::7)
- by SJ5PPF01781787B.namprd12.prod.outlook.com (2603:10b6:a0f:fc02::986) with
+ bh=V4R7jWWPNLtRHzN/NGNzMq8lUyt+CMie8SDaZgXjGs8=;
+ b=v3voyPk4mzpA/otRPd6NsLwfSmp3v/88NV6O35LcEtywUrfIZHSVsJr60WZsClHoo5v3euv/m+Bq2FNR2KAEEkZu0GPtZ9kNqenWmz+V1HT20R1tGXkMyIh3tLgUaRfSNGtdMkvbStc98WajZbT660FWYWcu5lU9Waxi2hBk7go=
+Received: from BN9PR03CA0466.namprd03.prod.outlook.com (2603:10b6:408:139::21)
+ by MN2PR12MB4454.namprd12.prod.outlook.com (2603:10b6:208:26c::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.592.11; Sat, 7 Nov
- 2026 17:55:12 +0000
-Received: from BN6PEPF00000071.namprd03.prod.outlook.com
- (2603:10b6:408:fd:cafe::73) by BN9PR03CA0092.outlook.office365.com
- (2603:10b6:408:fd::7) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.592.10; Sat, 7 Nov
+ 2026 17:55:01 +0000
+Received: from BN6PEPF00000075.namprd03.prod.outlook.com
+ (2603:10b6:408:139:cafe::11) by BN9PR03CA0466.outlook.office365.com
+ (2603:10b6:408:139::21) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.21.592.11 via Frontend Transport; Sat, 7
- Nov 2026 17:55:12 +0000
+ Nov 2026 17:55:01 +0000
 X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
  is 165.204.84.17) smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -105,16 +104,16 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
 Received: from satlexmb07.amd.com (165.204.84.17) by
- BN6PEPF00000071.mail.protection.outlook.com (10.167.248.198) with Microsoft
+ BN6PEPF00000075.mail.protection.outlook.com (10.167.248.202) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.615.4 via Frontend Transport; Sat, 7 Nov 2026 17:55:12 +0000
+ 15.21.615.4 via Frontend Transport; Sat, 7 Nov 2026 17:55:01 +0000
 Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb07.amd.com
  (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.53; Sat, 7 Nov
- 2026 11:55:11 -0600
+ 2026 11:55:01 -0600
 Received: from amd-System-Product-Name.amd.com (10.180.168.240) by
  satlexmb08.amd.com (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.53
- via Frontend Transport; Sat, 7 Nov 2026 11:55:06 -0600
+ via Frontend Transport; Sat, 7 Nov 2026 11:54:56 -0600
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 To: <broonie@kernel.org>
 CC: <vkoul@kernel.org>, <alsa-devel@alsa-project.org>, <lgirdwood@gmail.com>,
@@ -124,10 +123,10 @@ CC: <vkoul@kernel.org>, <alsa-devel@alsa-project.org>, <lgirdwood@gmail.com>,
 	<Mario.Limonciello@amd.com>, <Richard.Gong@amd.com>, <Poojitha.N@amd.com>,
 	<lee@kernel.org>, <Vijendar.Mukunda@amd.com>, <linux-sound@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <sound-open-firmware@alsa-project.org>
-Subject: [PATCH 4/4] ASoC: amd: ps: guard SDW IRQ work scheduling with
- interrupt_enabled flag
-Date: Sat, 7 Nov 2026 23:22:29 +0530
-Message-ID: <20261107175339.3547918-5-Vijendar.Mukunda@amd.com>
+Subject: [PATCH 2/4] ASoC: SOF: amd: guard adata->sdw dereferences with NULL
+ check in IRQ handler
+Date: Sat, 7 Nov 2026 23:22:27 +0530
+Message-ID: <20261107175339.3547918-3-Vijendar.Mukunda@amd.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261107175339.3547918-1-Vijendar.Mukunda@amd.com>
 References: <20261107175339.3547918-1-Vijendar.Mukunda@amd.com>
@@ -137,34 +136,34 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN6PEPF00000071:EE_|SJ5PPF01781787B:EE_
-X-MS-Office365-Filtering-Correlation-Id: efde6d61-d90c-454d-3050-08df3cf84553
+X-MS-TrafficTypeDiagnostic: BN6PEPF00000075:EE_|MN2PR12MB4454:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8358f08e-7026-4670-b286-08df3cf83efd
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|376014|7416014|1800799024|82310400026|36860700016|23010399003|22082099003|18002099003|13003099007|10067099003|56012099006|11063799006|261026121527099003|261021123027099003|261022075727099003|261021121427099003|261102123227099003|261009223027099003;
+	BCL:0;ARA:13230040|376014|1800799024|7416014|23010399003|82310400026|36860700016|11063799006|56012099006|261021121427099003|261022075727099003|261021123027099003|261009223027099003|261026121527099003|261102123227099003|10067099003|18002099003|22082099003;
 X-Microsoft-Antispam-Message-Info: 
-	zi3Qiea7dLRcB32kLkpvjdsT7i9XWqsv1KteDtZxJRnmDH8QfskcdiEV3hvF1KpaguhV/WvSIKWl18PiPooYReTL9dWTkhpT7b9bbAbcnvPfiL+9tyPNsLntwCCUWCeurxt+jZDiRZNU7U4DXlfrmW8JiqseP3LCm2gKBidOMs3Du4uj/4b5l53//ag7P0EI8P0AuoNnVqwQiJmr9plPd4mBVVLIAX1mFoP64eNvfd43XD5JUZIgnr0MpBS6/SQpxmtmsenpTRXWMR7KVGrgjxfjxZU3oWVnwa7a7ITURThxsiIVTDA9/SQqpfEKYjR4uvPwM4q1AKWVGdeJ2rPYUZPgcW7NTlCihFXOd0z980i9CXLiXDoe7U9VPYC0rhINFtwqdJLVK0K+OPjorG8Moy2XwbVTa2Y7ON8HvKBKqZyZY6nCiwbsVXvt/bVQgpBW2pDJ/V9o+1el98SreC/RgvTM57hfVWOhfspMBatHoidlb+lyGUc2bNKMuCHn/Ig6OFI3O69qKseGXYewq0gvYL2fCW331R0C7sjJz8PpE4eO6CD0It6sOX2m8WOQskJfiGDxxDpAht60zZz13gHyt3Ks1nm+m4//8GLKaiQNTeoQChtT4FdQouSsqVKpMv2dkopO/cQ/oAN2eI3MI6EroQ==
+	w7M221V4pF9Izfqc1P2SoT/zZxigiCoQ9O+9uxBANiI6xirSBKey+bfgOyFGd7++4cHJTpiSFK7n8Id9A/X3UnyXCewwHxqw53YxxzQ0+5wMYHmX1+/f/pXKI2hk/qUs6yK+bIQRLXPNUs81S1NMRjW8HNFhwhEm9Uc/ve5IAu/jbVqt2N4jm7q43M6aMEsAg5gT9xoNk+Rnj9FCL93yfTL40JGmvO8CclCr3MzMJTG9AGFiO6T3TpBYQbuaLCJ39K3RD3x54ieR/gidCJAKk8r3Sscm0mV34cBw5YgXq7b/Uysd5GTiLL8bSGu8h+aySuS612APglvSpLViPZzdLJqpvXNCpmyHolx7CoZ6V5S81BF0bEmVJsFt8HCtBDKl0NyGeYhjSpagf4fWYDzAFc+bTHltR1Mx/IsLVZ1sj9nCAbhdY09cyQgQMesf3odGGxyG3Fm5ZekFbjWlrrWTSD6FJuXfFw3HNf98EZK7Gltk5kRdLhahWge320s9fVfCpWIpEEmgxNDnfRKJ9mz1LNxa8Kwr8FooFGgQum31eZtQ5TOFTrJ79DNEiCOg6CZ+Y5nJBcMaaPWLep4xJE0x7Ga8C1t9d4QU4T1vKAEugrT3s1aGIBz7CUkRSIDaaAnKc+rKE5SHGpCbbJHTepuhLh94OU5myFCgIwAxgrfB0q0asrfVmMRpCZPIfkzJ/5Icd2sAu6+TFEQtleK7UbZSpg==
 X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(82310400026)(36860700016)(23010399003)(22082099003)(18002099003)(13003099007)(10067099003)(56012099006)(11063799006)(261026121527099003)(261021123027099003)(261022075727099003)(261021121427099003)(261102123227099003)(261009223027099003);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(1800799024)(7416014)(23010399003)(82310400026)(36860700016)(11063799006)(56012099006)(261021121427099003)(261022075727099003)(261021123027099003)(261009223027099003)(261026121527099003)(261102123227099003)(10067099003)(18002099003)(22082099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	6OnW0gzkftGt8zbs4a4RykEJ4BW2OD6Cz40M6p9IoZQSHGN+pxemyVmBqOtYOvpVnry10Z+XcjKBUnD5fmQCcRA1Gd112nqH4To/6dxpwIoyrRkd/9px+D2p3YsCb7BNnx4etdZuw1HSxxPaSyi9Y3ZKlvzQ1p6KDIa0uYgMSSBftt1Wx5JXV876+icWUz3cNZwJvlAQlhR0fzdl80m1GgHgOHPBlr49cNbknlwZ+GlfHs8JsheAEk8Mmj1vGQU3nM2sdrd5loMcgOXQ+WlL3ou3aoEkAPlbkSe3az5GgM2au9ZxKxCm2G4M0uhRiu/sMVQaUIYq0YOdRhWJQZmHMf/MVoZwa06XDu3p9OqXrysq/E6Xx9dmzlUrguaLicrcPhgaMxXej14hzxr0tcylXyZ53sTibNFT8eDW2LsLjB+gvpZ+YxICG9iwEnkyPR2W
+	O5gd2XBW/IqThmJW7HYF5f9lcOkgO/12NkWBDdqVz+tjlyb+eFp0nBlJN5vImgYa0MelTBu3GabpwUHJsHjhdii9eqeBjLB2w0P1kU22KHOy7IDIIuniEzPXDq6FVon8TM9fhoL27rInE9LiVSOztOxnGNH7HGEwtfPnTZXCT6FrzV7bnNrr+M2zTjkAhtQ4+9PbPWjQALz1GD1Ei+MKoJLVnaKkKQ51ZVzrmGJU+7QuO5Zvxmf+LUZvjoYSNZ4eu1Z9N7e2GB0S3n/Idn4xQL+uwLQmzaJkGs6vT15mJQptnPEAZQEe2e47v+z8/mbZ9KjeJXKORFBQgiB2kXfUivLiriGmhfoxPi9pojYEMDE1rWD44mcJv9h7xX4YE0E6WWYcVY8wHjd4RbjjKmTzh4uCqJxj329JSfDu8IyyAhG/gelXvl/mkdfenxPObmiO
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2026 17:55:12.2106
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2026 17:55:01.5875
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- efde6d61-d90c-454d-3050-08df3cf84553
+ 8358f08e-7026-4670-b286-08df3cf83efd
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
  TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	BN6PEPF00000071.namprd03.prod.outlook.com
+	BN6PEPF00000075.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ5PPF01781787B
-Message-ID-Hash: 27Z2V4SO3HR3HTWAPSIYZDTDCBP7DVPX
-X-Message-ID-Hash: 27Z2V4SO3HR3HTWAPSIYZDTDCBP7DVPX
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4454
+Message-ID-Hash: ZLJCB6RMSA4N4HZ2KFRFIAXTJPSXMR4W
+X-Message-ID-Hash: ZLJCB6RMSA4N4HZ2KFRFIAXTJPSXMR4W
 X-MailFrom: Vijendar.Mukunda@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -176,7 +175,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/27Z2V4SO3HR3HTWAPSIYZDTDCBP7DVPX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZLJCB6RMSA4N4HZ2KFRFIAXTJPSXMR4W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -184,42 +183,89 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 
-acp63_irq_handler() called schedule_work() for the SoundWire manager
-workqueue guarded only by a NULL pointer check on amd_manager. Add a
-check for amd_manager->interrupt_enabled so that an in-flight interrupt
-that fires while the SoundWire manager is being torn down does not queue
-new work after amd_disable_sdw_interrupts() has cleared the flag.
+The ACP external IRQ handler is registered before sdw_amd_probe() assigns
+adata->sdw, so a stray interrupt in the probe window could reach the
+adata->sdw->pdev[i] dereference with adata->sdw still NULL.
 
-Reported-by: Lee Jones <lee@kernel.org>
-Closes: https://sashiko.dev/#/bug/linux-ab458b2e-f505-4a41-8238-a93ceb5d9c77
-Fixes: e1cb350610ce ("ASoC: amd: ps: handle SoundWire interrupts in acp pci driver")
+The same window exists on the teardown side: after sdw_amd_exit() frees
+the context but before adata->sdw is cleared by the caller.
+
+Add NULL checks for adata->sdw in acp_irq_handler() before dereferencing
+->pdev[0] and ->pdev[1], and in amd_sof_handle_acp70_sdw_wake_event() for
+the same reason.  The interrupt-status register write that acknowledges the
+IRQ is kept outside the guard so the hardware bit is always cleared
+regardless of whether the SoundWire context is live.
+
+Fixes: 96eb81851012 ("ASoC: SOF: amd: add interrupt handling for SoundWire manager devices")
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 ---
- sound/soc/amd/ps/pci-ps.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sof/amd/acp.c | 32 ++++++++++++++++++++------------
+ 1 file changed, 20 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/amd/ps/pci-ps.c b/sound/soc/amd/ps/pci-ps.c
-index d0b66df10157..0442010e969c 100644
---- a/sound/soc/amd/ps/pci-ps.c
-+++ b/sound/soc/amd/ps/pci-ps.c
-@@ -215,7 +215,7 @@ static irqreturn_t acp63_irq_handler(int irq, void *dev_id)
- 		writel(ACP_SDW0_STAT, adata->acp63_base + ACP_EXTERNAL_INTR_STAT);
- 		if (adata->sdw) {
- 			amd_manager = dev_get_drvdata(&adata->sdw->pdev[0]->dev);
--			if (amd_manager)
-+			if (amd_manager && amd_manager->interrupt_enabled)
- 				schedule_work(&amd_manager->amd_sdw_irq_thread);
- 		}
+diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
+index 86e2402b8ffd..623e016f38b8 100644
+--- a/sound/soc/sof/amd/acp.c
++++ b/sound/soc/sof/amd/acp.c
+@@ -478,16 +478,20 @@ static void amd_sof_handle_acp70_sdw_wake_event(struct acp_dev_data *adata)
+ 	struct amd_sdw_manager *amd_manager;
+ 
+ 	if (adata->acp70_sdw0_wake_event) {
+-		amd_manager = dev_get_drvdata(&adata->sdw->pdev[0]->dev);
+-		if (amd_manager)
+-			pm_request_resume(amd_manager->dev);
++		if (adata->sdw) {
++			amd_manager = dev_get_drvdata(&adata->sdw->pdev[0]->dev);
++			if (amd_manager)
++				pm_request_resume(amd_manager->dev);
++		}
+ 		adata->acp70_sdw0_wake_event = 0;
+ 	}
+ 
+ 	if (adata->acp70_sdw1_wake_event) {
+-		amd_manager = dev_get_drvdata(&adata->sdw->pdev[1]->dev);
+-		if (amd_manager)
+-			pm_request_resume(amd_manager->dev);
++		if (adata->sdw) {
++			amd_manager = dev_get_drvdata(&adata->sdw->pdev[1]->dev);
++			if (amd_manager)
++				pm_request_resume(amd_manager->dev);
++		}
+ 		adata->acp70_sdw1_wake_event = 0;
+ 	}
+ }
+@@ -579,10 +583,12 @@ static irqreturn_t acp_irq_handler(int irq, void *dev_id)
+ 
+ 	val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, desc->ext_intr_stat);
+ 	if (val & ACP_SDW0_IRQ_MASK) {
+-		amd_manager = dev_get_drvdata(&adata->sdw->pdev[0]->dev);
+ 		snd_sof_dsp_write(sdev, ACP_DSP_BAR, desc->ext_intr_stat, ACP_SDW0_IRQ_MASK);
+-		if (amd_manager)
+-			schedule_work(&amd_manager->amd_sdw_irq_thread);
++		if (adata->sdw) {
++			amd_manager = dev_get_drvdata(&adata->sdw->pdev[0]->dev);
++			if (amd_manager)
++				schedule_work(&amd_manager->amd_sdw_irq_thread);
++		}
  		irq_flag = 1;
-@@ -226,7 +226,7 @@ static irqreturn_t acp63_irq_handler(int irq, void *dev_id)
- 		writel(ACP_SDW1_STAT, adata->acp63_base + ACP_EXTERNAL_INTR_STAT1);
- 		if (adata->sdw) {
- 			amd_manager = dev_get_drvdata(&adata->sdw->pdev[1]->dev);
+ 	}
+ 
+@@ -608,11 +614,13 @@ static irqreturn_t acp_irq_handler(int irq, void *dev_id)
+ 	if (desc->ext_intr_stat1) {
+ 		val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, desc->ext_intr_stat1);
+ 		if (val & ACP_SDW1_IRQ_MASK) {
+-			amd_manager = dev_get_drvdata(&adata->sdw->pdev[1]->dev);
+ 			snd_sof_dsp_write(sdev, ACP_DSP_BAR, desc->ext_intr_stat1,
+ 					  ACP_SDW1_IRQ_MASK);
 -			if (amd_manager)
-+			if (amd_manager && amd_manager->interrupt_enabled)
- 				schedule_work(&amd_manager->amd_sdw_irq_thread);
+-				schedule_work(&amd_manager->amd_sdw_irq_thread);
++			if (adata->sdw) {
++				amd_manager = dev_get_drvdata(&adata->sdw->pdev[1]->dev);
++				if (amd_manager)
++					schedule_work(&amd_manager->amd_sdw_irq_thread);
++			}
+ 			irq_flag = 1;
  		}
- 		irq_flag = 1;
+ 		switch (adata->pci_rev) {
 -- 
 2.53.0
 
