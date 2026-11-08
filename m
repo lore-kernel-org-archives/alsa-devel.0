@@ -2,128 +2,78 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72E04606A326
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 Nov 2026 01:27:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADB3B606A31A
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Nov 2026 01:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=Mn1y75NN;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=HBtSuUl+
+	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=nPeX9aW1
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 04AF6601DC;
-	Sun,  8 Nov 2026 02:27:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04AF6601DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7734C601DE;
+	Sun,  8 Nov 2026 02:46:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7734C601DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1794101254;
-	bh=62G6CXvWJYpeXqAlqKEtBedlRvUTL3ZsGFn1+x5tC/Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Mn1y75NNeXPI/ErLGkfQIq4DcSgcKN7lvmZp9xoeKMbW+lIbnIzTaCBPlVxKcuE2l
-	 YWIQU0auC1/O18Z4I7RhC+c0wGVTG7ngxM0jiMWnzYq8dB/DiYNFzYyS7xQM5JEz3C
-	 wGCuy1/bLgFLOqo10409vwBuIS3JulzbA47HpCAU=
+	s=default; t=1794102395;
+	bh=ymPh/g60x7kaHITIExvdC3PFKJwVOdbi5g3BDCPaiYc=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=nPeX9aW1uXh/byjdACWC1FP7Bn/lg6dBH/CZ/BQ8u8kdFFBAmNNnPiVRLmXRk5qGU
+	 LltUAFqJmc+FB/+gNPED+1j8cG4/M9CRBYjBWfDpMlXqv3RNexRWmD8h2iWdThILRS
+	 UL+w8opBZ69QCW/Auh3wV4OTpys74+pQ3g87pE0w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 492E1F8060F; Sun,  8 Nov 2026 02:27:00 +0100 (CET)
+	id BD718F805F3; Sun,  8 Nov 2026 02:46:01 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75F6BF805F6;
-	Sun,  8 Nov 2026 02:27:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA455F80602;
+	Sun,  8 Nov 2026 02:46:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D498EF80538; Sun,  8 Nov 2026 02:26:53 +0100 (CET)
+	id 6764CF80538; Sun,  8 Nov 2026 02:45:54 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=4.0.1
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=198.175.65.9
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1794101209;
-	b=GBDg2yPzLIsIRfogQN8G6DFkZ7rswrSJ6mlQ7px6ZVT6/1vbwGdfwVuX6DOVNyyWAklt
-	 Ay9FXXZlJdh+SdvrRZ43uMdCacOk1UtXntwbTaCleiBn/utPg+Jcvo5TeYiiYqCqDPUTv
-	 QnwTbuPh3sB+8Xqzf7sHU6HQ7IEEB6Wm7A72cadJUfdeigVP0WI4djhni+pqzmP3wUcHR
-	 /V2IKeokxAUIjCS1gq2Ak4NnzhrPRk+C4SYcr6aTrqPC5x/aHBr5kz+IboAzxosL5bY67
-	 tW6vFfBFGXUKAiQeQhUTDc94BN1mLxpV+wkQgvXh0Vs3Tx0eNZfPrMnIxTPXcT1SSfw==
+X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_PASS,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1794102350;
+	b=h8Q6SGCegyz8d/GiezMEgZkWiHvgXijc7YaET5L2KYD3ndAkfN8lX1Avb4q1kW0E2NZu
+	 5Axp6Xi5neflQAtdHpOV9NgLLl9ovIWd5ho/cGz+Ht5c6rOWPgzQuQDtzn/QSoWKJSyse
+	 AlV/Mr6U6F/qiBuRZZjUWGn58/5MzukHlHCECc6u/ow4o4voihcnqcKhyPoihvI0XnjAf
+	 1Q+fzw1BS2TekAUL0ghd+wSXhRFCsyQtfm2uLDXUwekKju549ucefdNbSVA+FKFBQroyh
+	 uDQ4dVfQPg0V0/aoHiBBCxGtmxSVryc9nFuy7xQcYXgDOSCwMNpMsJlqTZp7jWxspXQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1794101209;
-	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
-	bh=62G6CXvWJYpeXqAlqKEtBedlRvUTL3ZsGFn1+x5tC/Y=;
-	b=aZYWbmsM1RYmhnVLVI1st7/Pr/CPjbAwftqxAzagcIGYWZAkJqMHi6RuG8vsZCce9m3+
-	 tvV+YgLjLocRIWiMwNaaqw5k3bz5LjItPZB7OiYsZ4j4oS6tGdYIYUDXpYadOeh7D+5ZV
-	 PwhsvZYeVJLaRY5ISg195TWcIbSq2uD9bzh/2CpzxQeynbgvXPmCKXmEOnTPiKcHqx8fb
-	 RsJ5+jD9nNbY42np7omS9uJSCJERz6CuihVcTIm+4j27tsDYjRjN+cA1STyxLOPPZW1PS
-	 jtF6EJGAwCzXAytNj6tycvzw2yVF+eQLHpjUqgHafO3LIqm2Qe5iMCMtdhitrGWWgzQ==
+	c=relaxed/simple; t=1794102350;
+	h=MIME-Version:From:To:Message-Id:Subject;
+	bh=ymPh/g60x7kaHITIExvdC3PFKJwVOdbi5g3BDCPaiYc=;
+	b=iZOI36FqjGzvkMeWbjMZT1x4zqO8+UvW8VDOfKzFafxyF0ab8Ml7gl3Ch73aW7q/uYX3
+	 WMqdHVw6TlPaGGOQAGyVSgUTvIxcqDbdT3XOXtx1Ok+oERgBFx9k2Hjl1seLL+0Jv5zhN
+	 ktp/i27WG+HiOKJ1TLHz0SbjEeITLMgUO0gyNn7gHNhFKx0FIxsyCFTxX2u/d2lRX65sd
+	 CehJIOrrfPl5SiQy68RZlaWboEmUs3xObc8n4YalenukO11mK66W9P9YonKMVl/k7ixVd
+	 1wmnwnNOJbXMHEj0kqXrWsYjphOzaTT4uuteUt8+uZwZaG1uOLUy7XjQygBypzE431A==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=HBtSuUl+;
-	arc=none smtp.remote-ip=198.175.65.9
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AB9D8F8014B;
-	Sun,  8 Nov 2026 02:26:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB9D8F8014B
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=HBtSuUl+
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1794101210; x=1825637210;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=62G6CXvWJYpeXqAlqKEtBedlRvUTL3ZsGFn1+x5tC/Y=;
-  b=HBtSuUl+Wp7GR0G6PSkui4wORz1Ic9ZRCdm1L1we3Alu1gs9MFLqGBju
-   SmyHqB9KIJuBe7QMMpWc2q36G05t+3OaJfun84RYmXDLHLOvSZF7IqtcT
-   GjBsYwbAg3L6v39WxL8QUvudr5se3A7D1qKhlnEgpVxmrqzsSifz0uXsX
-   yelI6RvwPUwB9MTmfYt1h7FkBUOi1MMrb1MBCuMAo6NlpA9I6Cwk3za+D
-   KPm9BI5lhUdvcrp3JTBlWMlj5QVDKYIuPmLC3dZSPvFTwdGHO8eaBOYFt
-   tKdGdtFlevfI/zl5CCSn4E7br9sW7id/j1e0G6jGvdRoE8gYAZqoaTwue
-   w==;
-X-CSE-ConnectionGUID: ecFkAKidRKSkmejeqhJTsQ==
-X-CSE-MsgGUID: E45i9yEQRsiw0qhRicnDJQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11959"; a="2772348"
-X-IronPort-AV: E=Sophos;i="6.27,200,1787036400";
-   d="scan'208";a="2772348"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Nov 2026 17:26:43 -0800
-X-CSE-ConnectionGUID: vybv3uPPTWKHzk1p+7wyMQ==
-X-CSE-MsgGUID: +YDOCgh+Q0u2MwqxxSp20g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,200,1787036400";
-   d="scan'208";a="7579703"
-Received: from lkp-server01.sh.intel.com (HELO 0caa9d2d175c) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 07 Nov 2026 17:26:38 -0800
-Received: from kbuild by 0caa9d2d175c with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1xPrg3-00000000rsx-1BhI;
-	Sun, 08 Nov 2026 01:26:35 +0000
-Date: Sun, 8 Nov 2026 09:25:58 +0800
-From: kernel test robot <lkp@intel.com>
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, vkoul@kernel.org,
-	alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
-	tiwai@suse.com, yung-chuan.liao@linux.intel.com,
-	Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
-	venkataprasad.potturu@amd.com, Syed.SabaKareem@amd.com,
-	Mario.Limonciello@amd.com, Richard.Gong@amd.com, Poojitha.N@amd.com,
-	lee@kernel.org, Vijendar.Mukunda@amd.com,
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-	sound-open-firmware@alsa-project.org
-Subject: Re: [PATCH 3/4] ASoC: SOF: amd: guard SDW IRQ work scheduling with
- interrupt_enabled flag
-Message-ID: <202611080910.HG54RIuC-lkp@intel.com>
-References: <20261107175339.3547918-4-Vijendar.Mukunda@amd.com>
+	arc=none smtp.remote-ip=45.14.194.44
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 04B26F80124
+	for <alsa-devel@alsa-project.org>; Sun,  8 Nov 2026 02:45:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04B26F80124
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261107175339.3547918-4-Vijendar.Mukunda@amd.com>
-Message-ID-Hash: 4KVECTMMFLYO55VBVBYPCQ6YVKKQDAU4
-X-Message-ID-Hash: 4KVECTMMFLYO55VBVBYPCQ6YVKKQDAU4
-X-MailFrom: lkp@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18e5ee9490f42900-webhooks-bot@alsa-project.org>
+In-Reply-To: <18e5ee9490d26400-webhooks-bot@alsa-project.org>
+References: <18e5ee9490d26400-webhooks-bot@alsa-project.org>
+Subject: alsactl restore fails after Generic / Generic_1 IDs swap between HDMI
+ and ALC897
+Date: Sun,  8 Nov 2026 02:45:54 +0100 (CET)
+Message-ID-Hash: OKRZ427ALWNR2EPTE25OIALMZJBDBPHV
+X-Message-ID-Hash: OKRZ427ALWNR2EPTE25OIALMZJBDBPHV
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -134,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4KVECTMMFLYO55VBVBYPCQ6YVKKQDAU4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OKRZ427ALWNR2EPTE25OIALMZJBDBPHV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -142,117 +92,82 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 
-Hi Vijendar,
+alsa-project/alsa-utils issue #338 was opened from flowersauce:
 
-kernel test robot noticed the following build errors:
+## Summary
 
-[auto build test ERROR on broonie-sound/for-next]
-[also build test ERROR on vkoul-dmaengine/next linus/master v7.4-rc1 next-20261105]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Two HDA controllers exchanged the ALSA IDs `Generic` and `Generic_1` between observed boots. The existing state file still associated those IDs with the previous hardware. On the later boot, `alsactl restore` returned 99 and reported missing controls; the analog card's saved `Auto-Mute Mode = Disabled` was not restored.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Vijendar-Mukunda/ASoC-amd-ps-guard-adata-sdw-dereferences-with-NULL-check-in-IRQ-handler/20261107-232226
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-patch link:    https://lore.kernel.org/r/20261107175339.3547918-4-Vijendar.Mukunda%40amd.com
-patch subject: [PATCH 3/4] ASoC: SOF: amd: guard SDW IRQ work scheduling with interrupt_enabled flag
-config: x86_64-rhel-9.4-ltp (https://download.01.org/0day-ci/archive/20261108/202611080910.HG54RIuC-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261108/202611080910.HG54RIuC-lkp@intel.com/reproduce)
+This has a similar symptom and hardware combination to closed issue #263. That discussion suggested checking whether the Generic IDs refer to the same hardware after reboot. Here the observed ID-to-hardware mapping did change.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202611080910.HG54RIuC-lkp@intel.com/
+## Environment
 
-All errors (new ones prefixed by >>):
+- Arch Linux; Gigabyte X870 GAMING X WIFI7 motherboard
+- linux-zen package: 7.2.14.zen1-1
+- alsa-utils: 1.2.16-1; alsa-lib: 1.2.16.1-1
+- PipeWire: 1.6.10; WirePlumber: 0.5.18
+- Both affected controllers use `snd_hda_intel`
+- PCI `0000:77:00.1`: AMD HDMI controller, ATI R6xx HDMI codec
+- PCI `0000:77:00.6`: AMD analog controller, Realtek ALC897 codec
+- A separate discrete GPU HDMI controller has the ID `HDMI`
+- Rear line-out speakers and front-panel headphones both connected
 
-   sound/soc/sof/amd/acp.c: In function 'acp_irq_handler':
->> sound/soc/sof/amd/acp.c:589:55: error: 'struct amd_sdw_manager' has no member named 'interrupt_enabled'
-     589 |                         if (amd_manager && amd_manager->interrupt_enabled)
-         |                                                       ^~
-   sound/soc/sof/amd/acp.c:621:63: error: 'struct amd_sdw_manager' has no member named 'interrupt_enabled'
-     621 |                                 if (amd_manager && amd_manager->interrupt_enabled)
-         |                                                               ^~
+## Observations
 
+The following mappings were recorded from `/proc/asound/cards` in two sessions:
 
-vim +589 sound/soc/sof/amd/acp.c
+| Controller / codec | ALSA index | November 2 | November 8 |
+| --- | --- | --- | --- |
+| 0000:77:00.1 / ATI R6xx HDMI | 2 | Generic | Generic_1 |
+| 0000:77:00.6 / Realtek ALC897 | 3 | Generic_1 | Generic |
 
-   566	
-   567	static irqreturn_t acp_irq_handler(int irq, void *dev_id)
-   568	{
-   569		struct amd_sdw_manager *amd_manager;
-   570		struct snd_sof_dev *sdev = dev_id;
-   571		const struct sof_amd_acp_desc *desc = get_chip_info(sdev->pdata);
-   572		struct acp_dev_data *adata = sdev->pdata->hw_pdata;
-   573		unsigned int base = desc->dsp_intr_base;
-   574		unsigned int val;
-   575		int irq_flag = 0, wake_irq_flag = 0;
-   576	
-   577		val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, base + DSP_SW_INTR_STAT_OFFSET);
-   578		if (val & ACP_DSP_TO_HOST_IRQ) {
-   579			snd_sof_dsp_write(sdev, ACP_DSP_BAR, base + DSP_SW_INTR_STAT_OFFSET,
-   580					  ACP_DSP_TO_HOST_IRQ);
-   581			return IRQ_WAKE_THREAD;
-   582		}
-   583	
-   584		val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, desc->ext_intr_stat);
-   585		if (val & ACP_SDW0_IRQ_MASK) {
-   586			snd_sof_dsp_write(sdev, ACP_DSP_BAR, desc->ext_intr_stat, ACP_SDW0_IRQ_MASK);
-   587			if (adata->sdw) {
-   588				amd_manager = dev_get_drvdata(&adata->sdw->pdev[0]->dev);
- > 589				if (amd_manager && amd_manager->interrupt_enabled)
-   590					schedule_work(&amd_manager->amd_sdw_irq_thread);
-   591			}
-   592			irq_flag = 1;
-   593		}
-   594	
-   595		if (val & ACP_ERROR_IRQ_MASK) {
-   596			snd_sof_dsp_write(sdev, ACP_DSP_BAR, desc->ext_intr_stat, ACP_ERROR_IRQ_MASK);
-   597			snd_sof_dsp_write(sdev, ACP_DSP_BAR, desc->acp_sw0_i2s_err_reason, 0);
-   598			/* ACP_SW1_I2S_ERROR_REASON is newly added register from rmb platform onwards */
-   599			switch (adata->pci_rev) {
-   600			case ACP_RMB_PCI_ID:
-   601			case ACP63_PCI_ID:
-   602			case ACP70_PCI_ID:
-   603			case ACP71_PCI_ID:
-   604			case ACP72_PCI_ID:
-   605				snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SW1_I2S_ERROR_REASON, 0);
-   606				break;
-   607			default:
-   608				break;
-   609			}
-   610			snd_sof_dsp_write(sdev, ACP_DSP_BAR, desc->acp_error_stat, 0);
-   611			irq_flag = 1;
-   612		}
-   613	
-   614		if (desc->ext_intr_stat1) {
-   615			val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, desc->ext_intr_stat1);
-   616			if (val & ACP_SDW1_IRQ_MASK) {
-   617				snd_sof_dsp_write(sdev, ACP_DSP_BAR, desc->ext_intr_stat1,
-   618						  ACP_SDW1_IRQ_MASK);
-   619				if (adata->sdw) {
-   620					amd_manager = dev_get_drvdata(&adata->sdw->pdev[1]->dev);
-   621					if (amd_manager && amd_manager->interrupt_enabled)
-   622						schedule_work(&amd_manager->amd_sdw_irq_thread);
-   623				}
-   624				irq_flag = 1;
-   625			}
-   626			switch (adata->pci_rev) {
-   627			case ACP70_PCI_ID:
-   628			case ACP71_PCI_ID:
-   629			case ACP72_PCI_ID:
-   630				wake_irq_flag = amd_sof_check_and_handle_acp70_sdw_wake_irq(sdev);
-   631				break;
-   632			}
-   633		}
-   634		if (irq_flag || wake_irq_flag)
-   635			return IRQ_HANDLED;
-   636		else
-   637			return IRQ_NONE;
-   638	}
-   639	
+The indexes stayed the same, while the IDs swapped.
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Before the local mitigation, `/var/lib/alsa/asound.state` still contained:
+- HDMI controls under `state.Generic`
+- Analog controls under `state.Generic_1`, including `Auto-Mute Mode = Disabled`
+
+On the November 8 boot, the stock `alsa-restore.service` ran `/usr/bin/alsactl restore`. Its process result was `status=99`, with many messages such as:
+
+```text
+/usr/bin/alsactl: set_control:1373: failed to obtain info for control #20 (No such file or directory)
+```
+
+The actual Auto-Mute setting on the analog card was `Enabled`.
+
+The user-visible effect was that rear speakers stayed silent when front headphones were plugged in, even after selecting the line-out port in the desktop sound settings. Unplugging headphones allowed the speakers to play.
+
+The PipeWire sink was already on `analog-output-lineout`, with both jack ports reported as available. Codec pin 0x14 (rear line-out) had `Pin-ctls: 0x00`. After disabling Auto-Mute, it changed to `Pin-ctls: 0x40: OUT`.
+
+## Expected behavior / question
+
+Is there a supported way for restoration to detect or avoid applying a saved card section to different hardware when discovery-dependent IDs change? Or does the underlying default-ID assignment need to be addressed in the kernel sound subsystem?
+
+The observed mapping change and mismatched saved state strongly suggest an explanation for the restore failure, but the original failure has not been reproduced under controlled boot conditions. There is no evidence identifying a particular package update as the cause.
+
+## Local mitigation and tests
+
+Used the documented [udev card ID method](https://www.alsa-project.org/wiki/Changing_card_IDs_with_udev) to give each affected controller a unique ID:
+
+```udev
+ACTION=="add", SUBSYSTEM=="sound", KERNEL=="card[0-9]*", KERNELS=="0000:77:00.6", ATTR{id}="Mainboard"
+ACTION=="add", SUBSYSTEM=="sound", KERNEL=="card[0-9]*", KERNELS=="0000:77:00.1", ATTR{id}="RadeonHDMI"
+```
+
+Installed as `/etc/udev/rules.d/60-stable-hda-ids.rules`, before the stock `90-alsa-restore.rules`. For live testing, the IDs were also assigned through sysfs without reloading the active driver. Set Auto-Mute to Disabled and generated a clean state file using `alsactl store`.
+
+Tests performed:
+- Temporarily enabled Auto-Mute, then ran `alsactl --no-init-fallback restore Mainboard`: exit 0 and Auto-Mute returned to Disabled.
+- Ran `alsactl --no-init-fallback restore` for all cards: exit 0.
+- Selected headphones: Headphone switch on, Front switch off.
+- Selected line-out: Front switch on, Headphone switch off.
+- Auto-Mute remained Disabled during both port changes.
+
+A temporary user service that forced Auto-Mute off at login was removed after these tests, so it is not needed for the live restore test.
+
+**Limitations:** The complete boot path with the new udev rules has not yet been tested by rebooting. Physical audibility after the final configuration change has not yet been confirmed by the user. Pre-mitigation state and the boot restore log have been preserved locally.
+
+Please let me know which additional targeted diagnostics would help, or whether this report should be directed to the kernel tracker.
+
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/338
+Repository URL: https://github.com/alsa-project/alsa-utils
