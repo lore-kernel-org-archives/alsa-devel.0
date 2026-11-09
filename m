@@ -2,107 +2,108 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD6A606A31C
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Nov 2026 09:04:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB88606A322
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Nov 2026 13:12:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=qomaleic;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=C2KZ3WuW
+	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=ZjQllq95;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=YYISZiBD
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32851601DC;
-	Mon,  9 Nov 2026 10:04:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32851601DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id F3FF36019A;
+	Mon,  9 Nov 2026 14:12:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3FF36019A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1794215081;
-	bh=bQ3trnLF5f6m2gxJ975+lagyt30TQnbKtEIZXwHaclw=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=qomaleic2Bykt60V3V5lZ28IORtv+l2YwghOBWmwhlkHCpnz3n3dyldMMZ1QRhxay
-	 ABSTEyvEicB6XlTiN8DMam6tydIN/2/ayT1c+6zwNjN0A/zkqjKtvFHdorvyD8yRmO
-	 oO4zyU6or2MOIqWO2B/OpJDPSSPNnTgWn91MVe0g=
+	s=default; t=1794229970;
+	bh=PcMNJsWMebRPsUJuTo+NQIpzptpfYPUWOVJNZj0OcuY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=ZjQllq95cipYr5r5KhNFnIgK1EABQ2obMOq6xZcWjr9AehINSCBoQRPFi8ljhn3sB
+	 NGbcKaD8NeOqS4KB+PQjd7+uB8Xq9uvn9o3qJV71xCWsR45SqsPiXKK2IgNCrO8nxK
+	 O6YpTAwx6ezUfM3h2sksjCYzgYxRnnCRpmmd4DU8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5DFD4F805EF; Mon,  9 Nov 2026 10:04:05 +0100 (CET)
+	id DD02CF805F5; Mon,  9 Nov 2026 14:12:17 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C57FCF805EF;
-	Mon,  9 Nov 2026 10:04:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29AFEF80600;
+	Mon,  9 Nov 2026 14:12:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5A13AF805C7; Mon,  9 Nov 2026 10:03:57 +0100 (CET)
+	id 11B52F805C7; Mon,  9 Nov 2026 14:12:08 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-5.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=4.0.1
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1794215035;
-	b=o0sDw+awDgVsNH3PYzw4wXrBzYLUHhriT/22FF7taAKKEyg8tstn4iMtN3e92fqk64r/
-	 MWFNh8xwFepYS00ancUA2skqMhgctiTwKKy/XASXOX6KhhDxE8AD/5guXr8wJLJA7c1k2
-	 Y+pRWWok6+noLdXIZcir2kU/65ncnTqALXPMbgF6NvUzW6O+b+M1yny+KcbsfWdJWH8CK
-	 t9fKJf6LHnY8NHR3ht0uOVDFwI5XJaRgS77s97s0T0tEVT2DLvoSPflI1OJLEZbxuIeRt
-	 XsLbGfAr7QoBg2Xh40uuU37AgHcZeJIBk/aV6E6JeM0VenTvyHGuMnakUhp5RzDQKLA==
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
+	SPF_PASS autolearn=no autolearn_force=no version=4.0.1
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1794229926;
+	b=TFiCitH4QJ7Fr5KFH5zyw76orA5nUuimqcxkEUo7xNufaEy4z4hvWxc6MW7a3rZrILB3
+	 KFXRHxAvJu78IHPZWG/nDnzX1vnZy3yYnhkzCgDgLJQhmJscE7hcjAc5fk+Kl2NRgHlj8
+	 H0saykm20QaudTbhHQ9HgTTG0DO1aTtuJbAIM7LFNUX6UNPaZJBtkF7aXzXackiCNcUX0
+	 h86AJNc9Cr+cZ6utNTu4pQbpa0FUYTy581OG1a3QdZX+xW0//f4jE36Z5Z+fxcZ/r6ALj
+	 vYgSgPd3Vff2dWuRp3M0noG162t/sFs5wH9OU1j4oiGvdWXHfCDO5YFfUbzOqedmb9w==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1794215035;
-	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=bQ3trnLF5f6m2gxJ975+lagyt30TQnbKtEIZXwHaclw=;
-	b=fD7wGce3ok4vqFOAh1GEUn2eVF3fyi/tRr14KuUlJtf+OoqV5yvrbJdLVbIVa6gOhpfo
-	 MoJ+aFdQjjuTf8qyh2pTYtJro5wm3I+xv4bKZvswPjeJxZIiddsDdmLYuWCUB0l3PjVOD
-	 0JdD9XmeRyrCP9/1gm4PtuO/jVLdoGZP9CwFIKR1fEA62P/J8OxP1B2Wq7oKQtkkYzPzu
-	 Z976JdCqrDHdER8yb0yA9F4FS7uv1tfednznZ0kZ9QMl42pB8rJy8ngfnw6f1zTjp9dAv
-	 /beSOFdC42lElSAY+6weiEdJJ+zqJW/VJFhGGH1J8uGT4zUYO82mpYPlNukcBNWN0FQ==
+	c=relaxed/simple; t=1794229926;
+	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
+	bh=PcMNJsWMebRPsUJuTo+NQIpzptpfYPUWOVJNZj0OcuY=;
+	b=gJTqu/ZUaAqko0QEWBaeTO3ZY46YLbU7JNnTbRV3Lj250MFt/Uc3KKWYU05NPfgYggPY
+	 NmIAEL8nRYnApyOFrsHeZYftpHxEsPIgxVDOeWn2MbYi4QcUQIJ2uFDaO/u748AGP5pRx
+	 8NVqd4CXZV7Iwfmz/K6HNpCtPAHNbPBOoLNkBwq7tfAVD5ov3ln+pNmj2Zq5mIf8Q9nda
+	 78aSzMMFhXxlf51ZUcY+2RWsPqY8bRgEkq4wD8wdUNGCeCx0nwP+PjrYm/ggm7lULR5Qn
+	 WLuF2Tpiu3x4aKIwHkp67LjWoy8z1v0d4uuNaskrjFsUNBe9Po5GZw1LAYhrv1krjMw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
 	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=C2KZ3WuW;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+ header.s=k20260515 header.b=YYISZiBD;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 49413F805B0
-	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2026 10:03:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49413F805B0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1CDD6F80124
+	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2026 14:12:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CDD6F80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=C2KZ3WuW
+ header.s=k20260515 header.b=YYISZiBD
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 648CE40564;
-	Mon,  9 Nov 2026 09:03:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 107FA1F0089F;
-	Mon,  9 Nov 2026 09:03:48 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 6C06A631E2;
+	Mon,  9 Nov 2026 13:12:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 254951F0089F;
+	Mon,  9 Nov 2026 13:12:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794215030;
-	bh=xL7NICnviPylGawuY6UFdSAue0kDWn0dNEjgPy6oRAo=;
-	h=From:To:Cc:Subject:Date;
-	b=C2KZ3WuWjUIzoa8FcZUcaFzzQZhqMrHjM++x3qrdMIuFFCSVoc+/Ozkksr8Btqymr
-	 woteoGAq+NPOYL4t2nZT/EnFjR889tG3rGDRry5BhOVYpez37nrqrpJTVXD7P9nNda
-	 Fqo5uLViJhTiVN9ct41r6psIXua2EUoB6R2NL7yxFhvX4Lk2SlDKyMEQVA59ijHtTp
-	 rBI7dhrjR2bt4HFsQO2te6Vh8hoCrAzXOUoKFrk3iGHls+xbVmfzt8Z+ggM6bMEajt
-	 cUnKm96emTdtZlA+lTjLAV0dI9EXub9WqLAeGDbI9eHDlTSEon3dSuQrh9m8KJOvqp
-	 WDWFVgIYEhusw==
-From: Lee Jones <lee@kernel.org>
-To: lee@kernel.org,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org,
-	Takashi Iwai <tiwai@suse.de>
-Subject: [STABLE v6.1-v5.15] ALSA: usb-audio: Don't try to submit URBs after
- disconnection
-Date: Mon,  9 Nov 2026 09:03:44 +0000
-Message-ID: <20261109090346.2098226-1-lee@kernel.org>
-X-Mailer: git-send-email 2.56.0.506.g506a7eabc5-goog
+	s=k20260515; t=1794229922;
+	bh=URZ/ULk+4PWcUSYqJk0FCIDVu0Cq9bVkhuiXHZozVsc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=YYISZiBD7mBBiBmdvss79zT5VFDrcBjl3rsasdZGo0XqYSP7aTWYRyXSL5DA1JUx3
+	 azU1VX/tkgJEqKYtrt6qU8jGbJtafsHojQ6iQs9YWONiAZ6WvwQxYPAZ0nRBadgo58
+	 Nz/ESq7N1Fn0+WDoviLuVmgbVak881v2O+3v4MT82ulYn95wrfHK36w61Z+J1vXl3k
+	 29KLq1UkY8TnAymJTWs+LsqhdL4YuFfr7nEqi8g6rjLvTHvS4VnG87AOWQTPbwvGbH
+	 NO1bQ6KU5BAjdgd2kua7N/rbucscxeUAuqY0ZtTfX3DYoFC+ddMaw22cYcV6Wf9YnM
+	 R6tfM1xGVCKow==
+Date: Mon, 9 Nov 2026 14:11:58 +0100
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Neo Chang <YLCHANG2@nuvoton.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
+	robh@kernel.org, krzk+dt@kernel.org, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ neo.chang70@gmail.com,
+	kchsu0@nuvoton.com, sjlin0@nuvoton.com, lkp@intel.com
+Subject: Re: [PATCH v2 1/2] ASoC: dt-bindings: nuvoton,nau8310: Add NAU83G10
+Message-ID: <20261109-grateful-white-meerkat-090edc@quoll>
+References: <20261109051251.471879-1-YLCHANG2@nuvoton.com>
+ <20261109051251.471879-2-YLCHANG2@nuvoton.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 5EY6AXL4LTTBAIB34XPHQ7HMD7RABHIS
-X-Message-ID-Hash: 5EY6AXL4LTTBAIB34XPHQ7HMD7RABHIS
-X-MailFrom: lee@kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20261109051251.471879-2-YLCHANG2@nuvoton.com>
+Message-ID-Hash: TLNA4UBON3TJQ344PXRBHXPAELM3HM7B
+X-Message-ID-Hash: TLNA4UBON3TJQ344PXRBHXPAELM3HM7B
+X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -113,7 +114,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5EY6AXL4LTTBAIB34XPHQ7HMD7RABHIS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TLNA4UBON3TJQ344PXRBHXPAELM3HM7B/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,98 +122,28 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+On Mon, Nov 09, 2026 at 01:12:50PM +0800, Neo Chang wrote:
+> +  nuvoton,sar-voltage:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      SAR Gain Tracking Selection.
+> +    enum:
+> +      - 0 # VDDA
+> +      - 1 # VDDA * 1.0
+> +      - 2 # VDDA * 1.1
+> +      - 3 # VDDA * 1.2
+> +      - 4 # VDDA * 1.3
+> +      - 5 # VDDA * 1.4
+> +      - 6 # VDDA * 1.54
+> +      - 7 # VDDA * 3.12
+> +    default: 0
+> +
+> +  nuvoton,sar-compare-time:
 
-commit ab574d1629552b6831cd91b926b38092c15d6142 upstream.
+Use proper unit suffix from property-units in dtschema.
 
-USB-audio driver can still submit URBs while the device is being
-disconnected, and it may result in spurious error messages like:
-  usb 1-2: cannot submit urb (err = -19)
-  usb 1-2: Unable to submit urb #0: -19 at snd_usb_queue_pending_output_urbs
-  usb 1-2: cannot submit urb 0, error -19: no device
-Although those are harmless, they are just ugly.
+Also, Sashiko feedback needs to be addressed.
 
-This patch tries to avoid spewing such error messages when the device
-is already at the disconnected state.  It also skips the superfluous
-xfer notification, too.
-
-Link: https://lore.kernel.org/r/20230828101924.27107-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Lee Jones <lee@kernel.org>
----
- sound/usb/endpoint.c | 40 +++++++++++++++++++++++++++-------------
- 1 file changed, 27 insertions(+), 13 deletions(-)
-
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index dd81c94cbb52..167eefc14d82 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -520,13 +520,18 @@ int snd_usb_queue_pending_output_urbs(struct snd_usb_endpoint *ep,
- 			return -EPIPE;
- 		}
- 
--		err = usb_submit_urb(ctx->urb, GFP_ATOMIC);
-+		if (!atomic_read(&ep->chip->shutdown))
-+			err = usb_submit_urb(ctx->urb, GFP_ATOMIC);
-+		else
-+			err = -ENODEV;
- 		if (err < 0) {
--			usb_audio_err(ep->chip,
--				      "Unable to submit urb #%d: %d at %s\n",
--				      ctx->index, err, __func__);
--			if (!in_stream_lock)
--				notify_xrun(ep);
-+			if (!atomic_read(&ep->chip->shutdown)) {
-+				usb_audio_err(ep->chip,
-+					      "Unable to submit urb #%d: %d at %s\n",
-+					      ctx->index, err, __func__);
-+				if (!in_stream_lock)
-+					notify_xrun(ep);
-+			}
- 			return -EPIPE;
- 		}
- 
-@@ -593,12 +598,17 @@ static void snd_complete_urb(struct urb *urb)
- 		prepare_inbound_urb(ep, ctx);
- 	}
- 
--	err = usb_submit_urb(urb, GFP_ATOMIC);
-+	if (!atomic_read(&ep->chip->shutdown))
-+		err = usb_submit_urb(urb, GFP_ATOMIC);
-+	else
-+		err = -ENODEV;
- 	if (err == 0)
- 		return;
- 
--	usb_audio_err(ep->chip, "cannot submit urb (err = %d)\n", err);
--	notify_xrun(ep);
-+	if (!atomic_read(&ep->chip->shutdown)) {
-+		usb_audio_err(ep->chip, "cannot submit urb (err = %d)\n", err);
-+		notify_xrun(ep);
-+	}
- 
- exit_clear:
- 	clear_bit(ctx->index, &ep->active_mask);
-@@ -1646,11 +1656,15 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
- 			goto __error;
- 		}
- 
--		err = usb_submit_urb(urb, GFP_ATOMIC);
-+		if (!atomic_read(&ep->chip->shutdown))
-+			err = usb_submit_urb(urb, GFP_ATOMIC);
-+		else
-+			err = -ENODEV;
- 		if (err < 0) {
--			usb_audio_err(ep->chip,
--				"cannot submit urb %d, error %d: %s\n",
--				i, err, usb_error_string(err));
-+			if (!atomic_read(&ep->chip->shutdown))
-+				usb_audio_err(ep->chip,
-+					      "cannot submit urb %d, error %d: %s\n",
-+					      i, err, usb_error_string(err));
- 			goto __error;
- 		}
- 		set_bit(i, &ep->active_mask);
--- 
-2.56.0.506.g506a7eabc5-goog
+Best regards,
+Krzysztof
 
