@@ -2,33 +2,33 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34CAB606A31C
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Nov 2026 11:06:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A5D8606A88D
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Nov 2026 14:32:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=e43X1tqp
+	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=J6pYBAoi
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3AF6E60209;
-	Wed, 11 Nov 2026 12:05:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AF6E60209
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4F08601FF;
+	Wed, 11 Nov 2026 15:32:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4F08601FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1794395162;
-	bh=tVfrf99530vTauGYkyqZln0zHUBt4SaNrwyRXcwHjJs=;
+	s=default; t=1794407577;
+	bh=PZJNEk7IavCVaVNp5f89Yc3dcCBfLfgmr7eMexZTJo0=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=e43X1tqpJCg8qI7fjr1lnMcureGoP/TtsieS6bVMhIcSPRjHuTks38IHt9X7Pkqcm
-	 6VOeYM+dkQh069MOb8Gc6MGoWIYvBWDrg9wAbukay7BQOiAkMbt7vCwLNCFy1XtqRv
-	 rT68zfqJkb3DNmQXJNvxc2RSb7LN9EgU5mfzPpQk=
+	b=J6pYBAoirxjctD4Kh7mWZaal1iw1xX9z9/YOI9Ng3h/qDDoD0agw5VyjWqv2JVERk
+	 cE6NPXBOjIhU88o5ZjSV82ZZMI5WE/ddf/CQ7RjJdx1UEBmH5RmCLnCygAYTxw7EXL
+	 +Qiuc/+P6i3O7WqT4vNk+pSkqiACXbV/BKLpzFmk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AADD9F805FC; Wed, 11 Nov 2026 12:05:26 +0100 (CET)
+	id C08EAF805F9; Wed, 11 Nov 2026 15:32:23 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AAB3DF805FF;
-	Wed, 11 Nov 2026 12:05:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A2F3F805FF;
+	Wed, 11 Nov 2026 15:32:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D3421F80537; Wed, 11 Nov 2026 12:05:19 +0100 (CET)
+	id 3294EF80537; Wed, 11 Nov 2026 15:32:16 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
@@ -37,42 +37,41 @@ X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_PASS,SPF_PASS autolearn=ham
 	autolearn_force=no version=4.0.1
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1794395119;
-	b=g9YZ3t8jS2VJ0M4qOD9GYWOSJuuF4PjkJu9iT1YoxMx26+ifcRvWarch5Xbtp8Sfcfk6
-	 mTkv4hHa6fNsNU4aqXMZGq+AMupR2Cum6XygLWgXiJbCnZZ81H15X2XA5+lr49+ZUBGsu
-	 0uSUDbQQm/5wFwLNjRdu0FcRymfjx5xRivWE1gVN40V9kA9qaoMVkpK9dDL2OZ96dcufz
-	 +Y2FiblwXnxVQumXxSRTD84TK9zETZk2r64ds+/JXZjacIETxUNRnAMvNWl9emTQqSEAl
-	 tBoSB5jRrMVrF79WCUWRImYLAisIpjjUUkGgdMxEJduKx++rfiH1F5qMQDdQ9mnWcEg==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1794407534;
+	b=g/xIbE45ESgfqCoCktj9l5Y49Dh/uRe/DPdHFC/CUm0YVxYbtqU90Ekdozya1/56b++Y
+	 hNDXVKF0CpLPaEg7hZof4qTpBw1r6194Pk48Pa77UJugdO3u9FreEE9fNRRPDzBUs1tJe
+	 gzfH4nxlaHZ8ThcjDzZ1OfyE3fdIXpTVLjfUevI3Su5ZX3OhDXKDvvxTREwk0V7SkLQyf
+	 QXimpkcM9caATTVUw3SxL6KxQQR7fGQTyYE5T09iHOOSlcdIXz7Dv4K7LMmlSjZCeEMZT
+	 EfD87DPh5vPabXTYXVvGTQ2EZuetXL1HceAgLhAuclsiF3wmsScGhR3dSdN6WWNnyTA==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1794395119;
+	c=relaxed/simple; t=1794407534;
 	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=tVfrf99530vTauGYkyqZln0zHUBt4SaNrwyRXcwHjJs=;
-	b=jIhK4KUQ6VgB689dPrNx9A3dsyOmJyDGeGq/3qR/5c24uYeW7sg/bCE/EjXR/LDq/3pw
-	 +Jssp/4xSl38geI/t6WaLRaVWyLWhmV50/isF6w/l7JC3g1qBL6DL0f64Y2D7KvB5+fb2
-	 hR0XXxWreCvSVPIrk2pVfHyJ4ALXmY7IMP1XHOdKMLh5PfPOvHiDVbCBII8DJnnr9efSk
-	 Xqj1EnUK4AqXQqwyo0h0ML+aio77qEbQ0dSpl31Nyh1vJ3UMJsmxRX5JYs7csl6a/o+5b
-	 UvZtlzgd/3jEPCBs+ffQqQiw3wEhwqjK6WLMyK4HCcY9EJVHRh5Nq7FAGkAU8sCYSGg==
+	bh=PZJNEk7IavCVaVNp5f89Yc3dcCBfLfgmr7eMexZTJo0=;
+	b=YHN7cMRN0PB+ObLTfj3EgLgdpL0AuZjzgT5ozz0YN1x8CiRecud1Ks1Mc/ELg1we3pmb
+	 Gi1GVjMlAxoBqQyrlP2pypvHJfgWOu0UvX0TD2CbDFdNLmZ4MbwWtm2PdCOwcCLcJNqI9
+	 V0gx8cbSC3Q1r8Jg8kUIF1UqnbNKE0wdpK1YxuwgnQ1nv09AEF6SEd5n8F8Tat94/Y8eQ
+	 r5ez2MSpLBRjDwfWzoYTq+q1YHP0LgGH5RE39aJ/Npc7X0dO+kNLg68u3J+rSuNufSofs
+	 ujOZW3l3bbTa2cmB/NeeBoENFsneEh08I0X2e/nWJ7f2zEPe3iZ04zMUeASPSug4Usw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
 	arc=none smtp.remote-ip=45.14.194.44
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id DCD16F80020
-	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2026 12:05:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCD16F80020
+	by alsa1.perex.cz (Postfix) with ESMTP id 95198F8014C
+	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2026 15:32:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95198F8014C
+Content-Type: text/plain; charset="utf-8"
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 From: GitHub pull_request - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18e6f8da2606f100-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-ucm-conf/pr/906@alsa-project.org>
-References: <alsa-project/alsa-ucm-conf/pr/906@alsa-project.org>
-Subject: ucm2: Qualcomm: Radxa Dragon Q6A: keep the headphone route when using
- HDMI
-Date: Wed, 11 Nov 2026 12:05:19 +0100 (CET)
-Message-ID-Hash: W5TJL7Y3D6FRPXGQBAU37PLNJ2RZI4B3
-X-Message-ID-Hash: W5TJL7Y3D6FRPXGQBAU37PLNJ2RZI4B3
+Message-Id: <18e70424dacfcd00-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-lib/pr/541@alsa-project.org>
+References: <alsa-project/alsa-lib/pr/541@alsa-project.org>
+Subject: pcm: mmap_emul: report own appl_ptr in status
+Date: Wed, 11 Nov 2026 15:32:16 +0100 (CET)
+Message-ID-Hash: VMIBQ3TWRJLK5KYKW6S6N5IQU6LLPKDH
+X-Message-ID-Hash: VMIBQ3TWRJLK5KYKW6S6N5IQU6LLPKDH
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -84,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W5TJL7Y3D6FRPXGQBAU37PLNJ2RZI4B3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VMIBQ3TWRJLK5KYKW6S6N5IQU6LLPKDH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,38 +91,42 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #906 was opened from MarcHT91:
-
-MultiMedia1 (hw:0) feeds the headphones and MultiMedia2 (hw:1) feeds
-DisplayPort/HDMI. Each AudioReach back end accepts a single front end, so
-connecting MultiMedia2 to RX_CODEC_DMA_RX_0 disconnects MultiMedia1.
-
-The HiFi verb did exactly that ('RX_CODEC_DMA_RX_0 Audio Mixer
-MultiMedia2' = 1), and the HDMI device then wrote 0 to the same control,
-which on current kernels also clears the back end's link. After
-
-  alsaucm -c hw:0 set _verb HiFi set _enadev HDMI
-
-the headphones are disconnected, and a stream started on hw:0 never
-advances (hw_ptr stays at 0):
-
-  before: RX<-MM1=on   RX<-MM2=off  DP<-MM2=on
-  after:  RX<-MM1=off  RX<-MM2=off  DP<-MM2=on
-
-Keep each front end on its own back end: the verb clears the unused
-routes and connects MultiMedia1 to the headphones, and the HDMI device
-only switches 'DISPLAY_PORT_RX_0 Audio Mixer MultiMedia2'. The zero
-writes come before the connections, so the order is also safe on kernels
-where writing 0 to a route control drops whatever link the back end has
-(fix sent to ASoC: "ASoC: qcom: audioreach: only disconnect the route a
-mixer control owns").
-
-Tested on a Radxa Dragon Q6A: verb only, verb + HDMI, verb + Headphones
-+ HDMI, HDMI enable/disable: the headphone route stays connected in all
-cases.
-
-Fixes: 67628fb4871e ("ucm2: Qualcomm: add Radxa Dragon Q6A")
-
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/906
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/906.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+YWxzYS1wcm9qZWN0L2Fsc2EtbGliIHB1bGwgcmVxdWVzdCAjNTQxIHdhcyBvcGVuZWQgZnJvbSBh
+bmR5LWJyaWdodHNpZ246CgpJbiBtbWFwX2VtdWwgbW9kZSB0aGUgbW1hcF9lbXVsIFBDTSBrZWVw
+cyBpdHMgb3duIGFwcGxfcHRyIGFwYXJ0IGZyb20gdGhlIHNsYXZlLiBBIHBsYXliYWNrIGNvbW1p
+dCBmb3J3YXJkcyBpdCBhbmQgdGhlbiB3cml0ZXMgdGhlIG5ldyBmcmFtZXMgdG8gdGhlIHNsYXZl
+IHdpdGggc3luY19zbGF2ZV93cml0ZSgpLiBUaGUgY29tbWl0IHJldHVybnMgdGhlIGZ1bGwgc2l6
+ZSBldmVuIHdoZW4gdGhhdCB3cml0ZSBmYWlscyBvciBjb21lcyB1cCBzaG9ydCwgZm9yIGV4YW1w
+bGUgYWZ0ZXIgYW4geHJ1bi4KClRoZSBzdGF0dXMgb3Agd2FzIHNuZF9wY21fZ2VuZXJpY19zdGF0
+dXMoKSwgd2hpY2ggcmV0dXJucyB0aGUgc2xhdmUgYXBwbF9wdHIuIFdoZW4gYSBwbHVnaW4gc3Vj
+aCBhcyBzb2Z0dm9sIHNpdHMgYWJvdmUgbW1hcF9lbXVsLCBpdHMgYXBwbF9wdHIgZm9sbG93cyB0
+aGUgbW1hcF9lbXVsIG9uZS4gQWZ0ZXIgYSBzaG9ydCB3cml0ZSB0aGUgdHdvIGRpZmZlciBhbmQg
+c25kX3BjbV9wbHVnaW5fc3RhdHVzKCkgYWJvcnRzIG9uCgogIHBjbV9wbHVnaW4uYzogc25kX3Bj
+bV9wbHVnaW5fc3RhdHVzOiBBc3NlcnRpb24KICBgc3RhdHVzLT5hcHBsX3B0ciA9PSAqcGNtLT5h
+cHBsLnB0cicgZmFpbGVkLgoKVGhpcyBoYXBwZW5zIHdpdGggYW55IGh3IFBDTSB3aG9zZSBkcml2
+ZXIgbGFja3MgbW1hcCBzdXBwb3J0IHdoZW4gaXQgaXMgdXNlZCB0aHJvdWdoIHBsdWcgd2l0aCBz
+b2Z0dm9sIGFib3ZlIGl0LCBvbiB0aGUgZmlyc3QgeHJ1biBmb2xsb3dlZCBieSBzbmRfcGNtX3N0
+YXR1cygpLiBXZSBoaXQgaXQgb24gYW4gTEcgU29DIHdob3NlIEFMU0EgZHJpdmVyIG9ubHkgb2Zm
+ZXJzIFJXIGFjY2Vzcywgd2hlcmUgbXB2IGFib3J0cyBvbiB0aGUgZmlyc3QgeHJ1bi4KCkl0IGFs
+c28gcmVwcm9kdWNlcyB3aXRob3V0IGhhcmR3YXJlLCB3aXRoIGEgbGluZWFyIFBDTSBvdmVyIG1t
+YXBfZW11bCBvdmVyIGFuIGlvcGx1ZyBzbGF2ZSB0aGF0IG9mZmVycyBvbmx5IFJXX0lOVEVSTEVB
+VkVEIGFjY2VzcyBhbmQgZmFpbHMgb25lIHRyYW5zZmVyLiBXaGV0aGVyIHRoYXQgdHJhbnNmZXIg
+cmV0dXJucyAtRVBJUEUgKHN0YXRlIFhSVU4pIG9yIC1FSU8sIHRoZSBuZXh0IHNuZF9wY21fc3Rh
+dHVzKCkgb24gdGhlIGxpbmVhciBQQ00gYWJvcnRzLgoKQWRkIGEgc3RhdHVzIG9wIHRoYXQgcmVw
+b3J0cyB0aGUgbW1hcF9lbXVsIGFwcGxfcHRyIGluIGVtdWxhdGlvbiBtb2RlIGZvciBwbGF5YmFj
+ay4gSXQgdGFrZXMgdGhlIGZyYW1lcyBub3QgeWV0IHdyaXR0ZW4gdG8gdGhlIHNsYXZlIG91dCBv
+ZiBhdmFpbCwgYW5kIGFkZHMgdGhlbSB0byBkZWxheSBvbmx5IHdoaWxlIHRoZSBzdHJlYW0gaXMg
+cnVubmluZyBvciBkcmFpbmluZywgYmVjYXVzZSB0aGUga2VybmVsIHN0YXR1cyByZXBvcnRzIG5v
+IGRlbGF5IGluIG90aGVyIHN0YXRlcy4gQSBjb3VudCBhYm92ZSB0aGUgYnVmZmVyIHNpemUgbWVh
+bnMgdGhlIHR3byBhcHBsX3B0cnMgYXJlIG91dCBvZiBzeW5jLCBhcyBhZnRlciBzbmRfcGNtX3Jl
+c2V0KCkgb24gYSBydW5uaW5nIHN0cmVhbSwgYW5kIGlzIGlnbm9yZWQuIE5vbi1lbXVsYXRlZCBh
+bmQgY2FwdHVyZSBzdHJlYW1zIGFyZSB1bmNoYW5nZWQuCgpUZXN0ZWQgd2l0aCBhIGhvc3QgcmVw
+cm9kdWNlcjogbGluZWFyIOKGkiBtbWFwX2VtdWwg4oaSIGFuIFJXLW9ubHkgaW9wbHVnIHNsYXZl
+IHdob3NlIHdyaXRlIGZhaWxzLiBNYXN0ZXIgYWJvcnRzIGluIDMgb2YgNSBzY2VuYXJpb3MgYW5k
+IHBhc3NlcyBhbGwgNSB3aXRoIHRoaXMgcGF0Y2guIE9uIHRoZSBhZmZlY3RlZCBkZXZpY2UgKGEg
+ZHJpdmVyIHdpdGhvdXQgbW1hcCBzdXBwb3J0LCB1c2VkIHRocm91Z2ggcGx1ZyB3aXRoIHNvZnR2
+b2wpLCBhcGxheSBhc3NlcnRlZCBpbiA1IG9mIDYgcnVucyBiZWZvcmUgdGhlIHBhdGNoIGFuZCBp
+biAwIG9mIDIwIGFmdGVyLgoKUmVxdWVzdCBVUkwgICA6IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNh
+LXByb2plY3QvYWxzYS1saWIvcHVsbC81NDEKUGF0Y2ggVVJMICAgICA6IGh0dHBzOi8vZ2l0aHVi
+LmNvbS9hbHNhLXByb2plY3QvYWxzYS1saWIvcHVsbC81NDEucGF0Y2gKUmVwb3NpdG9yeSBVUkw6
+IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXByb2plY3QvYWxzYS1saWIK
