@@ -2,193 +2,172 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E6CA606A31C
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2026 12:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36EAC606A31C
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2026 12:41:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=Hm3yQ+RC;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=z0cH6vr3;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=IzWHx5my;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=EHyjbC6m;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=qpXHmoM8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=DxJ94J5G;
+	dkim=pass (1024-bit key, unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=R76bWQkP
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B94D16022E;
-	Thu, 12 Nov 2026 13:40:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B94D16022E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8384460228;
+	Thu, 12 Nov 2026 13:41:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8384460228
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1794487225;
-	bh=oH0lh3Dwg11s1nJnqHC5f/UqlLmbH/d3uXicSa0ILQA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1794487294;
+	bh=BAncrBsdNlNWzNdvwfDhlrjYFQfLOXCf3/Al1uQpYM4=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Hm3yQ+RCZl3g/YpJxuwImi5S/ogM7pjIicspWyRbZHyWadFRKdahzt7h/V5FZazJ6
-	 oPne5bcBbAXJj3CK5SuPCBs7thmF9w52dkA630zMQqPQLrGN0+kR3fe5BzdxoeudHf
-	 nk6i9m+1E97TS/y8wbquokl60r4eRO0ZJK32qTsA=
+	b=DxJ94J5GyJtDJ8oLXaW9we1YNnQNRdODsaLyYhlP2QHEJTECf/dP7ss/zSy9zPCx8
+	 FyS+B6LVAMHc3VtfACPvnIX1shug5sPIahKhFfMPbVVdjYKkK9l6zjqa0kEoTJWip9
+	 B4Z7y4lNC8tHtLAAe1a+PRonFahxaiVjYnU1OrYI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 14D36F805F9; Thu, 12 Nov 2026 13:39:51 +0100 (CET)
+	id 4CDC8F80604; Thu, 12 Nov 2026 13:40:59 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 655CAF80600;
-	Thu, 12 Nov 2026 13:39:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9035F80600;
+	Thu, 12 Nov 2026 13:40:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0FD0EF8016E; Thu, 12 Nov 2026 13:39:44 +0100 (CET)
+	id 12015F8016E; Thu, 12 Nov 2026 13:40:52 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=no
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=4.0.1
 Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.131
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1794487183;
-	b=TBOP7z7tvfSgn9kgrkxQZDSszTNXwRId8T0wULIv7BBpEuemPf04pypr+5AJiQoW8lMV
-	 F5YAkCnIB0RJ2crBMmwxMraxh8utnfrCj4ign5BektGCw5JH79iLXTh6SkgKnzXKIyS4B
-	 a/vMHv36eR0NCJo0y7u92/E6vvkroxQiOHnlft3QAXG6gBo8ml56V3PKoA/NzIoxkL5EL
-	 cd9CxnWHwfeUh3tQj/9QvjxCGIjDQ+C55k/o6VJ27+jTodULqYMxUMs25yr3j6pu+9J2J
-	 fY30APySGfBCIRYNRNkF1F+vVEeEdOL/XyoUzxhC0ssu2xqwzJYRdsuprPavSgTQ93w==
-ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1794487183;
-	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
-	 Message-ID:From:To:Subject:MIME-Version;
-	bh=oH0lh3Dwg11s1nJnqHC5f/UqlLmbH/d3uXicSa0ILQA=;
-	b=UqJ8lDLqFX6xra6E5tzfOKrA04E9ArTDSJR+KiwruUOViply1z9povfJCANiWYoo6lXB
-	 E9qD24J24C+OgvY9gcFMj997Ka87EfIbU6jKTXSz1fNS5olCKhfn3c9PIQRvyqXv24aQI
-	 NIOKps2RJ/fs7s9UP+Xi4i699wib2BEOS/+58h0V8mbuafXL//CInDXfq31CJkcr+W86I
-	 8vRGOysyHsUKIvzXRgSg/dC9ubSYDRCiP8xumsMEr7U9+C+1/Y+FgMRbiqoiqlKH91VlA
-	 aLReG4S6y5hd/JMpTxe147kU3RnxaagK4cwqRpinUZpp2CB2taf0Ik+GICzhG+sYXsw==
-ARC-Authentication-Results: i=1; alsa1.perex.cz;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=z0cH6vr3;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=IzWHx5my;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=EHyjbC6m;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=qpXHmoM8;
-	arc=none smtp.remote-ip=195.135.223.131
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ arc=pass header.oldest-pass=0 smtp.remote-ip=40.107.201.37
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1794487250;
+	b=cLkXs1/2oufZhwjhzxXQP9oUEctiLAZduNZl+sMmg63mSyUR4bCUkQBas+YqoExQO1sQ
+	 i7byoI+oEvWaa5fj3MvKzQIrjyet/8aUzyvPOBhP6iC6lw+XGtaNWwFxvaTe/kcX8lDUN
+	 UVb/HbWs0Gtvitko0PfW0tKpKNJ8W8Y6eC68QeTJuNRsbrQrik7H5eL0esefoEGQq2/7o
+	 E+kbrAfGvGHofWYuHYHziMBJ83HoFId5NaOAckoxroISQ31Fn3bZInIaEqhhjGc089Zli
+	 /kfGorNlq5O4IQwoZuYtwTfNJ2eITVW2bfeD4/68mB0WLpw0gJ5zURaFkUIjfovA56w==
+ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1794487250;
+	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=BAncrBsdNlNWzNdvwfDhlrjYFQfLOXCf3/Al1uQpYM4=;
+	b=bSzqzFg5H7Snjepwyv1G/0uPa+XiH9xhjaG9UJRIprGWmdM2eFUrzQa/GQgVUnQR/Vhv
+	 GQNghp4VbX3ZJklygnWXzeF1i7NDKDyvvp7IxhM6zqMjPvuiKOO5oetG8yhYckIFlxTJ3
+	 PJ69B6CTetAOmqOsR3WK51FOiEUgQ7MWLiJpHlTuHZcDLyZ3AiLlG15HABOWiG5Tp+vJW
+	 JQV+2axasSw6nb256IofylVRaCAurLXSmVZ7dGd2MWLLWSXxSldCy/rU6i3xnnNXO7R+o
+	 jKEBA8SWQaeB94io9CQOfsKvlvod2jC8ytzu+pnP1aJ/nXPzsLWtAFh/Hh60RMv48dA==
+ARC-Authentication-Results: i=2; alsa1.perex.cz;
+	dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=R76bWQkP;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=40.107.201.37
+Received: from CH4PR04CU002.outbound.protection.outlook.com
+ (mail-northcentralusazon11013037.outbound.protection.outlook.com
+ [40.107.201.37])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 28B86F800DF
-	for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2026 13:39:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28B86F800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id 16997F800DF
+	for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2026 13:40:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16997F800DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=z0cH6vr3;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=IzWHx5my;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=EHyjbC6m;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=qpXHmoM8
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D5C451F388;
-	Thu, 12 Nov 2026 12:39:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1794487181;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8kiwSirOigF/qJvwquSbpNG7fgBeF8dwYpmmK5AWpf0=;
-	b=z0cH6vr3S1IkK37jprtC0FQQgCKTnSNWRndG9RSkWambM5BBi0a5sHBhgftRAli793oY0R
-	fOTYID3XTKGtZ7T0ljy4XHcxfw/JTKIJ6xqsvnVXs2GWx8k5RcQzF80M0pUj/ylgH2tf4h
-	yduA2wvRp/6aftrE5fhCG/NzYR6oMVk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1794487181;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8kiwSirOigF/qJvwquSbpNG7fgBeF8dwYpmmK5AWpf0=;
-	b=IzWHx5myU8g4iOqmQYQho6FMRa+qAJX8MDzODdWwEgIL3bGNfBHfTRfAD2jP1GtTxAViB9
-	ztuY8tjQnuqsUFAw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=EHyjbC6m;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=qpXHmoM8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1794487180;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8kiwSirOigF/qJvwquSbpNG7fgBeF8dwYpmmK5AWpf0=;
-	b=EHyjbC6mJfVsJBLRQ45FpJeZD37cuKi3OfZyQ0xQK889uqHQpiGygzmiJeXQhQ7xziLcuC
-	Fxj+pLSB56huJINZsmGeXsxZFySQxdxiMlY2Z5R6HQaZqognE50XNlczikpFUgdmf2UyjA
-	mRDU2bd/JvmuGjv8p4E9ye27w2pvaoU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1794487180;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8kiwSirOigF/qJvwquSbpNG7fgBeF8dwYpmmK5AWpf0=;
-	b=qpXHmoM8AQ9klj3QPsG64zGQsmNHCN5FebGSv/AY2UeOKKqbwSQYzVAr7ZSa5J6SeyRuoS
-	vBh3rbKPw5v5b9DQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9755D13432;
-	Thu, 12 Nov 2026 12:39:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id zZ/BG4yz9WodTwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 12 Nov 2026 12:39:40 +0000
-Date: Thu, 12 Nov 2026 13:39:40 +0100
-Message-ID: <87jymirzoz.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kailang <kailang@realtek.com>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>,
-	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
-Subject: Re: Remove Headphone MIC support
-In-Reply-To: <3c8129fbfa6d4ee2b464735f2f31dffa@realtek.com>
-References: <3c8129fbfa6d4ee2b464735f2f31dffa@realtek.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+ unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=R76bWQkP
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=lm7v6qZ3vRRvQbkYDFrOtqS7/LRnGlw0oooA6ZwGGu39qbUJRq8fDPgwGnRGYV7G2zUo4Q8p/FhQ8c/HgalOPbUAy4NUdoOO2CIhi5QLkli1GRyBzHFAZNbFOFP8SUlRYDAF3u+NTC3Nd+ZDzN9zY2r4rXVzo+G82ZMdBvt0ZNknvKWzjk4Q5dzp2OPif6ob5WdX53Dhtq4ZPts+EkUYkN9zHJqmC7ey/xyS27fq7paYqgO21QbNgSbvLH6o0ui0pNABMqzSQqJPRoBoYa+9Fmykc+abcPdeHBRR5T9x+IwSgvatcwSeTsFTpTHAPVGZt1KJgb/Qjj41F4YyyADaFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vRkwHrPVos3vfZloaWmmzHjkqim7GMHw2Ljabh2N/78=;
+ b=v41Id+eJadBDo7MoOIRJEAtF0vcKGtvlf+oHc0NRMW9q7mVcsATEp9IvpJ5phmfAGC9pkV4QQQ5tklH9WSXKslP/yYmClfskxxcVVHxb9pKGEkGXqEwgADmmu0KcaoJ1S3xySBa2bgCja9srMDGBtg9wkJv+boD/TNt6PyEXjhNoLygrAgwGPKk/3Y9RTTWUUi53RA6GXoJj6j3h/IUng7rFbBJZAQjLdEMrO/p/lE5hNuQmZ2mU978FLgxQrRjcdJ6R/napx9neL3me0+oEVAF23PocXItezsgxUBUkcqBIEve1NBXoQwYbpYfiHHbGewN+AwRbKWPS91jlmCB+DA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vRkwHrPVos3vfZloaWmmzHjkqim7GMHw2Ljabh2N/78=;
+ b=R76bWQkPARIEMXC1b8ldQy38fRCb8EOBjCAqFxKtdcnvusRypSqNZ3+8ZCSIjw/TW6C/Cw/zGOmYg06AIqOkcXSxCSeoWogzN383i1kzx7F36D6pVl/iGgYl4jJvxigbf4JY0xdWkRXcvo4AL96cGKmD5cf5KeZ/iVx3hgXAgxQ=
+Received: from CYZPR12CA0008.namprd12.prod.outlook.com (2603:10b6:930:8b::9)
+ by DS0PR12MB7873.namprd12.prod.outlook.com (2603:10b6:8:142::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.615.9; Thu, 12 Nov
+ 2026 12:36:47 +0000
+Received: from PH3PEPF00059618.namprd05.prod.outlook.com
+ (2603:10b6:930:8b:cafe::8b) by CYZPR12CA0008.outlook.office365.com
+ (2603:10b6:930:8b::9) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.615.9 via Frontend Transport; Thu, 12
+ Nov 2026 12:36:47 +0000
+X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
+ is 165.204.84.17) smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
+Received: from satlexmb07.amd.com (165.204.84.17) by
+ PH3PEPF00059618.mail.protection.outlook.com (10.167.243.22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.615.4 via Frontend Transport; Thu, 12 Nov 2026 12:36:47 +0000
+Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.53; Thu, 12 Nov
+ 2026 06:36:46 -0600
+Received: from amd-B550M-DS3H.amd.com (10.180.168.240) by satlexmb08.amd.com
+ (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.53 via Frontend
+ Transport; Thu, 12 Nov 2026 06:36:41 -0600
+From: Syed Saba Kareem <syed.sabakareem@amd.com>
+To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
+CC: <Vijendar.Mukunda@amd.com>, <anson.tsao@amd.com>,
+	<Sunil-kumar.Dommati@amd.com>, <mario.limonciello@amd.com>, "Siva Subramanian
+ Ravi Saravanan" <sravisar@amd.com>, Syed Saba Kareem
+	<Syed.SabaKareem@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, "Jaroslav
+ Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Venkata Prasad
+ Potturu" <venkataprasad.potturu@amd.com>, Arnd Bergmann <arnd@arndb.de>,
+	"Randy Dunlap" <rdunlap@infradead.org>, Pierre-Louis Bossart
+	<pierre-louis.bossart@linux.dev>, open list <linux-kernel@vger.kernel.org>,
+	"open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+	<linux-sound@vger.kernel.org>
+Subject: [PATCH v4 4/6] ASoC: amd: acp: add SOF function topology support
+Date: Thu, 12 Nov 2026 18:05:39 +0530
+Message-ID: <20261112123603.2891858-5-syed.sabakareem@amd.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20261112123603.2891858-1-syed.sabakareem@amd.com>
+References: <20261112123603.2891858-1-syed.sabakareem@amd.com>
 X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-12.51 / 50.00];
-	SUSE_INTERNAL_BYPASS(-9.00)[];
-	BAYES_HAM(-3.00)[99.99%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: D5C451F388
-Message-ID-Hash: 3D5TPAZFDKIXVN6CJTTA2XOZQOI7SWTU
-X-Message-ID-Hash: 3D5TPAZFDKIXVN6CJTTA2XOZQOI7SWTU
-X-MailFrom: tiwai@suse.de
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH3PEPF00059618:EE_|DS0PR12MB7873:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5d826f6d-1d1b-475e-4237-08df40b99df7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: 
+	BCL:0;ARA:13230040|36860700016|82310400026|1800799024|7416014|23010399003|376014|22082099003|18002099003|6133799003|261009223027099003|10067099003|11063799006|261021123027099003|56012099006|261102123227099003|261028144727099003|261026121527099003|261022105027099003|261026140227099003|261022075727099003|261021121427099003;
+X-Microsoft-Antispam-Message-Info: 
+	VwocheUUtE7mlKK+sO27e1mFNc+I8mCGe7lb3mTdzPDcJDs6rjwMkRho7zSZfy/gbxFDodvmKRb9um7IEwYTtu8P6qWM6yTTwrCsCfI+oGBLJ7L+b1YJUT1IQxxNe+eeZ3jpmUxo/JQiVn1Ju2tiJRrV2MWDVpR7xw+nJGUelmkaWBLkQxL6qEnm2SCXn014XmmccFrrX6jl1pDZHag6AzCjPAbIOOJKUQugWPz/4Ujl3x7xljjHlX9OGVZItCa/KuxKJl0osyoWGXTIDJmI2k0bMIvPM94A0HFMxBAOAoDvUPHjYhoulWJ2Iy8slbprp8oUMl6a0r2tt0PLeZpwUROcq+2CdIzVVhfAsSNcH2t6bmxTJ/4Y9rs+xQoageuWi5othQ6Ueg+E6b+tcfhilbCRQvnDoaT7A/jyvxtDhEwL1Rh0YmPZuDBeXEKkeuuP7TRxtHBsuHmDdRc5+c6112kb3i182DaboDIu473KCotdYAGf/zVhTAPLkpZXVCDtLwbRQ00hSrPlOUPS42IF7pF1zesRgs/Lz7ZSkG797OXIbKn/3ZQWheuqqYvual3LOdCGQHkADQ77XNV+w5560pV7u5gtKovoj414Q4JCEH8LJI7UV1P2QsWn7rLY7Bjzv3hcqWqhp/ndd44os56B8i4C10GGYG7Ad81blvVmDXyNXxfSCm9Bu8YwUni5aXDuSmuON3zTOV5SYEQrnSWL0Q==
+X-Forefront-Antispam-Report: 
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700016)(82310400026)(1800799024)(7416014)(23010399003)(376014)(22082099003)(18002099003)(6133799003)(261009223027099003)(10067099003)(11063799006)(261021123027099003)(56012099006)(261102123227099003)(261028144727099003)(261026121527099003)(261022105027099003)(261026140227099003)(261022075727099003)(261021121427099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	C6xuU+wm1RjC0K8hnlMlmbImCB/mjXIPgXFYQtCVUwXNMaZVR2yaYzl7fralpz54XwIDHKAuEui26C0nV6qAHXM0IRF03rywwBM54FrZoLzWnRWtqyEi7AeWqAiFmG1bskbFKU3uxEU6ZRc8ouueLghKKKfAhq/Ug+cBRc2SEoWuJwcQcaNahhptQIez5tkvmLM6ycdRk/nG4Wx6gLUABjAB+7udjljK4VVofAzghyujKikfrLDArDyS9mnSsLzAQMm92L44bsOOn0EXwgJHr3RI3WmgYce8o/mxQXtO3hZ8xyg9I6oGrB1Oe6WlKIgQsIyF21a1KVN2hdjmkhhWZBy8Ri90LMNQiIovhisvFG/xIEw93Zzda+/z0HKMy/jADXy5Ozf6/e/VLqs7ErnnAQh4EhUB07rkjska+LNJzwj7fNbeIRoOhYrnjCq8FBt9
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2026 12:36:47.2414
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 5d826f6d-1d1b-475e-4237-08df40b99df7
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
+ TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: 
+	PH3PEPF00059618.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7873
+Message-ID-Hash: TSMROI5GOYMHESTEF2SMJE3GG6K3MG5J
+X-Message-ID-Hash: TSMROI5GOYMHESTEF2SMJE3GG6K3MG5J
+X-MailFrom: Syed.SabaKareem@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -199,7 +178,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3D5TPAZFDKIXVN6CJTTA2XOZQOI7SWTU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TSMROI5GOYMHESTEF2SMJE3GG6K3MG5J/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -207,16 +186,272 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 
-On Thu, 12 Nov 2026 08:59:14 +0100,
-Kailang wrote:
-> 
-> Hi Takashi,
-> 
-> Dell QC DT unit don't support Headphone MIC.
-> This patch was changed model to NO Headphone MIC model.
-> This modify also fixed headphone popping noise issue.
+From: Siva Subramanian Ravi Saravanan <sravisar@amd.com>
 
-Applied now.  Thanks.
+Add amd_sof_sdw_get_tplg_files() to build the list of SOF function
+topologies from the card DAI links, so that a card can be formed from
+per-function topologies instead of one monolithic topology per codec
+configuration.
 
+Add the ACP topology device IDs (SND_SOC_ACPI_TPLG_DEVICE_ACP_SDW_JACK,
+SND_SOC_ACPI_TPLG_DEVICE_ACP_SDW_AMP, SND_SOC_ACPI_TPLG_DEVICE_ACP_SDW_MIC
+and SND_SOC_ACPI_TPLG_DEVICE_ACP_DMIC) to enum snd_soc_acpi_tplg_device_id
+and the corresponding cases to snd_soc_acpi_sof_get_tplg_filename(), as
+these are used to construct the ACP SoundWire and PDM topology file names.
 
-Takashi
+Size the platform-name buffer with the shared
+SND_SOC_ACPI_SOF_PLATFORM_NAME_MAX constant from soc-acpi.h so that it
+matches the buffer size required by snd_soc_acpi_sof_get_platform_name().
+
+amd_sof_sdw_get_tplg_files() calls snd_soc_acpi_sof_get_platform_name()
+and snd_soc_acpi_sof_get_tplg_filename() unconditionally, and these live
+in soc-acpi.c which is built with SND_SOC_ACPI. Select SND_SOC_ACPI
+unconditionally from SND_SOC_ACPI_AMD_MATCH, as is already done for the
+Intel match, so the helpers are always compiled and there are no
+undefined references if the match code is ever built on a non-ACPI
+configuration.
+
+Signed-off-by: Siva Subramanian Ravi Saravanan <sravisar@amd.com>
+Signed-off-by: Syed Saba Kareem <Syed.SabaKareem@amd.com>
+---
+ include/sound/soc-acpi.h                      |   4 +
+ sound/soc/amd/acp/Kconfig                     |   2 +-
+ sound/soc/amd/acp/Makefile                    |   3 +-
+ .../amd/acp/amd-sof-function-topology-lib.c   | 140 ++++++++++++++++++
+ .../amd/acp/amd-sof-function-topology-lib.h   |  19 +++
+ sound/soc/soc-acpi.c                          |   4 +
+ 6 files changed, 170 insertions(+), 2 deletions(-)
+ create mode 100644 sound/soc/amd/acp/amd-sof-function-topology-lib.c
+ create mode 100644 sound/soc/amd/acp/amd-sof-function-topology-lib.h
+
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index b850295e9584..81b27778e27a 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -268,6 +268,10 @@ enum snd_soc_acpi_tplg_device_id {
+ 	SND_SOC_ACPI_TPLG_DEVICE_SSP_BT,
+ 	SND_SOC_ACPI_TPLG_DEVICE_SSP_HDMI_IN,
+ 	SND_SOC_ACPI_TPLG_DEVICE_LOOPBACK_VIRTUAL,
++	SND_SOC_ACPI_TPLG_DEVICE_ACP_SDW_JACK,
++	SND_SOC_ACPI_TPLG_DEVICE_ACP_SDW_AMP,
++	SND_SOC_ACPI_TPLG_DEVICE_ACP_SDW_MIC,
++	SND_SOC_ACPI_TPLG_DEVICE_ACP_DMIC,
+ 	SND_SOC_ACPI_TPLG_DEVICE_MAX
+ };
+ 
+diff --git a/sound/soc/amd/acp/Kconfig b/sound/soc/amd/acp/Kconfig
+index a62bf0fb1efc..1b492a9ab582 100644
+--- a/sound/soc/amd/acp/Kconfig
++++ b/sound/soc/amd/acp/Kconfig
+@@ -15,7 +15,7 @@ config SND_SOC_AMD_ACP_COMMON
+ 
+ config SND_SOC_ACPI_AMD_MATCH
+ 	tristate
+-        select SND_SOC_ACPI if ACPI
++        select SND_SOC_ACPI
+ 
+ config SND_SOC_ACPI_AMD_SDCA_QUIRKS
+ 	bool "AMD ACPI SDCA quirks"
+diff --git a/sound/soc/amd/acp/Makefile b/sound/soc/amd/acp/Makefile
+index 42e2bd34da06..91bbbeef5b8a 100644
+--- a/sound/soc/amd/acp/Makefile
++++ b/sound/soc/amd/acp/Makefile
+@@ -23,7 +23,8 @@ snd-acp70-y := acp70.o
+ snd-acp-mach-y     := acp-mach-common.o
+ snd-acp-legacy-mach-y     := acp-legacy-mach.o acp3x-es83xx/acp3x-es83xx.o
+ snd-acp-sof-mach-y     := acp-sof-mach.o
+-snd-soc-acpi-amd-match-y := amd-acp63-acpi-match.o amd-acp70-acpi-match.o amd-acp7x-acpi-match.o
++snd-soc-acpi-amd-match-y := amd-acp63-acpi-match.o amd-acp70-acpi-match.o amd-acp7x-acpi-match.o \
++	amd-sof-function-topology-lib.o
+ snd-soc-acpi-amd-match-$(CONFIG_SND_SOC_ACPI_AMD_SDCA_QUIRKS) += soc-acpi-amd-sdca-quirks.o
+ snd-acp-sdw-mach-y     := acp-sdw-mach-common.o
+ snd-acp-sdw-sof-mach-y += acp-sdw-sof-mach.o
+diff --git a/sound/soc/amd/acp/amd-sof-function-topology-lib.c b/sound/soc/amd/acp/amd-sof-function-topology-lib.c
+new file mode 100644
+index 000000000000..477ecdf76996
+--- /dev/null
++++ b/sound/soc/amd/acp/amd-sof-function-topology-lib.c
+@@ -0,0 +1,140 @@
++// SPDX-License-Identifier: GPL-2.0-only
++//
++// Copyright(c) 2026 Advanced Micro Devices, Inc.
++//
++
++#include <linux/bits.h>
++#include <linux/device.h>
++#include <linux/errno.h>
++#include <linux/kernel.h>
++#include <linux/string.h>
++#include <sound/soc.h>
++#include <sound/soc-acpi.h>
++#include <sound/soc-topology.h>
++#include "amd-sof-function-topology-lib.h"
++
++#define SOF_AMD_SDW_MAX_LINKS 4
++
++static int get_sdw_link_num(struct device *dev, struct snd_soc_dai_link *dai_link,
++			    unsigned int *link_num)
++{
++	if (sscanf(dai_link->name, "SDW%u", link_num) != 1 ||
++	    *link_num >= SOF_AMD_SDW_MAX_LINKS) {
++		dev_err(dev, "Can't get SDW link from dai_link->name %s\n", dai_link->name);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++int amd_sof_sdw_get_tplg_files(struct snd_soc_card *card, const struct snd_soc_acpi_mach *mach,
++			       const char *prefix, const char ***tplg_files, bool best_effort)
++{
++	struct snd_soc_dai_link *dai_link;
++	char platform[SND_SOC_ACPI_SOF_PLATFORM_NAME_MAX];
++	unsigned long tplg_mask = 0;
++	int tplg_num = 0;
++	char *tplg_file;
++	int tplg_bit;
++	int tplg_dev;
++	int ret;
++	int i;
++
++	/* ACP SoundWire and PDM DAI configuration is platform dependent */
++	ret = snd_soc_acpi_sof_get_platform_name(card->dev, mach, platform);
++	if (ret < 0)
++		return ret;
++
++	/*
++	 * ACP SoundWire DAI index and stream names in the topologies are
++	 * specific to the SoundWire link, so the link number is part of the
++	 * SoundWire function names.
++	 */
++	for_each_card_prelinks(card, i, dai_link) {
++		unsigned int link_num = 0;
++		const char *tplg_dev_name;
++
++		dev_dbg(card->dev, "dai_link %s id %d\n", dai_link->name, dai_link->id);
++		if (strstr(dai_link->name, "SimpleJack")) {
++			ret = get_sdw_link_num(card->dev, dai_link, &link_num);
++			if (ret) {
++				if (best_effort)
++					continue;
++				return ret;
++			}
++
++			tplg_dev = SND_SOC_ACPI_TPLG_DEVICE_ACP_SDW_JACK;
++			tplg_dev_name = devm_kasprintf(card->dev, GFP_KERNEL, "jack-l%u", link_num);
++			if (!tplg_dev_name)
++				return -ENOMEM;
++		} else if (strstr(dai_link->name, "SmartAmp")) {
++			ret = get_sdw_link_num(card->dev, dai_link, &link_num);
++			if (ret) {
++				if (best_effort)
++					continue;
++				return ret;
++			}
++
++			tplg_dev = SND_SOC_ACPI_TPLG_DEVICE_ACP_SDW_AMP;
++			tplg_dev_name = devm_kasprintf(card->dev, GFP_KERNEL, "%damp-l%u",
++						       dai_link->num_cpus, link_num);
++			if (!tplg_dev_name)
++				return -ENOMEM;
++		} else if (strstr(dai_link->name, "SmartMic")) {
++			ret = get_sdw_link_num(card->dev, dai_link, &link_num);
++			if (ret) {
++				if (best_effort)
++					continue;
++				return ret;
++			}
++
++			tplg_dev = SND_SOC_ACPI_TPLG_DEVICE_ACP_SDW_MIC;
++			tplg_dev_name = devm_kasprintf(card->dev, GFP_KERNEL, "mic-l%u", link_num);
++			if (!tplg_dev_name)
++				return -ENOMEM;
++		} else if (strstr(dai_link->name, "dmic")) {
++			/* ACP PDM DMIC is always stereo */
++			tplg_dev = SND_SOC_ACPI_TPLG_DEVICE_ACP_DMIC;
++			tplg_dev_name = "dmic-2ch";
++		} else {
++			/* The dai link is not supported by separated tplg yet */
++			dev_dbg(card->dev,
++				"dai_link %s is not supported by separated tplg yet\n",
++				dai_link->name);
++			if (best_effort)
++				continue;
++
++			return 0;
++		}
++
++		/* the same function on different links needs its own topology */
++		tplg_bit = (tplg_dev - SND_SOC_ACPI_TPLG_DEVICE_ACP_SDW_JACK) *
++			SOF_AMD_SDW_MAX_LINKS + link_num;
++		if (tplg_mask & BIT(tplg_bit))
++			continue;
++
++		tplg_file = snd_soc_acpi_sof_get_tplg_filename(card->dev, prefix,
++							       platform, tplg_dev_name,
++							       dai_link->id, tplg_dev);
++		if (!tplg_file)
++			return -ENOMEM;
++
++		/* Check presence of sub-topologies */
++		if (!snd_soc_tplg_files_exist(card->dev, tplg_file)) {
++			devm_kfree(card->dev, tplg_file);
++			if (best_effort)
++				continue;
++
++			return 0;
++		}
++
++		tplg_mask |= BIT(tplg_bit);
++
++		(*tplg_files)[tplg_num] = tplg_file;
++		tplg_num++;
++	}
++
++	dev_dbg(card->dev, "tplg_mask %#lx tplg_num %d\n", tplg_mask, tplg_num);
++
++	return tplg_num;
++}
+diff --git a/sound/soc/amd/acp/amd-sof-function-topology-lib.h b/sound/soc/amd/acp/amd-sof-function-topology-lib.h
+new file mode 100644
+index 000000000000..cea49aa9c200
+--- /dev/null
++++ b/sound/soc/amd/acp/amd-sof-function-topology-lib.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * amd-sof-function-topology-lib.h - get-tplg-files ops
++ *
++ * Copyright(c) 2026 Advanced Micro Devices, Inc.
++ */
++
++#ifndef __AMD_SOF_FUNCTION_TOPOLOGY_LIB_H
++#define __AMD_SOF_FUNCTION_TOPOLOGY_LIB_H
++
++#include <linux/types.h>
++
++struct snd_soc_acpi_mach;
++struct snd_soc_card;
++
++int amd_sof_sdw_get_tplg_files(struct snd_soc_card *card, const struct snd_soc_acpi_mach *mach,
++			       const char *prefix, const char ***tplg_files, bool best_effort);
++
++#endif
+diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
+index 1c6e20e00dca..a344d497aa87 100644
+--- a/sound/soc/soc-acpi.c
++++ b/sound/soc/soc-acpi.c
+@@ -238,6 +238,10 @@ char *snd_soc_acpi_sof_get_tplg_filename(struct device *dev, const char *prefix,
+ 	case SND_SOC_ACPI_TPLG_DEVICE_SSP_AMP:
+ 	case SND_SOC_ACPI_TPLG_DEVICE_SSP_BT:
+ 	case SND_SOC_ACPI_TPLG_DEVICE_SSP_HDMI_IN:
++	case SND_SOC_ACPI_TPLG_DEVICE_ACP_SDW_JACK:
++	case SND_SOC_ACPI_TPLG_DEVICE_ACP_SDW_AMP:
++	case SND_SOC_ACPI_TPLG_DEVICE_ACP_SDW_MIC:
++	case SND_SOC_ACPI_TPLG_DEVICE_ACP_DMIC:
+ 		filename = devm_kasprintf(dev, GFP_KERNEL, "%s/sof-%s-%s-id%d.tplg",
+ 					  prefix, platform, tplg_dev_name, dai_link_id);
+ 		break;
+-- 
+2.43.0
+
