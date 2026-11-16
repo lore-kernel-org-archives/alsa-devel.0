@@ -2,115 +2,163 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C45606A33D
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2026 13:47:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A155606A891
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2026 13:47:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=cel61gPw;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=fingerlessgloves.me header.i=@fingerlessgloves.me header.a=rsa-sha256 header.s=mailcow header.b=p7QJ/fHY
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=bhPw5Mpr;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.a=rsa-sha256 header.s=20260707 header.b=j56LsaYI
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 81CBB601FA;
-	Mon, 16 Nov 2026 14:47:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81CBB601FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id E57D260219;
+	Mon, 16 Nov 2026 14:47:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E57D260219
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1794836852;
-	bh=A7qlK+AcKAeUGoxHmmgdnmWXfvn7bfk/G02DlGK1mIY=;
-	h=Date:From:To:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1794836864;
+	bh=rrx4hFhuLoJiwRyWvPIjG++pDJtUwwNZ4lUWY+pJ/vk=;
+	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=cel61gPwgqEdEvUhXrTPOT+1Sg9YBEMK8xvLbeG/kf911gNC17LgOj+WOL9/X8u/3
-	 D6hKJaae9eWyHLFn4bICUyYJthEd5VLGu2y/6nuS4t5Z/iLwKUglP/+H7WrcZL8d9t
-	 k/kER/iJXV3lhvkU93SqVkRfGszsOAgFqrB4tixI=
+	b=bhPw5Mprd81kURw0lml6xp60Pr9V0WP3wAGgRHPBPgUlKqmbEX0m5fnZQ2vIPm2ZU
+	 JALvgC7t3Z5v0Zzx/YJaLmJQgKccNLX98SqcDbeCkxb9o5C/HL2TyScalJQ1rKsXvK
+	 nYKG3q6AYvan/PmM6gRz/VxRe73+5mdAP4FMwwUw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 10AF4F80611; Mon, 16 Nov 2026 14:46:41 +0100 (CET)
+	id DBCD0F8065C; Mon, 16 Nov 2026 14:46:47 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4844DF80618;
-	Mon, 16 Nov 2026 14:46:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAB42F80671;
+	Mon, 16 Nov 2026 14:46:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 40F67F80552; Fri, 13 Nov 2026 14:35:38 +0100 (CET)
+	id AE8D1F80510; Mon, 16 Nov 2026 11:17:53 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_PASS,SPF_PASS
-	autolearn=ham autolearn_force=no version=4.0.1
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=78.157.222.147
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1794576936;
-	b=P5LBuVQ+FWZyF9KGv3XQb1Ownce/PolWjiHg2QY0GKuwYcZM6g1+FnlfQCU6UxT1KSqZ
-	 4/PTJEiO+tfeLHzNoWHX3m+z2KDhGk67md9bOgaWycVhm6/CB69mr7mX9McAwFWcL7nLk
-	 Qat5p59C5yIE9OLsLBYSTSa8GbqaaQVg1OttqHOxR0Od/Po/NdvjGgd16Si7DbxjiJ+X1
-	 yuIpyb1lZ3i0qhLOalEZ0JG1Rg7RuBx+uZTIxyfRSHfxB3WuPX8SfE4H3pM2RXgi1WJpH
-	 gxRTbqJka3XYZDz0eyzwNc9bXS/XoZn7TkWcf1WmuJFN66MDe6EnjZZ9d/OfBPlVG+A==
-ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1794576936;
-	h=DKIM-Signature:MIME-Version:Date:From:To:Subject:Message-ID;
-	bh=oXWGRIPiz0MBdRzuhP+uN1DVqFMT2Gds145o6eglxnA=;
-	b=FsEmwFU58rO8u3Mzc541hv0i0egsqsPftA7CdG2tdY826udCKJfmSynm1VrKBx3du0/1
-	 xtRlx90KlJo/4Bi9SV0DnvVBZADLHMh+dGMpqrck9kbqdt9Cv8LrRviO6VBLF3AbulCwk
-	 cEhBqqbHaKVVBgwGUWnWT1JFwEcOPLJ8+JIjzAOOBNko3BcnQ/pcvqOA9SvX1J2Cled2E
-	 nXpErEJ/2Ka9iD4cYvCFkJuXMamt5Rk7KlyNjilIqOFCleh/N7JZro/dmqFKEULWFZdPk
-	 fTZTDTo74L0fLnmy1hNpy5HHeUZwkBV/+fCqMsjPyvnMmPwJdR6ntDG4K8PzHINf4zA==
-ARC-Authentication-Results: i=1; alsa1.perex.cz;
-	dkim=pass header.d=fingerlessgloves.me header.i=@fingerlessgloves.me
- header.a=rsa-sha256 header.s=mailcow header.b="p7QJ/fHY";
-	arc=none smtp.remote-ip=78.157.222.147
-Received: from mail.n9.uk (mail.n9.uk [78.157.222.147])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+X-Spam-Status: No, score=-5.9 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=no
+	autolearn_force=no version=4.0.1
+Authentication-Results: alsa1.perex.cz;
+ arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.167.49
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1794824272;
+	b=MLazJun4WfzfS+desWworV5mB+CO2m5rcr/fsX/HuT+Lcgo+GyTd2i6S2UVXwHduUzDb
+	 FavYqFwTt9yl7ngeLVZj9QyLeV22jzwjLSzEfCYl3dbHxKvAN67V4BlnfGHOsJoaAY0Y3
+	 el5s7A46ik4HIg2ypsxTVQY+jFXSuYEochGjg5MNcBxmpXO55mTYHyTEjitGMgI5nxrGb
+	 M/6GtGQWnMyJt8083DyLyo7EyWH6Cix6EGV5SRcRwHsET3mW6uJZ7BpnP7+1spov63h3d
+	 911iPbK+u+CEH0PIS2w2pFIUFizthBdYmmBZ/YNFtkCz2mtgZec1VkjY9ENFw2OjEgQ==
+ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1794824272;
+	h=DKIM-Signature:MIME-Version:From:Date:Message-ID:Subject:To;
+	bh=/e5/Wx1KHeCI14gt58fRTNC7f5DvoCmhtL8Y60A1XFk=;
+	b=Yd93mIG6/oIezHfK+MGKXg7JEd6incD5qkaVHHPzIL4VKZ0k9s21uXdq1ME2t1eD+eQh
+	 Rs2KjYK1Emy5Q6PzE12dLuB1yqcffi1p0tIzo3X+S5b3trsZHJNbz5Z5B91jbM7KL39z8
+	 cbo1NceIa+OxX0hX2XlA5N73hXsQdDNpLboT1TN6Ttx100D7IaULbIRdAe1UYc2k8a5Yj
+	 y9p2R3R1JwpQXAV4pa+rak6Rd0PtTRud1mwpAzN6/44n2uND5ncyqw+t+E01e8IeqwMJP
+	 yoB1/eSdxOeh4hdwRUAqn9bzOCwjtakOteUOh2W4hnPH2lJAI1VKPwrvd27Dck/o/Dg==
+ARC-Authentication-Results: i=2; alsa1.perex.cz;
+	dkim=pass header.d=googlemail.com header.i=@googlemail.com
+ header.a=rsa-sha256 header.s=20260707 header.b=j56LsaYI;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.167.49
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com
+ [209.85.167.49])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B102EF8012B
-	for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2026 14:35:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B102EF8012B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 33EACF8024C
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2026 11:17:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33EACF8024C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=fingerlessgloves.me header.i=@fingerlessgloves.me
- header.a=rsa-sha256 header.s=mailcow header.b=p7QJ/fHY
-Received: from mail.n9.uk (localhost [127.0.0.1])
-	by mail.n9.uk (Postcow) with ESMTP id F117BE1EE5
-	for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2026 13:35:34 +0000 (GMT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon)
- with ESMTPSA id 065EBE1ED7
-	for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2026 13:35:33 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fingerlessgloves.me;
-	s=mailcow; t=1794576934;
-	h=from:subject:date:message-id:to:mime-version:content-type;
-	bh=jMXOglL4XfnhB8O2zveG15dNYf3gFAuHZHCzoBKfhgc=;
-	b=p7QJ/fHY1d+1rqPxLZ/OO+4Pq/NnRsUmxtnaOtSS44ZmoMfFXKV+i6oQH6Sk10Zv1mu+Ok
-	NwYUPwKzuW+0ERdJDQm6YsnR2Zo91fIbrzhj1fandAVGlNWhHtx7B53bIJANUC89sPrHg0
-	IADfO4G5tNDX1o8cnad2iAfX3V83vz9WR2Li6M/8Tmdh3vk1ydWzDeq+TLYo1ULeZ57P6e
-	z2+5K9Y3i4/SxH5PeAQGQZVnGSSsvPx7lqCvlu+OVHuTeNci/9MCB2/gNy9PVqCzyCxTMs
-	Uxkc9Bdbsf+Ogk2RtPMHxqgWdI3SR70Ut5IKLO2UxW6mY7bRy36uJAGP3OeWiQ==
+ unprotected) header.d=googlemail.com header.i=@googlemail.com
+ header.a=rsa-sha256 header.s=20260707 header.b=j56LsaYI
+Received: by mail-lf1-f49.google.com with SMTP id
+ 2adb3069b0e04-5c0a520df2eso3249816e87.0
+        for <alsa-devel@alsa-project.org>;
+ Mon, 16 Nov 2026 02:17:50 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1794824270; cv=none;
+        d=google.com; s=arc-20260327;
+        b=mPIOMf8OqP6DmZ2ZU3qqkWUift9fZJbgniwQpcn2mYRcg1LbB0AHfOciWJPEFA3jrX
+         PZEYGCwYnolTYblOmNWqivBOke8QPIHC7y0lLCBiZulGhjsY6v4cszg0gpP1x8jA0yM1
+         2d+xaIKOb+uajd51eORz/QpFwJYd57NTB1tDnrg/KFV0t9sZcdSav4EJiX+2wck1iYal
+         /YGDDgL9YSigktIZ0347bXP70aeO2yGZZyj4qxSAgBBi1FzXOj9pMnJ5Yl4NTdDd/rYP
+         qBLx5H5/xQEjrrdw01+PCqBXI++Umpw1Zf3NoHWMW0Jjl6ClJdABjIf0hgwj2tbVhGa7
+         WwXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20260327;
+        h=to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=tcHFY60o13H4m7C8LD3+ClkxoZIMX2gssCllBP8nPZk=;
+        fh=sLHHi6iQqDuXDvpzwAa2YApxG5d10s8aTTD4+ni0PbE=;
+        b=XgwioVwpBaOO+3Xqo175pluEHEA8roL89rMYlJyhNzLBGPzFi7iMs9TsNB+fMMtwEO
+         W8xXQUgEX2hda7A1QfBEBrzlisBmfWkTjoc3wfrzddUhZUtfdFAMWPWNpUjU5JraZU+Y
+         AbKJs/Y/6NtLn46Y6eTzaJXK1+igzFjUhkd9hleDpizDe+SiptHr2jw8P84hH86BQDQb
+         kox2M/iQMO36U6jxO9Tf1J4411LvGsdQ2zGMFEhjI2xBjoSeHexlBnxnXaqvP3+dunl2
+         GiFNM/se1NyRjjXkPYpP9FjPQR9Y1wdDOAKRD8ZUrI75oLTZQhh54Z5GO6zr9grs1GW5
+         CehQ==;
+        darn=alsa-project.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20260707; t=1794824270; x=1795429070;
+ darn=alsa-project.org;
+        h=content-type:to:subject:message-id:date:from:mime-version:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=tcHFY60o13H4m7C8LD3+ClkxoZIMX2gssCllBP8nPZk=;
+        b=j56LsaYIbYgClyb0FbSHAx7/phx/l2IW9peEB1MXJ/fRS1Cjfc7RoZFlcJyR3BBLeR
+         RVbsChb07NjTAXsCaY4nNMMeMiWNhx9DwfXj1qKGhVzdCUIsuOkUdtya9q5prhywWajQ
+         YlV7ybeN/6SHRtPOQqizZPFXyDh4g9I95MvOUJ2TK3bevGYtqjiUTPTKmJkDx9N7TF/E
+         YvnUulHOWTJFpKbO82DuCX2CqQZfwmRD4R3Od91sGRlhL4GFzrrnLFVlXlVrxhfrwEt5
+         zMj2Arvm2bj3094P3JiIC6z/PCKyx8PMZxfLddnsZoHvZiMd1ZES40e0ACIxvyQPUlhj
+         vz5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794824270; x=1795429070;
+        h=content-type:to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=tcHFY60o13H4m7C8LD3+ClkxoZIMX2gssCllBP8nPZk=;
+        b=KSfemRS5Fw5QWnK+qBfzmqJ8U8KUdDu03ytvpIxH+NoRxxjzV4hgCq7pnOC+0FTSib
+         U9xinrGNEalalN7FugHB4nlgPnxcjzuQ7oHWyUULYI3cskr1g1fke5F2H1q/EahECHM7
+         lNWuPskzEMjEm1LE/djLFVBKbslhxykgTVN6pioboG7ZEJF3EdDuabq8tj6EtWCJOtxQ
+         5PZlV4rJmsS7Fd8e/PpgiRWa3TbAnRxrNiylTTd4frA7gUdnUShjE2GCmMKwDuQDxm3V
+         ah+eJfRi43GnCCRS9eaAbkRRaA3bg3C7klnmU3a+fvRmVkJEV2KFT07VbaTyKW1qmJ+g
+         1uKw==
+X-Gm-Message-State: APuU4Z8nkD6COtOqDsZqHm+T3ePcuHDgPh1viptsRXnl6reUDF1CVyPl
+	f36wJp+FUFHaLZlfIic3lpuCGHurvZ0R2a1fxsw0OAh7v3689dUt6bLJgUoMbAmssth4GW77V5N
+	mBtcpPeyU4stuiyoug7u7RLZ9o8UsSla0ykbahaA=
+X-Gm-Gg: AYBFou2We9GXeCoHo3iklsv159piA1CNc4zyOrQTE1DgcBNkX4iTJMtEasHFw5MumYF
+	gZ3LISJkEzjLKVp6Sc9CxqCRgcFAx1I3Ci7jzRkmMtkGUtolFvGV2nEYQnWUo1IBuo24yejeOej
+	8/S9CNO1eHzXPJ0DP0F4fluPDQlSofgpmI8M9R1G5iE0emFwZA+jdw2xCffxO3V17fKeYfzIRpf
+	HSAbxVDSU3qh7f+ex262lT5y8GIPTqjj/r7YvXpYlyvSmM8fCqY8yShlnL+YyIeWDXIbo0LubHG
+	h3sLL/Yl1/wzqSV+DDiIZOVHdS4U+032m6TtyV9hdOvjU32+mMg9jtkEO6+ns2mSpOMYpaC+M9D
+	KcYRgsjVvxMT3DIhgBbY5GTBAR2jFg5p7wG5FCMTPhCRjcDBefRJnG1A27aQRjhE+EOx/G9M2Cs
+	cn0sIU0WCfQGYOqYpU/4PBN/3uz9s=
+X-Received: by 2002:a05:6512:2523:b0:5c1:4a79:b9c1 with SMTP id
+ 2adb3069b0e04-5c17079aad6mr3538883e87.22.1794824269320; Mon, 16 Nov 2026
+ 02:17:49 -0800 (PST)
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Date: Fri, 13 Nov 2026 13:35:33 +0000
-From: FingerlessGloves <me@FingerlessGloves.me>
-To: alsa-devel@alsa-project.org
-Subject: Fedora 44, kernel 7.3.3, Logitech PRO X Wireless (046d:0aba) - Volume
- issue
-Message-ID: <fd024e1354679eae7621cd868aa3d267@FingerlessGloves.me>
-X-Sender: me@FingerlessGloves.me
-X-Last-TLS-Session-Version: TLSv1.3
-X-MailFrom: me@fingerlessgloves.me
+From: Peter Ross <peter.r9191@googlemail.com>
+Date: Mon, 16 Nov 2026 11:17:38 +0100
+X-Gm-Features: Aa3M54pMzxl5HjhBuCbJF3nLBr3M_dKVg99kzdZJCFx88Th7d-vm0bPa3I6LqNg
+Message-ID: 
+ <CAFt4o5NwqywePKrA=oj6xxxx=sa4bwywawh2AO5NdUv7tWNDpA@mail.gmail.com>
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for Razer Blade 18 (RZ09-0484)`
+To: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+X-MailFrom: peter.r9191@googlemail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: WQAUGSXSKHVHVRDYAOWNCZEDP6NRFRJ2
-X-Message-ID-Hash: WQAUGSXSKHVHVRDYAOWNCZEDP6NRFRJ2
+Message-ID-Hash: 6HMYK5V3UODJWH3DST6JPL6DLPPDCN3V
+X-Message-ID-Hash: 6HMYK5V3UODJWH3DST6JPL6DLPPDCN3V
 X-Mailman-Approved-At: Mon, 16 Nov 2026 13:46:28 +0000
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
 X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WQAUGSXSKHVHVRDYAOWNCZEDP6NRFRJ2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6HMYK5V3UODJWH3DST6JPL6DLPPDCN3V/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,104 +166,16 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 
-Hi,
-
-I upgraded to Kernel 7.3 today and noticed my Logitech PRO X Wireless 
-headset playback volume was much quieter, I've worked out 30-35% range 
-where I usually had my headset set now needs to be set near 85% to get 
-similar loudness out of it.
-
-The fix to the problem I have come up with so far is to run this command 
-`amixer -c 5 sset PCM 64` which seems to restore the volume loudness 
-levels back to their original.
-
-I believe this might be a regression from 
-https://github.com/torvalds/linux/commit/3ac761b613c744aa22e269d31801053e38bb4968 
-I could be wrong though
-
-I have command outputs below which may help show the problem here. I'm 
-sure others will upgrade and suddenly wonder why their headset has 
-gotten quieter. Microphone volume I've been told seems to be normal from 
-the usual people I talk to, so it's just output affected
-
-Headset is set to Pro Audio Profile in Fedora 44 KDE Desktop, when 
-booted into Kernel 7.2 and 7.3.
-
-## Kernel 7.2
-# aplay -l | grep -i pro
-card 5: Headset [PRO X Wireless Gaming Headset], device 0: USB Audio 
-[USB Audio]
-  amixer -c 5 get PCM
-# amixer -c 5 get PCM
-Simple mixer control 'PCM',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [on]
-# amixer -c 5 scontrols
-Simple mixer control 'PCM',0
-Simple mixer control 'Mic',0
-# amixer -c 5 get Mic
-Simple mixer control 'Mic',0
-   Capabilities: cvolume cvolume-joined cswitch cswitch-joined
-   Capture channels: Mono
-   Limits: Capture 0 - 67
-   Mono: Capture 67 [100%] [3.00dB] [on]
-# dmesg | grep -iE 'usb-audio|0aba|snd-usb'
-[   10.020534] usb 6-1.3.4.4.3: New USB device found, idVendor=046d, 
-idProduct=0aba, bcdDevice= 1.00
-[   10.193459] input: Logitech PRO X Wireless Gaming Headset Consumer 
-Control as 
-/devices/pci0000:00/0000:00:08.3/0000:75:00.3/usb6/6-1/6-1.3/6-1.3.4/6-1.3.4.4/6-1.3.4.4.3/6-1.3.4.4.3:1.3/0003:046D:0ABA.000A/input/input26
-[   10.243772] input: Logitech PRO X Wireless Gaming Headset as 
-/devices/pci0000:00/0000:00:08.3/0000:75:00.3/usb6/6-1/6-1.3/6-1.3.4/6-1.3.4.4/6-1.3.4.4.3/6-1.3.4.4.3:1.3/0003:046D:0ABA.000A/input/input28
-[   10.244033] hid-generic 0003:046D:0ABA.000A: input,hiddev99,hidraw9: 
-USB HID v1.11 Device [Logitech PRO X Wireless Gaming Headset] on 
-usb-0000:75:00.3-1.3.4.4.3/input3
-[   20.239239] usbcore: registered new interface driver snd-usb-audio
-
-## Kernel 7.3
-# aplay -l | grep -i pro
-card 5: Headset [PRO X Wireless Gaming Headset], device 0: USB Audio 
-[USB Audio]
-# amixer -c 5 get PCM
-Simple mixer control 'PCM',0
-   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-   Playback channels: Mono
-   Limits: Playback 0 - 64
-   Mono: Playback 41 [64%] [-23.00dB] [on]
-# amixer -c 5 scontrols
-Simple mixer control 'PCM',0
-Simple mixer control 'Mic',0
-# amixer -c 5 get Mic
-Simple mixer control 'Mic',0
-   Capabilities: cvolume cvolume-joined cswitch cswitch-joined
-   Capture channels: Mono
-   Limits: Capture 0 - 67
-   Mono: Capture 67 [100%] [3.00dB] [on]
-# dmesg | grep -iE 'usb-audio|0aba|snd-usb'
-[   10.136223] usb 6-1.3.4.4.3: New USB device found, idVendor=046d, 
-idProduct=0aba, bcdDevice= 1.00
-[   10.297395] input: Logitech PRO X Wireless Gaming Headset Consumer 
-Control as 
-/devices/pci0000:00/0000:00:08.3/0000:75:00.3/usb6/6-1/6-1.3/6-1.3.4/6-1.3.4.4/6-1.3.4.4.3/6-1.3.4.4.3:1.3/0003:046D:0ABA.000A/input/input26
-[   10.347810] input: Logitech PRO X Wireless Gaming Headset as 
-/devices/pci0000:00/0000:00:08.3/0000:75:00.3/usb6/6-1/6-1.3/6-1.3.4/6-1.3.4.4/6-1.3.4.4.3/6-1.3.4.4.3:1.3/0003:046D:0ABA.000A/input/input28
-[   10.348093] hid-generic 0003:046D:0ABA.000A: input,hiddev99,hidraw9: 
-USB HID v1.11 Device [Logitech PRO X Wireless Gaming Headset] on 
-usb-0000:75:00.3-1.3.4.4.3/input3
-[   21.433299] usbcore: registered new interface driver snd-usb-audio
-# amixer -c 5 sset PCM 64
-Simple mixer control 'PCM',0
-   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-   Playback channels: Mono
-   Limits: Playback 0 - 64
-   Mono: Playback 64 [100%] [0.00dB] [on]
-   # amixer -c 5 get PCM
-Simple mixer control 'PCM',0
-   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-   Playback channels: Mono
-   Limits: Playback 0 - 64
-   Mono: Playback 64 [100%] [0.00dB] [on]
-
--- 
-FingerlessGloves
+VGhlIGludGVybmFsIHNwZWFrZXJzIG9uIHRoZSBSYXplciBCbGFkZSAxOCAoUlowOS0wNDg0LCBB
+TEMyOTgsIHN1YnN5c3RlbSBJRA0KMWE1ODozMDA3KSBhcmUgc2lsZW50IGJlY2F1c2UgdGhlIHNw
+ZWFrZXIgYW1wbGlmaWVycyBhcmUgbmV2ZXIgaW5pdGlhbGlzZWQuDQpBcHBseWluZyB0aGUgZXhp
+c3RpbmcgQUxDMjk4X0ZJWFVQX1JBWkVSX0JMQURFMTZfMjAyNSBmaXh1cCBmaXhlcyB0aGlzLiBJ
+dA0Kd2FzDQp0ZXN0ZWQgd2l0aCBgaGRhX21vZGVsPTFhNTg6MzAwZWAgb24ga2VybmVsIDcuMy4z
+Lg0KDQpgYGBkaWZmDQotLS0gYS9zb3VuZC9oZGEvY29kZWNzL3JlYWx0ZWsvYWxjMjY5LmMNCisr
+KyBiL3NvdW5kL2hkYS9jb2RlY3MvcmVhbHRlay9hbGMyNjkuYw0KQEANCiAgU05EX1BDSV9RVUlS
+SygweDFhNTgsIDB4MjAyMywgIlJhemVyIEJsYWRlIDE2ICgyMDI1KSIsDQpBTEMyOThfRklYVVBf
+UkFaRVJfQkxBREUxNl8yMDI1KSwNCisgU05EX1BDSV9RVUlSSygweDFhNTgsIDB4MzAwNywgIlJh
+emVyIEJsYWRlIDE4IChSWjA5LTA0ODQpIiwNCkFMQzI5OF9GSVhVUF9SQVpFUl9CTEFERTE2XzIw
+MjUpLA0KICBTTkRfUENJX1FVSVJLKDB4MWE1OCwgMHgzMDBlLCAiUmF6ZXIgQmxhZGUgMTYgKDIw
+MjUpIiwNCkFMQzI5OF9GSVhVUF9SQVpFUl9CTEFERTE2XzIwMjUpLA0KYGBgDQoNCmBTaWduZWQt
+b2ZmLWJ5OiBQZXRlciBSb3NzIDxwZXRlci5yOTE5MUBnbWFpbC5jb20+YA0K
