@@ -2,88 +2,115 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B8AC606A31F
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Nov 2026 16:04:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B98606A31C
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2026 09:23:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=WeMgpTsi
+	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=rlYlLEqq;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=fingerlessgloves.me header.i=@fingerlessgloves.me header.a=rsa-sha256 header.s=mailcow header.b=vztE8Mtn
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FD0F601F9;
-	Sun, 15 Nov 2026 17:04:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FD0F601F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 14AD060204;
+	Mon, 16 Nov 2026 10:23:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14AD060204
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1794758683;
-	bh=4bdZ3LuoOuzbfAYRmKegDQEURn5x5j+9CgSjePJ7tTs=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=WeMgpTsi2Wd0SmLlTBOtCsax9BxAEPgR4wXpAZbWH2wogmfYO4zVGb637ecmCJobG
-	 UVCYWth4sRuCKb76VqjWrPUCPubOEb+cvLs+QWp/1O7fGZSHMBfRlyqlz5EHzUUuWE
-	 HoW05qLFAt60GAFjEdpMVgxS4lJZy4VSleP2Ltgw=
+	s=default; t=1794821010;
+	bh=A7qlK+AcKAeUGoxHmmgdnmWXfvn7bfk/G02DlGK1mIY=;
+	h=Date:From:To:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=rlYlLEqqBFE738bIRxJWe6dcSX0hzZMLZCcV1E/f3dH0xBIsEV5+VNC+9yTmGv0+Y
+	 3ugunyH7gmsCYYOBTITeV7pStvagEqMLQ7f8F54RXYJeXR8ut3dQDTwKYBaB3Hqkks
+	 gqLJHmfimPWI4OFcwy8ylz5cNjlnNF7nQnWhSfvE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C738AF805F7; Sun, 15 Nov 2026 17:04:08 +0100 (CET)
+	id 2A5EBF80604; Mon, 16 Nov 2026 10:22:54 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1AABDF80601;
-	Sun, 15 Nov 2026 17:04:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91B12F805F6;
+	Mon, 16 Nov 2026 10:22:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 18B13F80568; Sun, 15 Nov 2026 17:03:59 +0100 (CET)
+	id C0D30F80510; Mon, 16 Nov 2026 10:22:46 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_PASS,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1794758636;
-	b=hTsho0zWcDmcniXIA+za8RIDvjMSCouiLEwl/0Aikf8VuSZl5rd+YmyHA2YZpixXlCwz
-	 T0He/NCoXR0qGFyRJPR7P8U+2nsykCYmmnnfDG6DjYMFKaUbWuLns7sRHfdF12xYCfzKg
-	 nFefej8Q4IJkDPToW9AOgsY+m5Wgdxi1Q2EDVCz/rOgY2ZHwdZcAR5mljA3UeOZFU0S1F
-	 ocmUbeloOxh/AJWO97zHhNlvGwP9NUkqHOWQXNVmWgMEb4rpWti83+i5Hrg2Ikxl2pPsn
-	 krspZjcNoa4vB9Jnnd0WdcyCc5CPmDRfno/187XhvdYgXpvjrOBrXIf88mFLVEbak7A==
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_PASS,SPF_PASS
+	autolearn=ham autolearn_force=no version=4.0.1
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=78.157.222.147
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1794820965;
+	b=HgUhsr8Mm0e6OUOykZ1l1hMK4LUWIztTF1YqyInCKTE7Gpdr9N85zZrWxEMoLZDNi2Wp
+	 gm4gy3lkRZOQ2kBwBofSEs8iPUuz9e/u21AIOlabaMOtuxIZvZBOV/0SpyqApu/5l4H4R
+	 1qVEpggI+KFzy/rLUKAsmbN5VC1dcnz4LolgqCg88pxdm54pp/aqKIRojv/loYvnuBohf
+	 HRBo8oPJX+cK4jOIwcCC5w9ewa5zl3eiSbhk9HcTlV43sJJDorSCgcgD2UK6zihBMk2A7
+	 8sg9a9b8K1QyNV2kRrXa/6ML9Iv5+xpTXN3y1lKcd7q2FnUBivZ5/1icewYGgyxqNtg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1794758636;
-	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=4bdZ3LuoOuzbfAYRmKegDQEURn5x5j+9CgSjePJ7tTs=;
-	b=R6ORHO6eD2aDKiSGYKsQehYl270cwa0vrvpT3HFqpAVxaSDsEnPK94weutxDzIpIAdJf
-	 SJFIxUNlEr7y4F4NrS3IcHwHwpcOrAaUll3fPG+MyZxRb/422Xc6lmxiUoL1yUKNzuLCz
-	 oQg7SJLRVKT0vOIi7UncjLxMjAlsHFX7Rbtw1hec6cW1HwFYGVvaN+3kdMhMjOl1XtQei
-	 Gj2X7OejDsKEGVmyRqjL9rleI8MKr68MsBl7NR3N34TNddumOu/sDD/bulDydiIhzXC6G
-	 MjnmTp3A6lLYoUL5c9k152WQXJLG74kX8UJSTN/YFotfSkKloNvKE+rx4rYHrltlQXA==
+	c=relaxed/simple; t=1794820965;
+	h=DKIM-Signature:MIME-Version:Date:From:To:Subject:Message-ID;
+	bh=WnQ4eViPY7gjrC79P72eGYhOvB8s+wjx3QUYF6ykLCM=;
+	b=VA7pVygptIOvRz1/uIlNOh+J9uzdUuZrfZBZPNEJ/CB1EBG3noOFUEemIwGIrtaImdt9
+	 laGsdteH3d7I1fzLki9QBGudU8pEbrus1IsOe1oQkVUQ/BdB8nRahbbDZxuomg2rk7v2H
+	 6ZtniyGEPCSMEPqM+og2Nk6POSPfQ04/4/nUMUI8pVeFTKK3fZWdDa1pI4cvUafKC0shZ
+	 TjU4IN2xtjs9CjUki9bLVTTO3Wv4QOB/6NrK4LOw4gR/rehU0KerF4r9WzXEVSCKUVXc9
+	 UgDzbMv3TqhTjA/Y0NlQEaQyLWU6mOmiz+TsPUtPSZAbwtWuLJ5n+osjTXV44qjcAnw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
-	arc=none smtp.remote-ip=45.14.194.44
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id A211FF800E4
-	for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2026 17:03:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A211FF800E4
+	dkim=pass header.d=fingerlessgloves.me header.i=@fingerlessgloves.me
+ header.a=rsa-sha256 header.s=mailcow header.b=vztE8Mtn;
+	arc=none smtp.remote-ip=78.157.222.147
+Received: from mail.n9.uk (mail.n9.uk [78.157.222.147])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 34521F80095
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2026 10:22:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34521F80095
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=fingerlessgloves.me header.i=@fingerlessgloves.me
+ header.a=rsa-sha256 header.s=mailcow header.b=vztE8Mtn
+Received: from mail.n9.uk (localhost [127.0.0.1])
+	by mail.n9.uk (Postcow) with ESMTP id 69A9BE2C23
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2026 09:22:43 +0000 (GMT)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon)
+ with ESMTPSA id 4A491E2C22
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2026 09:22:41 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fingerlessgloves.me;
+	s=mailcow; t=1794820962;
+	h=from:subject:date:message-id:to:mime-version:content-type;
+	bh=b0jpnfcMf0LIZN9bxzdj/qGj0xkERamIHbTe04R0GHg=;
+	b=vztE8MtnNrkJ/vMimjj7I65OeFjPFibt9RY1nJSpTHPVhUuBottMepNiKDzHjIPfy0Wd3B
+	byPDlfHw+7sr9w6Ea1oi5q4nY/WIk99WHL+eEDcR/St9QZ5dhazZSrM3yNefUMxMWzR4XY
+	HyQeqo0KAOnC6Rt0ajPCIbf3x7IgdGloJM2L/2LO7/eqrvQX1KLpWg0WWNHQKgnxyFMWI6
+	whIt4AIzgQxYA2Wmn5zn3ANxtRkXR8p+SucQ8k+pDUzI475wsMYG3R8knl65FPBKdsTVRW
+	JkeAE4DUQbRLvF9ey+2HDlmU/AC47LRh26RkmCY8IePx1abUipzoBTNy7SLpMg==
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+Date: Mon, 16 Nov 2026 09:22:41 +0000
+From: FingerlessGloves <me@FingerlessGloves.me>
 To: alsa-devel@alsa-project.org
-Message-Id: <18e843783821fb00-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-ucm-conf/pr/916@alsa-project.org>
-References: <alsa-project/alsa-ucm-conf/pr/916@alsa-project.org>
-Subject: ucm2: Qualcomm: x1e80100: add Microsoft Surface Laptop 7
-Date: Sun, 15 Nov 2026 17:03:59 +0100 (CET)
-Message-ID-Hash: TMRQEO6O5DGOPL3S5IX2GOHFBPRNZ23Z
-X-Message-ID-Hash: TMRQEO6O5DGOPL3S5IX2GOHFBPRNZ23Z
-X-MailFrom: github@alsa-project.org
+Subject: Fedora 44, kernel 7.3.3, Logitech PRO X Wireless (046d:0aba) - Volume
+ issue
+Message-ID: <cc98710ddf2e4de5385f2450748a3381@FingerlessGloves.me>
+X-Sender: me@FingerlessGloves.me
+X-Last-TLS-Session-Version: TLSv1.3
+Message-ID-Hash: TG6KISHQPSQQGVJW4MSCJNGYBCBMU2B5
+X-Message-ID-Hash: TG6KISHQPSQQGVJW4MSCJNGYBCBMU2B5
+X-MailFrom: me@fingerlessgloves.me
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
  nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
  news-moderation; no-subject; digests; suspicious-header
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TMRQEO6O5DGOPL3S5IX2GOHFBPRNZ23Z/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TG6KISHQPSQQGVJW4MSCJNGYBCBMU2B5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,33 +118,104 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #916 was opened from fidecastro:
+Hi,
 
-On the Microsoft Surface Laptop 7 (Snapdragon X Elite), plugging in headphones gives no sound: with PipeWire and WirePlumber, no headphone sink is ever created.
+I upgraded to Kernel 7.3 today and noticed my Logitech PRO X Wireless 
+headset playback volume was much quieter, I've worked out 30-35% range 
+where I usually had my headset set now needs to be set near 85% to get 
+similar loudness out of it.
 
-The laptop is matched to the ThinkPad T14s profile, which has three DisplayPort outputs. Its sound card has two DisplayPort links (`displayport-0-dai-link` and `displayport-1-dai-link` in `x1e80100-microsoft-romulus.dtsi`), so:
+The fix to the problem I have come up with so far is to run this command 
+`amixer -c 5 sset PCM 64` which seems to restore the volume loudness 
+levels back to their original.
 
-- HDMI2's `JackControl "DP2 Jack"` names a control that does not exist. The port's availability is "unknown", which PipeWire treats as available.
-- Headphones and the DisplayPort outputs share a PCM and are `ConflictingDevice`s, so they become alternative card profiles of equal priority. With HDMI2 always "available", WirePlumber stays on the HDMI2 profile when headphones are plugged in.
-- At every start PipeWire logs `spa.alsa: '_ucm0001.hw:X1E80100Romulus,0': playback open failed: Invalid argument` and fails to create the HDMI2 sink, and the kernel logs `MultiMedia1 Playback: ASoC: no backend DAIs enabled for MultiMedia1 Playback`.
+I believe this might be a regression from 
+https://github.com/torvalds/linux/commit/3ac761b613c744aa22e269d31801053e38bb4968 
+I could be wrong though
 
-The jack, the codec and the routing are fine: selecting the headphone profile by hand gives a working sink at once.
+I have command outputs below which may help show the problem here. I'm 
+sure others will upgrade and suddenly wonder why their headset has 
+gotten quieter. Microphone volume I've been told seems to be normal from 
+the usual people I talk to, so it's just output affected
 
-This adds a profile for the laptop that is the T14s one without HDMI2 (`MICROSOFT-Surface-Laptop-7.conf`, `SurfaceLaptop7-HiFi.conf`) and takes the laptop out of the T14s match. The only differences from the T14s files are the removed HDMI2 device, its entries in the other devices' `ConflictingDevice` lists, and the `DISPLAY_PORT_RX_2` mixer lines.
+Headset is set to Pro Audio Profile in Fedora 44 KDE Desktop, when 
+booted into Kernel 7.2 and 7.3.
 
-**Tested** on a Surface Laptop 7 15" (`Surface_Laptop_7th_Edition_2037`), kernel 7.3, PipeWire 1.6.11, WirePlumber 0.5.19:
+## Kernel 7.2
+# aplay -l | grep -i pro
+card 5: Headset [PRO X Wireless Gaming Headset], device 0: USB Audio 
+[USB Audio]
+  amixer -c 5 get PCM
+# amixer -c 5 get PCM
+Simple mixer control 'PCM',0
+   Capabilities: pswitch pswitch-joined
+   Playback channels: Mono
+   Mono: Playback [on]
+# amixer -c 5 scontrols
+Simple mixer control 'PCM',0
+Simple mixer control 'Mic',0
+# amixer -c 5 get Mic
+Simple mixer control 'Mic',0
+   Capabilities: cvolume cvolume-joined cswitch cswitch-joined
+   Capture channels: Mono
+   Limits: Capture 0 - 67
+   Mono: Capture 67 [100%] [3.00dB] [on]
+# dmesg | grep -iE 'usb-audio|0aba|snd-usb'
+[   10.020534] usb 6-1.3.4.4.3: New USB device found, idVendor=046d, 
+idProduct=0aba, bcdDevice= 1.00
+[   10.193459] input: Logitech PRO X Wireless Gaming Headset Consumer 
+Control as 
+/devices/pci0000:00/0000:00:08.3/0000:75:00.3/usb6/6-1/6-1.3/6-1.3.4/6-1.3.4.4/6-1.3.4.4.3/6-1.3.4.4.3:1.3/0003:046D:0ABA.000A/input/input26
+[   10.243772] input: Logitech PRO X Wireless Gaming Headset as 
+/devices/pci0000:00/0000:00:08.3/0000:75:00.3/usb6/6-1/6-1.3/6-1.3.4/6-1.3.4.4/6-1.3.4.4.3/6-1.3.4.4.3:1.3/0003:046D:0ABA.000A/input/input28
+[   10.244033] hid-generic 0003:046D:0ABA.000A: input,hiddev99,hidraw9: 
+USB HID v1.11 Device [Logitech PRO X Wireless Gaming Headset] on 
+usb-0000:75:00.3-1.3.4.4.3/input3
+[   20.239239] usbcore: registered new interface driver snd-usb-audio
 
-- The card has HDMI0, HDMI1 and Headphones profiles, and the errors above are gone.
-- The active profile and the default sink follow the jack in both directions, within a second, unaided.
-- Headphones play on the correct channels, and the headset microphone records.
-- `alsaucm -c X1E80100-Romulus list _devices/HiFi` on this branch's tree lists Speaker, Headphones, Headset, Mic, HDMI0 and HDMI1.
+## Kernel 7.3
+# aplay -l | grep -i pro
+card 5: Headset [PRO X Wireless Gaming Headset], device 0: USB Audio 
+[USB Audio]
+# amixer -c 5 get PCM
+Simple mixer control 'PCM',0
+   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+   Playback channels: Mono
+   Limits: Playback 0 - 64
+   Mono: Playback 41 [64%] [-23.00dB] [on]
+# amixer -c 5 scontrols
+Simple mixer control 'PCM',0
+Simple mixer control 'Mic',0
+# amixer -c 5 get Mic
+Simple mixer control 'Mic',0
+   Capabilities: cvolume cvolume-joined cswitch cswitch-joined
+   Capture channels: Mono
+   Limits: Capture 0 - 67
+   Mono: Capture 67 [100%] [3.00dB] [on]
+# dmesg | grep -iE 'usb-audio|0aba|snd-usb'
+[   10.136223] usb 6-1.3.4.4.3: New USB device found, idVendor=046d, 
+idProduct=0aba, bcdDevice= 1.00
+[   10.297395] input: Logitech PRO X Wireless Gaming Headset Consumer 
+Control as 
+/devices/pci0000:00/0000:00:08.3/0000:75:00.3/usb6/6-1/6-1.3/6-1.3.4/6-1.3.4.4/6-1.3.4.4.3/6-1.3.4.4.3:1.3/0003:046D:0ABA.000A/input/input26
+[   10.347810] input: Logitech PRO X Wireless Gaming Headset as 
+/devices/pci0000:00/0000:00:08.3/0000:75:00.3/usb6/6-1/6-1.3/6-1.3.4/6-1.3.4.4/6-1.3.4.4.3/6-1.3.4.4.3:1.3/0003:046D:0ABA.000A/input/input28
+[   10.348093] hid-generic 0003:046D:0ABA.000A: input,hiddev99,hidraw9: 
+USB HID v1.11 Device [Logitech PRO X Wireless Gaming Headset] on 
+usb-0000:75:00.3-1.3.4.4.3/input3
+[   21.433299] usbcore: registered new interface driver snd-usb-audio
+# amixer -c 5 sset PCM 64
+Simple mixer control 'PCM',0
+   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+   Playback channels: Mono
+   Limits: Playback 0 - 64
+   Mono: Playback 64 [100%] [0.00dB] [on]
+   # amixer -c 5 get PCM
+Simple mixer control 'PCM',0
+   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+   Playback channels: Mono
+   Limits: Playback 0 - 64
+   Mono: Playback 64 [100%] [0.00dB] [on]
 
-**Not tested:** DisplayPort audio itself (no monitor with speakers at hand; HDMI0 and HDMI1 are unchanged from the T14s profile), and the 13.8" model, which shares the device tree's sound card and the DMI product name, so this profile applies to it too.
-
-I kept the shared-PCM design of the T14s profile. The commit that added the IdeaCentre Mini describes giving each DisplayPort output its own frontend as the better arrangement; I have not attempted that here and would be glad to test it on this hardware.
-
-Prepared with Claude Fable 5.2; tested by me on my own laptop.
-
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/916
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/916.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+-- 
+FingerlessGloves
