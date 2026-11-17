@@ -2,187 +2,156 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6371F606A31C
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Nov 2026 08:57:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103B0606A31C
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Nov 2026 09:29:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=PqV1t1g/;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=baUheQVG;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=OYXAjad7;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=baUheQVG;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=OYXAjad7
+	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=NAZk7auV;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Wn9O5Rbi
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 787C9601FF;
-	Tue, 17 Nov 2026 09:56:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 787C9601FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CBE4601EB;
+	Tue, 17 Nov 2026 10:28:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CBE4601EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1794905821;
-	bh=fXyXCHnefYojSy5u/nOa29rs7rTNxoJ4gfehCf7/36Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1794907740;
+	bh=Lb49jszl8kfFyTS7rAnVwZzkUvDFcebAAigrFqpEkCc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PqV1t1g/WsD7LSmtzhDFCFrfnukFDJgMo4ZStetop5wx1RD93xozbuEvkG81pknP3
-	 fxTm0vcoE5qyPAoirJoGRbdJj7zro7ZfHjQuc5uCBA5MCAmeOYmlpPokDO0YRd/VGE
-	 HD2KK6fO7Xi1AtqiBnJUhZkSCuy9Q7aoczRmD9wM=
+	b=NAZk7auV+arzulaYS1k2sf8e7JEjpnAf5H/wlq/wM+C9Cnx2XSaCU2cBdiEfzjEj4
+	 q9DFsBwY9h5Y9B2RDBMz7oYhIVrZxQD80mgGzD8pilLL7xvRkRC3BpJFXliSBpfdlR
+	 7SsNaiLMOzGcfptvEGsDOSXGZvbP1PTcy317fGdw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 74776F805D7; Tue, 17 Nov 2026 09:56:24 +0100 (CET)
+	id 2B3CDF805B6; Tue, 17 Nov 2026 10:28:26 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3279BF805EF;
-	Tue, 17 Nov 2026 09:56:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E6F5F80602;
+	Tue, 17 Nov 2026 10:28:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F27CDF805A8; Tue, 17 Nov 2026 09:56:15 +0100 (CET)
+	id 45203F805A8; Tue, 17 Nov 2026 10:28:18 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=4.0.1
-Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.130
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1794905771;
-	b=dIR4WO0alhEI1butVfe+4e9R4Yi01vYNeGhUJEkIrXPntbYV6YKw8v8mUEdRyF73ldyW
-	 aDu+RKKGcm/daRlxpYGS2L3jawNL0GTLXOCLJuVTIdinI1auTclGAwNCmzHkOvFsgpXQo
-	 Lio68WYna3WxJBI1d4nu0uALfkZoiNExCPmbb8rp2Y8DODAddP9+Lc3eOjc/ZOhkG9hKb
-	 dhYe1I8/Gs2dgmbwG6tOdCdsfQva7tqYi8J43s/E6X9aRFSrGq6q4nuN1l/TbWyL+cJu/
-	 yBSOIwt4duKyHVBrQhk+p8NsH3ReFxXVJsQ6oKgrzvPJsfp936M3MlGsYNvk8BGlehw==
+X-Spam-Status: No, score=-7.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=4.0.1
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1794907693;
+	b=T0T5Lokysu2UeA4tNtZK40COHWTubkgrWWARtJLoE6My6nTM/52nIiMSPg4LWBfywWvy
+	 aJLl4VUh5FKK82nxo21ByBoY6U4BAj3ga/hR92ZgSeE9d5q98mPrUbtAHDho3bdVNAkf8
+	 qeD/1iJFzdE2H7OxkLwVaekpDwFQuMWlLTxB7Jj8Tr99icnbTj4CIkxX57tGi/1hGjiYH
+	 mnnv14gHGiljYS5DINO06GyPgUr0Fijnw59QIB5MN2AFzgdt2YMM+TYXyM507Y1I6wDJb
+	 iXpAOKX5ymIKdfZgz9yBHaVvNieBwvvTnk5Ms1A5WZnwTfQarpvX7vg6oe/yDpalWcQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1794905771;
-	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
-	 Message-ID:From:To:Subject:MIME-Version;
-	bh=fXyXCHnefYojSy5u/nOa29rs7rTNxoJ4gfehCf7/36Y=;
-	b=S0k4wQElPrWyjkDCSo6NNr6m3I3JiIY9maBWaGxHx5L+wp58ZtgQKENBJF7p7gijnotd
-	 l7uE6bKuB0o12gLMzl8dsl6oeACneldxJ7clx/n7B87luDNmWpYbC12e40nK5a1iYg2d0
-	 n+quVs1OtD2ZYo3E2UJtsAVFABfZ7JCZQuFgRO7a5UNhLH3d7bu9QjjpM4B3BSipuJsGP
-	 flYXEQlb7wvhdGCohieHkqfu3XEhX3FfOT+g5+0ekybEcgNCSigzzjwIGd01cK6LJi1iF
-	 L5S3EWFzfm16vfC3+TXCOPsU9fq7hH9KOL1dwUdxTQRB3M9K5AGuouGo7UsALxT7eLA==
+	c=relaxed/simple; t=1794907693;
+	h=DKIM-Signature:Message-ID:Date:MIME-Version:Subject:To:From;
+	bh=Lb49jszl8kfFyTS7rAnVwZzkUvDFcebAAigrFqpEkCc=;
+	b=oBbXQoxvwIu64CnGSUR5UpZ/QBCbuaT/XWgD3yW86Z7dVeb9++Bnza8eJxZicS1KFhpM
+	 UEr0mG81y9ESHFPn/tyb1V1JiUjqgFGNJXMY+0oyIWR2MnZS2DV8W1Kg4enc09rVtpnR3
+	 QrGYufVs0cM4Er8ACcYi2q4RfE+pLpGr7CFu/3kQDpe2WfL1LCi1l77JiqW9uo/h5a1KZ
+	 ycMvbCry/U26XSnKyzijddSyE3kCelEQMs1ogEoqps1hG/+CAx/G3FnUeMg57ng7R88Cq
+	 H3Ye6j4u9MMqxOCV9Bmzqb133CgGDcpvqjEAxhs5UjF/G4AXqFM2r2vYPRoCR6HATmA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=baUheQVG;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=OYXAjad7;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=baUheQVG;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=OYXAjad7;
-	arc=none smtp.remote-ip=195.135.223.130
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=Wn9O5Rbi;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 48FC1F80510
-	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2026 09:56:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48FC1F80510
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5B025F80510
+	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2026 10:28:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B025F80510
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=baUheQVG;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=OYXAjad7;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=baUheQVG;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=OYXAjad7
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 21155221ED;
-	Tue, 17 Nov 2026 08:56:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1794905769;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ur32DdfOvs+5Wrm9nLHjNLlSmiMojBpVaTC6KaKH0FU=;
-	b=baUheQVGdW/UuPntTjI9KV+EOI3gOpqw2chUKQONvlUPoyHonSPMUsV84HJmrfcHtEBqqk
-	73JCngEtDzS9M2LjVBA9zfx/u1BCafcPZ8Cwg6q0KAPGwmUF4EdXjbstW2YJMrRjUc9KfS
-	EpP0kM61Jqi31bpJBOHw3PiKwuUNPJI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1794905769;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ur32DdfOvs+5Wrm9nLHjNLlSmiMojBpVaTC6KaKH0FU=;
-	b=OYXAjad76FtJAbvmYkBfonAoafAKUJU6Xi3n/JjcU71bawBLYcIsLPPaXCG0jN1eWXueHi
-	pCPloT7sHsH+GQDA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1794905769;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ur32DdfOvs+5Wrm9nLHjNLlSmiMojBpVaTC6KaKH0FU=;
-	b=baUheQVGdW/UuPntTjI9KV+EOI3gOpqw2chUKQONvlUPoyHonSPMUsV84HJmrfcHtEBqqk
-	73JCngEtDzS9M2LjVBA9zfx/u1BCafcPZ8Cwg6q0KAPGwmUF4EdXjbstW2YJMrRjUc9KfS
-	EpP0kM61Jqi31bpJBOHw3PiKwuUNPJI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1794905769;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ur32DdfOvs+5Wrm9nLHjNLlSmiMojBpVaTC6KaKH0FU=;
-	b=OYXAjad76FtJAbvmYkBfonAoafAKUJU6Xi3n/JjcU71bawBLYcIsLPPaXCG0jN1eWXueHi
-	pCPloT7sHsH+GQDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D40E71334C;
-	Tue, 17 Nov 2026 08:56:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id KCbzK6gW/GonXQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 17 Nov 2026 08:56:08 +0000
-Date: Tue, 17 Nov 2026 09:56:08 +0100
-Message-ID: <87zev7zviv.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: ptrnt@proton.me
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
-	"perex@perex.cz" <perex@perex.cz>,
-	"tiwai@suse.com" <tiwai@suse.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for HP ProBook 455 G8 mute
- LED
-In-Reply-To: 
- <7MuWwdxL8P9sa_U2G1ztBAaV6q-vlnX-VE6W_awGFtxOQWXQ12kIoRUqrnlwkQH_gE1Vy6Fg1jutNWO9MuVteVwQq6vf4DKZdVOfa3gB0TQ=@proton.me>
-References: 
- <7MuWwdxL8P9sa_U2G1ztBAaV6q-vlnX-VE6W_awGFtxOQWXQ12kIoRUqrnlwkQH_gE1Vy6Fg1jutNWO9MuVteVwQq6vf4DKZdVOfa3gB0TQ=@proton.me>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=Wn9O5Rbi
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id C94FB42A16;
+	Tue, 17 Nov 2026 09:28:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D52171F000C4;
+	Tue, 17 Nov 2026 09:28:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794907687;
+	bh=bMwZ98tR+fJ2rsFy4jjt5sBVqkBsJ0OsgXXatx5V4Do=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=Wn9O5RbifV6CDOuyzqofXPRk9RurQUJRV+ImB8vP4/0Vzt9xDcPQ1/JXuX+X1g1WB
+	 P0XMMaJbp+zrcRqdZRr0UIFzMO0NeAE50dBB7EfyZcg6rek/04LEEj7h1545JVQWMh
+	 0uJRREJ1JuEvbWLFJlFMLUM7jvBSxsa367UonGjhS7pT4EBNveDbuO/F8KQkYybqh+
+	 LTEAoOLqgFEb8Gs7ePPzFejjkMlK3crwXCSKKcfwhZXJL03yEYuKQFTBA60e0czE05
+	 5YzI9R7Wr+tBI+s2rCYF1rY02LM6Fikgg2Ua8NL6B3e4kg7zLJDIlOFXtLum5VP62g
+	 FbpGbAFifvsCQ==
+Message-ID: <9078a957-c183-42cb-84a8-0f15661fd23d@kernel.org>
+Date: Tue, 17 Nov 2026 10:28:03 +0100
 X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-12.30 / 50.00];
-	SUSE_INTERNAL_BYPASS(-9.00)[];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	URIBL_BLOCKED(0.00)[proton.me:email,imap1.dmz-prg2.suse.org:helo];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-Message-ID-Hash: P4CQHT25YOFQXFFQVZABK2SUSLZL4MRV
-X-Message-ID-Hash: P4CQHT25YOFQXFFQVZABK2SUSLZL4MRV
-X-MailFrom: tiwai@suse.de
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] ASoC: codecs: nau8310: Add support for NAU83G10
+ amplifier
+To: YLCHANG2 <neo.chang70@gmail.com>, Neo Chang <YLCHANG2@nuvoton.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, robh@kernel.org,
+ krzk+dt@kernel.org, linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, kchsu0@nuvoton.com, sjlin0@nuvoton.com,
+ lkp@intel.com
+References: <20261109051251.471879-1-YLCHANG2@nuvoton.com>
+ <20261109051251.471879-3-YLCHANG2@nuvoton.com>
+ <20261109-myna-of-noble-downpour-e09d3e@quoll>
+ <6d7f4ecd-bac0-44d6-a704-57cdd2877729@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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
+In-Reply-To: <6d7f4ecd-bac0-44d6-a704-57cdd2877729@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: FWEVJKZ6VT55AT4BISRYEYZ3ZKBLCZAE
+X-Message-ID-Hash: FWEVJKZ6VT55AT4BISRYEYZ3ZKBLCZAE
+X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -193,7 +162,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P4CQHT25YOFQXFFQVZABK2SUSLZL4MRV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FWEVJKZ6VT55AT4BISRYEYZ3ZKBLCZAE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -201,21 +170,21 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 
-On Tue, 17 Nov 2026 05:30:44 +0100,
-ptrnt@proton.me wrote:
-> 
-> 
-> The F5/F8 mute-LED keycap indicators do not light up on this model
-> (SSID 103c:8a91) because it is missing from the
-> ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF quirk table, even though
-> sibling ProBook/EliteBook models (G6 through G11) already use it.
-> 
-> Signed-off-by: Roman Popov <ptrnt@proton.me>
+On 17/11/2026 04:38, YLCHANG2 wrote:
+>>> +static void nau8310_i2c_remove(struct i2c_client *client)
+>>> +{
+>>> +	struct nau8310 *nau8310 = i2c_get_clientdata(client);
+>>> +
+>>> +	cancel_work_sync(&nau8310->load_fw_work);
+>> This looks safe, but still error-prone and discouraged. Use same order
+>> of cleanup as order of init/allocation in probe.
+>>
+>> See also include/linux/devm-helpers.h
+> Got it. I will use devm_work_autocancel() in probe instead of manual 
+> cancellation in remove().
 
-The patch is inapplicable due to the tabs/spaces breakage.
-Could you fix your mailer setup and resubmit?
+To clarify: use reversed order of the cleanup, obviously, to match the
+probe in a reversed way.
 
-
-thanks,
-
-Takashi
+Best regards,
+Krzysztof
