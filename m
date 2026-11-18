@@ -2,163 +2,125 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DF60606A31F
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2026 12:04:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88898606A321
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2026 12:04:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=F0EJZ1DX;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=sin5ZbNK
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=YUgJNFOB;
+	dkim=pass (2048-bit key, unprotected) header.d=cyberprotect.ru header.i=@cyberprotect.ru header.a=rsa-sha256 header.s=dkim-r header.b=UYOW2Gi3;
+	dkim=pass header.d=cyberprotect.ru header.i=@cyberprotect.ru header.a=ed25519-sha256 header.s=dkim header.b=4irY/SdN
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07A5560199;
-	Mon, 23 Nov 2026 13:04:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07A5560199
+	by alsa0.perex.cz (Postfix) with ESMTPS id B58EC601ED;
+	Mon, 23 Nov 2026 13:04:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B58EC601ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1795435457;
-	bh=UV7hJDCJNf9r7eofHbxJynsn0HA1G0sBnuhrFfpEf/k=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=F0EJZ1DXPhZ5l6OvR1ZIvGPJKOK60RPnWnxbLe431DamkHWffZFOE70q7piWkKsKZ
-	 r4pI8km0lKbgpz6e4gENnXF2MaaWVVslknCRJSsVO/3z9tPP69pZsGRb0ewSFQOs4B
-	 UARzq0eq8QmUc1AmyRqmrGIW1UwuyiipXIyyMKS8=
+	s=default; t=1795435475;
+	bh=MFZFUEvwdKSCsHtxa6z0s5xsNlmgcuL1UDvLJNazTPc=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=YUgJNFOBzKaib92YfCQmG0A66KCoPDrVyFCP6DAWlXbU7ZaNxrlg2fvbxLf/XTgBt
+	 Z1UtImcTBEYNG1D0bu1MCWQ94XUJF3QmcMLfXzbYjh35LPwk34zSA63pgdSJba/jhT
+	 I/wbntHKpzcN8EOqa0EOsx9zgDsBCFakWMYg8NTU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8E9BBF806AA; Mon, 23 Nov 2026 13:02:38 +0100 (CET)
+	id A679AF806CA; Mon, 23 Nov 2026 13:02:43 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 973E1F806A8;
-	Mon, 23 Nov 2026 13:02:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C83B9F806CA;
+	Mon, 23 Nov 2026 13:02:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 18D9BF805A8; Tue, 17 Nov 2026 10:56:51 +0100 (CET)
+	id 3201CF80538; Wed, 18 Nov 2026 14:20:18 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_PASS,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=4.0.1
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=209.85.214.171
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1794909408;
-	b=XBR7HazwSn02p7/9hjtLhqE+8N5AZQscYPj3ijott/BrJHdaXeOu+O5+fHSVJdXaRZ3D
-	 QfmXb4lmVUBsTjv+0VNrJ4t95bHC3zL1mLI81MRoGGNnPkxPorVQ/HHNYis6BabykeGzh
-	 8Vp5G47PHS26iKW4mlD06UAZvZrSaYWshJiVMXIkNbJ00bFY9RDosp5HtkGQbacfBpDqH
-	 rmBxQN/V4kWDimHfeN+20lqOI8Sj10Fqa1ZSZj3F0632ZCCm3AUXaehjkPnEHlH8ypMqK
-	 P6xLhMtLbnrsfaUiswC9ASrnkU0I10T/e/82kD54FAI58CIeUCAasvLZJRZHdOzClUA==
+X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=4.0.1
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=176.10.93.31
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1795008014;
+	b=eksOnJoKtzzaLygeMKx8XVttKdx/PDnYUuU6jB7BC61Sm38pwnlTlWA8Ej+lJDOMXxk5
+	 +dg8A8uaVUWi43cTvkIbT0IKAur5nHk+BnMLFTsaaLbGNYaiJzEhMcE+rvmZ/6EqLO13o
+	 fxYtCCiQYB9OgdHBJbQ6z8bKThzkquYFw/ULjWsjKEfHHzK3h51kC3wF5vO9JTbMQKGEq
+	 Qo7ipBtvJOYFpJdhmoMDcVXMxIduDNCE0XuriVzpWOlSduCwtUB62WZrl0r3WMNOE1e8x
+	 sAc8R9cxUixKW9YxyUllMpyioJkpmSjJrWiCwL/JHy6DPAJRXMGBKoIG6t5pQOrTZTA==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1794909408;
-	h=DKIM-Signature:Message-ID:Date:MIME-Version:Subject:To:From;
-	bh=UV7hJDCJNf9r7eofHbxJynsn0HA1G0sBnuhrFfpEf/k=;
-	b=IN2LRXiMvqznYxVeJ9LXvCtgjMgHapyFaKIUxlo9HgxqXdPZycX+UGUruo3E4TWUSj4L
-	 DHLQEB5cY7aaM7Lpx6EEkrKrXjnJvf1Nn6K+M4X43x3S9K6MlQYDV7o6+QCyz3IHtnwam
-	 C7E/DbRV/yZlG1Lhb2QaxDfP22ejs1hVCCPgMGyQkSxt0aDxYZJm9FofkAl3ecHz4eESX
-	 tgtn6gmkYFzh3nwSE58+PmV5SorhZkF/6jF2w4OW1jSX73W6xdI6NSvarKciX/bWBUanz
-	 axZ+9/6SIwS3qHsdzFLeG3v34J4JefES1hH3pFseZFMCeAHI2dvorI4CG8I74TFfBmw==
+	c=relaxed/simple; t=1795008014;
+	h=DKIM-Signature:DKIM-Signature:From:To:Subject:Date:Message-ID:
+	 MIME-Version;
+	bh=MFZFUEvwdKSCsHtxa6z0s5xsNlmgcuL1UDvLJNazTPc=;
+	b=OAKi7IccpHrlsW+xVgl2ylQIqjWD6tupCXPYT5WwgkY29qzbPyVbbEkZo+smP6PRJCV8
+	 ZaN2yMEZjUrH/tJp/JoAwSR2OFviGGZkwdBsYOVFKb2x8ymkkwiXjHoqKtKpTnP/fTSIK
+	 psof15toXwvvmoCAZxyz5kHIsZyczfuw+z4ShH559h2axqjILUSDix58cddUbk8hZT4iL
+	 YEOsOZWHY96Bhc11IgkoBp1/8MO2bX24J2ZpasTsHvXXdOW+g/FwSyO8gisftrVJm1zf+
+	 CuZASKYWwpE5y24XxMYHaoWIoVgz+3ZhOYm5PKmDVx5HlBBH7w8ALeBArr+946OPZcQ==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20260707 header.b=sin5ZbNK;
-	arc=none smtp.remote-ip=209.85.214.171
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com
- [209.85.214.171])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dkim=pass header.d=cyberprotect.ru header.i=@cyberprotect.ru
+ header.a=rsa-sha256 header.s=dkim-r header.b=UYOW2Gi3;
+	dkim=pass header.d=cyberprotect.ru header.i=@cyberprotect.ru
+ header.a=ed25519-sha256 header.s=dkim header.b="4irY/SdN";
+	arc=none smtp.remote-ip=176.10.93.31
+Received: from mx2.cyberprotect.ru (mx2.cyberprotect.ru [176.10.93.31])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6577CF80510
-	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2026 10:56:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6577CF80510
+	by alsa1.perex.cz (Postfix) with ESMTPS id DF07BF80152
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2026 14:20:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF07BF80152
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20260707 header.b=sin5ZbNK
-Received: by mail-pl1-f171.google.com with SMTP id
- d9443c01a7336-2e987a2ba0cso26643125ad.3
-        for <alsa-devel@alsa-project.org>;
- Tue, 17 Nov 2026 01:56:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794909404; x=1795514204;
- darn=alsa-project.org;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=uzJ7zdzUB3cdGIuk2i9Y+NNhABXVFT8DILTBgFlRwyA=;
-        b=sin5ZbNKmBgeHHso4q7i/h1nylec1YGBCmvr8+zJkrgtWbAc43s+rFwTDCDgKrK6Pn
-         dT9BWYJg+y28wOYfWfKmXgbAcLRA3J3Kma5tCrQrsks/0vi7Df4iH/z/K8AYmB6ZKcjb
-         jyO7J50nqjemhj1mzZzF/u+kusb0jKn5ewBBb7ACCUEcJgAOMZDwuZd14lLx2RoPXrcC
-         gAuTLWzFLQmmx7mncqebuHa/3VJrMPkkNvjwBh/hS3VumRsCIoIZEbG98CPiSQE407jI
-         QX8VtFBLS2Rr4h5HQSnxjiIWY9Y03zFppWE9qB5W4lgCXPPoOb4rtLgNjWbpRkvnUMqF
-         3+tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794909404; x=1795514204;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=uzJ7zdzUB3cdGIuk2i9Y+NNhABXVFT8DILTBgFlRwyA=;
-        b=HXTNHZWlHM3cOcRuR8tmqa4rfC2ZlULcjTFDY/hUn9Fh9cqmJnAY51RTPXthB/LvKS
-         Pcws+52IK2xJHslFwTKJCkDjdWU0qpEI863+CMPI/oiqA1LGfbL3QkCMEP6sR3ByF4+F
-         32zjY3MCIokmWxTCEsWJu7Exnoi8xr2mLDCUMY6impoiyY/p55vSUJr113eNMPApS1WD
-         f16BcLTVtR5mV/vkrIKfeE2IP1PVvSeAjjltAf/io9dlzf0rUuczt8xl7dd5Bq1h65vR
-         DLZNto20m/Mtdoyt3X8P1duRMluv8lzWINOLh2MO8NZColgfvxzxIq0iDJWvfgGntZ1u
-         U5jQ==
-X-Forwarded-Encrypted: i=1;
- AL+hErGLXD0tfeqiDhBpqIDJxc9yKG2ifNb9vHZqiY7PVPIFtub69FPl7Xc0TRTfng4PrDgWYoxcDZMgOXax@alsa-project.org
-X-Gm-Message-State: APuU4Z+8HYC0fY+5zK0QoHDLd0dAfyfpIAbvg21UZ7gT3w0QtPOpZZMH
-	HEtd6dwAntEnd19HmFGhoMVLSR+aXP0dQQUlV+Gnvm1ycvFWSzHWWP64
-X-Gm-Gg: AZFdTZeXHGEiwbndQokRUM+ixXYnGyqj9vwTax9I7MB6V4QsJ5zgSYRfeZic3uuraG1
-	9Bhfk1vyiIasFDek9QudsBQ4ZoGzdzzL3cfhsu2W844xpqfjWA8W86j2P6oGkY6Efe69A47P+Oy
-	1j/ozpNcvRF/OOZPoWykeoKBJaPV4t1EBWoIkpxqvldJFQ4u7210ubW4Fkiz4vr44KiMuzTB+nz
-	F+BfpfX9k46De/ssx8A6yxAGy/zi1Y1ivgDg38ANA+pcguR31P/P3bvGFxvkNSVtChGZWKD9hZM
-	J/SphuYKkZO2tTIGlg/B2OqO8sl9g5ubRtlmjBOvJY6ZmrKFmhtDaHAJ/XLd65HLcfaQ1jZXjon
-	a817fZaq5dXsmroofWv/zB2LtmAlDtMntrIFcdMyKWziyyF+SmV+nV74ezkkcFUU0GJq+Yh9jMs
-	1WO1EOjh2h+PNo48iZ1LYIJHys8FcyHO+A9RlWOycDxbB22TGdC69ZRAA1GUFUZxExAijF8MI1d
-	tDykmmbXfdgyJkoDJs/k2t16qzrnp7IeJwL4DGfQEOYI7AxNoysKarZH+bpfWn6G/x/TAoA0g6A
-	clo3zHpSWa5oz00BZtm3HJs7IKvHVzDyzVAjFZogsTpRv1DZHI+0oilFwBCC
-X-Received: by 2002:a17:90b:17c7:b0:3ab:884b:65ab with SMTP id
- 98e67ed59e1d1-3b1b0ba4fd8mr14060000a91.55.1794909404192;
-        Tue, 17 Nov 2026 01:56:44 -0800 (PST)
-Received: from [172.20.10.2] (42-79-72-63.emome-ip.hinet.net. [42.79.72.63])
-        by smtp.gmail.com with ESMTPSA id
- 98e67ed59e1d1-3b1b39d73c9sm11164505a91.2.2026.11.17.01.56.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2026 01:56:43 -0800 (PST)
-Message-ID: <5c4ec348-e0cf-4f4e-958a-f0c86296bf83@gmail.com>
-Date: Tue, 17 Nov 2026 17:54:23 +0800
+ unprotected) header.d=cyberprotect.ru header.i=@cyberprotect.ru
+ header.a=rsa-sha256 header.s=dkim-r header.b=UYOW2Gi3;
+	dkim=pass header.d=cyberprotect.ru header.i=@cyberprotect.ru
+ header.a=ed25519-sha256 header.s=dkim header.b=4irY/SdN
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=cyberprotect.ru; s=dkim-r; h=MIME-Version:Date:From:Sender:Reply-To;
+	bh=32cyXCU1sWs+5TgmQguEoU4tTwPL+UvYB/tYlKxvnd8=; b=UYOW2Gi3CMf/tAuu7+s8KX8Wv9
+	py4RP9kUFn7kmDO/JKczP71w9pntQCWbe89qEaIBDBJkOsIPuYBd5k1E1AMi4/tPX6pyn408uCpcQ
+	29cBLWrdmkKi/24V8uH44pChKqH+01LNp9AyHibaBFWVZBm32aPfaodYT5Bx8DIHlBhb2x0eGAJaz
+	WOBLL4fTvlZCQs8I9YpwBdFqXyuwWHMeHRzzQSFPGq3zQqTMsUW5eAuqoH1DJTA0xqpBmnkMQHFJ/
+	Ydt6rk/q6OibKhau3Qs0RUnkF6rSjRAiUbeZnz51GyBKba2xQjDprVqxeNmELECAJg+KJAxEK5QH6
+	OuWTRbVw==;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=cyberprotect.ru; s=dkim; h=MIME-Version:Date:From:Sender:Reply-To;
+	bh=32cyXCU1sWs+5TgmQguEoU4tTwPL+UvYB/tYlKxvnd8=; b=4irY/SdNPUamy7Q3S+eHGD7jMd
+	lg6PWy+mOHZ9ZIhEj3bb1IPvu4ivYexv3VkmP2zRAB1hANCfd4SL/qfiBUDg==;
+From: Dmitriy Chumachenko <Dmitry.Chumachenko@cyberprotect.ru>
+To: Jaroslav Kysela <perex@perex.cz>
+CC: Takashi Iwai <tiwai@suse.com>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, Sasha Levin <sashal@kernel.org>, Oswald
+ Buddenhagen <oswald.buddenhagen@gmx.de>, Mehul Rao <mehulrao@gmail.com>,
+	Ji'an Zhou <eilaimemedsnaimel@gmail.com>, Norbert Szetei
+	<norbert@doyensec.com>, <alsa-devel@alsa-project.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>, Dmitriy
+ Chumachenko <Dmitry.Chumachenko@cyberprotect.ru>
+Subject: [PATCH v2] ALSA: pcm_oss: reject buffer reconfiguration while the
+ stream is mmapped
+Date: Wed, 18 Nov 2026 16:19:45 +0300
+Message-ID: <20261118131945.27592-1-Dmitry.Chumachenko@cyberprotect.ru>
+X-Mailer: git-send-email 2.49.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] ASoC: codecs: nau8310: Add support for NAU83G10
- amplifier
-To: Krzysztof Kozlowski <krzk@kernel.org>, Neo Chang <YLCHANG2@nuvoton.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, robh@kernel.org,
- krzk+dt@kernel.org, linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, kchsu0@nuvoton.com, sjlin0@nuvoton.com,
- lkp@intel.com
-References: <20261109051251.471879-1-YLCHANG2@nuvoton.com>
- <20261109051251.471879-3-YLCHANG2@nuvoton.com>
- <20261109-myna-of-noble-downpour-e09d3e@quoll>
- <6d7f4ecd-bac0-44d6-a704-57cdd2877729@gmail.com>
- <9078a957-c183-42cb-84a8-0f15661fd23d@kernel.org>
-Content-Language: en-US
-From: YLCHANG2 <neo.chang70@gmail.com>
-In-Reply-To: <9078a957-c183-42cb-84a8-0f15661fd23d@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-MailFrom: neo.chang70@gmail.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AIP-EXCH-1.aip.ooo (10.77.28.101) To AIP-EXCH-1.aip.ooo
+ (10.77.28.101)
+X-MailFrom: Dmitry.Chumachenko@cyberprotect.ru
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: GHRWOWQBK5C6CIU656ETKXI6BR5LRCKG
-X-Message-ID-Hash: GHRWOWQBK5C6CIU656ETKXI6BR5LRCKG
+Message-ID-Hash: 6DN4KIPVJ6GIX7SDQ7OT3DCP5SYUQTSB
+X-Message-ID-Hash: 6DN4KIPVJ6GIX7SDQ7OT3DCP5SYUQTSB
 X-Mailman-Approved-At: Mon, 23 Nov 2026 12:02:14 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GHRWOWQBK5C6CIU656ETKXI6BR5LRCKG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6DN4KIPVJ6GIX7SDQ7OT3DCP5SYUQTSB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -166,31 +128,67 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 
+During fuzz testing, the following issue was discovered.                   
+                                                                           
+WARNING: CPU: 2 PID: 1734 at sound/core/pcm_native.c:3835                  
+snd_pcm_mmap_data_fault+0x47f/0x530 sound/core/pcm_native.c:3835           
+                                                                           
+Modules linked in:                                                         
+CPU: 2 PID: 1734 Comm: syz.1.352 Not tainted 6.1.187-syzkaller-00593-g063a81552262 #0
+RIP: 0010:snd_pcm_mmap_data_fault+0x47f/0x530 sound/core/pcm_native.c:3835 
+                                                                           
+Call Trace:                                                                
+ <TASK>                                                                    
+ __do_fault+0x10d/0x480 mm/memory.c:4280                                   
+ do_cow_fault mm/memory.c:4661 [inline]                                    
+ do_fault+0xa7a/0x1100 mm/memory.c:4762                                    
+ handle_pte_fault mm/memory.c:5031 [inline]                                
+ __handle_mm_fault+0xdf3/0x2e40 mm/memory.c:5173                           
+ handle_mm_fault+0x2da/0xa60 mm/memory.c:5294                              
+ do_user_addr_fault+0x4aa/0x1050 arch/x86/mm/fault.c:1338                  
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]                       
+ exc_page_fault+0x98/0x1b0 arch/x86/mm/fault.c:1482                        
+ asm_exc_page_fault+0x22/0x30 arch/x86/include/asm/idtentry.h:608
 
-On 11/17/26 17:28, Krzysztof Kozlowski wrote:
-> On 17/11/2026 04:38, YLCHANG2 wrote:
->>>> +static void nau8310_i2c_remove(struct i2c_client *client)
->>>> +{
->>>> +	struct nau8310 *nau8310 = i2c_get_clientdata(client);
->>>> +
->>>> +	cancel_work_sync(&nau8310->load_fw_work);
->>> This looks safe, but still error-prone and discouraged. Use same order
->>> of cleanup as order of init/allocation in probe.
->>>
->>> See also include/linux/devm-helpers.h
->> Got it. I will use devm_work_autocancel() in probe instead of manual
->> cancellation in remove().
-> To clarify: use reversed order of the cleanup, obviously, to match the
-> probe in a reversed way.
->
-> Best regards,
-> Krzysztof
-Hi Krzysztof,
+snd_pcm_oss_change_params() frees and reallocates the substream buffer,
+and several OSS entry points reach it while the data area may already be
+mmapped: snd_pcm_oss_mmap() and the SNDCTL_DSP_GETOSPACE/GETISPACE ioctls
+(snd_pcm_oss_get_space()).
 
-Thanks for the reminder. I will adjust the initialization order in probe()
-so that devm_work_autocancel() is registered after the regmap 
-initialization.
-This ensures the cleanup follows in the proper reverse order.
+For OSS streams snd_pcm_hw_params() skips the mmap_count guard
+(!is_oss_stream), so the buffer is torn down under a live mapping. If the
+reallocation then fails, the substream is left with runtime->dma_area ==
+NULL, and the next page fault on the stale mapping reaches
+snd_pcm_mmap_data_fault() with no buffer, hitting the WARN_ON_ONCE().
 
-Best regards,
-Neo
+Reject the reconfiguration in snd_pcm_oss_change_params_locked() when the
+stream is already mmapped; this covers all callers (read/write already
+bail out earlier on a non-zero mmap_count). The core WARN_ON_ONCE() is
+left in place.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Dmitriy Chumachenko <Dmitry.Chumachenko@cyberprotect.ru>
+---
+v2: Fix the root cause in the OSS layer instead of silencing the core
+    warning. v1 dropped the WARN_ON_ONCE() in snd_pcm_mmap_data_fault();
+    v2 refuses to reconfigure (and free) the buffer while a data mapping
+    is active, which is what left dma_area NULL.
+ sound/core/oss/pcm_oss.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+index 2dbc27831eb3..4ce9ecaa6ab1 100644
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -861,6 +861,8 @@ static int snd_pcm_oss_change_params_locked(struct snd_pcm_substream *substream)
+ 
+ 	if (!runtime->oss.params)
+ 		return 0;
++	if (atomic_read(&substream->mmap_count))
++		return -EBADFD;
+ 	sw_params = kzalloc_obj(*sw_params);
+ 	params = kmalloc_obj(*params);
+ 	sparams = kmalloc_obj(*sparams);
+-- 
+2.49.0
+
