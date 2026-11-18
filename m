@@ -2,86 +2,86 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAA3D606A32F
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2026 02:08:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01FF3606A320
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2026 03:43:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=Ey84GE40;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.a=rsa-sha256 header.s=korg header.b=iSbwSvam
+	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=f+g+0+jF;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.a=rsa-sha256 header.s=korg header.b=nJzzQ5FB
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8FD77601EF;
-	Thu, 19 Nov 2026 03:07:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FD77601EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 91012601FA;
+	Thu, 19 Nov 2026 04:42:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91012601FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1795054086;
-	bh=ynFUmfQN36pCdnw9MimvcUEwOgOS0vURoljSRIUh//U=;
+	s=default; t=1795059786;
+	bh=ZomLfG8+zmLT9HwNavqBSyQ79CdcERtWC2t1IG5DH/c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Ey84GE40xpPMVZ2V0uXTmt+lR7rmFau/4+t/fya1Gkj4JmImNpzfbAoGGe8/Stpyx
-	 0lfjEOv62ZZme2ehSNi7NdBMs5+YfS40V1JYv0zjb5/a6HLyvQwYXq1AWxTqbb6xGO
-	 +HRv3fFCAZOUfGGfKv722J40a4hfS+hfEFb102FY=
+	b=f+g+0+jF2TPYxxoqP9ePue294Sz+zsmsdq4kImOmxMn3YI4tPHGFM3Rl3ST0YhvhC
+	 o5D+KH7BBuUvxjLpXj83HLi1Ik2nq1IoX9pTz227lqgvIf3B0+8qyZBoGGBiFNlUUV
+	 w2Mkf9MJ5OZ9tdedDU4qDgkJdR4grxpWWpRaYMjw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4C4FEF80602; Thu, 19 Nov 2026 03:07:32 +0100 (CET)
+	id 91099F805FD; Thu, 19 Nov 2026 04:42:31 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E9D3F805F8;
-	Thu, 19 Nov 2026 03:07:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D900DF80601;
+	Thu, 19 Nov 2026 04:42:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 95E00F805C5; Thu, 19 Nov 2026 03:07:25 +0100 (CET)
+	id A2667F805C5; Thu, 19 Nov 2026 04:42:24 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.3 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+X-Spam-Status: No, score=-17.8 required=3.0 tests=BAYES_00,DATE_IN_PAST_12_24,
 	DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=4.0.1
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1795054044;
-	b=Uga94VuT/dI/bKeYEJbNmvaK4xnRao8QMC8No6ec9GxovGKP/p7jSdxJX+Ci0WwTSkpI
-	 sGRqwX51RxpSTSZ9uIIthJSSAhMGqyMjqmh2+elQFl/gPdm8rScnYj4WroE/9Hkuyat/g
-	 z39r/haCUnGTV0Pn3otuZuq4vCDSz8LMo6p+E8Wj7IUQflkX2eASPvJ2griLOfCV2VJ2l
-	 r/yOGfJ5K5m5ieBxNrdaXmt96wiNV+jxfoPGQxVvM3iD4VfGxcDK/S+BxIts+W3JuKoe+
-	 lc2Y3oMkPzuO0K1WvHudOfEA9mqYC8UqCUfijC2cVAnMZHR0tnP9k2DaVJuDeg7Md/w==
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1795059743;
+	b=ksWcPtQ7R4HAKWuJJWp/pXAUog60Ilcsbuy8iuKDaN2DGkbmhFvKDxXjtvmnmW5p51g9
+	 TT3qGdum90qEM52sQyF86RVjmO/Ysyr/zA999VC60MKGkYQX7sANefx6ZrFz53qy+GGeB
+	 apZfYIv6GoXCaTXnMi13d7tBL6lQvSEc5AidGn2OQS3jM9XZsbf4ziPbOZrUtFTwTOvrm
+	 Xb947KeL0xlLOULCgBxKLUqt4TET3xblhn6BomyhPDzO7rU5v+4DVt39XT7ge7JMsm7IU
+	 pT3Xl36pA3FWQKCjs9FI5b19V02rD4b3HVfaiVTsj5Rc8zH0kZHLJd5fOfRMDvC2bxw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1795054044;
+	c=relaxed/simple; t=1795059743;
 	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=ynFUmfQN36pCdnw9MimvcUEwOgOS0vURoljSRIUh//U=;
-	b=A7lB9C5eY1QuszYdUGC8roQTa5I0DtEI9StHkZWJpTF505iSpOjGMsjyvK84ZJx1IXks
-	 O4hpD4mIlzisBkXpkgxW5vRs+ezMr85sEiVPoPa0f6xgAO7wdnJeDoJS9b5U8cYWGsq4o
-	 tAJvQJrzEInmCVWUkIpjsE47LVf9dB3T+SEKzC7lHFJ6HXMNHl7YqSdax/lg0F/goAz9C
-	 Jf7DF2ElXke+B5EkPIUYR6zCKUEiW/DPooihb7nZ9VQRQeuI7E8omig/imJPPFt7Hl/4Q
-	 ZgkeRyHuLMfbB6RhR6ZvieQAG3dd1hSD10wQhj+XnchMpxliVzZcAQTTGV9+AAIPFbg==
+	bh=ZomLfG8+zmLT9HwNavqBSyQ79CdcERtWC2t1IG5DH/c=;
+	b=oskYLYb8pLtXZkLOUgaU+T2sKza98Mi4kv4ck2DcRFQ2fNdP4bu5VfWbLnB977QLLP3W
+	 ma53lBrebVuY407MWgo/NlZuwJy2lte2C/XigY12lJSMR3g6UUOW3WOqO+P1i5yZHJKmH
+	 gN70E18H9TFNwB4x2h/tX9GTPrpW/Jp8SQVTHPFQ09Pp3FRc1OpWQDZE3g9Ih29Xgr0zL
+	 qQ7xONdaoyuHmdTeoPJgD131h/jOYuK5fWAbr5iMhqAk0S45oRZbtDgBMX48Pc2mkV2th
+	 JpR7qV5Yqh0OWjgBWnC7CFrJv4YiywsOn0VmQfvpDJezbX6AI7XcLUUANgI8aNvEyMw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
 	dkim=pass header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=iSbwSvam;
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+ header.a=rsa-sha256 header.s=korg header.b=nJzzQ5FB;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 54CE4F8014B
-	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2026 03:07:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54CE4F8014B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 03996F80124
+	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2026 04:42:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03996F80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=iSbwSvam
+ header.a=rsa-sha256 header.s=korg header.b=nJzzQ5FB
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 4C537646C9;
-	Thu, 19 Nov 2026 02:07:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A67A1F000C4;
-	Thu, 19 Nov 2026 02:07:20 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id A610D475F5;
+	Thu, 19 Nov 2026 03:42:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10CCC1F000C4;
+	Thu, 19 Nov 2026 03:42:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
-	s=korg; t=1795054041;
-	bh=qkEEzgia5mG4IoI9T8AIN1YZq3L5gD1d++ZicCo1HJ4=;
+	s=korg; t=1795059738;
+	bh=tLSMqJBbrE6P0LiEe3l0gpXxHPG9jRCzaeV5vUCTPhM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=iSbwSvamECdJ9uLz+BvZV+utArLWTcNXW6Wb5yqajYAi+L3RxFDYTnQdUE3glZy7r
-	 StkMSnZpi9LzP7hx79y1kLDCTvYyWLoSdX47F9C4Qcor9YBQNio6XFS07voXU7bpRY
-	 ttkLechd2bOG5DsH9tfPyWjGCe4IY87TEge0S1Qw=
+	b=nJzzQ5FBT96cyorC3VRBJ5y56JgQk4rjoRTUyjX3NPAGThkcDCmJjy8hmh0KtN7hc
+	 yrQnpHWqfVGZLXmjRKMqmWzlYqvzCjbtGCYbn4cvqW/65Tn87sOSRCB0/fDBrB8giM
+	 ncvhCLriEsJ+2yk3u12OwVmxjdVIxDl93flarkbU=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -94,21 +94,21 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Maxime Ripard <maxime@cerno.tech>,
 	Stephen Boyd <sboyd@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 1134/2214] ASoC: tlv320aic32x4: div: Switch to
+Subject: [PATCH 5.10 0949/1848] ASoC: tlv320aic32x4: div: Switch to
  determine_rate
-Date: Wed, 18 Nov 2026 15:46:50 +0100
-Message-ID: <20261118150057.411871403@linuxfoundation.org>
+Date: Wed, 18 Nov 2026 15:49:47 +0100
+Message-ID: <20261118145956.761154714@linuxfoundation.org>
 X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261118150009.797899913@linuxfoundation.org>
-References: <20261118150009.797899913@linuxfoundation.org>
+In-Reply-To: <20261118145911.150052362@linuxfoundation.org>
+References: <20261118145911.150052362@linuxfoundation.org>
 User-Agent: quilt/0.69
 X-stable: review
 X-Patchwork-Hint: ignore
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4JEP7LLZK4OEWS7TKJFLIH34SYEN276Z
-X-Message-ID-Hash: 4JEP7LLZK4OEWS7TKJFLIH34SYEN276Z
+Message-ID-Hash: ASDOFL5PI3Z5MCSRNZSCE3O6ZQTJIS6W
+X-Message-ID-Hash: ASDOFL5PI3Z5MCSRNZSCE3O6ZQTJIS6W
 X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -120,7 +120,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4JEP7LLZK4OEWS7TKJFLIH34SYEN276Z/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ASDOFL5PI3Z5MCSRNZSCE3O6ZQTJIS6W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,7 +128,7 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 
-5.15-stable review patch.  If anyone has any objections, please let me know.
+5.10-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
