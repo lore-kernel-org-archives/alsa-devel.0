@@ -2,76 +2,76 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32BAF606A320
-	for <alsa-devel@archiver.kernel.org>; Sun, 22 Nov 2026 00:04:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86155606A31A
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2026 06:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=hD60JREQ
+	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=LHaPvPEk
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8454E601F6;
-	Sun, 22 Nov 2026 01:04:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8454E601F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id E2470601F7;
+	Mon, 23 Nov 2026 07:04:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2470601F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1795305892;
-	bh=GG2zDe3hIg+E4AA8hmiEJRCZdelX3r1zY7iw9aJNaY4=;
+	s=default; t=1795413889;
+	bh=+lubJB7tsDIpcD5NwlWuoAW/ZK8gw3gxhfqjr4Cfrao=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=hD60JREQcr2n6Cq2kqLRSw+fVL9YQhypbGMJ64A5xy9Kia90ylhzAXh1UwvAQnMtd
-	 3nwXmJU+sN6+ju57doCD9eBsJnerwYucr7/2c5ZNLk5v5mj9/e+pocfSRWG6NFSWEP
-	 lccCrLAv40Ikl4r/Pv2kmIXNxb2bpEkEUE2S4h9M=
+	b=LHaPvPEkLbIC05O9Gh+yqqKLBXPOOIWHzn9sChVWqDlmvbektSnbPiUjWQQd4nQta
+	 ZSnSbRQvEDcAROtvU3Ey3xuQRMYWmN4iaWOf8KSF+kMTCDu8yHah5OAOkKUCcoueLH
+	 WANx7PN46psl0HI/hZAFCRG52Z8YFeB8UaPOcAGQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C23F9F804B4; Sun, 22 Nov 2026 01:04:18 +0100 (CET)
+	id C3698F805FE; Mon, 23 Nov 2026 07:04:16 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A1D6F80600;
-	Sun, 22 Nov 2026 01:04:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4D3DBF805FE;
+	Mon, 23 Nov 2026 07:04:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DC203F804B4; Sun, 22 Nov 2026 01:04:10 +0100 (CET)
+	id 7DD0EF80552; Mon, 23 Nov 2026 07:04:08 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_PASS,SPF_PASS
-	autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_PASS,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1795305849;
-	b=I0CsSGtkItNZiIvnUqhyLBQNLNN1sv/nj8irtGA4X83+jIJJEzAtBJ5v3Kb0bEsgQxNC
-	 jh1mLMpaGjnwOKEmEMvIl7JhC6QzfZDXqWsdfWx4PaUAnHdGLwLgHAFbyCJmtl/hbJq0J
-	 LLgmnrrwrtfS7Sz2lnD+45Oo2wLVZIKwhNJt4ZOiANSgaCLqncp01it+oKyQbf0l5Pk7g
-	 a6obKR+mTPgLpzUnbBL2Cfp1mSxV0Hojsr2ob4voNuxNFTYUfUjBtVBsk8lnZhRwaMoja
-	 yUPfaBrv/9IEMwm5enQH38YO1OKTi+TkF4074tOfWc2fuco+07ceitXTUbp1N4Gtt8A==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1795413847;
+	b=YJzT0Y8xER7QH5pBGkJ2fs1fDATcVnwPe3AaQId+1gFHfEI+wR8wIjL+BAswCPTiRsK4
+	 lp9uTkrO181QEiSAodbg0un1dokJt6VmroOTZkssBduMcCmqFRQMaXrUhiK8WEezVhHDq
+	 tFtptDvs5AgzxzcjUP2a2+wpFI4c0iQm5hbGzYE18viUhB1j3MMc76g14ZXSSYrlHdhsB
+	 M/mSFaGvyLPC6bSEOxW9rKpgEIAAwzBSgaBCut4xXvTr33Dbz/S2zs/Z8Q3dyt2LZUZMS
+	 vHRDJOvImexw0T5ZC920U4Z3GDJxpEAXjMWb9wvvsbvQdP4o2RIgP4Yy/FcD0hYRyeA==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1795305849;
+	c=relaxed/simple; t=1795413847;
 	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=GG2zDe3hIg+E4AA8hmiEJRCZdelX3r1zY7iw9aJNaY4=;
-	b=dX/4lJpKlw18vLUwVFbtJuhROqPvgMXa49KhSI/HTu5Ze1iDEkFmti3hSiMGH+rKeA/b
-	 1fvnZg92wxKAbKUGgTEpg9SUaHVKSBfCEfETdBF+dvM1V6wkuwonjsegQQge7Kl5pqqjm
-	 Zx9yvEfQwef8ERe5FolbMHVjF+wKTFSeI8QobDKkUlB0uCILwjsEElA6re2Vj8vNgaRkw
-	 UF+74F9UY64MT9N5GYojQSJK6JdbGRzDILlIYjQCJwDvn2zTG9jbSL8S6PCmrydBSZm6B
-	 SHz5MuSp0fOhEX89alVdssk427DMwaOjkiWHusdxPZvPmNDsNGhDoeV8WEhVlHz94DA==
+	bh=+lubJB7tsDIpcD5NwlWuoAW/ZK8gw3gxhfqjr4Cfrao=;
+	b=DQah7LdcE3K7qvkz5tbgBCvUUthyH6aU6G3BE2LqWvGuWV4LMWBNh1AqramPS9g3Vo8D
+	 ScIo67+2wGDle20znK1T7jAeiRjx5Br639+f+l/sKRlABB2sZEo84/48XBU+Wiukq3Og3
+	 M3PxTC+i0MajWVP+508fT1YHrYcEm/YQ0i54fpdBhz1s7XuKxLj7fSd2YJzYmf7DqKUt7
+	 jvlfSVSlXzp8EEdLhpZQfU6hy79lCVel9WSUdUnRcXbT9YHyogmN62JNtVcfxWpDm96Ax
+	 /tGNLXSTxb+isO26dJQchg+UOS9tfuiF7w+KbPro6NnK0UmGkCgzIiKRNl/xnRstvow==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
 	arc=none smtp.remote-ip=45.14.194.44
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB946F80217
-	for <alsa-devel@alsa-project.org>; Sun, 22 Nov 2026 01:04:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB946F80217
+	by alsa1.perex.cz (Postfix) with ESMTP id 41686F800B5
+	for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2026 07:04:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41686F800B5
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub pull_request - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18ea35283c335500-webhooks-bot@alsa-project.org>
-In-Reply-To: <18ea35283c10c700-webhooks-bot@alsa-project.org>
-References: <18ea35283c10c700-webhooks-bot@alsa-project.org>
-Subject: Lenovo Yoga 7i no speaker audio / microphone
-Date: Sun, 22 Nov 2026 01:04:10 +0100 (CET)
-Message-ID-Hash: SHNUDTX5ANDRYLME5CHBVNBTD32UC4CI
-X-Message-ID-Hash: SHNUDTX5ANDRYLME5CHBVNBTD32UC4CI
+Message-Id: <18ea97615204e800-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/921@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/921@alsa-project.org>
+Subject: USB-Audio: ALC4080: Add MSI MPG Z890I EDGE TI WIFI (0db0:da75)
+Date: Mon, 23 Nov 2026 07:04:08 +0100 (CET)
+Message-ID-Hash: OXT7QM4JWHBUVW37ULVEP7OS6H7A6SC2
+X-Message-ID-Hash: OXT7QM4JWHBUVW37ULVEP7OS6H7A6SC2
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -83,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SHNUDTX5ANDRYLME5CHBVNBTD32UC4CI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OXT7QM4JWHBUVW37ULVEP7OS6H7A6SC2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,58 +91,16 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #920 was opened from byrdie82:
+alsa-project/alsa-ucm-conf pull request #921 was opened from oukawa:
 
-**Summary**
-On a Lenovo Yoga 7i 2-in-1 14" (Panther Lake, rt721 headset codec + rt1320 speaker amp over SoundWire), UCM fails to load because `ucm2/codecs/rt721+rt1320/init.conf` does not exist. PipeWire falls back to a generic `stereo-fallback` sink, so the built-in speakers produce no sound, the internal mic doesn't appear, and the mute LED stays on. Headphones work.
+The onboard Realtek ALC4080 on the MSI MPG Z890I EDGE TI WIFI
+(Intel Z890) uses USB ID 0db0:da75, which is missing from the
+ALC4080 list, so UCM fails with "UCM is not supported for this
+USB device".
 
-The `sof-soundwire/rt721+rt1320.conf` profile exists (added by the "sof-soundwire: add companion amp config with rt721 and rt1320" change), but the matching `codecs/rt721+rt1320/` directory is not in the repo. This is true for v1.2.16.1 and current master. Only `codecs/rt721/` and `codecs/rt1320/` exist.
+Tested on Ubuntu live: with this ID added, the Realtek/ALC4080
+profile loads and the outputs work.
 
-**Hardware**
-- Machine: Lenovo Yoga 7i 2-in-1 14" (`LENOVO-83TC-Yoga72_in_114IPH11-LNVNB161216`)
-- CPU: Intel Core Ultra 7 355 (Panther Lake)
-- Driver: `sof-audio-pci-intel-ptl`, SoundWire link 3 (rt721 part 0x0721, rt1320 part 0x1320)
-- Distro: Ubuntu 26.10 (Kubuntu), alsa-ucm-conf 1.2.16.1-1ubuntu1
-- Kernel: [output of `uname -r`]
-
-**Card components**
-```
-cfg-amp:2 mic:dmic cfg-mics:4 iec61937-pcm:7,6,5 hs:rt721 spk:rt721+rt1320
-```
-
-**Error**
-```
-alsa-lib utils.c:373:(uc_mgr_config_load_into) could not open configuration file /usr/share/alsa/ucm2/codecs/rt721+rt1320/init.conf
-alsa-lib parser.c:80:(uc_mgr_config_load_file) failed to open file /usr/share/alsa/ucm2/codecs/rt721+rt1320/init.conf: -2
-alsa-lib main.c:1805:(snd_use_case_mgr_open) failed to import hw:0 use case configuration -2
-```
-Resulting PipeWire sink: `alsa_output.pci-0000_00_1f.3-platform-sof_sdw.stereo-fallback`
-
-**Steps to reproduce**
-1. Install a distro with alsa-ucm-conf 1.2.16.x on this hardware.
-2. Run `sudo alsactl init` (or check `journalctl -b | grep -iE "ucm|alsa-lib"`).
-3. Observe the errors above.
-
-**Workaround**
-Add `ucm2/codecs/rt721+rt1320/init.conf` that includes the two existing single-codec init files:
-
-```diff
-diff --git a/ucm2/codecs/rt721+rt1320/init.conf b/ucm2/codecs/rt721+rt1320/init.conf
-new file mode 100644
---- /dev/null
-+++ b/ucm2/codecs/rt721+rt1320/init.conf
-@@ -0,0 +1,3 @@
-+# Combined init: rt721 headset codec + rt1320 companion speaker amp
-+Include.rt721.File "/codecs/rt721/init.conf"
-+Include.rt1320.File "/codecs/rt1320/init.conf"
-```
-
-**Result with the workaround**
-After creating this file at `/usr/share/alsa/ucm2/codecs/rt721+rt1320/init.conf` and running `sudo alsactl init`:
-- The `alsa-lib` errors are gone
-- Built-in speakers work in stereo
-- The mute LED now follows the mute state
-- Internal mic: working
-
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/920
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/921
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/921.patch
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
