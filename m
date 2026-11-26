@@ -2,33 +2,33 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2060A606A31E
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2026 14:06:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF640606A31C
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2026 14:07:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=S6XSrdsM
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=Zlr1b/1J
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBA916021D;
-	Thu, 26 Nov 2026 15:06:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBA916021D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D63D60227;
+	Thu, 26 Nov 2026 15:07:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D63D60227
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1795701987;
+	s=default; t=1795702055;
 	bh=m4zb4dG7/TZV/8Zv47gZbTfYlq1EG+l9uvQvEi2Hfv8=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=S6XSrdsMFfw0XHJE7liqznU5Toz5k/B7aUY9lbjmn+csiHGvfjSmKmgzrwWZFccnh
-	 yJZyeggoh7J4EZW8nmBPO2zGQOrxIUBn4/DVRi35Zx+5XfV+ucdojrPrZKb9BW0FBo
-	 dwKtwZ/xpxBuv3XM1y1eSJ5r2MmL9qTJsNWI1tCA=
+	b=Zlr1b/1J09tKxjzhI31fHDlVhv2zZhUr9pu33ETuEbaQm+klusLv9Jvmq/C7Nzc80
+	 XWwdeti154hoMf1EEPltqaaLeI9PfM6VCI+d7nLrqg6rxpOPaqlAYHj1EnDbC1W5yu
+	 pujcPMCblm6j3Ztpn+N9SBkQOkNYrNI9UTn+N7Vs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 042E7F80601; Thu, 26 Nov 2026 15:05:54 +0100 (CET)
+	id AC2E3F805F9; Thu, 26 Nov 2026 15:06:59 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D1FCF805F4;
-	Thu, 26 Nov 2026 15:05:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63CC7F805FF;
+	Thu, 26 Nov 2026 15:06:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 962F2F8051E; Thu, 26 Nov 2026 15:05:46 +0100 (CET)
+	id 2A56EF8051E; Thu, 26 Nov 2026 15:06:54 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
@@ -37,41 +37,41 @@ X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_PASS,SPF_PASS
 	autolearn=ham autolearn_force=no version=4.0.1
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1795701945;
-	b=XeQOhSJzzmeOtVaONsSuDKllNjBLLj2IKlzFyClHXDN+sTNdjTp+U7KkoGnjC+E/WKTj
-	 0WUkZIG2s3y1ATcbbI3k+wd9qliB8Tf3j2nLe49YEViXt2LiFPYz59uzjRprp4AKGpkCt
-	 +73z/DdoRkBYxexamWnZHB/NETd/A5lyE35ltrdnjaRJmihsNo/pdjKrR5+aWEDWvSB8o
-	 DqW/8jTIyWjejKWRPf72EwVdWiAjHPgGnJlApC3fp18WXqcD59rUT5dqjYwxnj1v//qaE
-	 QkO5xRBruu5Tv+axVzJbxHMZF873Lt8Uc/LMOrSMDSenEt90QhkdDqY2U4H50GsC0BQ==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1795702013;
+	b=RaQTJAtGzShh+kCHj6LW6MR02kndTlZF8S5G182O00maDp8GM6HgPHVKl9UYuXllB9SN
+	 4F+Tt+HecWiScgsfLhg6s8kXwto7QAOpjjJsQCteXDqPGUyrxI+2WqUIHoEusGwr8UaNu
+	 SBsYSNUizntAkV+voUE6Ln6jsPwBeLYjoCpY9gAT+35+oC6rBivNvAMPeARfe5xNA05sk
+	 +JthLjgCH0DGr2LEYxpTQYPI6bYw+ZJ/W1ySFoPSWnCehf5FURL85LA9O6dAha6dgR9a0
+	 LVHOjtNUcLdhQPk5LE2drI9HgID7qB4DJGVsAezQkIsnEOqeqQZFwiDPs7AJesnzegw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1795701945;
+	c=relaxed/simple; t=1795702013;
 	h=MIME-Version:From:To:Message-Id:Subject;
 	bh=m4zb4dG7/TZV/8Zv47gZbTfYlq1EG+l9uvQvEi2Hfv8=;
-	b=dcNYLpt6BIBpWpIOUcVNZGroCxa0O7u6SYma/u5aZ5CXz3jOi9KXE7pKGBxY6KiBHLXT
-	 RvnNA2LwrCdKgZdNGsKr1H8PSpE8SaPtiQi6T71dqlFu+ONBLi9+RP3U4rRUjA6UbNgUO
-	 mv+TZOP18OIH/iy+7lvExUM1vrC65YCvRK8bcduxbEj05uOaz+wFg88EVb4DxsfoTi/pW
-	 vuzvJsD0wA4RBXtXN6fvjfvChsYq1EXFWvl/YpZIjEJvzG0q10vEy0JiFT+qXlSxPpB3m
-	 +Giu0e1EuuIVW+Lu815+620OnK8cKrxafAO5ibjZ7WYyhz0tnK6n/qJQsPhGMuy+Wlg==
+	b=AA3/LtW4v1uB3cZxN4zc8Ba3djy+hD+fSrmE4ptED75E29lRmBtwhOuEA6IyJEeI/nkG
+	 3WeXmlqdgjpq11tfRCnHqFe5KOkcCwD0PVbFk1Fa9HkKenBR5tb179tRxuS6HAQaPKf91
+	 7mYsj/1eeJxLudrhB4pcXdbVBp9sFMwj6u+tCfnhlzgMI2Xe2EsLj662Xp+3pba2+L+LD
+	 xBu9/lqHx16DC3EU1KMcXnFnrQcq0Mg4LjjDByHsSRtLQkcuDuc7sX8pjlBAcj7z5eRfW
+	 snKr4fl7DXFpfzXdY/8FJPmvXVMVEDr+U8vz6k0nNxwb9rZ02qFsJ7LQvOTV2yQu/yg==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
 	arc=none smtp.remote-ip=45.14.194.44
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31A88F80100
-	for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2026 15:05:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31A88F80100
+	by alsa1.perex.cz (Postfix) with ESMTP id 6266AF80100
+	for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2026 15:06:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6266AF80100
 Content-Type: text/plain; charset="utf-8"
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
 From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18eb9d65100a4200-webhooks-bot@alsa-project.org>
+Message-Id: <18eb9d772624a400-webhooks-bot@alsa-project.org>
 In-Reply-To: <alsa-project/alsa-ucm-conf/pr/914@alsa-project.org>
 References: <alsa-project/alsa-ucm-conf/pr/914@alsa-project.org>
-Subject: sof-soundwire: es9356: default the DMIC gain to +12 dB
-Date: Thu, 26 Nov 2026 15:05:46 +0100 (CET)
-Message-ID-Hash: 5VI5KTU4VDE3J27MU7Z5O2EPCCU3UYAR
-X-Message-ID-Hash: 5VI5KTU4VDE3J27MU7Z5O2EPCCU3UYAR
+Subject: sof-soundwire: es9356: expose the DMIC hardware gain
+Date: Thu, 26 Nov 2026 15:06:54 +0100 (CET)
+Message-ID-Hash: 4EP33GNO6OQDWAMYFXBKL7QLOU5TDOVH
+X-Message-ID-Hash: 4EP33GNO6OQDWAMYFXBKL7QLOU5TDOVH
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -83,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5VI5KTU4VDE3J27MU7Z5O2EPCCU3UYAR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4EP33GNO6OQDWAMYFXBKL7QLOU5TDOVH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
