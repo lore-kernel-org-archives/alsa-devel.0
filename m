@@ -2,155 +2,99 @@ Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E12606A31E
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2026 01:43:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DE3C606A31C
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2026 02:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=PFPbMBKS;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Cte8CXDh
+	dkim=pass (1024-bit key, unprotected) header.d=alsa-project.org header.i=@alsa-project.org header.a=rsa-sha256 header.s=default header.b=T+LW66gu;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=lWijItAh
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 08B6260211;
-	Fri, 27 Nov 2026 02:43:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08B6260211
+	by alsa0.perex.cz (Postfix) with ESMTPS id 004B760216;
+	Fri, 27 Nov 2026 03:43:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 004B760216
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1795743816;
-	bh=XQbp+iYf+670Cjd0nc3KeQiLuIKrITL/6+mOjWe48x4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=PFPbMBKSckAgOOuRViQq9PUgr9ixOGrzhcKIzG0Tra5OKhzbAAZrpvTW7HGskTABw
-	 lw7tl8kp9N8Y+mXW8HNRGvR97Bvp7ISrFa6yeZQEseaFxWhdBxekkbsol25IpwNu8r
-	 l3POmlXB8af3A/fK1rc3uzQDMTJkiX+DaDK24D8U=
+	s=default; t=1795747398;
+	bh=c+A5eI4goI5Vr8qphPYMW136cy8hdAfBU1mlDsnX2Pk=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=T+LW66guD7fFeRaer76It5a80vVOpeT6eI/Lf3OtJqI3QfQmdb7rgy3MmlfzIOIgw
+	 Rfib5yw6x5L4isUnyKVlL5VvSPcwqtyp0H+oPH9htMOMbS+TW2ha733uJZBP/3Nd7q
+	 F4fLmWbLaBM/u2WFL0BjnqmMGplOXvaKeNBI2e+Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 97995F805F5; Fri, 27 Nov 2026 02:43:01 +0100 (CET)
+	id 7CDBDF805FC; Fri, 27 Nov 2026 03:42:45 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EEEB4F80600;
-	Fri, 27 Nov 2026 02:43:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 188D6F805F5;
+	Fri, 27 Nov 2026 03:42:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4ED2FF805A8; Fri, 27 Nov 2026 02:42:54 +0100 (CET)
+	id D9D66F805A8; Fri, 27 Nov 2026 03:42:38 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-20.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=4.0.1
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,PP_MIME_FAKE_ASCII_TEXT,
+	SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1795743773;
-	b=FQNO7mVw5mRHAySqvDBZIjvX9N4ds18suxMf1vIoifIPep0SnnPXF3JyC3H5Q4RnLeM6
-	 rD462T/b3hZ1sDIRAg21pS78S0ilsRyizOZz8kQEND2I9+mHZqUxBibDbiMlZsLKP3Iap
-	 RxP6LiaJBa8y3rLaT6nJxylB3lw+1z0OZeClDw3WBSYZkHAH53SFhjEFGPN3DOyL+eGeu
-	 b8hZC3ZuigVydNx+ix+x+Ya2Om34i56K5KN3pXZ763o9TriX7doBn1Ilqy3Rb5GAs810m
-	 oRG/m/Lt0f1Bcrl0RnB7JjuhuMamZbK53gPNzSIdlhKSH4wdOvekeM9UPbaXb0uipfw==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1795747357;
+	b=OnwiGwLVW5BQLxsvU5AxQ/2BqSshEIYd0VYQEfFmN3QZUKpRgoJlkbRHFF0xfX2DkZTD
+	 Jx1vJK9Brzso7Z7KnAkwerldNQQLvjRyozAS4E/0hmKNDJh1K8d1JiTET3boIqsIWu+FG
+	 Ya6LswdOcG+EFUaJfL1faZkO53h/wSpBAFNlmj8doYLIvpZGVyd1R9AvYlLeBI1e5cYBE
+	 TpaH8LkaSzFqBkIVBe0KFIrYA6aSr29IFEfSsvIFScj+jqBbIZT24biKjpE8em+0Ro0v+
+	 BV+AoQHmeJRaWY3PeDdT6xD2unQ6x8C2LCgR6iCr+wrW62dr2JwGqU6LLiL53hUeS0g==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1795743773;
-	h=DKIM-Signature:Message-ID:Date:MIME-Version:Subject:To:From;
-	bh=XQbp+iYf+670Cjd0nc3KeQiLuIKrITL/6+mOjWe48x4=;
-	b=BB8UCpgXYqUUzWUPeErDh02OoISGVJbKSPE24EHzGUInD7m7kp4wACOSnUWZsk1pQMtN
-	 xjXC2hXjrB7ost3snwYmGfoxhrKR6VkDMFqAo0ugQyVH3dzxqs8b0a9FNTc1cjcbuA7HI
-	 UY8ffVI6MNpcC9ZEZGa147KaAantMGUsWcAx+53Mfr9g1R1nHTdGPiWcuFzJ1uDHu/1Fj
-	 9IsjwWF2xdd8JqlmjkSu5AOviM6ZhG6HpPMjxeghkxdVAiiLgfCWZDiQP71aaSBiEHpuD
-	 Uue2yx991GgVQoFn7SG8QijRiX2Zk/RRtGywUwk3cYNBLAplFxZeDpD1Vw1RLYMP7ug==
+	c=relaxed/simple; t=1795747357;
+	h=DKIM-Signature:From:To:Subject:Date:Message-Id;
+	bh=c+A5eI4goI5Vr8qphPYMW136cy8hdAfBU1mlDsnX2Pk=;
+	b=PduYBl0ilRoOZbb/oBkSMGE2zRkdwNCLqm+MdcVYlSWGkg5XxkppBJOfl8mMZ03HEycU
+	 I7GnULwnhIeA9EaRFTV2rQGWTbz3BsuVAPllDpjwZi261BRYUqD+n1j+9sLe5TqglctKD
+	 t9n8EXW8tq+A3FX1HB8ca44sJZykESfivlnFhhy85r19xI1Sf8Zw7rM1Xct2IvQ5IYdbD
+	 pGQ/9hY95mv49CIplW10JithyO9/z7I4TN4zMDDB9A1jgrG9W5tSaVMQyBU5HkjgDmJ+O
+	 QyxhRs9s4sK4rKM5FaZToQh82TrKOHSdza2K1RBGTytNOLFWK7ez2QuqIHBulaMkFMg==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
 	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=Cte8CXDh;
+ header.s=k20260515 header.b=lWijItAh;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DFD4DF8024C
-	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2026 02:42:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFD4DF8024C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 17AB5F80095
+	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2026 03:42:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17AB5F80095
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=Cte8CXDh
+ header.s=k20260515 header.b=lWijItAh
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id A45D244933;
-	Fri, 27 Nov 2026 01:42:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 126811F0089B;
-	Fri, 27 Nov 2026 01:42:44 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 98ED040AA6;
+	Fri, 27 Nov 2026 02:42:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B75F1F00893;
+	Fri, 27 Nov 2026 02:42:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795743768;
-	bh=XQbp+iYf+670Cjd0nc3KeQiLuIKrITL/6+mOjWe48x4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=Cte8CXDh4YKfZj+U0TA+dURXZ/vAlvQ/kLh9gS6a4N9b665NhTA2+ndJtTOCH7aPh
-	 sZXxQhTaNFcWI+9GCrPpjLGDt8pG5qmku2zQ6y3qQN4qSqmMh+elTU0raGINHv1EJq
-	 1qzH6RIzG0V4q2SD18mWSF0HJlEBwKzoHjtsKSthTMjmRrnsqxmlgIoSS5ASXWHwFp
-	 X3llXG0PUbtzkeF+rsaG9mGyWiJBegAM/n1gJLrE3+AMQ4+YuXOWSWPcn6wKgzoLfg
-	 LlezuEsuVsWKIOt8pSSmIvJxnq8fomex1LaG4qoSI0AnYhM9C5LkPnAL5h2AP4bQCP
-	 OS8zA9awTY71Q==
-Message-ID: <68d1f55c-ddcf-4081-8111-9773c484ca07@kernel.org>
-Date: Fri, 27 Nov 2026 02:42:43 +0100
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 7/7] arm64: defconfig: enable SDCA class driver and
- WCD9378 codec
-To: Srinivas Kandagatla <srinivas.kandagatla@oss.qualcomm.com>,
- andersson@kernel.org, konrad.dybcio@oss.qualcomm.com, abel.vesa@linaro.org,
- robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20261126183806.172485-1-srinivas.kandagatla@oss.qualcomm.com>
- <20261126183806.172485-8-srinivas.kandagatla@oss.qualcomm.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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
-In-Reply-To: <20261126183806.172485-8-srinivas.kandagatla@oss.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: PSLS64APTOOKNLMWIUBJRQQD7NBEYPUY
-X-Message-ID-Hash: PSLS64APTOOKNLMWIUBJRQQD7NBEYPUY
-X-MailFrom: krzk@kernel.org
+	s=k20260515; t=1795747352;
+	bh=aWTgNdp3DLlsNb1upmQBOTRJ28t0xb8oDxlhzbKg2gE=;
+	h=From:To:Cc:Subject:Date;
+	b=lWijItAheEVPG3uQm1B+qfyFQc70q4D3XpyuwhO4KKhchiDYjYZKabIUg7sl/kSov
+	 d6QlPMvhYp14x2X35fF6zf9Qg1L25SUUwjtlT4rXpp0j2dTSJxcRHjA/HtDMXqSINs
+	 KYwdhbswvgnT6TEOHBBf6OoUnzDC2b+GKAvMkdXsoj17jeAAXv90vFW7Z50LbG+NEh
+	 j/74uY8fUebfB/ggenKQba9EkRn1GZHo+d0lkxnmHxy4hs1FCHrGb1EDlNhsc7AdDr
+	 j4oD0bBuY8vDAYzCmV8b4FgYG7xQqVXj5GbJq59yFDTeUU9myPgoArhD1hwlpNbR9t
+	 ZqqtTPw1jmg8g==
+Received: by traversing.sirena.org.uk (Postfix, from userid 1000)
+	id 91DB03470DDE; Fri, 27 Nov 2026 02:42:36 +0000 (GMT)
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC fixes for v7.4-rc4
+Date: Fri, 27 Nov 2026 02:41:45 +0000
+Message-Id: <20261127024236.91DB03470DDE@traversing.sirena.org.uk>
+Message-ID-Hash: BRIAR3VG5QBPTFW3LAQY4WAAZUG5OA7Z
+X-Message-ID-Hash: BRIAR3VG5QBPTFW3LAQY4WAAZUG5OA7Z
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -161,22 +105,92 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PSLS64APTOOKNLMWIUBJRQQD7NBEYPUY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BRIAR3VG5QBPTFW3LAQY4WAAZUG5OA7Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
+X-Archived-By: <archiver.kernel.org>
 
-On 26/11/2026 19:38, Srinivas Kandagatla wrote:
-> Enable CONFIG_SND_SOC_SDCA, CONFIG_SND_SOC_SDCA_CLASS and
-> CONFIG_SND_SOC_WCD9378_SDCA so Qualcomm Glymur-based laptops have
-> working headset audio out of the box.
+The following changes since commit f66297be665c067d2e96da9ce1c5767b587e17b7:
 
-All of them? This is board specific, not SoC, thus please name at least
-few upstream examples.
+  ASoC: tas2781: Avoid possible zero-division (2026-11-19 17:34:26 +0000)
 
+are available in the Git repository at:
 
-Best regards,
-Krzysztof
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v7.4-rc4
+
+for you to fetch changes up to b4378764a58960a016a42506992eac86d4d4eaf9:
+
+  ASoC: amd: yc: Add DMI quirk for HP 255R G10 (board 8D22) (2026-11-26 14:59:44 +0000)
+
+----------------------------------------------------------------
+ASoC: Fixes for v7.4
+
+A fairly big but mostly routine pile of driver specific fixes and quirks
+for v7.4.  The new Tegra support is the biggest thing here, it's all
+data required by the newly added device, there's no real code in there
+so while it was on the edge of getting applied for v7.5 it seemed fine
+here.
+
+----------------------------------------------------------------
+Alen Tišljar (1):
+      ASoC: amd: yc: Add DMI quirk for HP 255R G10 (board 8D22)
+
+Anupama Kunkulagunta (2):
+      ASoC: dt-bindings: tegra: Add Tegra268 ADMAIF support
+      ASoC: tegra: ADMAIF: Add Tegra268 support
+
+Arnav Kapoor (1):
+      ASoC: SOF: control: reject out-of-range enum values
+
+JaeHoon Kim (1):
+      ASoC: amd: acp: Add ACP70 ACPI flag override for LG gram 15Z95U
+
+James X. Nelson (1):
+      ASoC: amd: yc: Enable DMIC on MSI Crosshair A18 HX A8WGKG
+
+Marco Giunta (2):
+      ASoC: aw88166: fix backup restoring the RE value instead of saving it
+      ASoC: aw88399: fix register used to disable I2S TX
+
+Mark Brown (3):
+      ASoC: codecs: ES8326: issue about pop and Configuration
+      ASoC: tegra: Add Tegra268 ADMAIF support
+      ASoC: fsl_asrc/fsl_easrc: fix memory safety issues
+
+Markus Paltian (1):
+      ASoC: amd: acp: Add Lenovo IdeaPad Slim 5 16AKP10 to ACP70 override table
+
+Mikolaj Kucharski (1):
+      ASoC: amd: yc: Add DMI quirk for Xiaomi REDMI Book 14 2025 (AMD)
+
+Stefan Ghetu (5):
+      ASoC: fsl_asrc_m2m: fix out-of-bounds write when draining the output FIFO
+      ASoC: fsl_asrc: fix pair ownership on repeated or failed hw_params
+      ASoC: fsl_asrc_dma: release DMA channels on repeated hw_params
+      ASoC: fsl_easrc: fix context ownership on repeated hw_params
+      ASoC: fsl_asrc_m2m: allow only one task at a time per stream
+
+Zhang Yi (4):
+      ASoC: codecs: ES8326: Modify Clock Configuration
+      ASoC: codecs: ES8326: issue about capture pop
+      ASoC: codecs: ES8326: Modify the Initialization Configuration
+      ASoC: codecs: ES8326: Adjust the delay during calibration
+
+ .../bindings/sound/nvidia,tegra210-admaif.yaml     | 22 ++++++++
+ sound/soc/amd/acp-config.c                         | 14 +++++
+ sound/soc/amd/yc/acp6x-mach.c                      | 22 ++++++++
+ sound/soc/codecs/aw88166.c                         |  2 +-
+ sound/soc/codecs/aw88399-lib.c                     |  2 +-
+ sound/soc/codecs/es8326.c                          |  8 ++-
+ sound/soc/fsl/fsl_asrc.c                           | 22 ++++++++
+ sound/soc/fsl/fsl_asrc_dma.c                       | 27 ++++++---
+ sound/soc/fsl/fsl_asrc_m2m.c                       | 30 ++++++----
+ sound/soc/fsl/fsl_easrc.c                          | 10 ++++
+ sound/soc/sof/control.c                            |  5 ++
+ sound/soc/tegra/tegra210_admaif.c                  | 66 ++++++++++++++++++++++
+ sound/soc/tegra/tegra210_admaif.h                  | 18 ++++++
+ 13 files changed, 223 insertions(+), 25 deletions(-)
